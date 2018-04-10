@@ -1,4 +1,4 @@
 package group.greenbyte.lunchplanner.exceptions;
 
-public class HttpRequestException {
+public class HttpRequestException extends Exception {
 }
