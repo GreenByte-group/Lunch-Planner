@@ -1,6 +1,6 @@
 package group.greenbyte.lunchplanner.event;
 
-import group.greenbyte.lunchplanner.excpetions.HttpRequestException;
+import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,12 +14,6 @@ public class EventController {
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     public int createEvent(@RequestBody EventJson event) {
-        try {
-            eventLogic.createEvent(null, null, 0, null, null);
-        } catch (HttpRequestException e) {
-            e.printStackTrace();
-        }
-
         return 0;
     }
 

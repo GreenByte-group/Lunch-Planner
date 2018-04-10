@@ -1,7 +1,7 @@
 package group.greenbyte.lunchplanner.event;
 
 import group.greenbyte.lunchplanner.Date;
-import group.greenbyte.lunchplanner.excpetions.DatabaseException;
+import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import org.springframework.stereotype.Repository;
 
 @Repository
