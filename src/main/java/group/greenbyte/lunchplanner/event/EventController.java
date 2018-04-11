@@ -19,8 +19,8 @@ public class EventController {
      */
     @RequestMapping(value = "", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public int createEvent(@RequestBody EventJson event) {
-        return 0;
+    public String createEvent(@RequestBody EventJson event) {
+        return "0";
     }
 
     @Autowired
