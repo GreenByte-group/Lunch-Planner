@@ -10,9 +10,14 @@ public class UserController {
 
     private UserLogic userLogic;
 
+    /**
+     * Create user with username, password and mail
+     *
+     * @param user is a json object with all attributes from UserJson
+     */
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createEvent(@RequestBody UserJson user) {
+    public void createUser(@RequestBody UserJson user) {
 
     }
 
