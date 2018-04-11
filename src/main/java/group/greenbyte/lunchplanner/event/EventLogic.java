@@ -1,7 +1,7 @@
 package group.greenbyte.lunchplanner.event;
 
 import group.greenbyte.lunchplanner.Date;
-import group.greenbyte.lunchplanner.excpetions.HttpRequestException;
+import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +20,7 @@ public class EventLogic {
      * @param timeEnd time when the event ends
      * @return the id of the new event
      * @throws HttpRequestException when location and timeStart not valid or eventName has no value
+     * or an Database error happens
      */
     int createEvent(String eventName, String eventDescription,
                     int locationId, Date timeStart, Date timeEnd) throws HttpRequestException {
@@ -27,6 +28,10 @@ public class EventLogic {
         //TODO: call eventChanged
     }
 
+    /**
+     * Will update all subscribtions for an event when it changes
+     * @param event event that has changed
+     */
     private void eventChanged(Event event) {
 
     }
