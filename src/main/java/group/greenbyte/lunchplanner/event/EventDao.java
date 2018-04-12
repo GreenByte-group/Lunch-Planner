@@ -15,16 +15,16 @@ public interface EventDao {
      * @param locationId id of the location
      * @param timeStart time when the event starts
      * @param timeEnd time when the events ends
-     * @param createName id of the user who creates the events
+     * @param creatorsName id of the user who creates the events
      * @return the inserted Event
      *
      * @throws DatabaseException when an unexpected error happens
      */
-    Event insertEvent(String eventName,
+    Event insertEvent(String creatorsName,
+                      String eventName,
                     String description,
                     int locationId,
                     Date timeStart,
-                    Date timeEnd,
-                    String createName) throws DatabaseException;
+                    Date timeEnd) throws DatabaseException;
 
 }
