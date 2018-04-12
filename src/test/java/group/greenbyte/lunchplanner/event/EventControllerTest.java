@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,6 +23,9 @@ import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 public class EventControllerTest {
 
     private MockMvc mockMvc;
+
+    @Mock
+    private EventLogic eventLogic;
 
     @InjectMocks
     private EventController eventController;
@@ -43,7 +48,7 @@ public class EventControllerTest {
 
         MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
                 .andReturn();
 
@@ -66,7 +71,7 @@ public class EventControllerTest {
 
         MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
                 .andReturn();
 
@@ -89,7 +94,7 @@ public class EventControllerTest {
 
         MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
                 .andReturn();
 
