@@ -3,11 +3,13 @@ package group.greenbyte.lunchplanner.event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -38,10 +40,19 @@ public class EventControllerTest {
 
         String json = mapper.writeValueAsString(event);
 
-        mockMvc.perform(
+        MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-        //TODO add result matching to be a number
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+
+        try {
+            Integer.valueOf(response);
+        } catch(NumberFormatException e) {
+            Assert.fail("Result is not a number");
+        }
     }
 
     @Test
@@ -52,10 +63,19 @@ public class EventControllerTest {
 
         String json = mapper.writeValueAsString(event);
 
-        mockMvc.perform(
+        MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-        //TODO add result matching to be a number
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+
+        try {
+            Integer.valueOf(response);
+        } catch(NumberFormatException e) {
+            Assert.fail("Result is not a number");
+        }
     }
 
     @Test
@@ -66,10 +86,19 @@ public class EventControllerTest {
 
         String json = mapper.writeValueAsString(event);
 
-        mockMvc.perform(
+        MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-        //TODO add result matching to be a number
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+
+        try {
+            Integer.valueOf(response);
+        } catch(NumberFormatException e) {
+            Assert.fail("Result is not a number");
+        }
     }
 
     @Test
@@ -82,8 +111,7 @@ public class EventControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-                .andExpect(MockMvcResultMatchers.status().isNotExtended())
-                .andExpect(MockMvcResultMatchers.content().string("name is missing"));
+                .andExpect(MockMvcResultMatchers.status().isNotExtended());
     }
 
     @Test
@@ -96,8 +124,7 @@ public class EventControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.content().string("name is too long"));
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
@@ -110,8 +137,7 @@ public class EventControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.content().string("description is too long"));
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
@@ -125,8 +151,7 @@ public class EventControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.content().string("start time must be in the future"));
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
@@ -140,17 +165,16 @@ public class EventControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.content().string("start time must be before end time"));
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     private String createString(int length) {
-        String temp = "";
+        StringBuilder temp = new StringBuilder();
         for(int i = 0; i < length; i++) {
-            temp += "a";
+            temp.append("a");
         }
 
-        return temp;
+        return temp.toString();
     }
 
 }

@@ -17,8 +17,10 @@ public class EventController {
      * @param event the object that describes the JSON object in java format
      * @return the id ov the created event
      */
-    @RequestMapping(value = "", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
     public String createEvent(@RequestBody EventJson event) {
         return "0";
     }
