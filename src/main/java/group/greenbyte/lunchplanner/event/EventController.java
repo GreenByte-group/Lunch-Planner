@@ -1,9 +1,13 @@
 package group.greenbyte.lunchplanner.event;
 
+import group.greenbyte.lunchplanner.Date;
+import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/event")
@@ -19,10 +23,20 @@ public class EventController {
      */
     @RequestMapping(value = "", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public String createEvent(@RequestBody EventJson event) {
-        return "0";
+    public String createEvent(@RequestBody EventJson event, HttpServletResponse response) {
+
+        try {
+            //TODO change userName
+            int eventId = eventLogic.createEvent("dummy", event.getName(), event.getDescription(),
+                    event.getLocationId(), new Date(event.getTimeStart()), new Date(event.getTimeEnd()));
+
+            response.setStatus(HttpServletResponse.SC_CREATED);
+            return String.valueOf(eventId);
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
     }
 
     @Autowired
