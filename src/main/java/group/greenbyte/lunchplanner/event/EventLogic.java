@@ -22,7 +22,7 @@ public class EventLogic {
      * @throws HttpRequestException when location and timeStart not valid or eventName has no value
      * or an Database error happens
      */
-    int createEvent(String eventName, String eventDescription,
+    int createEvent(String userName, String eventName, String eventDescription,
                     int locationId, Date timeStart, Date timeEnd) throws HttpRequestException {
         return 0;
         //TODO: call eventChanged

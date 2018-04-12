@@ -14,6 +14,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static group.greenbyte.lunchplanner.Utils.createString;
+import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 public class EventControllerTest {
 
@@ -22,15 +25,13 @@ public class EventControllerTest {
     @InjectMocks
     private EventController eventController;
 
-    private ObjectMapper mapper;
-
     @Before
     public void setUp() throws Exception {
-        mapper = new ObjectMapper();
-
         mockMvc = MockMvcBuilders.standaloneSetup(eventController)
                 .build();
     }
+
+    // ------------------ CREATE EVENT ------------------------
 
     @Test
     public void test1CreateEventNoDescription() throws Exception {
@@ -38,7 +39,7 @@ public class EventControllerTest {
 
         EventJson event = new EventJson(createString(50), "", 1, timeStart, timeStart + 1000);
 
-        String json = mapper.writeValueAsString(event);
+        String json = getJsonFromObject(event);
 
         MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
@@ -61,7 +62,7 @@ public class EventControllerTest {
 
         EventJson event = new EventJson(createString(50), "Super Event", 1, timeStart, timeStart + 1000);
 
-        String json = mapper.writeValueAsString(event);
+        String json = getJsonFromObject(event);
 
         MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
@@ -84,7 +85,7 @@ public class EventControllerTest {
 
         EventJson event = new EventJson(createString(50), createString(1000), 1, timeStart, timeStart + 1000);
 
-        String json = mapper.writeValueAsString(event);
+        String json = getJsonFromObject(event);
 
         MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
@@ -107,7 +108,7 @@ public class EventControllerTest {
 
         EventJson event = new EventJson("", "", 1, timeStart, timeStart + 1000);
 
-        String json = mapper.writeValueAsString(event);
+        String json = getJsonFromObject(event);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
@@ -120,7 +121,7 @@ public class EventControllerTest {
 
         EventJson event = new EventJson(createString(51), "", 1, timeStart, timeStart + 1000);
 
-        String json = mapper.writeValueAsString(event);
+        String json = getJsonFromObject(event);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
@@ -133,7 +134,7 @@ public class EventControllerTest {
 
         EventJson event = new EventJson("", "", 1, timeStart, timeStart + 1000);
 
-        String json = mapper.writeValueAsString(event);
+        String json = getJsonFromObject(event);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
@@ -147,7 +148,7 @@ public class EventControllerTest {
 
         EventJson event = new EventJson("", "", 1, timeStart, timeEnd);
 
-        String json = mapper.writeValueAsString(event);
+        String json = getJsonFromObject(event);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
@@ -161,20 +162,10 @@ public class EventControllerTest {
 
         EventJson event = new EventJson("", "", 1, timeStart, timeEnd);
 
-        String json = mapper.writeValueAsString(event);
+        String json = getJsonFromObject(event);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
-
-    private String createString(int length) {
-        StringBuilder temp = new StringBuilder();
-        for(int i = 0; i < length; i++) {
-            temp.append("a");
-        }
-
-        return temp.toString();
-    }
-
 }
