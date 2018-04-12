@@ -13,6 +13,7 @@ public class EventLogic {
     /**
      * Create an event. At least the eventName and a location or timeStart is needed
      *
+     * @param userName userName that is logged in
      * @param eventName name of the new event, not null
      * @param eventDescription description of the new event
      * @param locationId id of the used location
