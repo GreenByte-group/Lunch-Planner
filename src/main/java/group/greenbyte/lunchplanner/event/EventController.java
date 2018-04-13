@@ -1,13 +1,12 @@
 package group.greenbyte.lunchplanner.event;
 
-import group.greenbyte.lunchplanner.Date;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/event")
