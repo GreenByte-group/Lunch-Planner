@@ -12,6 +12,11 @@ public class Coordinate {
     @Column
     private double yCoordinate;
 
+    public Coordinate(double x, double y) {
+        xCoordinate = x;
+        yCoordinate = y;
+    }
+
     public double getxCoordinate() {
         return xCoordinate;
     }
