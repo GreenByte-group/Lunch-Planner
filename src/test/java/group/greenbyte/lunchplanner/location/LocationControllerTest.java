@@ -60,7 +60,7 @@ public class LocationControllerTest {
 
         try {
             Integer.valueOf(response);
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             Assert.fail("Result is not a number");
         }
 
@@ -85,7 +85,7 @@ public class LocationControllerTest {
 
         try {
             Integer.valueOf(response);
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             Assert.fail("Result is not a number");
         }
 
@@ -106,12 +106,12 @@ public class LocationControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
                 .andReturn();
 
-        String response = result .getResponse().getContentAsString();
+        String response = result.getResponse().getContentAsString();
 
         try {
             Integer.valueOf(response);
-        } catch(NumberFormatException e){
-            Asser.fail("Result is not a number");
+        } catch (NumberFormatException e) {
+            Assert.fail("Result is not a number");
         }
 
     }
@@ -138,7 +138,6 @@ public class LocationControllerTest {
         LocationJson location = new LocationJson(createString(51), xCoordinate, yCoordinate, createString(1000));
 
 
-
         String json = getJsonFromObject(location);
 
         mockMvc.perform(
@@ -159,3 +158,5 @@ public class LocationControllerTest {
                 MockMvcRequestBuilders.post("/location").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
+
+}
