@@ -1,9 +1,11 @@
 package group.greenbyte.lunchplanner.event;
 
-import group.greenbyte.lunchplanner.Date;
+import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 public class EventLogic {

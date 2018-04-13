@@ -1,8 +1,7 @@
 package group.greenbyte.lunchplanner.event;
 
-import group.greenbyte.lunchplanner.Date;
+import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 
