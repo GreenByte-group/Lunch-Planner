@@ -4,7 +4,9 @@ import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.Date;
 
@@ -27,23 +29,22 @@ public class EventLogic {
      * or an Database error happens
      */
     int createEvent(String userName, String eventName, String eventDescription,
-                    int locationId, Date timeStart, Date timeEnd) throws HttpRequestException {
+                    int locationId, Date timeStart, Date timeEnd) throws HttpRequestException{
 
-        Event newEventToCreate = new Event();
-        newEventToCreate.setEventName(eventName);
-        newEventToCreate.setEventDescription(eventDescription);
-        newEventToCreate.setLocationId(locationId);
-        newEventToCreate.setStartDate(timeStart);
-        newEventToCreate.setEndDate(timeEnd);
+        if(userName.length()==0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is empty");
+        if(userName.length()> Event.MAX_USERNAME_LENGHT)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Usernam is to long, maximum length:" + Event.MAX_USERNAME_LENGHT);
+        if(eventDescription.length()>Event.MAX_DESCRITION_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Description is to long, maximun length" + Event.MAX_DESCRITION_LENGTH);
 
         try {
-            eventDao.insertEvent(userName, eventName, eventDescription, locationId, timeStart, timeEnd);
+            return eventDao.insertEvent(userName, eventName, eventDescription, locationId, timeStart, timeEnd)
+                    .getEventTd();
         }catch(DatabaseException e) {
-
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
 
-
-        return newEventToCreate.getLocationId();
 
     }
 
