@@ -16,11 +16,11 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer eventTd;
 
-    @Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name="startDate")
     private Date startDate;
 
-    @Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name="endDate")
     private Date endDate;
 

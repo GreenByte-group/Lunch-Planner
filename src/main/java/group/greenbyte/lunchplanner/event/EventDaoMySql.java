@@ -44,7 +44,7 @@ public class EventDaoMySql implements EventDao {
         Iterable<Event> source = eventDatabaseConnector.findAll();
         List<Event> target = new ArrayList<>();
         source.forEach(target::add);
-        return (List<Event>) eventDatabaseConnector.findAll();
+        return target;
 
     }
 
