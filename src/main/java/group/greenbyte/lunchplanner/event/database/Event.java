@@ -9,17 +9,18 @@ public class Event {
     static public int MAX_USERNAME_LENGHT = 50;
     static public  int MAX_DESCRITION_LENGTH = 1000;
     static public int MAX_EVENTNAME_LENGTH = 50;
+    static public int MAX_SEARCHWORD_LENGTH = 50;
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer eventTd;
 
-    @Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name="startDate")
     private Date startDate;
 
-    @Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name="endDate")
     private Date endDate;
 

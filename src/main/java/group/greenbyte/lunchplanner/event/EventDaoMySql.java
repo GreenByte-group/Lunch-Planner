@@ -6,7 +6,10 @@ import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 @Repository
 public class EventDaoMySql implements EventDao {
@@ -32,6 +35,17 @@ public class EventDaoMySql implements EventDao {
         } catch(Exception e) {
             throw new DatabaseException();
         }
+    }
+
+    @Override
+    public List<Event> getAll(String username, String searchword){
+
+        //toDo (searchEvent)
+        Iterable<Event> source = eventDatabaseConnector.findAll();
+        List<Event> target = new ArrayList<>();
+        source.forEach(target::add);
+        return target;
+
     }
 
 }

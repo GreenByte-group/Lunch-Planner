@@ -1,5 +1,6 @@
 package group.greenbyte.lunchplanner.event;
 
+import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/event")
@@ -34,9 +36,26 @@ public class EventController {
             return String.valueOf(eventId);
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());
-            return e.getErrorMessage();
+            return null;
         }
     }
+
+    @RequestMapping(value = "", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public List<Event> getAllEvents(HttpServletResponse response) {
+
+        try {
+            List<Event> allSearchingEvents = eventLogic.getAllEvents();
+            response.setStatus(HttpServletResponse.SC_OK);
+            return allSearchingEvents;
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return null;
+        }
+    }
+
+
 
     @Autowired
     public void setEventLogic(EventLogic eventLogic) {

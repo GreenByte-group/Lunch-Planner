@@ -8,6 +8,8 @@ import java.io.Serializable;
  */
 public class EventJson implements Serializable {
 
+    private static final long serialVersionUID = 465186153151351685L;
+
     public EventJson() { }
 
     public EventJson(String name, String description, int locationId, long timeStart, long timeEnd) {

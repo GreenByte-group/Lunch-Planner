@@ -58,6 +58,7 @@ public class EventDaoTest {
         String userName = createString(51);
         String eventName = createString(50);
         String description = "";
+
         int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
         long timeEnd = timeStart + 10000;

@@ -4,6 +4,7 @@ import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 
 import java.util.Date;
+import java.util.List;
 
 public interface EventDao {
 
@@ -26,5 +27,8 @@ public interface EventDao {
                       int locationId,
                       Date timeStart,
                       Date timeEnd) throws DatabaseException;
+
+    List<Event> getAll(String username,
+                       String searchword)throws DatabaseException;
 
 }
