@@ -1,16 +1,25 @@
 package group.greenbyte.lunchplanner.event;
 
+import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.Date;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
+@WebAppConfiguration
 public class EventLogicTest {
 
-    @InjectMocks
+    @Autowired
     private EventLogic eventLogic;
 
     // ------------------------- CREATE EVENT ------------------------------
