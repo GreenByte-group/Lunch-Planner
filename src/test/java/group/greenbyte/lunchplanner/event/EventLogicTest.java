@@ -1,18 +1,33 @@
 package group.greenbyte.lunchplanner.event;
 
+<<<<<<< HEAD
 import group.greenbyte.lunchplanner.event.database.Event;
+=======
+import group.greenbyte.lunchplanner.AppConfig;
+>>>>>>> 26d39343d6c1f61f41c0784bef42254febf4a97a
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.Date;
 import java.util.List;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
+@WebAppConfiguration
+@ActiveProfiles("application-test.properties")
 public class EventLogicTest {
 
-    @InjectMocks
+    @Autowired
     private EventLogic eventLogic;
 
     // ------------------------- CREATE EVENT ------------------------------
@@ -28,6 +43,7 @@ public class EventLogicTest {
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
                 new Date(timeStart), new Date (timeEnd));
+
     }
 
     @Test

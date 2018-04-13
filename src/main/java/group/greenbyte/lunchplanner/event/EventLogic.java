@@ -8,6 +8,7 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
+import sun.net.httpserver.HttpsServerImpl;
 
 import javax.xml.crypto.Data;
 import java.util.Date;
@@ -36,10 +37,24 @@ public class EventLogic {
 
         if(userName.length()==0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is empty");
+
         if(userName.length()> Event.MAX_USERNAME_LENGHT)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Usernam is to long, maximum length:" + Event.MAX_USERNAME_LENGHT);
+
+        if(eventName.length()==0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Event name is empty");
+
+        if(eventName.length()>Event.MAX_EVENTNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Event name is too long, maximum length: " + Event.MAX_EVENTNAME_LENGTH);
+
         if(eventDescription.length()>Event.MAX_DESCRITION_LENGTH)
-            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Description is to long, maximun length" + Event.MAX_DESCRITION_LENGTH);
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Description is to long, maximum length" + Event.MAX_DESCRITION_LENGTH);
+
+        if(timeStart.before(new Date()))
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Start time must be in the future");
+
+        if(timeEnd.before(timeStart) || timeEnd.equals(timeStart))
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "End time must be after start time");
 
 
         try {

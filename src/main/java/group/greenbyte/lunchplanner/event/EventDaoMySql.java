@@ -28,9 +28,11 @@ public class EventDaoMySql implements EventDao {
         event.setStartDate(timeStart);
         event.setEndDate(timeEnd);
 
-        eventDatabaseConnector.save(event);
-
-        return event;
+        try {
+            return eventDatabaseConnector.save(event);
+        } catch(Exception e) {
+            throw new DatabaseException();
+        }
     }
 
     @Override
