@@ -18,7 +18,7 @@ public class UserController {
      *
      * @param user is a json object with all attributes from UserJson
      */
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     public void createUser(@RequestBody UserJson user, HttpServletResponse response) {
 
         try {
