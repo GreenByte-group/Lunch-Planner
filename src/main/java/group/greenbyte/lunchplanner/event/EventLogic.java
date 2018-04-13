@@ -123,10 +123,10 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is to long, maximun length" + Event.MAX_USERNAME_LENGHT);
         if(username.length() == 0 )
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is empty");
+        if(searchword == null)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Searchword is null");
         if(searchword.length() > Event.MAX_SEARCHWORD_LENGTH)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Searchword is to long, maximun length" + Event.MAX_SEARCHWORD_LENGTH);
-        if(searchword.equals(null))
-            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Searchword is null");
 
         try{
             return eventDao.getAll(username, searchword);
