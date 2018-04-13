@@ -44,6 +44,7 @@ public class UserControllerTest {
     }
 
     // ------------------ CREATE USER ------------------------
+
     @Test
     public void test1CreateUserValidParam() throws Exception{
         String userName = createString(50);
@@ -66,6 +67,7 @@ public class UserControllerTest {
         String password = createString(80);
 
         UserJson userJson = new UserJson(userName, password, mail);
+
         String json = getJsonFromObject(userJson);
 
         mockMvc.perform(
@@ -85,7 +87,9 @@ public class UserControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-          
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
     @Test
     public void test4CreateUserEmptyPassword() throws Exception{
         String userName = createString(50);
