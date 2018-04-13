@@ -25,9 +25,17 @@ public class EventLogic {
      */
     int createEvent(String userName, String eventName, String eventDescription,
                     int locationId, Date timeStart, Date timeEnd) throws HttpRequestException {
+
+
+
+
         return 0;
-        //TODO: call eventChanged
+
     }
+
+
+
+
 
     /**
      * Will update all subscribtions for an event when it changes
