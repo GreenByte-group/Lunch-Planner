@@ -5,6 +5,8 @@ import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 
+import java.util.Date;
+
 import static group.greenbyte.lunchplanner.Utils.createString;
 
 public class EventDaoTest {
