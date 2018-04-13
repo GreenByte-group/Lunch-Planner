@@ -1,6 +1,7 @@
 package group.greenbyte.lunchplanner.event;
 
 import group.greenbyte.lunchplanner.event.database.Event;
+import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,10 +29,38 @@ public class EventLogic {
     int createEvent(String userName, String eventName, String eventDescription,
                     int locationId, Date timeStart, Date timeEnd) throws HttpRequestException {
 
+        Event newEventToCreate = new Event();
+        newEventToCreate.setEventName(eventName);
+        newEventToCreate.setEventDescription(eventDescription);
+        newEventToCreate.setLocationId(locationId);
+        newEventToCreate.setStartDate(timeStart);
+        newEventToCreate.setEndDate(timeEnd);
+
+        try {
+            eventDao.insertEvent(userName, eventName, eventDescription, locationId, timeStart, timeEnd);
+        }catch(DatabaseException e) {
+
+        }
 
 
+        return newEventToCreate.getLocationId();
 
-        return 0;
+    }
+
+
+    /**
+     *
+     * @param username      userName that is logged in
+     * @param eventId       id of the updated event
+     * @param name          name of the updated event
+     * @param description   description of the updated event
+     * @param timeStart     time on which the event starts
+     * @param timEnd        time on which the event ends
+     * @exception HttpRequestException  when location and timeStart not valid or eventName has no value
+     *                                  or an Database error happens
+     */
+    void updatEvent(String username, int eventId, String name, String description,
+                int locationId, Date timeStart, Date timEnd)  throws HttpRequestException {
 
     }
 
