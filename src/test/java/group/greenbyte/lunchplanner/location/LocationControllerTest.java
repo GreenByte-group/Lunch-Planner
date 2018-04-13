@@ -119,7 +119,7 @@ public class LocationControllerTest {
 
     }
 
-    @Test(expected = HttpRequestException.class)
+    @Test
     public void test4CreateLocationWithNoLocationName() throws Exception {
         double xCoordinate = 1.0;
         double yCoordinate = 1.0;
@@ -133,7 +133,7 @@ public class LocationControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotExtended());
     }
 
-    @Test(expected = HttpRequestException.class)
+    @Test
     public void test5CreateLocationNameTooLong() throws Exception {
         double xCoordinate = 1.0;
         double yCoordinate = 1.0;
@@ -148,7 +148,7 @@ public class LocationControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
-    @Test(expected = HttpRequestException.class)
+    @Test
     public void test6CreateLocationDescriptionTooLong() throws Exception {
         double xCoordinate = 1.0;
         double yCoordinate = 1.0;
