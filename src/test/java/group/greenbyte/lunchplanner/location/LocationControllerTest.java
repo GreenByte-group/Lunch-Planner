@@ -1,6 +1,7 @@
 package group.greenbyte.lunchplanner.location;
 
 import group.greenbyte.lunchplanner.AppConfig;
+import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +11,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -26,6 +28,7 @@ import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration (classes = AppConfig.class)
 @WebAppConfiguration
+@ActiveProfiles("application-test.properties")
 public class LocationControllerTest {
 
     private MockMvc mockMvc;
@@ -116,7 +119,7 @@ public class LocationControllerTest {
 
     }
 
-    @Test
+    @Test(expected = HttpRequestException.class)
     public void test4CreateLocationWithNoLocationName() throws Exception {
         double xCoordinate = 1.0;
         double yCoordinate = 1.0;
@@ -130,7 +133,7 @@ public class LocationControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotExtended());
     }
 
-    @Test
+    @Test(expected = HttpRequestException.class)
     public void test5CreateLocationNameTooLong() throws Exception {
         double xCoordinate = 1.0;
         double yCoordinate = 1.0;
@@ -145,7 +148,7 @@ public class LocationControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
-    @Test
+    @Test(expected = HttpRequestException.class)
     public void test6CreateLocationDescriptionTooLong() throws Exception {
         double xCoordinate = 1.0;
         double yCoordinate = 1.0;
