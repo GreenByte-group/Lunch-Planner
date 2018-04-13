@@ -3,6 +3,7 @@ package group.greenbyte.lunchplanner.event;
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -41,6 +42,15 @@ public class EventDaoTest {
 
         Event result = eventDao.insertEvent(userName, eventName, description, locationId,
                 new Date(timeStart), new Date (timeEnd));
+
+        if(!(
+                result.getEventName().equals(eventName) &&
+                result.getEventDescription().equals(description) &&
+                result.getLocationId() == locationId &&
+                result.getStartDate().equals(new Date(timeStart)) &&
+                result.getEndDate().equals(new Date(timeEnd)))) {
+            Assert.fail("Event has not the right data");
+        }
     }
 
     @Test(expected = DatabaseException.class)
