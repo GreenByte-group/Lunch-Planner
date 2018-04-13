@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public class EventDaoMySql implements EventDao {
@@ -30,6 +31,15 @@ public class EventDaoMySql implements EventDao {
         eventDatabaseConnector.save(event);
 
         return event;
+    }
+
+    @Override
+    public List<Event> getAll(String username, String searchword){
+
+        //toDo (searchEvent)
+
+        return (List<Event>) eventDatabaseConnector.findAll();
+
     }
 
 }

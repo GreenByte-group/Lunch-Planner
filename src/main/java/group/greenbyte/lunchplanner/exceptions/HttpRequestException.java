@@ -15,7 +15,7 @@ public class HttpRequestException extends Exception {
         return statusCode;
     }
 
-    public String getErrorMessage() {
+    public int getErrorMessage() {
         return errorMessage;
     }
 }

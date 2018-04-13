@@ -176,4 +176,30 @@ public class EventControllerTest {
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
+
+
+    // ------------------ GET ALL ------------------------
+
+    @Test
+    public void test1SearchEventsForUserSearchwordIsNull() throws Exception {
+        String searchword = null;
+        String json = getJsonFromObject(searchword);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void test2SearchEventsForUserSearchwordToBig() throws Exception {
+        String searchword = createString(51);
+        String json = getJsonFromObject(searchword);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+
+
 }

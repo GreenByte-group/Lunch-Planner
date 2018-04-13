@@ -1,10 +1,12 @@
 package group.greenbyte.lunchplanner.event;
 
+import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 
 import java.util.Date;
+import java.util.List;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 
@@ -130,6 +132,41 @@ public class EventLogicTest {
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
                 new Date(timeStart), new Date (timeEnd));
+    }
+
+
+    // ------------------------- GET ALL EVENTS ------------------------------
+
+    @Test(expected = HttpRequestException.class)
+    public void test1getAllEventsEmptyUsername() throws Exception {
+        String userName  = createString(0);
+        String searchword = createString(0);
+
+        List<Event> result = eventLogic.getAllEvents(userName, searchword);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test2getAllEventsUsernameIsToLong()throws Exception{
+        String userName = createString(51);
+        String searchword = createString(0);
+
+        List<Event> result = eventLogic.getAllEvents(userName, searchword);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test3getAllEventsSearchwordIsToLong() throws Exception {
+        String userName = createString(50);
+        String searchword = createString(51);
+
+        List<Event> result = eventLogic.getAllEvents(userName, searchword);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test3getAllEventsSearchwordIsNull() throws Exception {
+        String userName = createString(50);
+        String searchword = null;
+
+        List<Event> result = eventLogic.getAllEvents(userName, searchword);
     }
 
 }

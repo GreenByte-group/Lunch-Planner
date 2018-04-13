@@ -9,6 +9,7 @@ public class Event {
     static public int MAX_USERNAME_LENGHT = 50;
     static public  int MAX_DESCRITION_LENGTH = 1000;
     static public int MAX_EVENTNAME_LENGTH = 50;
+    static public int MAX_SEARCHWORD_LENGTH = 50;
 
 
     @Id
