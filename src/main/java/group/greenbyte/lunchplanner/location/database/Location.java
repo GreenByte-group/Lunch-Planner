@@ -21,6 +21,8 @@ public class Location {
     @Column
     private Coordinate coordinate;
 
+    public Location() {}
+
     public Integer getLocationId() {
         return locationId;
     }
