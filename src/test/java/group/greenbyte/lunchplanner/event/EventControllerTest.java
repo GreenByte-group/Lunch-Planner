@@ -120,7 +120,7 @@ public class EventControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-                .andExpect(MockMvcResultMatchers.status().isNotExtended());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
