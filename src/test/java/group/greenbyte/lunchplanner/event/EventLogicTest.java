@@ -187,4 +187,54 @@ public class EventLogicTest {
 
         List<Event> result = eventLogic.getAllEvents(userName, searchword);
     }
+
+    // ------------------------- INVITE FRIEND ------------------------------
+
+    @Test
+    public void test1InviteMaxUsernameLength() throws Exception {
+        String userName = createString(50);
+        String toInviteUsername = createString(50);
+        int eventId = 1;
+
+        eventLogic.inviteFriend(userName, eventId, toInviteUsername);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test2InviteInvalidUsername() throws Exception {
+        String userName = createString(51);
+        String toInviteUsername = createString(50);
+        int eventId = 1;
+
+        eventLogic.inviteFriend(userName, eventId, toInviteUsername);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test3InviteEmptyUsername() throws Exception {
+        String userName = createString(0);
+        String toInviteUsername = createString(50);
+        int eventId = 1;
+
+        eventLogic.inviteFriend(userName, eventId, toInviteUsername);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test4InviteInvalidToInviteUsername() throws Exception {
+        String userName = createString(50);
+        String toInviteUsername = createString(51);
+        int eventId = 1;
+
+        eventLogic.inviteFriend(userName, eventId, toInviteUsername);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test5InviteemptyToInviteUsername() throws Exception {
+        String userName = createString(50);
+        String toInviteUsername = createString(0);
+        int eventId = 1;
+
+        eventLogic.inviteFriend(userName, eventId, toInviteUsername);
+    }
+
+
+
 }

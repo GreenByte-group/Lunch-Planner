@@ -202,6 +202,34 @@ public class EventControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
+    // ------------------ INVITE FRIEND ------------------------
+    @Test
+    public void test1InviteFriend() throws Exception {
+
+        class TestInvitePerson {
+            int eventId = 1;
+            int toInviteUsername = createString(50);1
+        }
+
+        String inventedPeron = getJsonFromObject(new TestInvitePerson());
+        System.out.println(inventedPeron);
+
+        MvcResult result = mockMvc.perform(
+                MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+
+        try {
+            Integer.valueOf(response);
+        } catch(NumberFormatException e) {
+            Assert.fail("Result is not a number");
+        }
+    }
+
+
 
 
 }

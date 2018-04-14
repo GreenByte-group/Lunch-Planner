@@ -92,4 +92,34 @@ public class EventDaoTest {
         Event result = eventDao.insertEvent(userName, eventName, description, locationId,
                 new Date(timeStart), new Date (timeEnd));
     }
+
+    // ------------------------- PUT USER INVITE TO EVENT ------------------------------
+
+    @Test
+    public void test1inviteMaxLentghToInviteUsername() throws Exception {
+        int eventId = 1;
+        String toInviteUsername = createString(50);
+
+        Event result = eventDao.putUserInviteToEvent(eventId,toInviteUsername);
+
+        if(!(result.getEventId().equals(eventId){
+            Assert.fail("Event has not the right data");
+        }
+    }
+
+    @Test(expected = DatabaseException.class)
+    public void test2iviteInvalidToInviteUsername() throws Exception {
+        int eventId = 1;
+        String toInviteUsername = createString(51);
+
+        Event result = eventDao.putUserInviteToEvent(eventId,toInviteUsername);
+    }
+
+    @Test(expected = DatabaseException.class)
+    public void test3iviteEmptyToInviteUsername() throws Exception {
+        int eventId = 1;
+        String toInviteUsername = createString(0);
+
+        Event result = eventDao.putUserInviteToEvent(eventId,toInviteUsername);
+    }
 }
