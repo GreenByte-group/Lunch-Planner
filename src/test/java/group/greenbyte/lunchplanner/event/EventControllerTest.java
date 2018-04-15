@@ -203,18 +203,24 @@ public class EventControllerTest {
     }
 
     // ------------------ INVITE FRIEND ------------------------
+
+    class TestInvitePerson {
+        int eventId = 1;
+        String toInviteUsername;
+
+        TestInvitePerson(int length){
+            toInviteUsername = createString(length);
+            }
+        }
+
+
     @Test
     public void test1InviteFriend() throws Exception {
 
-        class TestInvitePerson {
-            int eventId = 1;
-            String toInviteUsername = createString(50);
-        }
-
-        String inventedPeronJson = getJsonFromObject(new TestInvitePerson());
+        String inventedPersonJson = getJsonFromObject(new TestInvitePerson(50));
 
         MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPeronJson))
+                MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
                 .andReturn();
@@ -223,9 +229,31 @@ public class EventControllerTest {
 
         try {
             Integer.valueOf(response);
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             Assert.fail("Result is not a number");
         }
+    }
+
+        @Test
+        public void test2InviteFriendInvalidName() throws Exception {
+
+            String inventedPersonJson = getJsonFromObject(new TestInvitePerson(51));
+
+            mockMvc.perform(
+                    MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
+                    .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+
+    }
+
+    @Test
+    public void test3InviteFriendIEmptyName() throws Exception {
+
+        String inventedPersonJson = getJsonFromObject(new TestInvitePerson(0));
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
 
