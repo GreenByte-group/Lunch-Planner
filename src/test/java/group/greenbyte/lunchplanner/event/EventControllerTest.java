@@ -26,6 +26,7 @@ import java.util.Date;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
+import static group.greenbyte.lunchplanner.event.Utils.createEvent;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration (classes = AppConfig.class)
@@ -209,7 +210,7 @@ public class EventControllerTest {
 
     @Test
     public void test1updateEventName() throws Exception{
-        int eventId = createEvent();
+        int eventId = createEvent(mockMvc);
 
         String eventName = createString(50);
 
@@ -222,7 +223,7 @@ public class EventControllerTest {
 
     @Test
     public void test2updateEventNameTooLong() throws Exception{
-        int eventId = createEvent();
+        int eventId = createEvent(mockMvc);
 
         String eventName = createString(51);
 
@@ -233,7 +234,7 @@ public class EventControllerTest {
 
     @Test
     public void test3updateEventNameEmpty() throws Exception{
-        int eventId = createEvent();
+        int eventId = createEvent(mockMvc);
 
         String eventName = "";
 
@@ -246,7 +247,7 @@ public class EventControllerTest {
 
     @Test
     public void test1updateEventDescription() throws Exception{
-        int eventId = createEvent();
+        int eventId = createEvent(mockMvc);
 
         String eventDescription = createString(50);
 
@@ -259,7 +260,7 @@ public class EventControllerTest {
 
     @Test
     public void test2updateEventDescriptionTooLong() throws Exception{
-        int eventId = createEvent();
+        int eventId = createEvent(mockMvc);
 
         String eventDescription = createString(51);
 
@@ -270,7 +271,7 @@ public class EventControllerTest {
 
     @Test
     public void test3updateEventDescriptionEmpty() throws Exception{
-        int eventId = createEvent();
+        int eventId = createEvent(mockMvc);
 
         String eventDescription = "";
 
@@ -283,7 +284,7 @@ public class EventControllerTest {
 
     @Test
     public void test1updateEventLocation() throws Exception{
-        int eventId = createEvent();
+        int eventId = createEvent(mockMvc);
 
         int location = 1;
 
@@ -297,7 +298,7 @@ public class EventControllerTest {
     // ------------------ UPDATE EVENT TIMESTART -------------------------
     @Test
     public void test1updateEventStartTime() throws Exception{
-        int eventId = createEvent();
+        int eventId = createEvent(mockMvc);
 
         long startTime = System.currentTimeMillis() + 10000;
 
@@ -310,7 +311,7 @@ public class EventControllerTest {
 
     @Test
     public void test2updateEventStartTimeTooEarly() throws Exception{
-        int eventId = createEvent();
+        int eventId = createEvent(mockMvc);
 
         long startTime = System.currentTimeMillis() - 10000;
 
@@ -321,7 +322,7 @@ public class EventControllerTest {
 
     @Test
     public void test3updateEventStartTimeTooLate() throws Exception{
-        int eventId = createEvent();
+        int eventId = createEvent(mockMvc);
 
         long startTime = System.currentTimeMillis() + 1000000000L;
 
@@ -333,7 +334,7 @@ public class EventControllerTest {
     // ------------------ UPDATE EVENT TIMEEND -------------------------
     @Test
     public void test1updateEventEndTime() throws Exception{
-        int eventId = createEvent();
+        int eventId = createEvent(mockMvc);
 
         long endTime = System.currentTimeMillis() + 1000000;
 
@@ -346,38 +347,13 @@ public class EventControllerTest {
 
     @Test
     public void test2updateEventEndTimeTooEarly() throws Exception{
-        int eventId = createEvent();
+        int eventId = createEvent(mockMvc);
 
         long endTime = System.currentTimeMillis() - 10000;
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/event/" + eventId + "/timeend").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(endTime)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
-
-
-    /**
-     * Create an event
-     * @return the id of the event
-     */
-    private int createEvent() throws Exception {
-        long timeStart = System.currentTimeMillis() + 10000;
-        long timeEnd = timeStart + 10000;
-        int locationId = 1;
-
-        EventJson event = new EventJson(createString(50), "", locationId, new Date(timeStart), new Date(timeEnd));
-
-        String json = getJsonFromObject(event);
-
-        MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
-                .andReturn();
-
-        String response = result.getResponse().getContentAsString();
-
-        return Integer.valueOf(response);
     }
 
 }
