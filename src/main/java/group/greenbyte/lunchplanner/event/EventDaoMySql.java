@@ -90,7 +90,7 @@ public class EventDaoMySql implements EventDao {
 
            return this.eventDatabaseConnector.save(event);
 
-       } catch(Exception e) {
+       } catch(DatabaseException e) {
             throw new DatabaseException();
        }
     }

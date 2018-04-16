@@ -122,14 +122,15 @@ public class EventLogic {
      * @throws HttpRequestException when an unexpected error happens
      *
      */
-    public Event inviteFriend(String username, String userToInvited, int eventId) throws HttpRequestException{
+    public void inviteFriend(String username, String userToInvited, int eventId) throws HttpRequestException{
+
         if(!isValidName(username))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximun length" + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
         if(!isValidName(userToInvited))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username of invited user is not valid, maximun length" + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
 
         try{
-            return eventDao.putUserInviteToEvent(username, eventId);
+            eventDao.putUserInviteToEvent(username, eventId);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
 
