@@ -114,7 +114,6 @@ public class EventDaoMySql implements EventDao {
             //todo set locationId
 
             return eventDatabaseConnector.save(event);
-
         }catch(Exception e){
             throw new DatabaseException();
         }

@@ -268,10 +268,16 @@ public class EventLogicTest {
     public void updateEventStartTime() throws Exception {
         long startTime = System.currentTimeMillis() + 1000;
 
+        /*
+        In der Datenbank werden keine Millisekunden gespeichert. Zum Vergleichen der Zeit müssen also
+        die Millisekunden ignoriert werden.
+         */
+        startTime = 1000 * (startTime / 1000);
+
         eventLogic.updateEventTimeStart(userName, eventId, new Date(startTime));
 
         Event event = eventLogic.getEvent(eventId);
-        if(!event.getStartDate().equals(new Date(startTime)))
+        if(event.getStartDate().getTime() != startTime)
             Assert.fail("Time start was not updated");
     }
 
@@ -292,12 +298,18 @@ public class EventLogicTest {
     // Event end time
     @Test
     public void updateEventEndTime() throws Exception {
-        long endTime = System.currentTimeMillis() + 100000000;
+        long endTime = System.currentTimeMillis() + 10000;
+
+        /*
+        In der Datenbank werden keine Millisekunden gespeichert. Zum Vergleichen der Zeit müssen also
+        die Millisekunden ignoriert werden.
+         */
+        endTime = 1000 * (endTime / 1000);
 
         eventLogic.updateEventTimeEnd(userName, eventId, new Date(endTime));
 
         Event event = eventLogic.getEvent(eventId);
-        if(!event.getEndDate().equals(new Date(endTime)))
+        if(event.getEndDate().getTime() != endTime)
             Assert.fail("Time end was not updated");
     }
 
