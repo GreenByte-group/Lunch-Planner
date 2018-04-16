@@ -171,17 +171,18 @@ public class UserControllerTest {
     public void test1GetInvitation() throws Exception{
 
         String myUsername = createString(50);
-        String toInviteUserName = createString(50);
+        String userToInvite = createString(50);
 
-        TestInvitePersonJson invitedPerson = new TestInvitePersonJson(myUsername, toInviteUserName,1);
+        TestInvitePersonJson invitedPerson = new TestInvitePersonJson(myUsername, userToInvite,1);
+        String json = getJsonFromObject(invitedPerson);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/user/" +myUsername + "invite/event/" + 1, invitedPerson))
+                MockMvcRequestBuilders.get("/user/" + userToInvite + "/invite/event/" + 1, json))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.eventId", is(1)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username", is(createString(50))))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.toInviteUsername", is(createString(50))));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username", is(myUsername)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.toInviteUsername", is(userToInvite)));
     }
 
 

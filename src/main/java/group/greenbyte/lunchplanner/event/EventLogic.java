@@ -115,22 +115,22 @@ public class EventLogic {
      * Invite user to an event
      *
      * @param username id of the user who creates the events
-     * @param userToInvited id of the user who is invited
+     * @param userToInvite id of the user who is invited
      * @param eventId id of event
      * @return the Event of the invitation
      *
      * @throws HttpRequestException when an unexpected error happens
      *
      */
-    public void inviteFriend(String username, String userToInvited, int eventId) throws HttpRequestException{
+    public void inviteFriend(String username, String userToInvite, int eventId) throws HttpRequestException{
 
         if(!isValidName(username))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximun length" + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
-        if(!isValidName(userToInvited))
+        if(!isValidName(userToInvite))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username of invited user is not valid, maximun length" + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
 
         try{
-            eventDao.putUserInviteToEvent(username, eventId);
+            eventDao.putUserInviteToEvent(userToInvite, eventId);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
 
