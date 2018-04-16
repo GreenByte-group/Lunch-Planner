@@ -109,7 +109,7 @@ public class EventLogic {
      */
     void updateEventDescription(String username, int eventId, String description)  throws HttpRequestException {
         try {
-            Event updatedEvent = eventDao.updateEventDescription(eventId, username, description);
+            Event updatedEvent = eventDao.updateEventDescription(eventId, description);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
@@ -124,7 +124,7 @@ public class EventLogic {
      */
     void updateEventLoction(String username, int eventId, int locationId)  throws HttpRequestException {
         try {
-            Event updatedEvent = eventDao.updateEventLocation(eventId, username, locationId);
+            Event updatedEvent = eventDao.updateEventLocation(eventId,locationId);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
