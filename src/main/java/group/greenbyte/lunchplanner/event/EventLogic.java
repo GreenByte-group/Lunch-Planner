@@ -20,10 +20,25 @@ public class EventLogic {
     private EventDao eventDao;
     private LocationDao locationDao;
 
+    /**
+     * Checks if a user has privileges to change the event object
+     *
+     * @param event to check
+     * @param userName who wants to change
+     * @return true if the user has permission, false if not
+     */
     private boolean hasAdminPrivileges(Event event, String userName) {
         //TODO hasPrivileges
 
         return true;
+    }
+
+    /**
+     * Will update all subscribtions for an event when it changes
+     * @param event event that has changed
+     */
+    private void eventChanged(Event event) {
+        //TODO eventChanged
     }
 
     /**
@@ -194,15 +209,6 @@ public class EventLogic {
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
-    }
-
-
-    /**
-     * Will update all subscribtions for an event when it changes
-     * @param event event that has changed
-     */
-    private void eventChanged(Event event) {
-        //TODO eventChanged
     }
 
     /**
