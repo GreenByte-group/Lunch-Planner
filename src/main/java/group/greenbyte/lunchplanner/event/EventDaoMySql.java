@@ -54,27 +54,27 @@ public class EventDaoMySql implements EventDao {
         return (Event) event;
     }
 
-    @Override
-    public Event updateEvent(String userName, int eventId, String eventName,String description,
-                             int locationId, Date timeStart, Date timeEnd)throws DatabaseException{
-
-        Event event = new Event();
-        event.setEventTd(eventId);
-        event.setEventName(eventName);
-        event.setEventDescription(description);
-        event.setLocationId(locationId);
-        event.setStartDate(timeStart);
-        event.setEndDate(timeEnd);
-
-        try{
-            eventDatabaseConnector.save(event);
-            return insertEvent(userName, eventName, description, locationId, timeStart, timeEnd);
-        }catch(DatabaseException e){
-            throw new DatabaseException();
-        }
-
-
-    }
+//    @Override
+//    public Event updateEvent(String userName, int eventId, String eventName,String description,
+//                             int locationId, Date timeStart, Date timeEnd)throws DatabaseException{
+//
+//        Event event = new Event();
+//        event.setEventTd(eventId);
+//        event.setEventName(eventName);
+//        event.setEventDescription(description);
+//        event.setLocationId(locationId);
+//        event.setStartDate(timeStart);
+//        event.setEndDate(timeEnd);
+//
+//        try{
+//            eventDatabaseConnector.save(event);
+//            return insertEvent(userName, eventName, description, locationId, timeStart, timeEnd);
+//        }catch(DatabaseException e){
+//            throw new DatabaseException();
+//        }
+//
+//
+//    }
 
     @Override
     public Event updateEventName(int eventId, String eventName) throws DatabaseException {
@@ -99,10 +99,9 @@ public class EventDaoMySql implements EventDao {
 
 
     @Override
-    public Event updateEventDescription(int eventId, String eventName, String description) throws DatabaseException {
+    public Event updateEventDescription(int eventId, String description) throws DatabaseException {
         Event event = new Event();
         event.setEventTd(eventId);
-        event.setEventName(eventName);
         event.setEventDescription(description);
 
         try{
@@ -119,10 +118,9 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
-    public Event updateEventLocation(int eventId, String eventName, int locationId) throws DatabaseException {
+    public Event updateEventLocation(int eventId, int locationId) throws DatabaseException {
         Event event = new Event();
         event.setEventTd(eventId);
-        event.setEventName(eventName);
         event.setLocationId(locationId);
 
         try{

@@ -58,14 +58,14 @@ public interface EventDao {
      * @return the updated event
      * @throws DatabaseException when an unexpected error happens
      */
-    Event updateEvent(String userName,
-                      int eventId,
-                      String eventName,
-                      String description,
-                      int locationId,
-                      Date timeStart,
-                      Date timEnd
-                      ) throws DatabaseException;
+//    Event updateEvent(String userName,
+//                      int eventId,
+//                      String eventName,
+//                      String description,
+//                      int locationId,
+//                      Date timeStart,
+//                      Date timEnd
+//                      ) throws DatabaseException;
 
     /**
      *
@@ -81,26 +81,22 @@ public interface EventDao {
     /**
      *
      * @param eventId id of the event
-     * @param eventName name of the event
      * @param description description of the event
      * @return the updated event
      * @throws DatabaseException when an unexpected error happens
      */
     Event updateEventDescription(int eventId,
-                                 String eventName,
                                  String description
                                  ) throws DatabaseException;
 
     /**
      *
      * @param eventId id of the event
-     * @param eventName name of the event
      * @param locationId id of the location
      * @return the updated event
      * @throws DatabaseException when an unexpected error happens
      */
     Event updateEventLocation(int eventId,
-                              String eventName,
                               int locationId) throws DatabaseException;
 
     /**
