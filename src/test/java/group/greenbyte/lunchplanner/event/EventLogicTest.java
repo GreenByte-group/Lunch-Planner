@@ -261,6 +261,8 @@ public class EventLogicTest {
         String userToInvite = createString(50);
 
         String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(myUsername, userToInvite, 1));
+        System.out.println("JSON Print");
+        System.out.println(inventedPersonJson);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/user/" + userToInvite + "/invite/event/" + 1).contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))

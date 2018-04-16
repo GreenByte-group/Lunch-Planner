@@ -60,7 +60,7 @@ public class EventController {
     @RequestMapping(value = "/user/{userToInvite}/invite/event/{eventId}", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE )
     @ResponseBody
-    public void inviteFriend(@RequestParam String userToInvite, @RequestParam int eventId, HttpServletResponse response){
+    public void inviteFriend(@PathVariable String userToInvite, @PathVariable int eventId, HttpServletResponse response){
         try {
             eventLogic.inviteFriend("dummy", userToInvite, eventId);
             response.setStatus(HttpServletResponse.SC_CREATED);

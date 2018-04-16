@@ -138,8 +138,11 @@ public class EventLogic {
     }
 
     private boolean isValidName(String name){
-        if(name.length() <= Event.MAX_USERNAME_LENGHT && name.length() > 0)
+        if(name.length() <= Event.MAX_USERNAME_LENGHT && name.length() > 0){
+            System.out.println("isValid");
             return true;
+        }
+
         else
             return false;
     }
