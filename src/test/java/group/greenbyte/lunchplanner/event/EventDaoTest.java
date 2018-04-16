@@ -96,7 +96,7 @@ public class EventDaoTest {
     // ------------------------- PUT USER INVITE TO EVENT ------------------------------
 
     @Test
-    public void test1inviteMaxLentghToInviteUsername() throws Exception {
+    public void test1inviteMaxLengthToInviteUsername() throws Exception {
         int eventId = 1;
         String toInviteUsername = createString(50);
 
@@ -108,7 +108,7 @@ public class EventDaoTest {
     }
 
     @Test(expected = DatabaseException.class)
-    public void test2iviteInvalidToInviteUsername() throws Exception {
+    public void test2inviteInvalidToInviteUsername() throws Exception {
         int eventId = 1;
         String toInviteUsername = createString(51);
 
@@ -116,7 +116,7 @@ public class EventDaoTest {
     }
 
     @Test(expected = DatabaseException.class)
-    public void test3iviteEmptyToInviteUsername() throws Exception {
+    public void test3inviteEmptyToInviteUsername() throws Exception {
         int eventId = 1;
         String toInviteUsername = createString(0);
 

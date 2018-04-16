@@ -57,11 +57,20 @@ public class EventController {
     }
 
 
-    @RequestMapping(value = "/user/{unsername}/invite/event/{eventId}", method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @RequestMapping(value = "/user/username/invite/event/eventId", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE )
     @ResponseBody
-    public int inviteFriend(String userToInvited, int eventId){
-
+    public int inviteFriend(@RequestParam String username, String userToInvited, @RequestParam int eventId, HttpServletResponse response){
+        try {
+            eventLogic.inviteFriend(username, userToInvited, eventId);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+            return eventId;
+        } catch (HttpRequestException e) {
+            e.printStackTrace();
+            response.setStatus(e.getStatusCode());
+            e.printStackTrace();
+            return 0;
+        }
     }
 
 

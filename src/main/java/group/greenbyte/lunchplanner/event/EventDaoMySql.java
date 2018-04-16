@@ -73,6 +73,10 @@ public class EventDaoMySql implements EventDao {
     //TODO getEventById implementieren
     @Override
     public Event putUserInviteToEvent(String userToInviteName, int eventId) throws DatabaseException {
+
+        if(!isValidName(userToInviteName))
+            throw new DatabaseException();
+
        try{
            User user = userDao.getUser(userToInviteName);
            Event event = getEventById(eventId);
@@ -97,6 +101,13 @@ public class EventDaoMySql implements EventDao {
         } catch (Exception e) {
             throw new DatabaseException();
         }
+    }
+
+    private boolean isValidName(String name){
+        if(name.length() <= Event.MAX_USERNAME_LENGHT && name.length() > 0)
+            return true;
+        else
+            return false;
     }
 
 }

@@ -1,6 +1,7 @@
 package group.greenbyte.lunchplanner.event;
 
 import group.greenbyte.lunchplanner.AppConfig;
+import group.greenbyte.lunchplanner.user.TestInvitePersonJson;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -203,23 +204,15 @@ public class EventControllerTest {
 
     // ------------------ INVITE FRIEND ------------------------
 
-    class TestInvitePerson implements Serializable {
-        int eventId = 1;
-        String toInviteUsername;
-
-        TestInvitePerson(String name){
-            toInviteUsername = name;
-            }
-        }
-
 
     @Test
     public void test1InviteFriend() throws Exception {
 
         String myUsername = createString(50);
         String toInviteUserName = createString(50);
+        TestInvitePersonJson invitedPerson = new TestInvitePersonJson(myUsername, toInviteUserName, 1);
 
-        String inventedPersonJson = getJsonFromObject(new TestInvitePerson(toInviteUserName));
+        String inventedPersonJson = getJsonFromObject(invitedPerson);
 
         MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.post("/event/" + myUsername + "/invite/event/" + 1).contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
@@ -241,8 +234,9 @@ public class EventControllerTest {
 
         String myUsername = createString(50);
         String toInviteUserName = createString(51);
+        TestInvitePersonJson invitedPerson = new TestInvitePersonJson(myUsername, toInviteUserName, 1);
 
-        String inventedPersonJson = getJsonFromObject(new TestInvitePerson(toInviteUserName));
+        String inventedPersonJson = getJsonFromObject(invitedPerson);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/event/" + myUsername + "/invite/event/" + 1).contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
@@ -252,12 +246,13 @@ public class EventControllerTest {
     }
 
     @Test
-    public void test3InviteFriendIEmptyName() throws Exception {
+    public void test3InviteFriendEmptyName() throws Exception {
 
         String myUsername = createString(50);
         String toInviteUserName = createString(0);
+        TestInvitePersonJson invitedPerson = new TestInvitePersonJson(myUsername, toInviteUserName, 1);
 
-        String inventedPersonJson = getJsonFromObject(new TestInvitePerson(toInviteUserName));
+        String inventedPersonJson = getJsonFromObject(invitedPerson);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/event/" + myUsername + "/invite/event/" + 1).contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
