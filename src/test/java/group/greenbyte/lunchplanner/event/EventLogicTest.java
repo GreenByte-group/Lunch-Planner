@@ -218,7 +218,7 @@ public class EventLogicTest {
         String toInviteUsername = createString(50);
         int eventId = 1;
 
-        eventLogic.inviteFriend(userName, eventId, toInviteUsername);
+        eventLogic.inviteFriend(userName, toInviteUsername, eventId);
     }
 
     @Test (expected = HttpRequestException.class)
@@ -227,7 +227,7 @@ public class EventLogicTest {
         String toInviteUsername = createString(50);
         int eventId = 1;
 
-        eventLogic.inviteFriend(userName, eventId, toInviteUsername);
+        eventLogic.inviteFriend(userName, toInviteUsername, eventId);
     }
 
     @Test (expected = HttpRequestException.class)
@@ -236,7 +236,7 @@ public class EventLogicTest {
         String toInviteUsername = createString(50);
         int eventId = 1;
 
-        eventLogic.inviteFriend(userName, eventId, toInviteUsername);
+        eventLogic.inviteFriend(userName, toInviteUsername, eventId);
     }
 
     @Test (expected = HttpRequestException.class)
@@ -245,7 +245,7 @@ public class EventLogicTest {
         String toInviteUsername = createString(51);
         int eventId = 1;
 
-        eventLogic.inviteFriend(userName, eventId, toInviteUsername);
+        eventLogic.inviteFriend(userName, toInviteUsername, eventId);
     }
 
     @Test (expected = HttpRequestException.class)
@@ -254,7 +254,7 @@ public class EventLogicTest {
         String toInviteUsername = createString(0);
         int eventId = 1;
 
-        eventLogic.inviteFriend(userName, eventId, toInviteUsername);
+        eventLogic.inviteFriend(userName, toInviteUsername, eventId);
     }
 
     // ------------------------- SEND INVITATION ------------------------------

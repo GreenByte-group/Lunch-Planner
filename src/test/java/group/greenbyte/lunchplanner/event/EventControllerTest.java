@@ -236,14 +236,14 @@ public class EventControllerTest {
         }
     }
 
-        @Test
-        public void test2InviteFriendInvalidName() throws Exception {
+    @Test
+    public void test2InviteFriendInvalidName() throws Exception {
 
-            String inventedPersonJson = getJsonFromObject(new TestInvitePerson(51));
+        String inventedPersonJson = getJsonFromObject(new TestInvitePerson(51));
 
-            mockMvc.perform(
-                    MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
-                    .andExpect(MockMvcResultMatchers.status().isBadRequest());
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
 
     }

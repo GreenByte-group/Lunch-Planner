@@ -28,7 +28,27 @@ public interface EventDao {
                       Date timeStart,
                       Date timeEnd) throws DatabaseException;
 
+    /**
+     * Get all events for a specific searchword
+     *
+     * @param username id of the user who creates the events
+     * @param searchword word for which is searched
+     * @return List of events with this searchword
+     *
+     * @throws DatabaseException when an unexpected error happens
+     */
     List<Event> getAll(String username,
                        String searchword)throws DatabaseException;
+
+    /**
+     * Insert an new invited user into an event
+     *
+     * @param userToInviteName id of the user who is invited
+     * @param eventId id of the event
+     * @return the Event of the invitation
+     *
+     * @throws DatabaseException when an unexpected error happens
+     */
+    Event putUserInviteToEvent (String userToInviteName, int eventId) throws DatabaseException;
 
 }

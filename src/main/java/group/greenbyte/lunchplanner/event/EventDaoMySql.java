@@ -48,4 +48,10 @@ public class EventDaoMySql implements EventDao {
 
     }
 
+    @Override
+    public Event putUserInviteToEvent(String userToInviteName, int eventId) throws DatabaseException {
+        Event event = getEventById(eventId);
+        
+    }
+
 }

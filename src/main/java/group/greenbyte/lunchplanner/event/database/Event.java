@@ -14,7 +14,7 @@ public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer eventTd;
+    private Integer eventId;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="startDate")
@@ -63,12 +63,12 @@ public class Event {
         isPublic = false;
     }
 
-    public Integer getEventTd() {
-        return eventTd;
+    public Integer getEventId() {
+        return eventId;
     }
 
-    public void setEventTd(Integer eventTd) {
-        this.eventTd = eventTd;
+    public void setEventTd(Integer eventId) {
+        this.eventId = eventId;
     }
 
     public Date getStartDate() {

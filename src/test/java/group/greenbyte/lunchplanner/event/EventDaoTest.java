@@ -100,9 +100,9 @@ public class EventDaoTest {
         int eventId = 1;
         String toInviteUsername = createString(50);
 
-        Event result = eventDao.putUserInviteToEvent(eventId,toInviteUsername);
+        Event result = eventDao.putUserInviteToEvent(toInviteUsername, eventId);
 
-        if(!(result.getEventId().equals(eventId){
+        if(!(result.getEventId().equals(eventId))){
             Assert.fail("Event has not the right data");
         }
     }
@@ -112,7 +112,7 @@ public class EventDaoTest {
         int eventId = 1;
         String toInviteUsername = createString(51);
 
-        Event result = eventDao.putUserInviteToEvent(eventId,toInviteUsername);
+        Event result = eventDao.putUserInviteToEvent(toInviteUsername, eventId);
     }
 
     @Test(expected = DatabaseException.class)
@@ -120,6 +120,6 @@ public class EventDaoTest {
         int eventId = 1;
         String toInviteUsername = createString(0);
 
-        Event result = eventDao.putUserInviteToEvent(eventId,toInviteUsername);
+        Event result = eventDao.putUserInviteToEvent(toInviteUsername, eventId);
     }
 }
