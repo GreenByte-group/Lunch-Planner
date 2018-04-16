@@ -44,7 +44,7 @@ public class EventDaoTest {
         long timeEnd = timeStart + 10000;
 
         Event result = eventDao.insertEvent(userName, eventName, description, locationId,
-                timeStart, timeEnd);
+                new Date(timeStart), new Date(timeEnd));
 
         if(!(
                 result.getEventName().equals(eventName) &&
@@ -67,7 +67,7 @@ public class EventDaoTest {
         long timeEnd = timeStart + 10000;
 
         Event result = eventDao.insertEvent(userName, eventName, description, locationId,
-                timeStart, timeEnd);
+                new Date(timeStart), new Date(timeEnd));
     }
 
     @Test(expected = DatabaseException.class)
@@ -80,7 +80,7 @@ public class EventDaoTest {
         long timeEnd = timeStart + 10000;
 
         Event result = eventDao.insertEvent(userName, eventName, description, locationId,
-                timeStart, timeEnd);
+                new Date(timeStart), new Date(timeEnd));
     }
 
     @Test(expected = DatabaseException.class)
@@ -93,7 +93,7 @@ public class EventDaoTest {
         long timeEnd = timeStart + 10000;
 
         Event result = eventDao.insertEvent(userName, eventName, description, locationId,
-              timeStart, timeEnd);
+                new Date(timeStart), new Date(timeEnd));
     }
 
     // ---------------- UPDATE EVENT ----------------------

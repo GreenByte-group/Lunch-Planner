@@ -3,7 +3,10 @@ package group.greenbyte.lunchplanner.event;
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import group.greenbyte.lunchplanner.location.LocationLogic;
 import group.greenbyte.lunchplanner.user.UserLogic;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,7 @@ import java.util.List;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
+import static group.greenbyte.lunchplanner.location.Utils.createLocation;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -27,6 +31,23 @@ public class EventLogicTest {
 
     @Autowired
     private EventLogic eventLogic;
+
+    @Autowired
+    private UserLogic userLogic;
+
+    @Autowired
+    private LocationLogic locationLogic;
+
+    private String userName;
+    private int locationId;
+    private int eventId;
+
+    @Before
+    public void setUp() throws Exception {
+        userName = createUserIfNotExists(userLogic, "dummy");
+        locationId = createLocation(locationLogic, userName, "Test location", "test description");
+        eventId = createEvent(eventLogic, userName, locationId);
+    }
 
     // ------------------------- CREATE EVENT ------------------------------
 
@@ -40,7 +61,7 @@ public class EventLogicTest {
         long timeEnd = timeStart + 10000;
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                timeStart, timeEnd);
+                new Date(timeStart), new Date(timeEnd));
 
     }
 
@@ -54,7 +75,7 @@ public class EventLogicTest {
         long timeEnd = timeStart + 10000;
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
-        timeStart, timeEnd);
+                new Date(timeStart), new Date(timeEnd));
     }
 
     @Test(expected = HttpRequestException.class)
@@ -67,7 +88,7 @@ public class EventLogicTest {
         long timeEnd = timeStart + 10000;
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                timeStart, timeEnd);
+                new Date(timeStart), new Date(timeEnd));
     }
 
     @Test(expected = HttpRequestException.class)
@@ -80,7 +101,7 @@ public class EventLogicTest {
         long timeEnd = timeStart + 10000;
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                timeStart, timeEnd);
+                new Date(timeStart), new Date(timeEnd));
     }
 
     @Test(expected = HttpRequestException.class)
@@ -93,7 +114,7 @@ public class EventLogicTest {
         long timeEnd = timeStart + 10000;
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
-              timeStart, timeEnd);
+                new Date(timeStart), new Date(timeEnd));
     }
 
     @Test(expected = HttpRequestException.class)
@@ -106,7 +127,7 @@ public class EventLogicTest {
         long timeEnd = timeStart + 10000;
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
-               timeStart, timeEnd);
+                new Date(timeStart), new Date(timeEnd));
     }
 
     @Test(expected = HttpRequestException.class)
@@ -119,7 +140,7 @@ public class EventLogicTest {
         long timeEnd = timeStart + 10000;
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
-           timeStart, timeEnd);
+                new Date(timeStart), new Date(timeEnd));
     }
 
     @Test(expected = HttpRequestException.class)
@@ -132,7 +153,7 @@ public class EventLogicTest {
         long timeEnd = timeStart + 10000;
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
-           timeStart, timeEnd);
+                new Date(timeStart), new Date(timeEnd));
     }
 
     @Test(expected = HttpRequestException.class)
@@ -145,7 +166,7 @@ public class EventLogicTest {
         long timeEnd = timeStart - 10000;
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
-           timeStart, timeEnd);
+                new Date(timeStart), new Date(timeEnd));
     }
 
 
@@ -174,45 +195,28 @@ public class EventLogicTest {
 
     // ------------------ UPDATE EVENT  ------------------------
 
-    @Autowired
-    private UserLogic userLogic;
-
-
     // Event Name
     @Test
     public void updateEventName() throws Exception {
-        //TODO create location and get id
-
         String eventName = createString(50);
-
-        String userName = group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, 1);
 
         eventLogic.updateEventName(userName, eventId, eventName);
 
-        //TODO check ob die daten auch geändert wurden
+        Event event = eventLogic.getEvent(eventId);
+        if(!event.getEventName().equals(eventName))
+            Assert.fail("Name was not updated");
     }
 
     @Test(expected = HttpRequestException.class)
     public void updateEventNameEmpty() throws Exception {
-        //TODO create location and get id
-
         String eventName = "";
-
-        String userName = createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, 1);
 
         eventLogic.updateEventName(userName, eventId, eventName);
     }
 
     @Test(expected = HttpRequestException.class)
     public void updateEventNameTooLong() throws Exception {
-        //TODO create location and get id
-
         String eventName = createString(51);
-
-        String userName = createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, 1);
 
         eventLogic.updateEventName(userName, eventId, eventName);
     }
@@ -220,38 +224,29 @@ public class EventLogicTest {
     // Event Description
     @Test
     public void updateEventDescription() throws Exception {
-        //TODO create location and get id
-
         String eventDescription = createString(Event.MAX_DESCRITION_LENGTH);
 
-        String userName = group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, 1);
-
         eventLogic.updateEventDescription(userName, eventId, eventDescription);
 
-        //TODO check ob die daten auch geändert wurden
+        Event event = eventLogic.getEvent(eventId);
+        if(!event.getEventDescription().equals(eventDescription))
+            Assert.fail("Description was not updated");
     }
 
-    @Test(expected = HttpRequestException.class)
+    @Test
     public void updateEventDescriptionEmpty() throws Exception {
-        //TODO create location and get id
-
         String eventDescription = "";
 
-        String userName = createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, 1);
-
         eventLogic.updateEventDescription(userName, eventId, eventDescription);
+
+        Event event = eventLogic.getEvent(eventId);
+        if(!event.getEventDescription().equals(eventDescription))
+            Assert.fail("Description was not updated");
     }
 
     @Test(expected = HttpRequestException.class)
     public void updateEventDescriptionTooLong() throws Exception {
-        //TODO create location and get id
-
         String eventDescription = createString(Event.MAX_DESCRITION_LENGTH + 1);
-
-        String userName = createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, 1);
 
         eventLogic.updateEventDescription(userName, eventId, eventDescription);
     }
@@ -259,41 +254,29 @@ public class EventLogicTest {
     // Event location
     @Test
     public void updateEventLocation() throws Exception {
-        //TODO create location and get id
-        int locationId = 1;
+        int newLocationId = createLocation(locationLogic, userName, "updated event", "updated description");
 
-        String userName = createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, 1);
+        eventLogic.updateEventLoction(userName, eventId, newLocationId);
 
-        eventLogic.updateEventLoction(userName, eventId, locationId);
-
-        //TODO check ob die daten auch geändert wurden
+        Event event = eventLogic.getEvent(eventId);
+        if(event.getLocation().getLocationId() != newLocationId)
+            Assert.fail("Location was not updated");
     }
 
     // Event Start time
     @Test
     public void updateEventStartTime() throws Exception {
-        //TODO create location and get id
-        int locationId = 1;
-
-        String userName = createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, locationId);
-
         long startTime = System.currentTimeMillis() + 1000;
 
         eventLogic.updateEventTimeStart(userName, eventId, new Date(startTime));
 
-        //TODO check ob die daten auch geändert wurden
+        Event event = eventLogic.getEvent(eventId);
+        if(!event.getStartDate().equals(new Date(startTime)))
+            Assert.fail("Time start was not updated");
     }
 
     @Test(expected = HttpRequestException.class)
     public void updateEventStartTimeTooEarly() throws Exception {
-        //TODO create location and get id
-        int locationId = 1;
-
-        String userName = createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, locationId);
-
         long startTime = System.currentTimeMillis() - 1000;
 
         eventLogic.updateEventTimeStart(userName, eventId, new Date(startTime));
@@ -301,12 +284,6 @@ public class EventLogicTest {
 
     @Test(expected = HttpRequestException.class)
     public void updateEventStartTimeTooLate() throws Exception {
-        //TODO create location and get id
-        int locationId = 1;
-
-        String userName = createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, locationId);
-
         long startTime = System.currentTimeMillis() + 10000000;
 
         eventLogic.updateEventTimeStart(userName, eventId, new Date(startTime));
@@ -315,27 +292,17 @@ public class EventLogicTest {
     // Event end time
     @Test
     public void updateEventEndTime() throws Exception {
-        //TODO create location and get id
-        int locationId = 1;
-
-        String userName = createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, locationId);
-
         long endTime = System.currentTimeMillis() + 100000000;
 
         eventLogic.updateEventTimeEnd(userName, eventId, new Date(endTime));
 
-        //TODO check ob die daten auch geändert wurden
+        Event event = eventLogic.getEvent(eventId);
+        if(!event.getEndDate().equals(new Date(endTime)))
+            Assert.fail("Time end was not updated");
     }
 
     @Test(expected = HttpRequestException.class)
     public void updateEventEndTimeTooEarly() throws Exception {
-        //TODO create location and get id
-        int locationId = 1;
-
-        String userName = createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, locationId);
-
         long endTime = System.currentTimeMillis() - 1000;
 
         eventLogic.updateEventTimeEnd(userName, eventId, new Date(endTime));

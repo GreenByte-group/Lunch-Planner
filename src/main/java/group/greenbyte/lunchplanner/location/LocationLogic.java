@@ -51,6 +51,7 @@ public class LocationLogic {
     }
 
     /**
+     * //TODO how to check privileges
      * Get the location Ojbect from the locationId
      *
      * @param locationId id of the location

@@ -19,6 +19,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Date;
+
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 
@@ -74,7 +76,7 @@ public class IntegrationTest {
         long timeStart = System.currentTimeMillis() + 100000;
         String eventName = "event1";
 
-        EventJson event = new EventJson(eventName, "", locationId, timeStart, timeStart + 1000);
+        EventJson event = new EventJson(eventName, "", locationId, new Date(timeStart), new Date(timeStart + 1000));
 
         String json = getJsonFromObject(event);
 

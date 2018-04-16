@@ -75,130 +75,73 @@ public class EventDaoMySql implements EventDao {
 
     @Override
     public Event getEvent(int eventId) throws DatabaseException{
-        Optional<Event> eventList = eventDatabaseConnector.findById(eventId);
-        Object event = eventList.get();
-        return (Event) event;
-    }
+        Optional<Event> optional = eventDatabaseConnector.findById(eventId);
 
-//    @Override
-//    public Event updateEvent(String userName, int eventId, String eventName,String description,
-//                             int locationId, Date timeStart, Date timeEnd)throws DatabaseException{
-//
-//        Event event = new Event();
-//        event.setEventTd(eventId);
-//        event.setEventName(eventName);
-//        event.setEventDescription(description);
-//        event.setLocationId(locationId);
-//        event.setStartDate(timeStart);
-//        event.setEndDate(timeEnd);
-//
-//        try{
-//            eventDatabaseConnector.save(event);
-//            return insertEvent(userName, eventName, description, locationId, timeStart, timeEnd);
-//        }catch(DatabaseException e){
-//            throw new DatabaseException();
-//        }
-//
-//
-//    }
+        return optional.orElse(null);
+    }
 
     @Override
     public Event updateEventName(int eventId, String eventName) throws DatabaseException {
-        Event event = new Event();
-        event.setEventTd(eventId);
-        event.setEventName(eventName);
-
         try{
-            Event eventOld = getEvent(eventId);
-            event.setEventDescription(eventOld.getEventDescription());
-            event.setLocationId(eventOld.getLocationId());
-            event.setStartDate(eventOld.getStartDate());
-            event.setEndDate(eventOld.getEndDate());
+            Event event = getEvent(eventId);
+            event.setEventName(eventName);
 
             return eventDatabaseConnector.save(event);
 
-        }catch(DatabaseException e){
+        }catch(Exception e){
             throw new DatabaseException();
         }
-
     }
-
 
     @Override
     public Event updateEventDescription(int eventId, String description) throws DatabaseException {
-        Event event = new Event();
-        event.setEventTd(eventId);
-        event.setEventDescription(description);
-
         try{
-            Event eventOld = getEvent(eventId);
-            event.setLocationId(eventOld.getLocationId());
-            event.setStartDate(eventOld.getStartDate());
-            event.setEndDate(eventOld.getEndDate());
+            Event event = getEvent(eventId);
+
+            event.setEventDescription(description);
 
             return eventDatabaseConnector.save(event);
 
-        }catch(DatabaseException e){
+        }catch(Exception e){
             throw new DatabaseException();
         }
     }
 
     @Override
     public Event updateEventLocation(int eventId, int locationId) throws DatabaseException {
-        Event event = new Event();
-        event.setEventTd(eventId);
-        event.setLocationId(locationId);
-
         try{
-            Event eventOld = getEvent(eventId);
-            event.setEventDescription(eventOld.getEventDescription());
-            event.setStartDate(eventOld.getStartDate());
-            event.setEndDate(eventOld.getEndDate());
+            Event event = getEvent(eventId);
+            //todo set locationId
 
             return eventDatabaseConnector.save(event);
 
-        }catch(DatabaseException e){
+        }catch(Exception e){
             throw new DatabaseException();
-        }    }
+        }
+    }
 
     @Override
     public Event updateEventTimeStart(int eventId, Date timeStart) throws DatabaseException {
-        Event event = new Event();
-        event.setEventTd(eventId);
-        event.setStartDate(timeStart);
-
-
         try{
-            Event eventOld = getEvent(eventId);
-            event.setLocationId(eventOld.getLocationId());
-            event.setEventDescription(eventOld.getEventDescription());
-            event.setEndDate(eventOld.getEndDate());
-            event.setEventName(eventOld.getEventName());
+            Event event = getEvent(eventId);
+            event.setStartDate(timeStart);
 
             return eventDatabaseConnector.save(event);
 
-        }catch(DatabaseException e){
+        }catch(Exception e){
             throw new DatabaseException();
         }
     }
 
     @Override
     public Event updateEventTimeEnd(int eventId, Date timeEnd) throws DatabaseException {
-        Event event = new Event();
-        event.setEventTd(eventId);
-        event.setEndDate(timeEnd);
-
-
         try{
-            Event eventOld = getEvent(eventId);
-            event.setLocationId(eventOld.getLocationId());
-            event.setEventDescription(eventOld.getEventDescription());
-            event.setStartDate(eventOld.getStartDate());
-            event.setEventName(eventOld.getEventName());
+            Event event = getEvent(eventId);
+            event.setEndDate(timeEnd);
 
             return eventDatabaseConnector.save(event);
 
-        }catch(DatabaseException e){
+        }catch(Exception e){
             throw new DatabaseException();
         }
     }

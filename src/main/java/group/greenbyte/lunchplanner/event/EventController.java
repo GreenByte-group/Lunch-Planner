@@ -3,9 +3,11 @@ package group.greenbyte.lunchplanner.event;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Media;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
@@ -42,23 +44,25 @@ public class EventController {
     }
 
     /**
+     * Updates the event with the specific id
      *
      * @param newEventName new name of event to update in Database
      * @param eventId id of the updated event
      * @param response response channel
      */
     @RequestMapping(value = "{eventId}/name", method = RequestMethod.PUT,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
-    public void updateEventName(@RequestBody String newEventName, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
-
+    public String updateEventName(@RequestBody String newEventName, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
 
         try {
             eventLogic.updateEventName("dummy",eventId,newEventName);
             response.setStatus(HttpServletResponse.SC_CREATED);
 
+            return "";
         }catch(HttpRequestException e){
             response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
         }
     }
 
@@ -69,17 +73,17 @@ public class EventController {
      * @param response response channel
      */
     @RequestMapping(value = "{eventId}/location", method = RequestMethod.PUT,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
-    public void updateEventLocation(@RequestBody int location, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
-
-
+    public String updateEventLocation(@RequestBody int location, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
         try {
             eventLogic.updateEventLoction("dummy",eventId,location);
             response.setStatus(HttpServletResponse.SC_CREATED);
 
+            return "";
         }catch(HttpRequestException e){
             response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
         }
     }
 
@@ -90,17 +94,17 @@ public class EventController {
      * @param response response channel
      */
     @RequestMapping(value = "{eventId}/description", method = RequestMethod.PUT,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
-    public void updateEventDescription(@RequestBody String newEventDescription, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
-
-
+    public String updateEventDescription(@RequestBody String newEventDescription, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
         try {
             eventLogic.updateEventDescription("dummy",eventId,newEventDescription);
             response.setStatus(HttpServletResponse.SC_CREATED);
 
+            return "";
         }catch(HttpRequestException e){
             response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
         }
     }
 
@@ -111,17 +115,17 @@ public class EventController {
      * @param response response channel
      */
     @RequestMapping(value = "{eventId}/timeStart", method = RequestMethod.PUT,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
-    public void updateEventTimeStart(@RequestBody Date newTimeStart, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
-
-
+    public String updateEventTimeStart(@RequestBody long newTimeStart, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
         try {
-            eventLogic.updateEvenTimeStart("dummy",eventId,newTimeStart);
+            eventLogic.updateEventTimeStart("dummy",eventId, new Date(newTimeStart));
             response.setStatus(HttpServletResponse.SC_CREATED);
 
+            return "";
         }catch(HttpRequestException e){
             response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
         }
     }
 
@@ -132,17 +136,17 @@ public class EventController {
      * @param response response channel
      */
     @RequestMapping(value = "{eventId}/timeEnd", method = RequestMethod.PUT,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
-    public void updateEventTimEnd(@RequestBody Date newTimeEnd, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
-
-
+    public String updateEventTimEnd(@RequestBody long newTimeEnd, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
         try {
-            eventLogic.updateEventTimeEnd("dummy",eventId,newTimeEnd);
+            eventLogic.updateEventTimeEnd("dummy",eventId, new Date(newTimeEnd));
             response.setStatus(HttpServletResponse.SC_CREATED);
 
+            return "";
         }catch(HttpRequestException e){
             response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
         }
     }
 
@@ -165,10 +169,6 @@ public class EventController {
             return null;
         }
     }
-
-
-
-
 
     @Autowired
     public void setEventLogic(EventLogic eventLogic) {
