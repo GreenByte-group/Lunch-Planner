@@ -153,7 +153,7 @@ public class EventController {
     /**
      *
      * @param response response channel
-     * @return a list of all events 
+     * @return a list of all events
      */
     @RequestMapping(value = "", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
