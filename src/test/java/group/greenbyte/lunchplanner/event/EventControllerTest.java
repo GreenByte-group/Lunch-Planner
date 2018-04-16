@@ -1,5 +1,6 @@
 package group.greenbyte.lunchplanner.event;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import group.greenbyte.lunchplanner.AppConfig;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,6 +21,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.Date;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
@@ -202,19 +205,179 @@ public class EventControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
-    // ------------------ UPDATE  ------------------------
+    // ------------------ UPDATE EVENT NAME ------------------------
 
-//    @Test
-//    public void test1updateEventUserNameFitsIn() throws Exception{
-//        long timeStart = System.currentTimeMillis() + 100000;
-//
-//        EventJson event = new EventJson(createString(50), "", 1, timeStart, timeStart + 1000);
-//        String json = getJsonFromObject(event);
-//
-//        mockMvc.perform(
-//                MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-//                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-//
-//    }
+    @Test
+    public void test1updateEventName() throws Exception{
+        int eventId = createEvent();
+
+        String eventName = createString(50);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/name").contentType(MediaType.TEXT_PLAIN_VALUE).content(eventName))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        //TODO check if event is updated
+    }
+
+    @Test
+    public void test2updateEventNameTooLong() throws Exception{
+        int eventId = createEvent();
+
+        String eventName = createString(51);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/name").contentType(MediaType.TEXT_PLAIN_VALUE).content(eventName))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void test3updateEventNameEmpty() throws Exception{
+        int eventId = createEvent();
+
+        String eventName = "";
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/name").contentType(MediaType.TEXT_PLAIN_VALUE).content(eventName))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    // ------------------- UPDATE EVENT DESCRIPTION -----------------
+
+    @Test
+    public void test1updateEventDescription() throws Exception{
+        int eventId = createEvent();
+
+        String eventDescription = createString(50);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/description").contentType(MediaType.TEXT_PLAIN_VALUE).content(eventDescription))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        //TODO check if event is updated
+    }
+
+    @Test
+    public void test2updateEventDescriptionTooLong() throws Exception{
+        int eventId = createEvent();
+
+        String eventDescription = createString(51);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/description").contentType(MediaType.TEXT_PLAIN_VALUE).content(eventDescription))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void test3updateEventDescriptionEmpty() throws Exception{
+        int eventId = createEvent();
+
+        String eventDescription = "";
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/description").contentType(MediaType.TEXT_PLAIN_VALUE).content(eventDescription))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    // ------------------ UPDATE EVENT LOCATION ------------------
+
+    @Test
+    public void test1updateEventLocation() throws Exception{
+        int eventId = createEvent();
+
+        int location = 1;
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/location").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(location)))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        //TODO check if event is updated
+    }
+
+    // ------------------ UPDATE EVENT TIMESTART -------------------------
+    @Test
+    public void test1updateEventStartTime() throws Exception{
+        int eventId = createEvent();
+
+        long startTime = System.currentTimeMillis() + 10000;
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/timestart").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(startTime)))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        //TODO check if event is updated
+    }
+
+    @Test
+    public void test2updateEventStartTimeTooEarly() throws Exception{
+        int eventId = createEvent();
+
+        long startTime = System.currentTimeMillis() - 10000;
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/timestart").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(startTime)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void test3updateEventStartTimeTooLate() throws Exception{
+        int eventId = createEvent();
+
+        long startTime = System.currentTimeMillis() + 1000000000L;
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/timestart").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(startTime)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    // ------------------ UPDATE EVENT TIMEEND -------------------------
+    @Test
+    public void test1updateEventEndTime() throws Exception{
+        int eventId = createEvent();
+
+        long endTime = System.currentTimeMillis() + 1000000;
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/timeend").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(endTime)))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        //TODO check if event is updated
+    }
+
+    @Test
+    public void test2updateEventEndTimeTooEarly() throws Exception{
+        int eventId = createEvent();
+
+        long endTime = System.currentTimeMillis() - 10000;
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/timeend").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(endTime)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+
+    /**
+     * Create an event
+     * @return the id of the event
+     */
+    private int createEvent() throws Exception {
+        long timeStart = System.currentTimeMillis() + 10000;
+        long timeEnd = timeStart + 10000;
+        int locationId = 1;
+
+        EventJson event = new EventJson(createString(50), "", locationId, new Date(timeStart), new Date(timeEnd));
+
+        String json = getJsonFromObject(event);
+
+        MvcResult result = mockMvc.perform(
+                MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+
+        return Integer.valueOf(response);
+    }
 
 }
