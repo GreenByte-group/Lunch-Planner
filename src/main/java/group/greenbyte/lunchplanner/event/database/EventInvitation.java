@@ -11,12 +11,12 @@ public class EventInvitation implements Serializable {
     @Id
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "eventId")
-    private Event event;
+    private Event eventInvited;
 
     @Id
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId")
-    private User user;
+    private User userInvited;
 
     private boolean isAdmin;
 
@@ -43,19 +43,19 @@ public class EventInvitation implements Serializable {
         this.confirmed = confirmed;
     }
 
-    public Event getEvent() {
-        return event;
+    public Event getEventInvited() {
+        return eventInvited;
     }
 
-    public void setEvent(Event event) {
-        this.event = event;
+    public void setEventInvited(Event eventInvited) {
+        this.eventInvited = eventInvited;
     }
 
-    public User getUser() {
-        return user;
+    public User getUserInvited() {
+        return userInvited;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserInvited(User userInvited) {
+        this.userInvited = userInvited;
     }
 }

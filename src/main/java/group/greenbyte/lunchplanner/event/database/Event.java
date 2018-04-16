@@ -40,7 +40,7 @@ public class Event {
     @JoinColumn(name = "locationId")
     private Location location;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "userInvited")
     private Set<EventInvitation> usersInvited = new HashSet<>();
 
     @OneToMany(mappedBy = "team")

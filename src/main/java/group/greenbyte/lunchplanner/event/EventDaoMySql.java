@@ -48,8 +48,8 @@ public class EventDaoMySql implements EventDao {
             EventInvitation eventInvitation = new EventInvitation();
             eventInvitation.setAdmin(true);
             eventInvitation.setConfirmed(true);
-            eventInvitation.setUser(user);
-            eventInvitation.setEvent(event);
+            eventInvitation.setUserInvited(user);
+            eventInvitation.setEventInvited(event);
 
             event.addUsersInvited(eventInvitation);
 

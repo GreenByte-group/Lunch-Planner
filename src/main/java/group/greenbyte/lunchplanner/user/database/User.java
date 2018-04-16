@@ -28,7 +28,7 @@ public class User {
     @Column(nullable = false, length = MAX_PASSWORD_LENGTH)
     private String password;
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "eventInvited", cascade = CascadeType.ALL)
     private Set<EventInvitation> eventsInvited;
 
     @OneToMany(mappedBy = "team")
