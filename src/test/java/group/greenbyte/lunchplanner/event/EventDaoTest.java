@@ -3,8 +3,10 @@ package group.greenbyte.lunchplanner.event;
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
+import group.greenbyte.lunchplanner.location.LocationLogic;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -21,6 +23,7 @@ import java.util.Date;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
+import static group.greenbyte.lunchplanner.location.Utils.createLocation;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -31,6 +34,26 @@ public class EventDaoTest {
 
     @Autowired
     private EventDao eventDao;
+
+    @Autowired
+    private EventLogic eventLogic;
+
+    @Autowired
+    private UserLogic userLogic;
+
+    @Autowired
+    private LocationLogic locationLogic;
+
+    private String userName;
+    private int locationId;
+    private int eventId;
+
+    @Before
+    public void setUp() throws Exception {
+        userName = createUserIfNotExists(userLogic, "dummy");
+        locationId = createLocation(locationLogic, userName, "Test location", "test description");
+        eventId = createEvent(eventLogic, userName, locationId);
+    }
 
     // ------------------------- CREATE EVENT ------------------------------
 
@@ -98,35 +121,21 @@ public class EventDaoTest {
 
     // ---------------- UPDATE EVENT ----------------------
 
-    @Autowired
-    private EventLogic eventLogic;
-
-    @Autowired
-    private UserLogic userLogic;
-
     // Event name
     @Test
     public void updateEventName() throws Exception {
-        //TODO create location and get id
-
         String eventName = createString(50);
-
-        String userName = createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, 1);
 
         eventDao.updateEventName(eventId, eventName);
 
-        //TODO check ob die daten auch geändert wurden
+        Event event = eventDao.getEvent(eventId);
+        if(!event.getEventName().equals(eventName))
+            Assert.fail("Name was not updated");
     }
 
     @Test(expected = DatabaseException.class)
     public void updateEventNameTooLong() throws Exception {
-        //TODO create location and get id
-
         String eventName = createString(51);
-
-        String userName = createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, 1);
 
         eventDao.updateEventName(eventId, eventName);
     }
@@ -134,26 +143,18 @@ public class EventDaoTest {
     // Event description
     @Test
     public void updateEventDescription() throws Exception {
-        //TODO create location and get id
-
         String eventDescription = createString(Event.MAX_DESCRITION_LENGTH);
-
-        String userName = createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, 1);
 
         eventDao.updateEventDescription(eventId, eventDescription);
 
-        //TODO check ob die daten auch geändert wurden
+        Event event = eventDao.getEvent(eventId);
+        if(!event.getEventDescription().equals(eventDescription))
+            Assert.fail("Description was not updated");
     }
 
     @Test(expected = DatabaseException.class)
     public void updateEventDescriptionTooLong() throws Exception {
-        //TODO create location and get id
-
         String eventName = createString(Event.MAX_DESCRITION_LENGTH + 1);
-
-        String userName = createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, 1);
 
         eventDao.updateEventDescription(eventId, eventName);
     }
@@ -161,45 +162,48 @@ public class EventDaoTest {
     // Event location
     @Test
     public void updateEventLocation() throws Exception {
-        //TODO create location and get id
+        int newLocationId = createLocation(locationLogic, userName, "updated location", "update");
 
-        int locationId = 1;
+        eventDao.updateEventLocation(eventId, newLocationId);
 
-        String userName = createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, 2);
-
-        eventDao.updateEventLocation(eventId, locationId);
-
-        //TODO check ob die daten auch geändert wurden
+        Event event = eventDao.getEvent(eventId);
+        if(event.getLocation().getLocationId() != newLocationId)
+            Assert.fail("Location was not updated");
     }
 
     // Event start time
     @Test
     public void updateEventStartTime() throws Exception {
-        //TODO create location and get id
-
         long timeStart = System.currentTimeMillis() + 1000;
 
-        String userName = createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, 1);
+         /*
+        In der Datenbank werden keine Millisekunden gespeichert. Zum Vergleichen der Zeit müssen also
+        die Millisekunden ignoriert werden.
+         */
+        timeStart = 1000 * (timeStart / 1000);
 
-        eventDao.updateEventTimeEnd(eventId, new Date(timeStart));
+        eventDao.updateEventTimeStart(eventId, new Date(timeStart));
 
-        //TODO check ob die daten auch geändert wurden
+        Event event = eventDao.getEvent(eventId);
+        if(event.getStartDate().getTime() != timeStart)
+            Assert.fail("Time start was not updated");
     }
 
     // Event end time
     @Test
     public void updateEventEndTime() throws Exception {
-        //TODO create location and get id
-
         long timeEnd = System.currentTimeMillis() + 10000;
 
-        String userName = createUserIfNotExists(userLogic, "dummy");
-        int eventId = createEvent(eventLogic, userName, 1);
+        /*
+        In der Datenbank werden keine Millisekunden gespeichert. Zum Vergleichen der Zeit müssen also
+        die Millisekunden ignoriert werden.
+         */
+        timeEnd = 1000 * (timeEnd / 1000);
 
         eventDao.updateEventTimeEnd(eventId, new Date(timeEnd));
 
-        //TODO check ob die daten auch geändert wurden
+        Event event = eventDao.getEvent(eventId);
+        if(event.getEndDate().getTime() != timeEnd)
+            Assert.fail("Time end was not updated");
     }
 }
