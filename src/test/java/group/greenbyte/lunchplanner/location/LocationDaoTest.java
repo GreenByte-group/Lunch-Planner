@@ -10,6 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import sun.reflect.annotation.ExceptionProxy;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static org.junit.Assert.*;
@@ -89,5 +90,13 @@ public class LocationDaoTest {
 
         int result = locationDao.insertLocation(locationName, coordinate,
                 locationDescription, adminName);
+    }
+
+    // ------------------ GET LOCATION ----------------------
+    @Test
+    public void test1GetLocation() throws Exception {
+        int locationId = 1;
+
+        locationDao.getLocation(locationId);
     }
 }

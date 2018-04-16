@@ -185,13 +185,10 @@ public class EventControllerTest {
     // ------------------ GET ALL ------------------------
 
     @Test
-    public void test1SearchEventsForUserSearchwordIsNull() throws Exception {
-        String searchword = null;
-        String json = getJsonFromObject(searchword);
-
+    public void test1GetAllEvents() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                MockMvcRequestBuilders.get("/event"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
@@ -210,8 +207,8 @@ public class EventControllerTest {
         int eventId = 1;
         String toInviteUsername;
 
-        TestInvitePerson(int length){
-            toInviteUsername = createString(length);
+        TestInvitePerson(String name){
+            toInviteUsername = name;
             }
         }
 
@@ -219,10 +216,13 @@ public class EventControllerTest {
     @Test
     public void test1InviteFriend() throws Exception {
 
-        String inventedPersonJson = getJsonFromObject(new TestInvitePerson(50));
+        String myUsername = createString(50);
+        String toInviteUserName = createString(50);
+
+        String inventedPersonJson = getJsonFromObject(new TestInvitePerson(toInviteUserName));
 
         MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
+                MockMvcRequestBuilders.post("/event/" + myUsername + "/invite/event/" + 1).contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
                 .andReturn();
@@ -239,10 +239,13 @@ public class EventControllerTest {
     @Test
     public void test2InviteFriendInvalidName() throws Exception {
 
-        String inventedPersonJson = getJsonFromObject(new TestInvitePerson(51));
+        String myUsername = createString(50);
+        String toInviteUserName = createString(51);
+
+        String inventedPersonJson = getJsonFromObject(new TestInvitePerson(toInviteUserName));
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
+                MockMvcRequestBuilders.post("/event/" + myUsername + "/invite/event/" + 1).contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
 
@@ -251,10 +254,13 @@ public class EventControllerTest {
     @Test
     public void test3InviteFriendIEmptyName() throws Exception {
 
-        String inventedPersonJson = getJsonFromObject(new TestInvitePerson(0));
+        String myUsername = createString(50);
+        String toInviteUserName = createString(0);
+
+        String inventedPersonJson = getJsonFromObject(new TestInvitePerson(toInviteUserName));
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
+                MockMvcRequestBuilders.post("/event/" + myUsername + "/invite/event/" + 1).contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }

@@ -36,7 +36,8 @@ public class EventController {
             return String.valueOf(eventId);
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());
-            return null;
+            e.printStackTrace();
+            return e.getErrorMessage();
         }
     }
 
@@ -46,7 +47,7 @@ public class EventController {
     public List<Event> getAllEvents(HttpServletResponse response) {
 
         try {
-            List<Event> allSearchingEvents = eventLogic.getAllEvents();
+            List<Event> allSearchingEvents = eventLogic.getAllEvents("dummy");
             response.setStatus(HttpServletResponse.SC_OK);
             return allSearchingEvents;
         } catch (HttpRequestException e) {
@@ -55,6 +56,13 @@ public class EventController {
         }
     }
 
+
+    @RequestMapping(value = "/user/{unsername}/invite/event/{eventId}", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public int inviteFriend(String userToInvited, int eventId){
+
+    }
 
 
     @Autowired

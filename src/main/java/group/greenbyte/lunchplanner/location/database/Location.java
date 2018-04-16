@@ -1,6 +1,10 @@
 package group.greenbyte.lunchplanner.location.database;
 
+import group.greenbyte.lunchplanner.event.database.Event;
+
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Location {
@@ -11,7 +15,7 @@ public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer locationId;
+    private int locationId;
 
     @Column(nullable = false, length = MAX_NAME_LENGTH)
     private String locationName;
@@ -22,13 +26,24 @@ public class Location {
     @Column
     private Coordinate coordinate;
 
-    public Location() {}
+    @Column
+    private boolean isPublic;
 
-    public Integer getLocationId() {
+    @OneToMany(mappedBy = "user")
+    private Set<LocationAdmin> locationAdmins = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Event> events = new HashSet<>();
+
+    public Location() {
+        isPublic = false;
+    }
+
+    public int getLocationId() {
         return locationId;
     }
 
-    public void setLocationId(Integer locationId) {
+    public void setLocationId(int locationId) {
         this.locationId = locationId;
     }
 
@@ -56,14 +71,34 @@ public class Location {
         this.coordinate = coordinate;
     }
 
-    /*
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name="isAt",
-            joinColumns = { @JoinColumn(name = "locationId")},
-            inverseJoinColumns = { @JoinColumn(name = "eventId")}
-    )
-    private Set<Event> events = new HashSet<>();
-    */
+    public boolean isPublic() {
+        return isPublic;
+    }
 
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
+    }
+
+    public Set<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set<Event> events) {
+        this.events = events;
+    }
+
+    public Set<LocationAdmin> getLocationAdmins() {
+        return locationAdmins;
+    }
+
+    public void setLocationAdmins(Set<LocationAdmin> locationAdmins) {
+        this.locationAdmins = locationAdmins;
+    }
+
+    public void addLocationAdmin(LocationAdmin locationAdmin) {
+        if(locationAdmins == null)
+            locationAdmins = new HashSet<>();
+
+        locationAdmins.add(locationAdmin);
+    }
 }

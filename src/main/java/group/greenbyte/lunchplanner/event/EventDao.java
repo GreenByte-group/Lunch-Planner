@@ -29,6 +29,7 @@ public interface EventDao {
                       Date timeEnd) throws DatabaseException;
 
     /**
+<<<<<<< HEAD
      * Get all events for a specific searchword
      *
      * @param username id of the user who creates the events
@@ -37,7 +38,7 @@ public interface EventDao {
      *
      * @throws DatabaseException when an unexpected error happens
      */
-    List<Event> getAll(String username,
+    List<Event> search(String username,
                        String searchword)throws DatabaseException;
 
     /**

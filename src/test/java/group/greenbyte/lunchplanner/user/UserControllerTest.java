@@ -49,7 +49,7 @@ public class UserControllerTest {
     @Test
     public void test1CreateUserValidParam() throws Exception{
         String userName = createString(50);
-        String mail = "test@yuyhinoal.dalk";
+        String mail = "teeeaefst@yuyhinoal.dalk";
         String password = createString(80);
 
         UserJson userJson = new UserJson(userName, password, mail);
@@ -64,7 +64,7 @@ public class UserControllerTest {
     @Test
     public void test2CreateUserEmptyUsername() throws Exception{
         String userName = "";
-        String mail = "test@yuyhinoal.dalk";
+        String mail = "teasdfast@yuyhinoal.dalk";
         String password = createString(80);
 
         UserJson userJson = new UserJson(userName, password, mail);
@@ -78,7 +78,7 @@ public class UserControllerTest {
     @Test
     public void test3CreateUserTooLongUserName() throws Exception{
         String userName = createString(51);
-        String mail = "test@yuyhinoal.dalk";
+        String mail = "teasdfst@yuyhinoal.dalk";
         String password = createString(80);
 
         UserJson userJson = new UserJson(userName, password, mail);
@@ -93,7 +93,7 @@ public class UserControllerTest {
     @Test
     public void test4CreateUserEmptyPassword() throws Exception{
         String userName = createString(50);
-        String mail = "test@yuyhinoal.dalk";
+        String mail = "tesdaft@yuyhinoal.dalk";
         String password = "";
 
         UserJson userJson = new UserJson(userName, password, mail);
@@ -108,7 +108,7 @@ public class UserControllerTest {
     @Test
     public void test5CreateUserTooLongPassword() throws Exception{
         String userName = createString(50);
-        String mail = "test@yuyhinoal.dalk";
+        String mail = "teaaefst@yuyhinoal.dalk";
         String password = createString(81);
 
         UserJson userJson = new UserJson(userName, password, mail);
@@ -170,10 +170,13 @@ public class UserControllerTest {
     @Test
     public void test1GetInvitation() throws Exception{
 
-        TestInvitePersonJson invitedPerson = new TestInvitePersonJson(createString(50),createString(50),1);
+        String myUsername = createString(50);
+        String toInviteUserName = createString(50);
+
+        TestInvitePersonJson invitedPerson = new TestInvitePersonJson(myUsername, toInviteUserName,1);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/event", invitedPerson))
+                MockMvcRequestBuilders.get("/user/" +myUsername + "invite/event/" + 1, invitedPerson))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.eventId", is(1)))

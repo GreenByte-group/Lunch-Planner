@@ -23,6 +23,8 @@ public class UserDaoTest {
     @Autowired
     private UserDao userDao;
 
+    // ------------ CREATE USER --------------
+
     @Test
     public void test1CreateUserValidParam() throws Exception {
         String userName = createString(50);

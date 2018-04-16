@@ -2,6 +2,7 @@ package group.greenbyte.lunchplanner.location;
 
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.location.database.Coordinate;
+import group.greenbyte.lunchplanner.location.database.Location;
 
 public interface LocationDao {
 
@@ -17,4 +18,12 @@ public interface LocationDao {
     int insertLocation(String locationName, Coordinate coordinate, String description,
                        String adminName) throws DatabaseException;
 
+    /**
+     * Get the location ojbect from the locationId
+     *
+     * @param locationId id of the location
+     * @return the object of the location or null if not exists
+     * @throws DatabaseException when a database error happens
+     */
+    Location getLocation(int locationId) throws DatabaseException;
 }

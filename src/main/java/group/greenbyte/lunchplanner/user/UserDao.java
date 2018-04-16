@@ -15,6 +15,7 @@ public interface UserDao {
     User getUser(String userName) throws DatabaseException;
 
     /**
+     * TODO: write tests
      * Creates a user
      *
      * @param userName his username

@@ -162,41 +162,22 @@ public class EventLogicTest {
     @Test(expected = HttpRequestException.class)
     public void test1getAllEventsEmptyUsername() throws Exception {
         String userName  = createString(0);
-        String searchword = createString(0);
 
-        List<Event> result = eventLogic.getAllEvents(userName, searchword);
+        List<Event> result = eventLogic.getAllEvents(userName);
     }
 
     @Test (expected = HttpRequestException.class)
     public void test2getAllEventsUsernameIsToLong()throws Exception{
         String userName = createString(51);
-        String searchword = createString(0);
 
-        List<Event> result = eventLogic.getAllEvents(userName, searchword);
-    }
-
-    @Test(expected = HttpRequestException.class)
-    public void test3getAllEventsSearchwordIsToLong() throws Exception {
-        String userName = createString(50);
-        String searchword = createString(51);
-
-        List<Event> result = eventLogic.getAllEvents(userName, searchword);
-    }
-
-    @Test(expected = HttpRequestException.class)
-    public void test4getAllEventsSearchwordIsNull() throws Exception {
-        String userName = createString(50);
-        String searchword = null;
-
-        List<Event> result = eventLogic.getAllEvents(userName, searchword);
+        List<Event> result = eventLogic.getAllEvents(userName);
     }
 
     @Test
     public void test5getAllEventsOk() throws Exception {
         String userName  = createString(50);
-        String searchword = createString(0);
 
-        List<Event> result = eventLogic.getAllEvents(userName, searchword);
+        List<Event> result = eventLogic.getAllEvents(userName);
     }
 
     // ------------------------- INVITE FRIEND ------------------------------
@@ -262,10 +243,13 @@ public class EventLogicTest {
     @Test
     public void test1SendInvitation() throws Exception {
 
-        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(createString(50), createString(50), 1));
+        String myUsername = createString(50);
+        String toInviteUserName = createString(50);
+
+        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(myUsername, toInviteUserName, 1));
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
+                MockMvcRequestBuilders.post("/user/" + myUsername + "/invite/event/" + 1).contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
     }
@@ -273,10 +257,13 @@ public class EventLogicTest {
     @Test (expected = HttpRequestException.class)
     public void test2SendInvitationEmptyUsername() throws Exception {
 
-        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(createString(0), createString(50), 1));
+        String myUsername = createString(0);
+        String toInviteUserName = createString(50);
+
+        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(myUsername, toInviteUserName, 1));
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
+                MockMvcRequestBuilders.post("/user/" + myUsername + "/invite/event/" + 1).contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
@@ -284,10 +271,13 @@ public class EventLogicTest {
     @Test (expected = HttpRequestException.class)
     public void test3SendInvitationInvalidUsername() throws Exception {
 
-        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(createString(51), createString(50), 1));
+        String myUsername = createString(51);
+        String toInviteUserName = createString(50);
+
+        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(myUsername, toInviteUserName, 1));
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
+                MockMvcRequestBuilders.post("/user/" + myUsername + "/invite/event/" + 1).contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
@@ -295,10 +285,13 @@ public class EventLogicTest {
     @Test (expected = HttpRequestException.class)
     public void test4SendInvitationEmptyToInvitedUsername() throws Exception {
 
-        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(createString(50), createString(0), 1));
+        String myUsername = createString(50);
+        String toInviteUserName = createString(0);
+
+        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(myUsername, toInviteUserName, 1));
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
+                MockMvcRequestBuilders.post("/user/" + myUsername + "/invite/event/" + 1).contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
@@ -306,10 +299,13 @@ public class EventLogicTest {
     @Test (expected = HttpRequestException.class)
     public void test5SendInvitationInvalidToInvitedUsername() throws Exception {
 
-        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(createString(50), createString(51), 1));
+        String myUsername = createString(50);
+        String toInviteUserName = createString(51);
+
+        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(myUsername, toInviteUserName, 1));
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
+                MockMvcRequestBuilders.post("/user/" + myUsername + "/invite/event/" + 1).contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
