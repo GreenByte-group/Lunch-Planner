@@ -154,41 +154,22 @@ public class EventLogicTest {
     @Test(expected = HttpRequestException.class)
     public void test1getAllEventsEmptyUsername() throws Exception {
         String userName  = createString(0);
-        String searchword = createString(0);
 
-        List<Event> result = eventLogic.getAllEvents(userName, searchword);
+        List<Event> result = eventLogic.getAllEvents(userName);
     }
 
     @Test (expected = HttpRequestException.class)
     public void test2getAllEventsUsernameIsToLong()throws Exception{
         String userName = createString(51);
-        String searchword = createString(0);
 
-        List<Event> result = eventLogic.getAllEvents(userName, searchword);
-    }
-
-    @Test(expected = HttpRequestException.class)
-    public void test3getAllEventsSearchwordIsToLong() throws Exception {
-        String userName = createString(50);
-        String searchword = createString(51);
-
-        List<Event> result = eventLogic.getAllEvents(userName, searchword);
-    }
-
-    @Test(expected = HttpRequestException.class)
-    public void test4getAllEventsSearchwordIsNull() throws Exception {
-        String userName = createString(50);
-        String searchword = null;
-
-        List<Event> result = eventLogic.getAllEvents(userName, searchword);
+        List<Event> result = eventLogic.getAllEvents(userName);
     }
 
     @Test
     public void test5getAllEventsOk() throws Exception {
         String userName  = createString(50);
-        String searchword = createString(0);
 
-        List<Event> result = eventLogic.getAllEvents(userName, searchword);
+        List<Event> result = eventLogic.getAllEvents(userName);
     }
 
     // ------------------ UPDATE EVENT  ------------------------

@@ -2,7 +2,6 @@ package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.user.database.User;
-import org.springframework.stereotype.Repository;
 
 public interface UserDao {
 
@@ -16,6 +15,7 @@ public interface UserDao {
     User getUser(String userName) throws DatabaseException;
 
     /**
+     * TODO: write tests
      * Creates a user
      *
      * @param userName his username

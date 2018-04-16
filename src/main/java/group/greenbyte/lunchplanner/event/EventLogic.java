@@ -3,6 +3,7 @@ package group.greenbyte.lunchplanner.event;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -55,7 +56,7 @@ public class EventLogic {
 
         try {
             return eventDao.insertEvent(userName, eventName, eventDescription, locationId, timeStart, timeEnd)
-                    .getEventTd();
+                    .getEventId();
         }catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
@@ -172,38 +173,18 @@ public class EventLogic {
 
     /**
      *
-     * @return List<Event> List with generic typ of Event which includes all Events matching with the searchword
-     */
-    public List<Event> getAllEvents() throws HttpRequestException{
-
-        try{
-           return eventDao.getAll("dummy", "");
-        }catch(DatabaseException e){
-            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-
-        }
-
-    }
-
-    /**
-     *
      * @param username  userName that is logged in
-     * @param searchword word to compare an find matches with a name of any events
      * @return List<Event> List with generic typ of Event which includes all Events matching with the searchword
      *
      */
-    public List<Event> getAllEvents(String username, String searchword) throws HttpRequestException{
-        if(username.length() > Event.MAX_USERNAME_LENGHT)
+    public List<Event> getAllEvents(String username) throws HttpRequestException{
+        if(username.length() > User.MAX_USERNAME_LENGTH)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is to long, maximun length" + Event.MAX_USERNAME_LENGHT);
         if(username.length() == 0 )
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is empty");
-        if(searchword == null)
-            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Searchword is null");
-        if(searchword.length() > Event.MAX_SEARCHWORD_LENGTH)
-            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Searchword is to long, maximun length" + Event.MAX_SEARCHWORD_LENGTH);
 
         try{
-            return eventDao.getAll(username, searchword);
+            return eventDao.search(username, "");
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
