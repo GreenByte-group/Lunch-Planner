@@ -40,10 +40,10 @@ public class EventController {
         }
     }
 
-    @RequestMapping(value = "", method = RequestMethod.POST,
+    @RequestMapping(value = "{eventId}", method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void updatEvent(@RequestBody EventJson event, int eventId, HttpServletResponse response) {
+    public void updateEvent(@RequestBody EventJson event, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
 
         try {
             eventLogic.updateEvent("dummy", eventId, event.getName(), event.getDescription(),
