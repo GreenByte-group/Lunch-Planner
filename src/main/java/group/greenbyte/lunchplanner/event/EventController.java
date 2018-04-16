@@ -40,15 +40,14 @@ public class EventController {
         }
     }
 
-    @RequestMapping(value = "{eventId}", method = RequestMethod.PUT,
+    @RequestMapping(value = "{eventId}/name", method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void updateEvent(@RequestBody EventJson event, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
+    public void updateEventName(@RequestBody String newEventName, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
+
 
         try {
-            eventLogic.updateEvent("dummy", eventId, event.getName(), event.getDescription(),
-                    event.getLocationId(), event.getTimeStart(), event.getTimeEnd());
-
+            eventLogic.updateEventName("dummy",eventId,newEventName);
             response.setStatus(HttpServletResponse.SC_CREATED);
 
         }catch(HttpRequestException e){
@@ -56,6 +55,65 @@ public class EventController {
         }
     }
 
+    @RequestMapping(value = "{eventId}/location", method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void updateEventLocation(@RequestBody int location, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
+
+
+        try {
+            eventLogic.updateEventLoction("dummy",eventId,location);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+
+        }catch(HttpRequestException e){
+            response.setStatus(e.getStatusCode());
+        }
+    }
+
+    @RequestMapping(value = "{eventId}/description", method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void updateEventDescription(@RequestBody String newEventDescription, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
+
+
+        try {
+            eventLogic.updateEventDescription("dummy",eventId,newEventDescription);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+
+        }catch(HttpRequestException e){
+            response.setStatus(e.getStatusCode());
+        }
+    }
+
+    @RequestMapping(value = "{eventId}/timeStart", method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void updateEventTimeStart(@RequestBody Date newTimeStart, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
+
+
+        try {
+            eventLogic.updateEvenTimeStart("dummy",eventId,newTimeStart);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+
+        }catch(HttpRequestException e){
+            response.setStatus(e.getStatusCode());
+        }
+    }
+
+    @RequestMapping(value = "{eventId}/timeEnd", method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void updateEventTimEnd(@RequestBody Date newTimeEnd, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
+
+
+        try {
+            eventLogic.updateEventTimeEnd("dummy",eventId,newTimeEnd);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+
+        }catch(HttpRequestException e){
+            response.setStatus(e.getStatusCode());
+        }
+    }
 
     @RequestMapping(value = "", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
