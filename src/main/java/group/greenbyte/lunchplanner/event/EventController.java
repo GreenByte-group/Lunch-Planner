@@ -36,7 +36,8 @@ public class EventController {
             return String.valueOf(eventId);
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());
-            return null;
+            e.printStackTrace();
+            return e.getErrorMessage();
         }
     }
 
@@ -156,7 +157,7 @@ public class EventController {
     public List<Event> getAllEvents(HttpServletResponse response) {
 
         try {
-            List<Event> allSearchingEvents = eventLogic.getAllEvents();
+            List<Event> allSearchingEvents = eventLogic.getAllEvents("dummy");
             response.setStatus(HttpServletResponse.SC_OK);
             return allSearchingEvents;
         } catch (HttpRequestException e) {

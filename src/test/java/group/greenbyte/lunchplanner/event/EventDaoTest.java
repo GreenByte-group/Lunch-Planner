@@ -49,9 +49,9 @@ public class EventDaoTest {
         if(!(
                 result.getEventName().equals(eventName) &&
                 result.getEventDescription().equals(description) &&
-                result.getLocationId() == locationId &&
-                result.getStartDate() == (timeStart) &&
-                result.getEndDate() == (timeEnd))) {
+                //result.getLocation().getLocationId() == locationId &&
+                result.getStartDate().equals(new Date(timeStart)) &&
+                result.getEndDate().equals(new Date(timeEnd)))) {
             Assert.fail("Event has not the right data");
         }
     }
