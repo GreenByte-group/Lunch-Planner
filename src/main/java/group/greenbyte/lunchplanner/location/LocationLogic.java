@@ -35,10 +35,10 @@ public class LocationLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username too long");
 
         if(locationName.length() == 0)
-            throw new HttpRequestException(HttpStatus.NOT_EXTENDED.value(), "Locationname is empty");
+            throw new HttpRequestException(HttpStatus.NOT_EXTENDED.value(), "Location name is empty");
 
         if(locationName.length() > Location.MAX_NAME_LENGTH)
-            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Locationname too long");
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Location name too long");
 
         if(description.length() > Location.MAX_DESCRIPION_LENGTH)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Description too long");
@@ -48,8 +48,21 @@ public class LocationLogic {
         } catch(DatabaseException d){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), d.getMessage());
         }
+    }
 
-
+    /**
+     * Get the location Ojbect from the locationId
+     *
+     * @param locationId id of the location
+     * @return the object of the location or null if not exists
+     * @throws HttpRequestException when a database error happens
+     */
+    public Location getLocation(int locationId) throws HttpRequestException {
+        try {
+            return locationDao.getLocation(locationId);
+        } catch (DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        }
     }
 
     @Autowired

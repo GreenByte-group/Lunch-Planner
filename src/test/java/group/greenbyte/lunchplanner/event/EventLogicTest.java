@@ -153,7 +153,7 @@ public class EventLogicTest {
         String userName  = createString(0);
         String searchword = createString(0);
 
-        List<Event> result = eventLogic.getAllEvents(userName, searchword);
+        List<Event> result = eventLogic.getAllEvents(userName);
     }
 
     @Test (expected = HttpRequestException.class)
@@ -161,7 +161,7 @@ public class EventLogicTest {
         String userName = createString(51);
         String searchword = createString(0);
 
-        List<Event> result = eventLogic.getAllEvents(userName, searchword);
+        List<Event> result = eventLogic.getAllEvents(userName);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -169,7 +169,7 @@ public class EventLogicTest {
         String userName = createString(50);
         String searchword = createString(51);
 
-        List<Event> result = eventLogic.getAllEvents(userName, searchword);
+        List<Event> result = eventLogic.getAllEvents(userName);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -177,7 +177,7 @@ public class EventLogicTest {
         String userName = createString(50);
         String searchword = null;
 
-        List<Event> result = eventLogic.getAllEvents(userName, searchword);
+        List<Event> result = eventLogic.getAllEvents(userName);
     }
 
     @Test
@@ -185,6 +185,6 @@ public class EventLogicTest {
         String userName  = createString(50);
         String searchword = createString(0);
 
-        List<Event> result = eventLogic.getAllEvents(userName, searchword);
+        List<Event> result = eventLogic.getAllEvents(userName);
     }
 }

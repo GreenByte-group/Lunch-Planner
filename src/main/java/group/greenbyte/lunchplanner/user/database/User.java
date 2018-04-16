@@ -1,8 +1,12 @@
 package group.greenbyte.lunchplanner.user.database;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import group.greenbyte.lunchplanner.event.database.EventInvitation;
+import group.greenbyte.lunchplanner.location.database.LocationAdmin;
+import group.greenbyte.lunchplanner.team.database.TeamMember;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class User {
@@ -12,7 +16,10 @@ public class User {
     static final public int MAX_PASSWORD_LENGTH = 80;
 
     @Id
-    @Column(nullable = false, length = MAX_USERNAME_LENGTH)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer userId;
+
+    @Column(unique = true,length = MAX_USERNAME_LENGTH)
     private String userName;
 
     @Column(nullable = false, length = MAX_MAIL_LENGTH)
@@ -20,6 +27,15 @@ public class User {
 
     @Column(nullable = false, length = MAX_PASSWORD_LENGTH)
     private String password;
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    private Set<EventInvitation> eventsInvited;
+
+    @OneToMany(mappedBy = "team")
+    private Set<TeamMember> teamsMember = new HashSet<>();
+
+    @OneToMany(mappedBy = "location")
+    private Set<LocationAdmin> locationAdmin = new HashSet<>();
 
     public String getUserName() {
         return userName;
@@ -45,12 +61,26 @@ public class User {
         this.password = password;
     }
 
-    /*
-    @ManyToMany(mappedBy = "usersInvited")
-    private Set<Event> eventsInvited = new HashSet<>();
+    public Set<EventInvitation> getEventsInvited() {
+        return eventsInvited;
+    }
 
-    @ManyToMany(mappedBy = "usersAdmin")
-    private Set<Event> eventsAdmin = new HashSet<>();
-    */
+    public void setEventsInvited(Set<EventInvitation> eventsInvited) {
+        this.eventsInvited = eventsInvited;
+    }
 
+    public void addEventsInvited(EventInvitation eventInvitation) {
+        if(eventsInvited == null)
+            eventsInvited = new HashSet<>();
+
+        eventsInvited.add(eventInvitation);
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 }

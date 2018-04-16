@@ -100,4 +100,12 @@ public class LocationLogicTest {
         locationLogic.createLocation(userName, locationName, xCoordinate, yCoordinate, description);
     }
 
+    // ---------------------- GET LOCATION ----------------------
+    @Test
+    public void test1GetLocation() throws Exception {
+        int locationId = 1;
+
+        locationLogic.getLocation(locationId);
+    }
+
 }
