@@ -40,6 +40,12 @@ public class EventController {
         }
     }
 
+    /**
+     *
+     * @param newEventName new name of event to update in Database
+     * @param eventId id of the updated event
+     * @param response response channel
+     */
     @RequestMapping(value = "{eventId}/name", method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -55,6 +61,12 @@ public class EventController {
         }
     }
 
+    /**
+     *
+     * @param location new location of event to updte in Database
+     * @param eventId id the updated event
+     * @param response response channel
+     */
     @RequestMapping(value = "{eventId}/location", method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -70,6 +82,12 @@ public class EventController {
         }
     }
 
+    /**
+     *
+     * @param newEventDescription
+     * @param eventId id of the updated event
+     * @param response response channel
+     */
     @RequestMapping(value = "{eventId}/description", method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -85,6 +103,12 @@ public class EventController {
         }
     }
 
+    /**
+     *
+     * @param newTimeStart new start time to update in the event
+     * @param eventId id of the updated event
+     * @param response response channel
+     */
     @RequestMapping(value = "{eventId}/timeStart", method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -100,6 +124,12 @@ public class EventController {
         }
     }
 
+    /**
+     *
+     * @param newTimeEnd new Date to update in Event
+     * @param eventId id of the updated event
+     * @param response response channel
+     */
     @RequestMapping(value = "{eventId}/timeEnd", method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -115,6 +145,11 @@ public class EventController {
         }
     }
 
+    /**
+     *
+     * @param response response channel
+     * @return a list of all events 
+     */
     @RequestMapping(value = "", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
