@@ -50,14 +50,14 @@ public class EventController {
      * @param eventId id of the updated event
      * @param response response channel
      */
-    @RequestMapping(value = "{eventId}/name", method = RequestMethod.PUT,
+    @RequestMapping(value = "/{eventId}/name", method = RequestMethod.PUT,
             consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public String updateEventName(@RequestBody String newEventName, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
 
         try {
             eventLogic.updateEventName("dummy",eventId,newEventName);
-            response.setStatus(HttpServletResponse.SC_CREATED);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
             return "";
         }catch(HttpRequestException e){
@@ -75,15 +75,18 @@ public class EventController {
     @RequestMapping(value = "{eventId}/location", method = RequestMethod.PUT,
             consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
-    public String updateEventLocation(@RequestBody int location, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
+    public String updateEventLocation(@RequestBody String location, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
         try {
-            eventLogic.updateEventLoction("dummy",eventId,location);
-            response.setStatus(HttpServletResponse.SC_CREATED);
+            eventLogic.updateEventLoction("dummy",eventId,Integer.valueOf(location));
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
             return "";
         }catch(HttpRequestException e){
             response.setStatus(e.getStatusCode());
             return e.getErrorMessage();
+        }catch(NumberFormatException e) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return "not a number";
         }
     }
 
@@ -99,7 +102,7 @@ public class EventController {
     public String updateEventDescription(@RequestBody String newEventDescription, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
         try {
             eventLogic.updateEventDescription("dummy",eventId,newEventDescription);
-            response.setStatus(HttpServletResponse.SC_CREATED);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
             return "";
         }catch(HttpRequestException e){
@@ -114,18 +117,21 @@ public class EventController {
      * @param eventId id of the updated event
      * @param response response channel
      */
-    @RequestMapping(value = "{eventId}/timeStart", method = RequestMethod.PUT,
+    @RequestMapping(value = "{eventId}/timestart", method = RequestMethod.PUT,
             consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
-    public String updateEventTimeStart(@RequestBody long newTimeStart, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
+    public String updateEventTimeStart(@RequestBody String newTimeStart, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
         try {
-            eventLogic.updateEventTimeStart("dummy",eventId, new Date(newTimeStart));
-            response.setStatus(HttpServletResponse.SC_CREATED);
+            eventLogic.updateEventTimeStart("dummy",eventId, new Date(Long.valueOf(newTimeStart)));
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
             return "";
         }catch(HttpRequestException e){
             response.setStatus(e.getStatusCode());
             return e.getErrorMessage();
+        }catch(NumberFormatException e) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return "not a number";
         }
     }
 
@@ -135,18 +141,21 @@ public class EventController {
      * @param eventId id of the updated event
      * @param response response channel
      */
-    @RequestMapping(value = "{eventId}/timeEnd", method = RequestMethod.PUT,
+    @RequestMapping(value = "{eventId}/timeend", method = RequestMethod.PUT,
             consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
-    public String updateEventTimEnd(@RequestBody long newTimeEnd, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
+    public String updateEventTimEnd(@RequestBody String newTimeEnd, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
         try {
-            eventLogic.updateEventTimeEnd("dummy",eventId, new Date(newTimeEnd));
-            response.setStatus(HttpServletResponse.SC_CREATED);
+            eventLogic.updateEventTimeEnd("dummy",eventId, new Date(Long.valueOf(newTimeEnd)));
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
             return "";
         }catch(HttpRequestException e){
             response.setStatus(e.getStatusCode());
             return e.getErrorMessage();
+        }catch(NumberFormatException e) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return "not a number";
         }
     }
 
