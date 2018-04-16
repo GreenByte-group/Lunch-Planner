@@ -23,9 +23,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.is;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
@@ -162,4 +164,23 @@ public class UserControllerTest {
                 MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
+
+    // ------------------------- SEND INVITATION ------------------------------
+
+    @Test
+    public void test1GetInvitation() throws Exception{
+
+        TestInvitePersonJson invitedPerson = new TestInvitePersonJson(createString(50),createString(50),1);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/event", invitedPerson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.eventId", is(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username", is(createString(50))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.toInviteUsername", is(createString(50))));
+    }
+
+
+
 }

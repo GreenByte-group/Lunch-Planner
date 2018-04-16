@@ -3,6 +3,7 @@ package group.greenbyte.lunchplanner.event;
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import group.greenbyte.lunchplanner.user.TestInvitePersonJson;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -256,23 +257,12 @@ public class EventLogicTest {
         eventLogic.inviteFriend(userName, eventId, toInviteUsername);
     }
 
-    class TestInvitePersonJson implements Serializable {
-        int eventId = 1;
-        String username;
-        String toInviteUsername;
-
-        TestInvitePersonJson(int lengthUser, int lengthToInvited){
-            username = createString(lengthUser);
-            toInviteUsername = createString(lengthToInvited);
-        }
-    }
-
     // ------------------------- SEND INVITATION ------------------------------
 
     @Test
     public void test1SendInvitation() throws Exception {
 
-        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(50, 50));
+        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(createString(50), createString(50), 1));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
@@ -283,7 +273,7 @@ public class EventLogicTest {
     @Test (expected = HttpRequestException.class)
     public void test2SendInvitationEmptyUsername() throws Exception {
 
-        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(0, 50));
+        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(createString(0), createString(50), 1));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
@@ -294,7 +284,7 @@ public class EventLogicTest {
     @Test (expected = HttpRequestException.class)
     public void test3SendInvitationInvalidUsername() throws Exception {
 
-        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(51, 50));
+        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(createString(51), createString(50), 1));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
@@ -305,7 +295,7 @@ public class EventLogicTest {
     @Test (expected = HttpRequestException.class)
     public void test4SendInvitationEmptyToInvitedUsername() throws Exception {
 
-        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(50, 0));
+        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(createString(50), createString(0), 1));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
@@ -316,7 +306,7 @@ public class EventLogicTest {
     @Test (expected = HttpRequestException.class)
     public void test5SendInvitationInvalidToInvitedUsername() throws Exception {
 
-        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(50, 51));
+        String inventedPersonJson = getJsonFromObject(new TestInvitePersonJson(createString(50), createString(51), 1));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
