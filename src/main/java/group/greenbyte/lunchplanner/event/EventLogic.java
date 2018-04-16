@@ -3,6 +3,7 @@ package group.greenbyte.lunchplanner.event;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import group.greenbyte.lunchplanner.location.LocationDao;
 import group.greenbyte.lunchplanner.location.LocationLogic;
 import group.greenbyte.lunchplanner.location.database.Location;
 import group.greenbyte.lunchplanner.user.database.User;
@@ -17,7 +18,7 @@ import java.util.List;
 public class EventLogic {
 
     private EventDao eventDao;
-    private LocationLogic locationLogic;
+    private LocationDao locationDao;
 
     private boolean hasAdminPrivileges(Event event, String userName) {
         //TODO hasPrivileges
@@ -84,6 +85,7 @@ public class EventLogic {
 
         try {
             Event event = eventDao.getEvent(eventId);
+            //TODO write test for permission
             if(event == null || !hasAdminPrivileges(event, username))
                 throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Event with eventId does not exist: " + eventId);
 
@@ -105,6 +107,7 @@ public class EventLogic {
     void updateEventDescription(String username, int eventId, String description)  throws HttpRequestException {
         try {
             Event event = eventDao.getEvent(eventId);
+            //TODO write test for permission
             if(event == null || !hasAdminPrivileges(event, username))
                 throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Event with eventId does not exist: " + eventId);
 
@@ -125,7 +128,7 @@ public class EventLogic {
      */
     void updateEventLoction(String username, int eventId, int locationId)  throws HttpRequestException {
         try {
-            Location location = locationLogic.getLocation(locationId);
+            Location location = locationDao.getLocation(locationId);
             if(location == null)
                 throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Location with locationId does not exist: " + locationId);
 
@@ -235,16 +238,13 @@ public class EventLogic {
         }
     }
 
-
-
-
     @Autowired
     public void setEventDao(EventDao eventDao) {
         this.eventDao = eventDao;
     }
 
     @Autowired
-    public void setLocationLogic(LocationLogic locationLogic) {
-        this.locationLogic = locationLogic;
+    public void setLocationDao(LocationDao locationDao) {
+        this.locationDao = locationDao;
     }
 }

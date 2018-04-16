@@ -221,6 +221,13 @@ public class EventLogicTest {
         eventLogic.updateEventName(userName, eventId, eventName);
     }
 
+    @Test(expected = HttpRequestException.class)
+    public void updateEventNameOnNotExistingEvent() throws Exception {
+        String eventName = createString(50);
+
+        eventLogic.updateEventName(userName, 10000, eventName);
+    }
+
     // Event Description
     @Test
     public void updateEventDescription() throws Exception {
@@ -251,6 +258,13 @@ public class EventLogicTest {
         eventLogic.updateEventDescription(userName, eventId, eventDescription);
     }
 
+    @Test(expected = HttpRequestException.class)
+    public void updateEventDescriptionOnNotExistingEvent() throws Exception {
+        String eventDescription = createString(50);
+
+        eventLogic.updateEventDescription(userName, 10000, eventDescription);
+    }
+
     // Event location
     @Test
     public void updateEventLocation() throws Exception {
@@ -261,6 +275,19 @@ public class EventLogicTest {
         Event event = eventLogic.getEvent(eventId);
         if(event.getLocation().getLocationId() != newLocationId)
             Assert.fail("Location was not updated");
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void updateEventLocationOnNotExistingEvent() throws Exception {
+        int newLocationId = createLocation(locationLogic, userName, "updated event", "updated description");
+
+        eventLogic.updateEventLoction(userName, 10000, newLocationId);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void updateEventLocationWithNonExistingLocation() throws Exception {
+        int newLocationId = 10000;
+        eventLogic.updateEventLoction(userName, eventId, newLocationId);
     }
 
     // Event Start time
@@ -295,6 +322,13 @@ public class EventLogicTest {
         eventLogic.updateEventTimeStart(userName, eventId, new Date(startTime));
     }
 
+    @Test(expected = HttpRequestException.class)
+    public void updateEventStartTimeOnNonExistingEvent() throws Exception {
+        long startTime = System.currentTimeMillis() + 1000;
+
+        eventLogic.updateEventTimeStart(userName, 100000, new Date(startTime));
+    }
+
     // Event end time
     @Test
     public void updateEventEndTime() throws Exception {
@@ -318,5 +352,12 @@ public class EventLogicTest {
         long endTime = System.currentTimeMillis() - 1000;
 
         eventLogic.updateEventTimeEnd(userName, eventId, new Date(endTime));
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void updateEventEndTimeOnNonExistingEvent() throws Exception {
+        long endTime = System.currentTimeMillis() + 1000000;
+
+        eventLogic.updateEventTimeEnd(userName, 100000, new Date(endTime));
     }
 }

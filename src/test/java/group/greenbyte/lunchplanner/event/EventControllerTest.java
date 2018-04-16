@@ -296,6 +296,24 @@ public class EventControllerTest {
             Assert.fail("Location was not updated");
     }
 
+    @Test
+    public void test2updateEventLocationNoInt() throws Exception{
+        int newLocationId = createLocation(locationLogic, userName, "updated event", "updated description");
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/location").contentType(MediaType.TEXT_PLAIN_VALUE).content("string"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void test3updateEventLocationNoValidLocationId() throws Exception{
+        int newLocationId = createLocation(locationLogic, userName, "updated event", "updated description");
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/location").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(100000)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
     // ------------------ UPDATE EVENT TIMESTART -------------------------
     @Test
     public void test1updateEventStartTime() throws Exception{
@@ -334,6 +352,15 @@ public class EventControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
+    @Test
+    public void test4updateEventStartTimeNoLongAsParameter() throws Exception{
+        long startTime = System.currentTimeMillis() + 1000000000L;
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/timestart").contentType(MediaType.TEXT_PLAIN_VALUE).content("string"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
     // ------------------ UPDATE EVENT TIMEEND -------------------------
     @Test
     public void test1updateEventEndTime() throws Exception{
@@ -360,6 +387,15 @@ public class EventControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/event/" + eventId + "/timeend").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(endTime)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void test3updateEventEndTimeNoLongAsParameter() throws Exception{
+        long endTime = System.currentTimeMillis() - 10000;
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/timeend").contentType(MediaType.TEXT_PLAIN_VALUE).content("string"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 

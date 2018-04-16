@@ -51,14 +51,14 @@ public class LocationLogic {
     }
 
     /**
-     * //TODO how to check privileges
      * Get the location Ojbect from the locationId
      *
      * @param locationId id of the location
      * @return the object of the location or null if not exists
      * @throws HttpRequestException when a database error happens
      */
-    public Location getLocation(int locationId) throws HttpRequestException {
+    public Location getLocation(String userName, int locationId) throws HttpRequestException {
+        //TODO check privileges
         try {
             return locationDao.getLocation(locationId);
         } catch (DatabaseException e) {

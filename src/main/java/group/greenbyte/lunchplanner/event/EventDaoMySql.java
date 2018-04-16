@@ -111,7 +111,7 @@ public class EventDaoMySql implements EventDao {
     public Event updateEventLocation(int eventId, int locationId) throws DatabaseException {
         try{
             Event event = getEvent(eventId);
-            //todo set locationId
+            event.setLocation(locationDao.getLocation(locationId));
 
             return eventDatabaseConnector.save(event);
         }catch(Exception e){
