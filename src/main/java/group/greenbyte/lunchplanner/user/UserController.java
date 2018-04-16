@@ -34,8 +34,8 @@ public class UserController {
      * @param userToInvite
      * @param eventId
      */
-    @RequestMapping(value = "/user/{userToInvite}/invite/event/{eventId}", method = RequestMethod.GET)
-    public void sendInvitation(String username, @PathVariable String userToInvite, @PathVariable int eventId, HttpServletResponse response) throws HttpRequestException{
+    @RequestMapping(value = "/{userToInvite}/invite/event/{eventId}", method = RequestMethod.GET)
+    public void sendInvitation(String username, @RequestParam String userToInvite, @RequestParam int eventId, HttpServletResponse response) throws HttpRequestException{
         response.setStatus(HttpServletResponse.SC_OK);
     }
 

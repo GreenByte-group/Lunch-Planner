@@ -70,7 +70,7 @@ public class EventDaoMySql implements EventDao {
 
     }
 
-    //TODO getEventById implementieren
+
     @Override
     public Event putUserInviteToEvent(String userToInviteName, int eventId) throws DatabaseException {
 
