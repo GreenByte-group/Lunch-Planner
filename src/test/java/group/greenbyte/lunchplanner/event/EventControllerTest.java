@@ -183,13 +183,10 @@ public class EventControllerTest {
     // ------------------ GET ALL ------------------------
 
     @Test
-    public void test1SearchEventsForUserSearchwordIsNull() throws Exception {
-        String searchword = null;
-        String json = getJsonFromObject(searchword);
-
+    public void test1GetAllEvents() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                MockMvcRequestBuilders.get("/event"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test

@@ -28,7 +28,16 @@ public interface EventDao {
                       Date timeStart,
                       Date timeEnd) throws DatabaseException;
 
-    List<Event> getAll(String username,
+    /**
+     * TODO write tests
+     * Searchs for events
+     *
+     * @param username who searches
+     * @param searchword for what the user is searching
+     * @return a list of events matching the search
+     * @throws DatabaseException when an error happens
+     */
+    List<Event> search(String username,
                        String searchword)throws DatabaseException;
 
 }

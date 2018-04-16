@@ -2,6 +2,7 @@ package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -50,5 +51,4 @@ public class UserLogic {
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
-
 }

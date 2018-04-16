@@ -1,20 +1,23 @@
 package group.greenbyte.lunchplanner.event.database;
 
+import group.greenbyte.lunchplanner.location.database.Location;
+
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Event {
 
-    static public int MAX_USERNAME_LENGHT = 50;
-    static public  int MAX_DESCRITION_LENGTH = 1000;
-    static public int MAX_EVENTNAME_LENGTH = 50;
-    static public int MAX_SEARCHWORD_LENGTH = 50;
-
+    static final public int MAX_USERNAME_LENGHT = 50;
+    static final public int MAX_DESCRITION_LENGTH = 1000;
+    static final public int MAX_EVENTNAME_LENGTH = 50;
+    static final public int MAX_SEARCHWORD_LENGTH = 50;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer eventTd;
+    private Integer eventId;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="startDate")
@@ -27,23 +30,21 @@ public class Event {
     @Column(nullable = false)
     private boolean isPublic;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = MAX_EVENTNAME_LENGTH)
     private String eventName;
 
-    @Column(length = 1000)
+    @Column(length = MAX_DESCRITION_LENGTH)
     private String eventDescription;
 
-    @Column
-    private int locationId;
+    @ManyToOne
+    @JoinColumn(name = "locationId")
+    private Location location;
 
-    /*
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name="eventInvited",
-            joinColumns = { @JoinColumn(name = "eventId")},
-            inverseJoinColumns = { @JoinColumn(name = "userName")})
-    private Set<User> usersInvited = new HashSet<>();
-    */
+    @OneToMany(mappedBy = "userInvited")
+    private Set<EventInvitation> usersInvited = new HashSet<>();
+
+    @OneToMany(mappedBy = "team")
+    private Set<EventTeamVisible> teamsVisible = new HashSet<>();
 
     /*
     @ManyToMany(cascade = CascadeType.ALL)
@@ -54,21 +55,8 @@ public class Event {
     private Set<User> usersAdmin = new HashSet<>();
     */
 
-    /*
-    @ManyToMany(mappedBy = "events")
-    private Set<Location> locations = new HashSet<>();
-    */
-
     public Event() {
         isPublic = false;
-    }
-
-    public Integer getEventTd() {
-        return eventTd;
-    }
-
-    public void setEventTd(Integer eventTd) {
-        this.eventTd = eventTd;
     }
 
     public Date getStartDate() {
@@ -111,11 +99,43 @@ public class Event {
         this.eventDescription = eventDescription;
     }
 
-    public int getLocationId() {
-        return locationId;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setLocationId(int locationId) {
-        this.locationId = locationId;
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public Set<EventInvitation> getUsersInvited() {
+        return usersInvited;
+    }
+
+    public void setUsersInvited(Set<EventInvitation> usersInvited) {
+        this.usersInvited = usersInvited;
+    }
+
+    public void addUsersInvited(EventInvitation eventInvitation) {
+        if(usersInvited == null) {
+            usersInvited = new HashSet<>();
+        }
+
+        usersInvited.add(eventInvitation);
+    }
+
+    public Set<EventTeamVisible> getTeamsVisible() {
+        return teamsVisible;
+    }
+
+    public void setTeamsVisible(Set<EventTeamVisible> teamsVisible) {
+        this.teamsVisible = teamsVisible;
+    }
+
+    public Integer getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(Integer eventId) {
+        this.eventId = eventId;
     }
 }

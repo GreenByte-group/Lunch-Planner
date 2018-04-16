@@ -5,17 +5,12 @@ import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
-import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
-import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
@@ -26,10 +21,12 @@ public class UserLogicTest {
     @Autowired
     private UserLogic userLogic;
 
+    // ------------- CREATE USER ------------------
+
     @Test
     public void test1CreateUserValidParam() throws Exception{
         String userName = createString(50);
-        String mail = "nknakldsnf@jkladsf.klen";
+        String mail = "nknakldsnf@jkldadsf.klen";
         String password = createString(80);
 
         userLogic.createUser(userName, password, mail);
