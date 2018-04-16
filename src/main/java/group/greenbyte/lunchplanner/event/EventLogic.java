@@ -75,14 +75,14 @@ public class EventLogic {
      * @exception HttpRequestException  when location and timeStart not valid or eventName has no value
      *                                  or an Database error happens
      */
-    void updateEvent(String username, int eventId, String name, String description,
-                int locationId, Date timeStart, Date timeEnd)  throws HttpRequestException {
-        try {
-            Event updatedEvent = eventDao.updateEvent(username, eventId, name,description,locationId,timeStart,timeEnd);
-        }catch(DatabaseException e){
-            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-        }
-    }
+//    void updateEvent(String username, int eventId, String name, String description,
+//                int locationId, Date timeStart, Date timeEnd)  throws HttpRequestException {
+//        try {
+//            Event updatedEvent = eventDao.updateEvent(username, eventId, name,description,locationId,timeStart,timeEnd);
+//        }catch(DatabaseException e){
+//            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+//        }
+//    }
 
     /**
      *
@@ -138,7 +138,7 @@ public class EventLogic {
      * @exception HttpRequestException  when location and timeStart not valid or eventName has no value
      *                                  or an Database error happens
      */
-    void updateEvenTimeStart(String username, int eventId, Date timeStart) throws HttpRequestException {
+    void updateEventTimeStart(String username, int eventId, Date timeStart) throws HttpRequestException {
         try {
             Event updatedEvent = eventDao.updateEventTimeStart(eventId, timeStart);
         }catch(DatabaseException e){
