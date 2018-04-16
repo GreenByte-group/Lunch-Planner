@@ -6,10 +6,7 @@ import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class EventDaoMySql implements EventDao {
@@ -38,7 +35,7 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
-    public List<Event> getAll(String username, String searchword){
+    public List<Event> getAll(String username, String searchword) throws DatabaseException{
 
         //toDo (searchEvent)
         Iterable<Event> source = eventDatabaseConnector.findAll();
@@ -46,6 +43,62 @@ public class EventDaoMySql implements EventDao {
         source.forEach(target::add);
         return target;
 
+    }
+
+    @Override
+    public Event getEvent(int eventId) throws DatabaseException{
+        Optional<Event> eventList = eventDatabaseConnector.findById(eventId);
+        Object event = eventList.get();
+        return (Event) event;
+    }
+
+    @Override
+    public Event updateEvent(String userName, int eventId, String eventName,String description,
+                             int locationId, Date timeStart, Date timeEnd)throws DatabaseException{
+
+        Event event = new Event();
+        event.setEventName(eventName);
+        event.setEventDescription(description);
+        event.setLocationId(locationId);
+        event.setStartDate(timeStart);
+        event.setEndDate(timeEnd);
+
+
+        try{
+
+            eventDatabaseConnector.save(event);
+            return insertEvent(userName, eventName, description, locationId, timeStart, timeEnd);
+        }catch(DatabaseException e){
+            throw new DatabaseException();
+        }
+
+
+    }
+
+    @Override
+    public Event updateEventName(int eventId, String eventName) throws DatabaseException {
+        return null;
+    }
+
+
+    @Override
+    public Event updateEventDescription(int eventId, String eventName, String description) throws DatabaseException {
+        return null;
+    }
+
+    @Override
+    public Event updateEventLocation(int eventId, String eventName, int locationId) throws DatabaseException {
+        return null;
+    }
+
+    @Override
+    public Event updateEventTimeStart(int eventId, Date timeStart) throws DatabaseException {
+        return null;
+    }
+
+    @Override
+    public Event updateEventTimeEnd(int eventId, Date timeEnd) throws DatabaseException {
+        return null;
     }
 
 }

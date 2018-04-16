@@ -37,7 +37,7 @@ public class EventLogicTest {
         long timeEnd = timeStart + 10000;
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date (timeEnd));
+                timeStart, timeEnd);
 
     }
 
@@ -51,7 +51,7 @@ public class EventLogicTest {
         long timeEnd = timeStart + 10000;
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date (timeEnd));
+        timeStart, timeEnd);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -64,7 +64,7 @@ public class EventLogicTest {
         long timeEnd = timeStart + 10000;
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date (timeEnd));
+                timeStart, timeEnd);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -77,7 +77,7 @@ public class EventLogicTest {
         long timeEnd = timeStart + 10000;
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date (timeEnd));
+                timeStart, timeEnd);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -90,7 +90,7 @@ public class EventLogicTest {
         long timeEnd = timeStart + 10000;
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date (timeEnd));
+              timeStart, timeEnd);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -103,7 +103,7 @@ public class EventLogicTest {
         long timeEnd = timeStart + 10000;
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date (timeEnd));
+               timeStart, timeEnd);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -116,7 +116,7 @@ public class EventLogicTest {
         long timeEnd = timeStart + 10000;
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date (timeEnd));
+           timeStart, timeEnd);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -129,7 +129,7 @@ public class EventLogicTest {
         long timeEnd = timeStart + 10000;
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date (timeEnd));
+           timeStart, timeEnd);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -142,7 +142,7 @@ public class EventLogicTest {
         long timeEnd = timeStart - 10000;
 
         int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date (timeEnd));
+           timeStart, timeEnd);
     }
 
 
@@ -182,6 +182,16 @@ public class EventLogicTest {
 
     @Test
     public void test5getAllEventsOk() throws Exception {
+        String userName  = createString(50);
+        String searchword = createString(0);
+
+        List<Event> result = eventLogic.getAllEvents(userName, searchword);
+    }
+
+    // ------------------ UPDATE  ------------------------
+
+    @Test
+    public void test1update() throws Exception {
         String userName  = createString(50);
         String searchword = createString(0);
 

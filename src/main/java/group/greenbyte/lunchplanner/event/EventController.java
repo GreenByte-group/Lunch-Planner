@@ -30,7 +30,7 @@ public class EventController {
         try {
             //TODO change userName
             int eventId = eventLogic.createEvent("dummy", event.getName(), event.getDescription(),
-                    event.getLocationId(), new Date(event.getTimeStart()), new Date(event.getTimeEnd()));
+                    event.getLocationId(), event.getTimeStart(), event.getTimeEnd());
 
             response.setStatus(HttpServletResponse.SC_CREATED);
             return String.valueOf(eventId);
@@ -39,6 +39,23 @@ public class EventController {
             return null;
         }
     }
+
+    @RequestMapping(value = "", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void updatEvent(@RequestBody EventJson event, int eventId, HttpServletResponse response) {
+
+        try {
+            eventLogic.updateEvent("dummy", eventId, event.getName(), event.getDescription(),
+                    event.getLocationId(), event.getTimeStart(), event.getTimeEnd());
+
+            response.setStatus(HttpServletResponse.SC_CREATED);
+
+        }catch(HttpRequestException e){
+            response.setStatus(e.getStatusCode());
+        }
+    }
+
 
     @RequestMapping(value = "", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,6 +71,8 @@ public class EventController {
             return null;
         }
     }
+
+
 
 
 

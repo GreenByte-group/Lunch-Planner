@@ -41,14 +41,14 @@ public class EventDaoTest {
         long timeEnd = timeStart + 10000;
 
         Event result = eventDao.insertEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date (timeEnd));
+                timeStart, timeEnd);
 
         if(!(
                 result.getEventName().equals(eventName) &&
                 result.getEventDescription().equals(description) &&
                 result.getLocationId() == locationId &&
-                result.getStartDate().equals(new Date(timeStart)) &&
-                result.getEndDate().equals(new Date(timeEnd)))) {
+                result.getStartDate() == (timeStart) &&
+                result.getEndDate() == (timeEnd))) {
             Assert.fail("Event has not the right data");
         }
     }
@@ -64,7 +64,7 @@ public class EventDaoTest {
         long timeEnd = timeStart + 10000;
 
         Event result = eventDao.insertEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date (timeEnd));
+                timeStart, timeEnd);
     }
 
     @Test(expected = DatabaseException.class)
@@ -77,7 +77,7 @@ public class EventDaoTest {
         long timeEnd = timeStart + 10000;
 
         Event result = eventDao.insertEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date (timeEnd));
+                timeStart, timeEnd);
     }
 
     @Test(expected = DatabaseException.class)
@@ -90,6 +90,6 @@ public class EventDaoTest {
         long timeEnd = timeStart + 10000;
 
         Event result = eventDao.insertEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date (timeEnd));
+              timeStart, timeEnd);
     }
 }

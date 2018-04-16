@@ -202,6 +202,19 @@ public class EventControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
+    // ------------------ UPDATE  ------------------------
 
+//    @Test
+//    public void test1updateEventUserNameFitsIn() throws Exception{
+//        long timeStart = System.currentTimeMillis() + 100000;
+//
+//        EventJson event = new EventJson(createString(50), "", 1, timeStart, timeStart + 1000);
+//        String json = getJsonFromObject(event);
+//
+//        mockMvc.perform(
+//                MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+//                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+//
+//    }
 
 }
