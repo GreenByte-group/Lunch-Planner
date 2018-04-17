@@ -38,6 +38,11 @@ import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 @ActiveProfiles("application-test.properties")
 public class EventLogicTest {
 
+    private MockMvc mockMvc;
+
+    @Autowired
+    private WebApplicationContext context;
+
     @Autowired
     private EventLogic eventLogic;
 
@@ -56,6 +61,8 @@ public class EventLogicTest {
         userName = createUserIfNotExists(userLogic, "dummy");
         locationId = createLocation(locationLogic, userName, "Test location", "test description");
         eventId = createEvent(eventLogic, userName, locationId);
+
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
 
     // ------------------------- CREATE EVENT ------------------------------
@@ -371,17 +378,6 @@ public class EventLogicTest {
     }
 
     // ------------------------- INVITE FRIEND ------------------------------
-
-    private MockMvc mockMvc;
-
-    @Autowired
-    private WebApplicationContext context;
-
-    @Before
-    public void setUp() throws Exception {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-        //mockMvc = MockMvcBuilders.standaloneSetup(eventController).build();
-    }
 
     @Test
     public void test1InviteMaxUsernameLength() throws Exception {
