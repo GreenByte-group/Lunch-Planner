@@ -6,6 +6,7 @@ import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.location.LocationDao;
 import group.greenbyte.lunchplanner.location.LocationLogic;
 import group.greenbyte.lunchplanner.location.database.Location;
+import group.greenbyte.lunchplanner.user.UserLogic;
 import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ public class EventLogic {
 
     private EventDao eventDao;
     private LocationDao locationDao;
+    private UserLogic userLogic;
 
     /**
      * Checks if a user has privileges to change the event object
@@ -301,8 +303,9 @@ public class EventLogic {
             eventDao.putUserInviteToEvent(userToInvite, eventId);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-
         }
+
+        userLogic.sendInvitation(username, userToInvite);
     }
 
     private boolean isValidName(String name){
@@ -324,5 +327,10 @@ public class EventLogic {
     @Autowired
     public void setLocationDao(LocationDao locationDao) {
         this.locationDao = locationDao;
+    }
+
+    @Autowired
+    public void setUserLogic(UserLogic userLogic) {
+        this.userLogic = userLogic;
     }
 }

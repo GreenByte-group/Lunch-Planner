@@ -47,6 +47,16 @@ public class UserLogic {
         }
     }
 
+    /**
+     * Send an invitation to a user (async)
+     *
+     * @param userName who intivtes
+     * @param toInviteUserName who is invited
+     */
+    public void sendInvitation(String userName, String toInviteUserName) {
+        //ToDO send notfication to user
+    }
+
     @Autowired
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
