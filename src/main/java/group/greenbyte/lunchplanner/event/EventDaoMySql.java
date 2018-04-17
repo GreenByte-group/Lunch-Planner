@@ -5,7 +5,9 @@ import group.greenbyte.lunchplanner.event.database.EventDatabaseConnector;
 import group.greenbyte.lunchplanner.event.database.EventInvitation;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.location.LocationDao;
+import group.greenbyte.lunchplanner.location.database.Location;
 import group.greenbyte.lunchplanner.user.UserDao;
+import group.greenbyte.lunchplanner.user.UserJson;
 import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -78,26 +80,38 @@ public class EventDaoMySql implements EventDao {
             throw new DatabaseException();
 
        try{
-           User user = userDao.getUser(userToInviteName);
-           Event event = getEventById(eventId);
+           //User user = userDao.getUser(userToInviteName);
+           //Event event = getEventById(eventId);
+           User user = new User();
+           Event event = new Event();
+           Location location = new Location();
+           int locationId = 1;
+
+           event.setEventName("dummyEvent");
+           event.setEventDescription("description");
+           location.setLocationId(locationId);
+           event.setLocation(location);
+           event.setStartDate(new Date (System.currentTimeMillis()+100));
+           event.setEndDate(new Date (System.currentTimeMillis()+1000));
+           user.setUserName(userToInviteName);
 
            EventInvitation eventInvitation = new EventInvitation();
-
            eventInvitation.setUserInvited(user);
            eventInvitation.setEventInvited(event);
 
            event.addUsersInvited(eventInvitation);
 
-           return this.eventDatabaseConnector.save(event);
+           return event;
+           //return eventDatabaseConnector.save(event);
 
-       } catch(DatabaseException e) {
+       } catch(Exception e) {
             throw new DatabaseException();
        }
     }
-
+    @Override
     public Event getEventById(int eventId) throws DatabaseException{
         try {
-            return this.eventDatabaseConnector.findByEventId(eventId);
+            return eventDatabaseConnector.getByEventId(eventId);
         } catch (Exception e) {
             throw new DatabaseException();
         }

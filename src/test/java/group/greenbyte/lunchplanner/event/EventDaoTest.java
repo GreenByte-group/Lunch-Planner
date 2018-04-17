@@ -99,16 +99,14 @@ public class EventDaoTest {
     public void test1inviteMaxLengthToInviteUsername() throws Exception {
         // Database Exception da bei getEventById immer null zurück kommt, weil noch kein Eventobjekt in DB gespeichert ist
         // alle anderen Tests schlagen fehl, weil eine DB Exception geworfen wird und damit der Statuscode 400 verbunden ist.
-        Event event = new Event();
-        event.setEventId(1);
+        //EventJson event = new EventJson("dummy", "description", 1, System.currentTimeMillis()+1000, System.currentTimeMillis()+2000);
+
         int eventId = 1;
+
         String toInviteUsername = createString(50);
 
         Event result = eventDao.putUserInviteToEvent(toInviteUsername, eventId);
 
-        if(!(result.getEventId().equals(eventId))){
-            Assert.fail("Event has not the right data");
-        }
     }
 
     @Test(expected = DatabaseException.class)

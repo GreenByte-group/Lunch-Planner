@@ -52,4 +52,11 @@ public interface EventDao {
      */
     Event putUserInviteToEvent (String userToInviteName, int eventId) throws DatabaseException;
 
+    /**
+     *
+     * @param eventId the eventID for searching
+     * @return the Event of the eventID
+     * @throws DatabaseException when an unexpected error happens
+     */
+    Event getEventById(int eventId) throws DatabaseException;
 }
