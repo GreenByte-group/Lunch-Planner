@@ -233,26 +233,13 @@ public class EventControllerTest {
 
     @Test
     public void test1InviteFriend() throws Exception {
-
-        String myUsername = createString(50);
-        String userToInvite = createString(50);
-        TestInvitePersonJson invitedPerson = new TestInvitePersonJson(myUsername, userToInvite, 1);
-
-        String inventedPersonJson = getJsonFromObject(invitedPerson);
-
         MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders.post("/event/" + userToInvite + "/invite/event/" + 1).contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
+                MockMvcRequestBuilders.post("/event/" + userName + "/invite/event/" + eventId))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
                 .andReturn();
 
         String response = result.getResponse().getContentAsString();
-
-        try {
-            Integer.valueOf(response);
-        } catch (NumberFormatException e) {
-            Assert.fail("Result is not a number");
-        }
     }
 
     @Test

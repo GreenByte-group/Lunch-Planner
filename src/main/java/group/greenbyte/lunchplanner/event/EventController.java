@@ -182,15 +182,18 @@ public class EventController {
 
 
     @RequestMapping(value = "/{userToInvite}/invite/event/{eventId}", method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE )
+            produces = MediaType.TEXT_PLAIN_VALUE )
     @ResponseBody
-    public void inviteFriend(@PathVariable TestInvitePersonJson json, @PathVariable("userToInvite") String userToInvite, @RequestParam ("eventId") int eventId, HttpServletResponse response){
+    public String inviteFriend(@PathVariable("userToInvite") String userToInvite, @PathVariable ("eventId") int eventId, HttpServletResponse response){
         try {
-            eventLogic.inviteFriend(json.getUsername(), json.getToInviteUsername(), json.getEventId());
+            eventLogic.inviteFriend("dummy", userToInvite, eventId);
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
         }
+
+        return "";
     }
 
 
