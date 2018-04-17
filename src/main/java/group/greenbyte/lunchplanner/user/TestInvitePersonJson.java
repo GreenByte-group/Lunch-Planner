@@ -6,11 +6,11 @@ public class TestInvitePersonJson implements Serializable {
 
     private int eventId;
     private String username;
-    private String toInviteUsername;
+    private String userToInvite;
 
-    public TestInvitePersonJson(String username, String toInviteUsername, int eventId){
+    public TestInvitePersonJson(String username, String userToInvite, int eventId){
         this.username = username;
-        this.toInviteUsername = toInviteUsername;
+        this.userToInvite = userToInvite;
         this.eventId = eventId;
     }
 
@@ -31,11 +31,11 @@ public class TestInvitePersonJson implements Serializable {
     }
 
     public String getToInviteUsername() {
-        return toInviteUsername;
+        return userToInvite;
     }
 
-    public void setToInviteUsername(String toInviteUsername) {
-        this.toInviteUsername = toInviteUsername;
+    public void setToInviteUsername(String userToInvite) {
+        this.userToInvite = userToInvite;
     }
 
 

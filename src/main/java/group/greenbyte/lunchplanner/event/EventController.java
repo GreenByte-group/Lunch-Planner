@@ -2,6 +2,7 @@ package group.greenbyte.lunchplanner.event;
 
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import group.greenbyte.lunchplanner.user.TestInvitePersonJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -60,9 +61,9 @@ public class EventController {
     @RequestMapping(value = "/{userToInvite}/invite/event/{eventId}", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE )
     @ResponseBody
-    public void inviteFriend(@RequestParam String userToInvite, @RequestParam int eventId, HttpServletResponse response){
+    public void inviteFriend(@PathVariable TestInvitePersonJson json, @PathVariable("userToInvite") String userToInvite, @RequestParam ("eventId") int eventId, HttpServletResponse response){
         try {
-            eventLogic.inviteFriend("dummy", userToInvite, eventId);
+            eventLogic.inviteFriend(json.getUsername(), json.getToInviteUsername(), json.getEventId());
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());

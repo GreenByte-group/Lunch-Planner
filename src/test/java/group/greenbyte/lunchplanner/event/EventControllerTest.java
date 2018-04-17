@@ -256,7 +256,7 @@ public class EventControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/event/" + userToInvite + "/invite/event/" + 1).contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
 
     }
 
