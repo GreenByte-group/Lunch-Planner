@@ -9,12 +9,15 @@ import group.greenbyte.lunchplanner.location.database.Location;
 import group.greenbyte.lunchplanner.user.UserDao;
 import group.greenbyte.lunchplanner.user.UserJson;
 import group.greenbyte.lunchplanner.user.database.User;
+import org.hibernate.dialect.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.xml.crypto.Data;
+import java.util.*;
 
 @Repository
 public class EventDaoMySql implements EventDao {
@@ -70,6 +73,78 @@ public class EventDaoMySql implements EventDao {
         source.forEach(target::add);
         return target;
 
+    }
+
+    @Override
+    public Event getEvent(int eventId) throws DatabaseException{
+        Optional<Event> optional = eventDatabaseConnector.findById(eventId);
+
+        return optional.orElse(null);
+    }
+
+    @Override
+    public Event updateEventName(int eventId, String eventName) throws DatabaseException {
+        try{
+            Event event = getEvent(eventId);
+            event.setEventName(eventName);
+
+            return eventDatabaseConnector.save(event);
+
+        }catch(Exception e){
+            throw new DatabaseException();
+        }
+    }
+
+    @Override
+    public Event updateEventDescription(int eventId, String description) throws DatabaseException {
+        try{
+            Event event = getEvent(eventId);
+
+            event.setEventDescription(description);
+
+            return eventDatabaseConnector.save(event);
+
+        }catch(Exception e){
+            throw new DatabaseException();
+        }
+    }
+
+    @Override
+    public Event updateEventLocation(int eventId, int locationId) throws DatabaseException {
+        try{
+            Event event = getEvent(eventId);
+            event.setLocation(locationDao.getLocation(locationId));
+
+            return eventDatabaseConnector.save(event);
+        }catch(Exception e){
+            throw new DatabaseException();
+        }
+    }
+
+    @Override
+    public Event updateEventTimeStart(int eventId, Date timeStart) throws DatabaseException {
+        try{
+            Event event = getEvent(eventId);
+            event.setStartDate(timeStart);
+
+            return eventDatabaseConnector.save(event);
+
+        }catch(Exception e){
+            throw new DatabaseException();
+        }
+    }
+
+    @Override
+    public Event updateEventTimeEnd(int eventId, Date timeEnd) throws DatabaseException {
+        try{
+            Event event = getEvent(eventId);
+            event.setEndDate(timeEnd);
+
+            return eventDatabaseConnector.save(event);
+
+        }catch(Exception e){
+            throw new DatabaseException();
+        }
     }
 
 

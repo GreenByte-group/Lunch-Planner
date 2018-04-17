@@ -1,6 +1,7 @@
 package group.greenbyte.lunchplanner.event;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * This class stores all data that can be send / received over REST API.
@@ -12,7 +13,7 @@ public class EventJson implements Serializable {
 
     public EventJson() { }
 
-    public EventJson(String name, String description, int locationId, long timeStart, long timeEnd) {
+    public EventJson(String name, String description, int locationId, Date timeStart, Date timeEnd) {
         this.name = name;
         this.description = description;
         this.locationId = locationId;
@@ -23,8 +24,8 @@ public class EventJson implements Serializable {
     private String name;
     private String description;
     private int locationId;
-    private long timeStart;
-    private long timeEnd;
+    private Date timeStart;
+    private Date timeEnd;
 
     public String getName() {
         return name;
@@ -50,19 +51,19 @@ public class EventJson implements Serializable {
         this.locationId = locationId;
     }
 
-    public long getTimeStart() {
+    public Date getTimeStart() {
         return timeStart;
     }
 
-    public void setTimeStart(long timeStart) {
+    public void setTimeStart(Date timeStart) {
         this.timeStart = timeStart;
     }
 
-    public long getTimeEnd() {
+    public Date getTimeEnd() {
         return timeEnd;
     }
 
-    public void setTimeEnd(long timeEnd) {
+    public void setTimeEnd(Date timeEnd) {
         this.timeEnd = timeEnd;
     }
 }
