@@ -81,41 +81,13 @@ public class EventDaoMySql implements EventDao {
 
         if(searchword == null || searchword.length() > Event.MAX_SEARCHWORD_LENGTH)
             throw new DatabaseException();
-        if(searchword.length() == 0) {
-            Iterable<Event> source = eventDatabaseConnector.findAll();
-            List<Event> target = new ArrayList<>();
-            source.forEach(target::add);
-            return target;
-        }
 
         List <Event> toReturn = new ArrayList<>();
-        Iterable<Event> source = eventDatabaseConnector.findAll();
+        Iterable<Event> source = eventDatabaseConnector.getAllByIsPublic(true);
 
-        for(Event t : source){
-            String name = t.getEventName();
-            if(name.contains(searchword))
-                toReturn.add(t);
-        }
+        source.forEach(toReturn::add);
 
-        for(Event t : source){
-            String location = t.getLocation().getLocationName();
-            if(location.contains(searchword))
-                toReturn.add(t);
-        }
-
-        for(Event t : source){
-            String description = t.getEventDescription();
-            if(description.contains(searchword))
-                toReturn.add(t);
-        }
-
-           for(Event t : source){
-            String id = t.getEventId().toString();
-            if(id == searchword)
-                toReturn.add(t);
-        }
-
-         return toReturn;
+        return toReturn;
     }
 
     @Override
@@ -190,6 +162,18 @@ public class EventDaoMySql implements EventDao {
         }
     }
 
+    @Override
+    public void updateEventIsPublic(int eventId, boolean isPublic) throws DatabaseException {
+        try {
+            Event event = getEvent(eventId);
+            event.setPublic(isPublic);
+
+            eventDatabaseConnector.save(event);
+        } catch (Exception e) {
+            throw new DatabaseException();
+        }
+    }
+
 
     @Override
     public Event putUserInviteToEvent(String userToInviteName, int eventId) throws DatabaseException {
@@ -225,14 +209,6 @@ public class EventDaoMySql implements EventDao {
        } catch(Exception e) {
             throw new DatabaseException();
        }
-    }
-    @Override
-    public Event getEventById(int eventId) throws DatabaseException{
-        try {
-            return eventDatabaseConnector.getByEventId(eventId);
-        } catch (Exception e) {
-            throw new DatabaseException();
-        }
     }
 
     private boolean isValidName(String name){

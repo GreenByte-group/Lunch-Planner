@@ -21,9 +21,11 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Date;
+import java.util.List;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
+import static group.greenbyte.lunchplanner.event.Utils.setEventPublic;
 import static group.greenbyte.lunchplanner.location.Utils.createLocation;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 
@@ -270,5 +272,22 @@ public class EventDaoTest {
     @Test
     public void test2GetEventNull() throws Exception {
         Assert.assertNull(eventDao.getEvent(eventId + 1000));
+    }
+
+    // ---------------------- SEARCH EVENT -------------------------------
+    //all public
+    @Test
+    public void test1SearchPublicEventsShouldBeZero() throws Exception {
+        String searchWord = eventName;
+        List<Event> events = eventDao.findPublicEvents(searchWord);
+        Assert.assertEquals(0, events.size());
+    }
+    @Test
+    public void test2SearchPublicEvents() throws Exception {
+        int publicEventId = createEvent(eventLogic, userName, eventName, eventDescription, eventId, new Date(eventTimeStart), new Date(eventTimeEnd));
+        setEventPublic(eventLogic, publicEventId);
+        String searchWord = eventName;
+        List<Event> events = eventDao.findPublicEvents(searchWord);
+        Assert.assertEquals(1, events.size());
     }
 }

@@ -8,4 +8,6 @@ public interface EventDatabaseConnector extends CrudRepository<Event, Integer> {
 
     Event getByEventId(int eventId);
 
+    List<Event> getAllByIsPublic(boolean isPublic);
+
 }

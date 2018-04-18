@@ -230,6 +230,19 @@ public class EventLogic {
     }
 
     /**
+     * For now only for test purpose
+     *
+     * @param isPublic
+     */
+    public void updateEventIsPublic(int eventId, boolean isPublic) throws HttpRequestException {
+        try {
+            eventDao.updateEventIsPublic(eventId, isPublic);
+        } catch (DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        }
+    }
+
+    /**
      *
      * @param username  userName that is logged in
      * @return List<Event> List with generic typ of Event which includes all Events matching with the searchword

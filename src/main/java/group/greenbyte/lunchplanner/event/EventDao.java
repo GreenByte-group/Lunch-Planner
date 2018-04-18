@@ -103,6 +103,15 @@ public interface EventDao {
                              Date timeEnd) throws DatabaseException;
 
     /**
+     * For now only for test purpose
+     * //TODO change to production
+     * @param eventId
+     * @param isPublic
+     * @throws DatabaseException
+     */
+    void updateEventIsPublic(int eventId, boolean isPublic) throws DatabaseException;
+
+    /**
      * Insert an new invited user into an event
      *
      * @param userToInviteName id of the user who is invited
@@ -115,19 +124,10 @@ public interface EventDao {
 
     /**
      *
-     * @param eventId the eventID for searching
-     * @return the Event of the eventID
-     * @throws DatabaseException when an unexpected error happens
-     */
-    Event getEventById(int eventId) throws DatabaseException;
-    /**
-     *
      * @param searchword for what the user is searching
      * @return a list of events matching the search
      * @throws DatabaseException when an error happens
      */
     List<Event> findPublicEvents(String searchword) throws DatabaseException;
-
-
 
 }
