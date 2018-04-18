@@ -2,6 +2,7 @@ package group.greenbyte.lunchplanner.team;
 
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.team.database.TeamDatabaseConnector;
+import group.greenbyte.lunchplanner.team.database.TeamInvitation;
 import group.greenbyte.lunchplanner.team.database.TeamMember;
 import group.greenbyte.lunchplanner.user.UserDao;
 import group.greenbyte.lunchplanner.user.database.User;
@@ -60,8 +61,8 @@ public class TeamDaoMySql implements TeamDao {
             throw new DatabaseException();
 
         try{
-            //User user = userDao.getUser(userToInviteName);
-            //Event event = getEventById(eventId);
+            //User user = userDao.getUser(userToInvite);
+            //Team team = getEventById(teamId);
             User user = new User();
             Team team = new Team();
 
