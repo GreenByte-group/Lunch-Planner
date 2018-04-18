@@ -319,6 +319,22 @@ public class EventLogic {
             return false;
     }
 
+    public List<Event> searchEventsForUser(String userName, String searchword) throws HttpRequestException{
+
+        if(searchword == null || searchword.length() == 0 || searchword.length() > Event.MAX_SEARCHWORD_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Searchword is to long, empty or null ");
+        if(userName == null || userName.length()== 0 || userName.length() > Event.MAX_USERNAME_LENGHT)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is to long, empty or null ");
+
+        try{
+//            User user = userLogic.getUser(userName);
+            return eventDao.findPublicEvents(searchword);
+
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        }
+    }
+
 
     @Autowired
     public void setEventDao(EventDao eventDao) {
