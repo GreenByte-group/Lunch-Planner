@@ -3,6 +3,7 @@ package group.greenbyte.lunchplanner.team;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.team.database.Team;
+import group.greenbyte.lunchplanner.user.UserLogic;
 import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class TeamLogic {
 
     private TeamDao teamdao;
+    private UserLogic userLogic;
     /**
      *
      * @param userName userName that is logged in
@@ -66,6 +68,43 @@ public class TeamLogic {
     /*private canCreateTeam(Team parent, String teamName) {
         return false;
     }*/
+
+    /**
+     * Invite user to a team
+     *
+     * @param username id of the user who creates the events
+     * @param userToInvite id of the user who is invited
+     * @param teamId id of team
+     * @return the Event of the invitation
+     *
+     * @throws HttpRequestException when an unexpected error happens
+     *
+     */
+    public void inviteTeamMember(String username, String userToInvite, int teamId) throws HttpRequestException{
+
+        if(!isValidName(username))
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximun length" + User.MAX_USERNAME_LENGTH + ", minimum length 1");
+        if(!isValidName(userToInvite))
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username of invited user is not valid, maximun length" + User.MAX_USERNAME_LENGTH + ", minimum length 1");
+
+        try{
+            teamdao.putUserTeamMember(userToInvite, teamId);
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        }
+
+        userLogic.sendInvitation(username, userToInvite);
+    }
+
+    private boolean isValidName(String name){
+        if(name.length() <= User.MAX_USERNAME_LENGTH && name.length() > 0){
+            System.out.println("isValid");
+            return true;
+        }
+
+        else
+            return false;
+    }
 
 
 

@@ -25,4 +25,14 @@ public interface TeamDao {
      */
     Team getTeam(int teamId) throws DatabaseException;
 
+    /**
+     * Insert an new invited user into a team
+     *
+     * @param userToInvite id of the user who is invited
+     * @param teamId id of the event
+     * @return the team of the teamID
+     *
+     * @throws DatabaseException when an unexpected error happens
+     */
+    Team putUserTeamMember(String userToInvite, int teamId) throws DatabaseException;
 }

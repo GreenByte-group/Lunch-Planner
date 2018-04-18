@@ -53,6 +53,43 @@ public class TeamDaoMySql implements TeamDao {
         return null;
     }
 
+    @Override
+    public Team putUserTeamMember(String userToInvite, int teamId) throws DatabaseException {
+
+        if(!isValidName(userToInvite))
+            throw new DatabaseException();
+
+        try{
+            //User user = userDao.getUser(userToInviteName);
+            //Event event = getEventById(eventId);
+            User user = new User();
+            Team team = new Team();
+
+            team.setTeamName("dummyEvent");
+            user.setUserName(userToInvite);
+
+            TeamInvitation teamInvitation = new TeamInvitation();
+            teamInvitation.setUserInvited(user);
+            teamInvitation.setTeamInvited(team);
+
+            team.addUsersInvited(teamInvitation);
+
+            return team;
+            //return eventDatabaseConnector.save(event);
+
+        } catch(Exception e) {
+            throw new DatabaseException();
+        }
+
+    }
+
+    private boolean isValidName(String name){
+        if(name.length() <= User.MAX_USERNAME_LENGTH && name.length() > 0)
+            return true;
+        else
+            return false;
+    }
+
     @Autowired
     public void setTdc(TeamDatabaseConnector tdc) {
         this.tdc = tdc;
