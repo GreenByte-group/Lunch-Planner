@@ -194,6 +194,46 @@ public class TeamControllerTest {
         String response = result.getResponse().getContentAsString();
     }
 
+    @Test
+    public void test2InviteTeamMemberMaxUser() throws Exception {
+        MvcResult result = mockMvc.perform(
+                MockMvcRequestBuilders.post("/team/" + createString(50) + "/invite/team/" + teamId))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+    }
+
+    @Test
+    public void test2InviteTeamMemberInvalidName() throws Exception {
+        String userToInvite = createString(51);
+        int teamId = 1;
+        TestInviteMemberJson invitedMember = new TestInviteMemberJson(userToInvite, teamId);
+
+        String inventedMemberJson = getJsonFromObject(invitedMember);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/team/" + userToInvite + "/invite/team/" + teamId).contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedMemberJson))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+    }
+
+    @Test
+    public void test3InviteTeamMemberEmptyName() throws Exception {
+        String userToInvite = "";
+        int teamId = 1;
+        TestInviteMemberJson invitedMember = new TestInviteMemberJson(userToInvite, teamId);
+
+        String inventedMemberJson = getJsonFromObject(invitedMember);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/team/" + userToInvite + "/invite/team/" + teamId).contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedMemberJson))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+    }
+
+
 
 
 }
