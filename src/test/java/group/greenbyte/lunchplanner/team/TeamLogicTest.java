@@ -104,5 +104,59 @@ public class TeamLogicTest {
         teamLogic.createTeam(userName, parent, teamName, description);
     }
 
+    // ------------------------- CREATE TEAM ------------------------------
 
+    @Test
+    public void test1InviteTeamMemberWithMinLength() throws Exception {
+        String userName = "A";
+        String userToInvite = "A";
+        int teamId = 1;
+
+        teamLogic.inviteTeamMember(userName, userToInvite, teamId);
+    }
+
+    @Test
+    public void test2InviteTeamMemberWithMaxLength() throws Exception {
+        String userName = createString(50);
+        String userToInvite = createString(50);
+        int teamId = 1;
+
+        teamLogic.inviteTeamMember(userName, userToInvite, teamId);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test3InviteTeamMemberUserNameTooLong() throws Exception {
+        String userName = createString(51);
+        String userToInvite = createString(50);
+        int teamId = 1;
+
+        teamLogic.inviteTeamMember(userName, userToInvite, teamId);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test4InviteTeamMemberWithNoUserName() throws Exception {
+        String userName = "";
+        String userToInvite = createString(50);
+        int teamId = 1;
+
+        teamLogic.inviteTeamMember(userName, userToInvite, teamId);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test5InviteTeamMemberUserToInviteTooLong() throws Exception {
+        String userName = createString(50);
+        String userToInvite = createString(51);
+        int teamId = 1;
+
+        teamLogic.inviteTeamMember(userName, userToInvite, teamId);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test6InviteTeamMemberWithNoUserToInvite() throws Exception {
+        String userName = createString(50);
+        String userToInvite = "";
+        int teamId = 1;
+
+        teamLogic.inviteTeamMember(userName, userToInvite, teamId);
+    }
 }
