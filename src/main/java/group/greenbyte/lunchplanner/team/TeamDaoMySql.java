@@ -63,11 +63,12 @@ public class TeamDaoMySql implements TeamDao {
         try{
             //User user = userDao.getUser(userToInvite);
             //Team team = getEventById(teamId);
-            User user = new User();
+            User user = userDao.getUser(userToInvite);
+            //get Team not implemented
             Team team = new Team();
 
             team.setTeamName("dummyEvent");
-            user.setUserName(userToInvite);
+            //user.setUserName(userToInvite);
 
             TeamInvitation teamInvitation = new TeamInvitation();
             teamInvitation.setUserInvited(user);
