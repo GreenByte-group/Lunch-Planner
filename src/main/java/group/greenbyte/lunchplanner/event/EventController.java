@@ -1,5 +1,6 @@
 package group.greenbyte.lunchplanner.event;
 
+import com.sun.org.glassfish.gmbal.ParameterNames;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,20 @@ public class EventController {
         }
     }
 
+    @RequestMapping(value = "", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public List<Event> searchEvents(@RequestParam String searchword, HttpServletResponse response){
+
+     try{
+         List<Event> searchingEvent = eventLogic.searchEventsForUser("dummy", searchword);
+         response.setStatus(HttpServletResponse.SC_OK);
+         return searchingEvent;
+     } catch (HttpRequestException e) {
+         response.setStatus(e.getStatusCode());
+         return null;
+     }
+    }
 
 
     @Autowired

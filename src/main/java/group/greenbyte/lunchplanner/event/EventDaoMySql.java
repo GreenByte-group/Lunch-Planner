@@ -10,6 +10,7 @@ import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -60,7 +61,7 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
-    public List<Event> search(String username, String searchword){
+    public List<Event> search(String username, String searchword) throws DatabaseException {
 
         //TODO (searchEvent)
         Iterable<Event> source = eventDatabaseConnector.findAll();
@@ -68,6 +69,48 @@ public class EventDaoMySql implements EventDao {
         source.forEach(target::add);
         return target;
 
+    }
+
+    @Override
+    public List<Event> findPublicEvents(String searchword) throws DatabaseException{
+
+        if(searchword == null || searchword.length() > Event.MAX_SEARCHWORD_LENGTH)
+            throw new DatabaseException();
+        if(searchword.length() == 0) {
+            Iterable<Event> source = eventDatabaseConnector.findAll();
+            List<Event> target = new ArrayList<>();
+            source.forEach(target::add);
+            return target;
+        }
+
+        List <Event> toReturn = new ArrayList<>();
+        Iterable<Event> source = eventDatabaseConnector.findAll();
+
+        for(Event t : source){
+            String name = t.getEventName();
+            if(name.contains(searchword))
+                toReturn.add(t);
+        }
+
+        for(Event t : source){
+            String location = t.getLocation().getLocationName();
+            if(location.contains(searchword))
+                toReturn.add(t);
+        }
+
+        for(Event t : source){
+            String description = t.getEventDescription();
+            if(description.contains(searchword))
+                toReturn.add(t);
+        }
+
+           for(Event t : source){
+            String id = t.getEventId().toString();
+            if(id == searchword)
+                toReturn.add(t);
+        }
+
+         return toReturn;
     }
 
 }

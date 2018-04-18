@@ -47,6 +47,8 @@ public class UserLogic {
         }
     }
 
+
+
     @Autowired
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
