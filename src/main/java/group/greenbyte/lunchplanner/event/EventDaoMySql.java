@@ -91,6 +91,20 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
+    public List<Event> findEventsForTeam(int teamId, String searchword) throws DatabaseException {
+        if(searchword == null || searchword.length() > Event.MAX_SEARCHWORD_LENGTH)
+            throw new DatabaseException();
+
+        List<Event> toReturn = new ArrayList<>();
+        Iterable<Event> source = eventDatabaseConnector.getAllByTeamsVisibleContaining(teamId);
+
+        source.forEach(toReturn::add);
+
+        return toReturn;
+    }
+
+
+    @Override
     public Event getEvent(int eventId) throws DatabaseException{
         Optional<Event> optional = eventDatabaseConnector.findById(eventId);
 

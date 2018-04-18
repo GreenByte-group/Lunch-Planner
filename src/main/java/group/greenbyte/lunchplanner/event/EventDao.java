@@ -123,11 +123,22 @@ public interface EventDao {
     Event putUserInviteToEvent (String userToInviteName, int eventId) throws DatabaseException;
 
     /**
+     * Find all events that are public for all
      *
      * @param searchword for what the user is searching
      * @return a list of events matching the search
      * @throws DatabaseException when an error happens
      */
     List<Event> findPublicEvents(String searchword) throws DatabaseException;
+
+    /**
+     * Find all event that are public for a team
+     *
+     * @param teamId team
+     * @param searchword for what the user is searching
+     * @return a list of events matching the search
+     * @throws DatabaseException when an error happens
+     */
+    List<Event> findEventsForTeam(int teamId, String searchword) throws DatabaseException;
 
 }

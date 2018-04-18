@@ -10,4 +10,6 @@ public interface EventDatabaseConnector extends CrudRepository<Event, Integer> {
 
     List<Event> getAllByIsPublic(boolean isPublic);
 
+    List<Event> getAllByTeamsVisibleContaining(int teamId);
+
 }

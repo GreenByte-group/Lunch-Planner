@@ -290,4 +290,12 @@ public class EventDaoTest {
         List<Event> events = eventDao.findPublicEvents(searchWord);
         Assert.assertEquals(1, events.size());
     }
+
+    //all for teams
+    @Test
+    public void test1SearchPublicForTeam() throws Exception {
+        //TODO write test
+        //TODO write method to add team to event
+        //TODO create team
+    }
 }
