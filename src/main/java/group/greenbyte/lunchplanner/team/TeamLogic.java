@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class TeamLogic {
 
     private TeamDao teamdao;
+
     private UserLogic userLogic;
     /**
      *
@@ -111,5 +112,10 @@ public class TeamLogic {
     @Autowired
     public void setTeamDao(TeamDao teamdao) {
         this.teamdao = teamdao;
+    }
+
+    @Autowired
+    public void setUserLogic(UserLogic userLogic) {
+        this.userLogic = userLogic;
     }
 }
