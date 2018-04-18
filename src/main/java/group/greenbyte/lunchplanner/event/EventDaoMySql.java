@@ -82,6 +82,8 @@ public class EventDaoMySql implements EventDao {
         if(searchword == null || searchword.length() > Event.MAX_SEARCHWORD_LENGTH)
             throw new DatabaseException();
 
+        //TODO einbinden des suchworts
+
         List <Event> toReturn = new ArrayList<>();
         Iterable<Event> source = eventDatabaseConnector.getAllByIsPublic(true);
 
@@ -95,8 +97,25 @@ public class EventDaoMySql implements EventDao {
         if(searchword == null || searchword.length() > Event.MAX_SEARCHWORD_LENGTH)
             throw new DatabaseException();
 
+        //TODO einbinden des suchworts
+
         List<Event> toReturn = new ArrayList<>();
         Iterable<Event> source = eventDatabaseConnector.getAllByTeamsVisibleContaining(teamId);
+
+        source.forEach(toReturn::add);
+
+        return toReturn;
+    }
+
+    @Override
+    public List<Event> findEventsUserInvited(String userName, String searchword) throws DatabaseException {
+        //TODO redundante überprüfung des suchwortes
+        //TODO einbinden des suchworts
+        if(searchword == null || searchword.length() > Event.MAX_SEARCHWORD_LENGTH)
+            throw new DatabaseException();
+
+        List<Event> toReturn = new ArrayList<>();
+        Iterable<Event> source = eventDatabaseConnector.getAllByUsersInvitedContains(userName);
 
         source.forEach(toReturn::add);
 

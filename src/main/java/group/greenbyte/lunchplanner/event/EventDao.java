@@ -141,4 +141,14 @@ public interface EventDao {
      */
     List<Event> findEventsForTeam(int teamId, String searchword) throws DatabaseException;
 
+    /**
+     * Find all event where an user is invited to
+     *
+     * @param userName the user
+     * @param searchword for what the user is searching
+     * @return a list of events matching the search
+     * @throws DatabaseException when an error happens
+     */
+    List<Event> findEventsUserInvited(String userName, String searchword) throws DatabaseException;
+
 }
