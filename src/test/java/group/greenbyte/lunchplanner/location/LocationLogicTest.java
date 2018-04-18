@@ -1,7 +1,10 @@
 package group.greenbyte.lunchplanner.location;
 
 import group.greenbyte.lunchplanner.AppConfig;
+import group.greenbyte.lunchplanner.event.EventLogic;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import group.greenbyte.lunchplanner.user.UserLogic;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
+import static group.greenbyte.lunchplanner.event.Utils.createEvent;
+import static group.greenbyte.lunchplanner.location.Utils.createLocation;
+import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
@@ -20,6 +26,23 @@ public class LocationLogicTest {
 
     @Autowired
     private LocationLogic locationLogic;
+
+    @Autowired
+    private EventLogic eventLogic;
+
+    @Autowired
+    private UserLogic userLogic;
+
+    private String userName;
+    private int locationId;
+    private int eventId;
+
+    @Before
+    public void setUp() throws Exception {
+        userName = createUserIfNotExists(userLogic, "dummy");
+        locationId = createLocation(locationLogic, userName, "Test location", "test description");
+        eventId = createEvent(eventLogic, userName, locationId);
+    }
 
     // ------------------------- CREATE EVENT ------------------------------
 
@@ -103,9 +126,7 @@ public class LocationLogicTest {
     // ---------------------- GET LOCATION ----------------------
     @Test
     public void test1GetLocation() throws Exception {
-        int locationId = 1;
-
-        locationLogic.getLocation(locationId);
+        locationLogic.getLocation(userName, locationId);
     }
 
 }

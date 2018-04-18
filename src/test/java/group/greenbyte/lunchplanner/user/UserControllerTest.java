@@ -3,7 +3,9 @@ package group.greenbyte.lunchplanner.user;
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.EventController;
 import group.greenbyte.lunchplanner.event.EventJson;
+import group.greenbyte.lunchplanner.event.EventLogic;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import group.greenbyte.lunchplanner.location.LocationLogic;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,9 +25,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
+import static group.greenbyte.lunchplanner.event.Utils.createEvent;
+import static group.greenbyte.lunchplanner.location.Utils.createLocation;
+import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.is;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
@@ -38,9 +45,27 @@ public class UserControllerTest {
     @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private EventLogic eventLogic;
+
+    @Autowired
+    private UserLogic userLogic;
+
+    @Autowired
+    private LocationLogic locationLogic;
+
+    private String userName;
+    private int locationId;
+    private int eventId;
+
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+        userName = createUserIfNotExists(userLogic, "dummy");
+        locationId = createLocation(locationLogic, userName, "Test location", "test description");
+        eventId = createEvent(eventLogic, userName, locationId);
+
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+        //mockMvc = MockMvcBuilders.standaloneSetup(eventController).build();
     }
 
     // ------------------ CREATE USER ------------------------
@@ -162,4 +187,21 @@ public class UserControllerTest {
                 MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
+
+    // ------------------------- SEND INVITATION ------------------------------
+
+//    @Test
+//    public void test1GetInvitations() throws Exception{
+//        mockMvc.perform(
+//                MockMvcRequestBuilders.get("/invitations"))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.eventId", is(1)))
+//                //TODO change dummy to real username
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.username", is("dummy")))
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.toInviteUsername", is(userName)));
+//    }
+
+
+
 }

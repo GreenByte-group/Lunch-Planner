@@ -3,6 +3,7 @@ package group.greenbyte.lunchplanner.team.database;
 import group.greenbyte.lunchplanner.event.database.EventTeamVisible;
 
 import javax.persistence.*;
+import javax.print.DocFlavor;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import java.util.Set;
 public class Team {
 
     public static final int MAX_TEAMNAME_LENGHT = 50;
+    public static final int MAX_DESCRIPTION_LENGHT = 1000;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,8 +20,11 @@ public class Team {
     @Column
     private boolean isPublic;
 
-    @Column(length = MAX_TEAMNAME_LENGHT)
+    @Column(length = MAX_TEAMNAME_LENGHT, nullable = false)
     private String teamName;
+
+    @Column(length = MAX_DESCRIPTION_LENGHT)
+    private String description;
 
     @OneToMany(mappedBy = "user")
     private Set<TeamMember> teamsMember;
@@ -76,5 +81,36 @@ public class Team {
 
     public void setTeamsMember(Set<TeamMember> teamsMember) {
         this.teamsMember = teamsMember;
+    }
+
+    public void addTeamsMember(TeamMember teamMember) {
+        if (teamsMember == null)
+            teamsMember = new HashSet<>();
+
+        teamsMember.add(teamMember);
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Team getParentTeam() {
+        return parentTeam;
+    }
+
+    public void setParentTeam(Team parentTeam) {
+        this.parentTeam = parentTeam;
+    }
+
+    public Set<Team> getChildTeams() {
+        return childTeams;
+    }
+
+    public void setChildTeams(Set<Team> childTeams) {
+        this.childTeams = childTeams;
     }
 }

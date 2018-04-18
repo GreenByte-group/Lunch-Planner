@@ -19,11 +19,10 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer eventId;
 
-    @Temporal(TemporalType.TIMESTAMP)
+
     @Column(name="startDate")
     private Date startDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name="endDate")
     private Date endDate;
 
@@ -57,6 +56,14 @@ public class Event {
 
     public Event() {
         isPublic = false;
+    }
+
+    public Integer getEventId() {
+        return eventId;
+    }
+
+    public void setEventTd(Integer eventId) {
+        this.eventId = eventId;
     }
 
     public Date getStartDate() {
@@ -131,9 +138,6 @@ public class Event {
         this.teamsVisible = teamsVisible;
     }
 
-    public Integer getEventId() {
-        return eventId;
-    }
 
     public void setEventId(Integer eventId) {
         this.eventId = eventId;
