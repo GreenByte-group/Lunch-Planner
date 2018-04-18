@@ -209,10 +209,16 @@ public class EventController {
         }
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET,
+    @RequestMapping(value = "/search/", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public void searchEventNoSearchWord() {
+
+    }
+
+    @RequestMapping(value = "/search/{searchWord}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<Event> searchEvents(@RequestParam String searchword, HttpServletResponse response){
+    public List<Event> searchEvents(@PathVariable("searchWord") String searchword, HttpServletResponse response){
 
      try{
          List<Event> searchingEvent = eventLogic.searchEventsForUser("dummy", searchword);

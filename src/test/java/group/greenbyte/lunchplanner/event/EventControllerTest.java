@@ -503,4 +503,33 @@ public class EventControllerTest {
                 MockMvcRequestBuilders.get("/event/" + eventId + 100))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
+
+    // ---------------- SEARCH --------------------
+    @Test
+    public void test1SearchEvents() throws Exception {
+        String searchWord = eventName;
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/event/search/" + searchWord))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+        //TODO check if right answer is given by search
+    }
+
+    @Test
+    public void test1SearchEventsTooLongSearchWord() throws Exception {
+        String searchWord = createString(51);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/event/search/" + searchWord))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void test1SearchEventsNoSearchWord() throws Exception {
+        String searchWord = "";
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/event/search/" + searchWord))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
 }
