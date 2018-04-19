@@ -140,4 +140,14 @@ public interface EventDao {
      * @throws DatabaseException when an unexpected error happens
      */
     Event getEventById(int eventId) throws DatabaseException;
+
+    /**
+     *
+     * @param userName user that replies
+     * @param eventId id of the event
+     * @param answer answer of user
+     * @return Event
+     * @throws DatabaseException
+     */
+    void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException;
 }

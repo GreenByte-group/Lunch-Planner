@@ -183,6 +183,7 @@ public class EventDaoMySql implements EventDao {
             throw new DatabaseException();
        }
     }
+
     @Override
     public Event getEventById(int eventId) throws DatabaseException{
         try {
@@ -191,6 +192,27 @@ public class EventDaoMySql implements EventDao {
             throw new DatabaseException();
         }
     }
+
+    @Override
+    public void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException {
+        if(answer == null)
+            throw new DatabaseException();
+
+        if(!isValidName(userName))
+            throw new DatabaseException();
+
+        if(answer.name().equals("ACCEPT")){
+            try {
+
+            }catch(Exception e){
+
+            }
+        }
+
+
+
+    }
+
 
     private boolean isValidName(String name){
         if(name.length() <= Event.MAX_USERNAME_LENGHT && name.length() > 0)

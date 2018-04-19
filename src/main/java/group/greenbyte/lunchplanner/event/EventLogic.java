@@ -316,8 +316,16 @@ public class EventLogic {
      * @param answer answer of the user
      */
     public void reply(String userName, int eventId, InvitationAnswer answer) throws HttpRequestException {
+        if(!isValidName(userName))
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximun length" + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
+        if(answer == null)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Invalid answer");
 
-
+        try {
+            eventDao.replyInvitation(userName, eventId, answer);
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        }
     }
 
     private boolean isValidName(String name){

@@ -238,4 +238,49 @@ public class EventDaoTest {
 
         Event result = eventDao.putUserInviteToEvent(toInviteUsername, eventId);
     }
+
+    // ------------------------- Reply Invitation ------------------------------
+
+    @Test
+    public void test1ReplyInvitationAccept() throws Exception {
+        String userName = "A";
+        int eventId = 1;
+
+        eventDao.replyInvitation(userName, eventId, InvitationAnswer.ACCEPT);
+    }
+
+    @Test
+    public void test2ReplyInvitationRejectMaxUsername() throws Exception {
+        String userName = createString(50);
+        int eventId = 1;
+
+        eventDao.replyInvitation(userName, eventId, InvitationAnswer.REJECT);
+    }
+    @Test (expected = DatabaseException.class)
+    public void test3ReplyInvitationNoUserName() throws Exception {
+        String userName = "";
+        int eventId = 1;
+
+        eventDao.replyInvitation(userName, eventId, InvitationAnswer.REJECT);
+
+    }
+
+    @Test (expected = DatabaseException.class)
+    public void test4ReplyInvitationNoUserNameTooLong() throws Exception {
+        String userName = createString(51);
+        int eventId = 1;
+
+        eventDao.replyInvitation(userName, eventId, InvitationAnswer.REJECT);
+
+    }
+
+    @Test (expected = DatabaseException.class)
+    public void test5ReplyInvitationAnswerNull() throws Exception {
+        String userName = createString(50);
+        int eventId = 1;
+
+        eventDao.replyInvitation(userName, eventId, null);
+
+    }
+
 }
