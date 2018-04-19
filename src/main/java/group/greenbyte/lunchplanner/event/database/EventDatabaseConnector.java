@@ -8,7 +8,10 @@ public interface EventDatabaseConnector extends CrudRepository<Event, Integer> {
 
     Event getByEventId(int eventId);
 
-    List<Event> getAllByIsPublic(boolean isPublic);
+    //TODO check if that is right
+    List<Event> findByEventNameContainingOrEventDescriptionContainingAndIsPublic(String eventName, String eventDescription, boolean isPublic);
+
+    List<Event> findByTeamsVisibleContains(int teamId);
 
     //TODO check if that is right
     List<Event> getAllByTeamsVisibleContaining(int teamId);

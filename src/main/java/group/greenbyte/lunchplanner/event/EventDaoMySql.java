@@ -85,9 +85,9 @@ public class EventDaoMySql implements EventDao {
         //TODO einbinden des suchworts
 
         List <Event> toReturn = new ArrayList<>();
-        Iterable<Event> source = eventDatabaseConnector.getAllByIsPublic(true);
+        //Iterable<Event> source = eventDatabaseConnector.getAllByIsPublic(true);
 
-        source.forEach(toReturn::add);
+        //source.forEach(toReturn::add);
 
         return toReturn;
     }
