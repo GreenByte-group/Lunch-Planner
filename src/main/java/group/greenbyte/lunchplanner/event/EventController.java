@@ -216,6 +216,7 @@ public class EventController {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return e.getMessage();
         }
+        return "";
 
     }
 
