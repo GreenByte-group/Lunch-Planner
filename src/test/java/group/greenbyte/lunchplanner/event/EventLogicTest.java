@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -475,7 +476,48 @@ public class EventLogicTest {
 
     }
 
-    // ------------------------- INVITE FRIEND ------------------------------
+    // ------------------------- REPLY ------------------------------
+
+    @Test
+    public void test1ReplyAccept() throws Exception {
+        String userName = "A";
+        int eventId = 1;
+        eventLogic.reply(userName, eventId, InvitationAnswer.ACCEPT);
+    }
+
+    @Test
+    public void test2ReplyRejectMaxUsername() throws Exception {
+        String userName = createString(50);
+        int eventId = 1;
+        eventLogic.reply(userName, eventId, InvitationAnswer.REJECT);
+    }
+    @Test (expected = HttpRequestException.class)
+    public void test3ReplyNoUserName() throws Exception {
+
+        String userName = "";
+        int eventId = 1;
+        eventLogic.reply(userName, eventId, InvitationAnswer.REJECT);
+
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test4ReplyNoUserNameTooLong() throws Exception {
+
+        String userName = createString(51);
+        int eventId = 1;
+        eventLogic.reply(userName, eventId, InvitationAnswer.REJECT);
+
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test5ReplyAnswerNull() throws Exception {
+
+        String userName = createString(50);
+        int eventId = 1;
+        eventLogic.reply(userName, eventId, null);
+
+    }
+
 
 
 
