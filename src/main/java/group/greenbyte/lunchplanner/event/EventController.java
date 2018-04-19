@@ -198,14 +198,24 @@ public class EventController {
 
     /**
      *
-     * @param eventId
-     * @param answer
+     * @param eventId id of the event
+     * @param answer answer of the user
      */
     @RequestMapping(value = "/event/{eventId}/reply", method = RequestMethod.PUT,
            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
-    public void reply(@PathVariable("eventId") int eventId, @RequestBody String answer){
+    public String reply(@PathVariable("eventId") int eventId, @RequestBody String answer, HttpServletResponse response){
+        try {
+            eventLogic.reply("dummy", eventId, InvitationAnswer.valueOf(answer));
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
+        } catch(HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        } catch(IllegalArgumentException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return e.getMessage();
+        }
 
     }
 

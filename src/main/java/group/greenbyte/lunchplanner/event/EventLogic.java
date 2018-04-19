@@ -308,6 +308,18 @@ public class EventLogic {
         userLogic.sendInvitation(username, userToInvite);
     }
 
+    /**
+     * Invitation reply
+     *
+     * @param userName user that replies
+     * @param eventId id of the event
+     * @param answer answer of the user
+     */
+    public void reply(String userName, int eventId, InvitationAnswer answer) throws HttpRequestException {
+
+
+    }
+
     private boolean isValidName(String name){
         if(name.length() <= Event.MAX_USERNAME_LENGHT && name.length() > 0){
             System.out.println("isValid");

@@ -2,7 +2,7 @@ package group.greenbyte.lunchplanner.event;
 
 public enum InvitationAnswer {
 
-    ACCEPT("accept"), REJECT("reject");
+    ACCEPT("ACCEPT"), REJECT("REJECT"), MAYBE("MAYBE");
 
     private String answer;
 

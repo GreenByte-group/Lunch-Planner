@@ -475,6 +475,10 @@ public class EventLogicTest {
 
     }
 
+    // ------------------------- INVITE FRIEND ------------------------------
+
+
+
 
 
 }

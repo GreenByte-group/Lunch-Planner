@@ -479,11 +479,20 @@ public class EventControllerTest {
     }
 
     @Test
-    public void test1ReplyReject() throws Exception {
+    public void test2ReplyReject() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/event/" + eventId + "/reply").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(InvitationAnswer.REJECT)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
+
+    @Test
+    public void test2ReplyInvalidAnswer() throws Exception {
+        String answer = "keine lust";
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/reply").contentType(MediaType.TEXT_PLAIN_VALUE).content(answer))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
 
 
 
