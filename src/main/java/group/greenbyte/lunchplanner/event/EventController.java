@@ -196,10 +196,20 @@ public class EventController {
         return "";
     }
 
+    @RequestMapping(value = "/event/{eventId}/reply", method = RequestMethod.PUT,
+            produces = MediaType.TEXT_PLAIN_VALUE)
+
+    @ResponseBody
+    public void reply(@PathVariable("eventId") int eventId, InvitationAnswer answer){
+
+
+    }
+
 
     @Autowired
     public void setEventLogic(EventLogic eventLogic) {
         this.eventLogic = eventLogic;
     }
+
 
 }
