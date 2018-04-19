@@ -52,7 +52,8 @@ public class EventDaoMySql implements EventDao {
 
             EventInvitation eventInvitation = new EventInvitation();
             eventInvitation.setAdmin(true);
-            eventInvitation.setConfirmed(true);
+            //eventInvitation.setConfirmed(true);
+            eventInvitation.setAnswer(InvitationAnswer.ACCEPT);
             eventInvitation.setUserInvited(user);
             eventInvitation.setEventInvited(event);
 
@@ -195,19 +196,49 @@ public class EventDaoMySql implements EventDao {
 
     @Override
     public void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException {
-        if(answer == null)
+        /*if(answer == null)
             throw new DatabaseException();
 
         if(!isValidName(userName))
             throw new DatabaseException();
 
-        if(answer.name().equals("ACCEPT")){
-            try {
+        User user = userDao.getUser(userName);
+        Event event = getEvent(eventId);
+        Set<EventInvitation> usersInvited = event.getUsersInvited();
+        Set<EventInvitation> eventsInvited = user.getEventsInvited();
 
-            }catch(Exception e){
+        switch(answer){
+            case ACCEPT:
+                try{
+                    for(EventInvitation eventInvitation : usersInvited){
+                        if(eventInvitation.getUserInvited().getUserName().equals(userName)){
+                            eventInvitation.setAnswer(InvitationAnswer.ACCEPT);
+                        }
+                    }
+                    event.setUsersInvited(usersInvited);
+                    eventDatabaseConnector.save(event);
 
-            }
-        }
+                }catch(Exception e){
+                    throw new DatabaseException();
+                }
+                break;
+
+            case REJECT:
+                try{
+                    EventInvitation eventInvitation;
+                    for (Iterator<EventInvitation> iterator = eventsInvited.iterator(); iterator.hasNext();) {
+                        eventInvitation =  iterator.next();
+                        if (eventInvitation.getEventInvited().getEventId() == eventId) {
+                            iterator.remove();
+                        }
+                    }
+                    user.setEventsInvited(eventsInvited);
+                    eventDatabaseConnector.save(event);
+                }catch(Exception e){
+                    throw new DatabaseException();
+                }
+        }*/
+
 
 
 
