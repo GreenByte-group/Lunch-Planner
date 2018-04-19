@@ -196,11 +196,15 @@ public class EventController {
         return "";
     }
 
+    /**
+     *
+     * @param eventId
+     * @param answer
+     */
     @RequestMapping(value = "/event/{eventId}/reply", method = RequestMethod.PUT,
-            produces = MediaType.TEXT_PLAIN_VALUE)
-
+           consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
-    public void reply(@PathVariable("eventId") int eventId, InvitationAnswer answer){
+    public void reply(@PathVariable("eventId") int eventId, @RequestBody String answer){
 
 
     }
