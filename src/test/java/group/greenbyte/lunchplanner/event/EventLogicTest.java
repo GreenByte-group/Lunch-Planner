@@ -10,20 +10,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import sun.reflect.annotation.ExceptionProxy;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +25,6 @@ import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
 import static group.greenbyte.lunchplanner.location.Utils.createLocation;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
-import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
@@ -46,6 +39,9 @@ public class EventLogicTest {
 
     @Autowired
     private EventLogic eventLogic;
+
+    @Autowired
+    private EventDao eventDao;
 
     @Autowired
     private UserLogic userLogic;
@@ -242,9 +238,17 @@ public class EventLogicTest {
 
         eventLogic.updateEventName(userName, eventId, eventName);
 
-        Event event = eventLogic.getEvent(eventId);
+        Event event = eventDao.getEvent(eventId);
         if(!event.getEventName().equals(eventName))
             Assert.fail("Name was not updated");
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void updateEventNameNoPermission() throws Exception {
+        String eventName = createString(50);
+        String userName = createUserIfNotExists(userLogic, createString(20));
+
+        eventLogic.updateEventName(userName, eventId, eventName);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -275,9 +279,17 @@ public class EventLogicTest {
 
         eventLogic.updateEventDescription(userName, eventId, eventDescription);
 
-        Event event = eventLogic.getEvent(eventId);
+        Event event = eventDao.getEvent(eventId);
         if(!event.getEventDescription().equals(eventDescription))
             Assert.fail("Description was not updated");
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void updateEventDescriptionNoPermission() throws Exception {
+        String eventDescription = createString(50);
+        String userName = createUserIfNotExists(userLogic, createString(20));
+
+        eventLogic.updateEventDescription(userName, eventId, eventDescription);
     }
 
     @Test
@@ -286,7 +298,7 @@ public class EventLogicTest {
 
         eventLogic.updateEventDescription(userName, eventId, eventDescription);
 
-        Event event = eventLogic.getEvent(eventId);
+        Event event = eventDao.getEvent(eventId);
         if(!event.getEventDescription().equals(eventDescription))
             Assert.fail("Description was not updated");
     }
@@ -310,24 +322,32 @@ public class EventLogicTest {
     public void updateEventLocation() throws Exception {
         int newLocationId = createLocation(locationLogic, userName, "updated event", "updated description");
 
-        eventLogic.updateEventLoction(userName, eventId, newLocationId);
+        eventLogic.updateEventLocation(userName, eventId, newLocationId);
 
-        Event event = eventLogic.getEvent(eventId);
+        Event event = eventDao.getEvent(eventId);
         if(event.getLocation().getLocationId() != newLocationId)
             Assert.fail("Location was not updated");
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void updateEventLocationNoPermission() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(20));
+        int newLocationId = createLocation(locationLogic, userName, "updated event", "updated description");
+
+        eventLogic.updateEventLocation(userName, eventId, newLocationId);
     }
 
     @Test(expected = HttpRequestException.class)
     public void updateEventLocationOnNotExistingEvent() throws Exception {
         int newLocationId = createLocation(locationLogic, userName, "updated event", "updated description");
 
-        eventLogic.updateEventLoction(userName, 10000, newLocationId);
+        eventLogic.updateEventLocation(userName, 10000, newLocationId);
     }
 
     @Test(expected = HttpRequestException.class)
     public void updateEventLocationWithNonExistingLocation() throws Exception {
         int newLocationId = 10000;
-        eventLogic.updateEventLoction(userName, eventId, newLocationId);
+        eventLogic.updateEventLocation(userName, eventId, newLocationId);
     }
 
     // Event Start time
@@ -343,9 +363,17 @@ public class EventLogicTest {
 
         eventLogic.updateEventTimeStart(userName, eventId, new Date(startTime));
 
-        Event event = eventLogic.getEvent(eventId);
+        Event event = eventDao.getEvent(eventId);
         if(event.getStartDate().getTime() != startTime)
             Assert.fail("Time start was not updated");
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void updateEventStartTimeNoPermission() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(20));
+        long startTime = System.currentTimeMillis() + 1000;
+
+        eventLogic.updateEventTimeStart(userName, eventId, new Date(startTime));
     }
 
     @Test(expected = HttpRequestException.class)
@@ -382,9 +410,17 @@ public class EventLogicTest {
 
         eventLogic.updateEventTimeEnd(userName, eventId, new Date(endTime));
 
-        Event event = eventLogic.getEvent(eventId);
+        Event event = eventDao.getEvent(eventId);
         if(event.getEndDate().getTime() != endTime)
             Assert.fail("Time end was not updated");
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void updateEventEndTimeNoPermission() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(20));
+        long endTime = System.currentTimeMillis() + 10000;
+
+        eventLogic.updateEventTimeEnd(userName, eventId, new Date(endTime));
     }
 
     @Test(expected = HttpRequestException.class)

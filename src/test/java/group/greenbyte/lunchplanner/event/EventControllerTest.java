@@ -45,6 +45,9 @@ public class EventControllerTest {
     private EventLogic eventLogic;
 
     @Autowired
+    private EventDao eventDao;
+
+    @Autowired
     private UserLogic userLogic;
 
     @Autowired
@@ -299,7 +302,7 @@ public class EventControllerTest {
                 MockMvcRequestBuilders.put("/event/" + eventId + "/name").contentType(MediaType.TEXT_PLAIN_VALUE).content(eventName))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        Event event = eventLogic.getEvent(eventId);
+        Event event = eventDao.getEvent(eventId);
         if(!event.getEventName().equals(eventName))
             Assert.fail("Name was not updated");
     }
@@ -332,7 +335,7 @@ public class EventControllerTest {
                 MockMvcRequestBuilders.put("/event/" + eventId + "/description").contentType(MediaType.TEXT_PLAIN_VALUE).content(eventDescription))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        Event event = eventLogic.getEvent(eventId);
+        Event event = eventDao.getEvent(eventId);
         if(!event.getEventDescription().equals(eventDescription))
             Assert.fail("Description was not updated");
     }
@@ -365,7 +368,7 @@ public class EventControllerTest {
                 MockMvcRequestBuilders.put("/event/" + eventId + "/location").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(newLocationId)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        Event event = eventLogic.getEvent(eventId);
+        Event event = eventDao.getEvent(eventId);
         if(event.getLocation().getLocationId() != newLocationId)
             Assert.fail("Location was not updated");
     }
@@ -403,7 +406,7 @@ public class EventControllerTest {
                 MockMvcRequestBuilders.put("/event/" + eventId + "/timestart").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(startTime)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        Event event = eventLogic.getEvent(eventId);
+        Event event = eventDao.getEvent(eventId);
         if(event.getStartDate().getTime() != startTime)
             Assert.fail("Time start was not updated");
     }
@@ -450,7 +453,7 @@ public class EventControllerTest {
                 MockMvcRequestBuilders.put("/event/" + eventId + "/timeend").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(endTime)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        Event event = eventLogic.getEvent(eventId);
+        Event event = eventDao.getEvent(eventId);
         if(event.getEndDate().getTime() != endTime)
             Assert.fail("Time end was not updated");
     }
