@@ -196,7 +196,7 @@ public class EventDaoMySql implements EventDao {
 
     @Override
     public void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException {
-        /*if(answer == null)
+        if(answer == null)
             throw new DatabaseException();
 
         if(!isValidName(userName))
@@ -205,44 +205,45 @@ public class EventDaoMySql implements EventDao {
         User user = userDao.getUser(userName);
         Event event = getEvent(eventId);
         Set<EventInvitation> usersInvited = event.getUsersInvited();
-        Set<EventInvitation> eventsInvited = user.getEventsInvited();
+
 
         switch(answer){
             case ACCEPT:
-                try{
-                    for(EventInvitation eventInvitation : usersInvited){
-                        if(eventInvitation.getUserInvited().getUserName().equals(userName)){
-                            eventInvitation.setAnswer(InvitationAnswer.ACCEPT);
+                try {
+                    for (EventInvitation e : usersInvited) {
+                        if (e.getUserInvited().getUserName().equals(userName)) {
+                            e.setAnswer(answer);
                         }
                     }
-                    event.setUsersInvited(usersInvited);
-                    eventDatabaseConnector.save(event);
 
+                    eventDatabaseConnector.save(event);
                 }catch(Exception e){
                     throw new DatabaseException();
                 }
                 break;
 
             case REJECT:
-                try{
-                    EventInvitation eventInvitation;
-                    for (Iterator<EventInvitation> iterator = eventsInvited.iterator(); iterator.hasNext();) {
-                        eventInvitation =  iterator.next();
-                        if (eventInvitation.getEventInvited().getEventId() == eventId) {
-                            iterator.remove();
+                try {
+                    for (EventInvitation e : usersInvited) {
+                        if (e.getUserInvited().getUserName().equals(userName)) {
+                            e.setAnswer(answer);
                         }
                     }
-                    user.setEventsInvited(eventsInvited);
                     eventDatabaseConnector.save(event);
                 }catch(Exception e){
-                    throw new DatabaseException();
+
                 }
-        }*/
+                break;
+
+
+        }
+
+        }
 
 
 
 
-    }
+
 
 
     private boolean isValidName(String name){
