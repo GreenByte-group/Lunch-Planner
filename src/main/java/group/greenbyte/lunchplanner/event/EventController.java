@@ -262,7 +262,7 @@ public class EventController {
     @ResponseBody
     public String reply(@PathVariable("eventId") int eventId, @RequestBody String answer, HttpServletResponse response){
         try {
-            eventLogic.reply("dummy", eventId, InvitationAnswer.valueOf(answer));
+            eventLogic.reply("dummy", eventId, InvitationAnswer.fromString(answer));
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
         } catch(HttpRequestException e) {

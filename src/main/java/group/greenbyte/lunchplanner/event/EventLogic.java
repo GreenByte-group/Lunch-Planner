@@ -331,6 +331,11 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Invalid answer");
 
         try {
+            if(eventDao.getEvent(eventId) == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + eventId + ", was not found");
+
+            //TODO privilege check
+
             eventDao.replyInvitation(userName, eventId, answer);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
