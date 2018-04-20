@@ -60,8 +60,8 @@ public class Utils {
                 timeEnd);
     }
 
-    public static void setEventPublic(EventLogic eventLogic, int eventId) throws Exception {
-        eventLogic.updateEventIsPublic(eventId, true);
+    public static void setEventPublic(EventDao eventDao, int eventId) throws Exception {
+        eventDao.updateEventIsPublic(eventId, true);
     }
 
 }

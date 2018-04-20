@@ -258,10 +258,18 @@ public class EventLogic {
      */
     public Event getEvent(String userName, int eventId)throws HttpRequestException{
         try{
-            if(!hasPrivileges(eventId, userName))
-                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");
 
-            return eventDao.getEvent(eventId);
+
+            Event event = eventDao.getEvent(eventId);
+
+            if(event == null)
+                return null;
+            else {
+                if(!hasPrivileges(eventId, userName))
+                    throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");
+
+                return event;
+            }
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
@@ -288,7 +296,7 @@ public class EventLogic {
         try{
             if(!hasAdminPrivileges(eventId, username))
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have write access to this event");
-            
+
             eventDao.putUserInviteToEvent(userToInvite, eventId);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());

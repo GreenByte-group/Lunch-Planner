@@ -292,7 +292,7 @@ public class EventDaoTest {
     public void test2SearchPublicEvents() throws Exception {
         String newEventName = createString(50);
         int publicEventId = createEvent(eventLogic, userName, newEventName, eventDescription, locationId, new Date(eventTimeStart), new Date(eventTimeEnd));
-        setEventPublic(eventLogic, publicEventId);
+        setEventPublic(eventDao, publicEventId);
         String searchWord = newEventName;
         List<Event> events = eventDao.findPublicEvents(searchWord);
         Assert.assertEquals(1, events.size());

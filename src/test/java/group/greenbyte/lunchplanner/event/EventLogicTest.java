@@ -441,7 +441,6 @@ public class EventLogicTest {
 
     @Test
     public void test1InviteMaxUsernameLength() throws Exception {
-        String userName = createUserIfNotExists(userLogic, createString(50));
         String toInviteUsername = createUserIfNotExists(userLogic, createString(50));
 
         eventLogic.inviteFriend(userName, toInviteUsername, eventId);
@@ -465,7 +464,6 @@ public class EventLogicTest {
 
     @Test (expected = HttpRequestException.class)
     public void test4InviteInvalidToInviteUsername() throws Exception {
-        String userName = createUserIfNotExists(userLogic, createString(50));
         String toInviteUsername = createString(51);
 
         eventLogic.inviteFriend(userName, toInviteUsername, eventId);
@@ -473,7 +471,6 @@ public class EventLogicTest {
 
     @Test (expected = HttpRequestException.class)
     public void test5InviteEmptyToInviteUsername() throws Exception {
-        String userName = createUserIfNotExists(userLogic, createString(50));
         String toInviteUsername = createString(0);
 
         eventLogic.inviteFriend(userName, toInviteUsername, eventId);

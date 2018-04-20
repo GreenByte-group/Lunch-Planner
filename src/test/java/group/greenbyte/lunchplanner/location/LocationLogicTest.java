@@ -124,4 +124,10 @@ public class LocationLogicTest {
         locationLogic.getLocation(userName, locationId);
     }
 
+    @Test(expected = HttpRequestException.class)
+    public void test2GetLocationNoUserRight() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(20));
+        locationLogic.getLocation(userName, locationId);
+    }
+
 }
