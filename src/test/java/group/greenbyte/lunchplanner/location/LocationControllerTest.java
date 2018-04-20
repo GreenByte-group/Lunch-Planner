@@ -1,7 +1,9 @@
 package group.greenbyte.lunchplanner.location;
 
 import group.greenbyte.lunchplanner.AppConfig;
+import group.greenbyte.lunchplanner.event.EventLogic;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import group.greenbyte.lunchplanner.user.UserLogic;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +26,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
+import static group.greenbyte.lunchplanner.event.Utils.createEvent;
+import static group.greenbyte.lunchplanner.location.Utils.createLocation;
+import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration (classes = AppConfig.class)
@@ -36,10 +41,26 @@ public class LocationControllerTest {
     @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private LocationLogic locationLogic;
+
+    @Autowired
+    private EventLogic eventLogic;
+
+    @Autowired
+    private UserLogic userLogic;
+
+    private String userName;
+    private int locationId;
+    private int eventId;
+
     @Before
     public void setUp() throws Exception {
+        userName = createUserIfNotExists(userLogic, "dummy");
+        locationId = createLocation(locationLogic, userName, "Test location", "test description");
+        eventId = createEvent(eventLogic, userName, locationId);
+
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-        //mockMvc = MockMvcBuilders.standaloneSetup(eventController).build();
     }
 
     // ------------------ CREATE LOCATION ------------------------
@@ -160,6 +181,28 @@ public class LocationControllerTest {
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/location").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    // --------------------- GET LOCATION -------------------
+    @Test
+    public void test1GetLocation() throws Exception {
+        String locationName = createString(50);
+        String locationDescription = createString(1000);
+        int locationId = createLocation(locationLogic, userName, locationName, locationDescription);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/location/" + locationId))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.locationName").value(locationName))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.locationDescription").value(locationDescription))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.locationId").value(locationId));
+    }
+
+    @Test
+    public void test2GetLocationNotFound() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/location/" + locationId + 100))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
 }

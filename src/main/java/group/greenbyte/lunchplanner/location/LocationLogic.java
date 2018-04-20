@@ -59,10 +59,16 @@ public class LocationLogic {
      */
     public Location getLocation(String userName, int locationId) throws HttpRequestException {
         try {
-            if(!hasAdminPrivileges(userName, locationId))
-                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have right to edit this location");
+            Location location = locationDao.getLocation(locationId);
 
-            return locationDao.getLocation(locationId);
+            if(location == null)
+                return null;
+            else {
+                if(!hasAdminPrivileges(userName, locationId))
+                    throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have right to edit this location");
+
+                return location;
+            }
         } catch (DatabaseException e) {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
