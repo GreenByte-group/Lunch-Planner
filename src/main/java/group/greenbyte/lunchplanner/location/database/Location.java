@@ -29,10 +29,10 @@ public class Location {
     @Column
     private boolean isPublic;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "userAdmin")
     private Set<LocationAdmin> locationAdmins = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "location")
     private Set<Event> events = new HashSet<>();
 
     public Location() {

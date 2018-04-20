@@ -16,7 +16,11 @@ public class LocationAdmin implements Serializable {
     @Id
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="userName")
-    private User user;
+    private User userAdmin;
+
+    public LocationAdmin() {
+
+    }
 
     public Location getLocation() {
         return location;
@@ -26,11 +30,11 @@ public class LocationAdmin implements Serializable {
         this.location = location;
     }
 
-    public User getUser() {
-        return user;
+    public User getUserAdmin() {
+        return userAdmin;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserAdmin(User userAdmin) {
+        this.userAdmin = userAdmin;
     }
 }

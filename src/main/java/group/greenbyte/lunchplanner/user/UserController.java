@@ -2,6 +2,7 @@ package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +28,18 @@ public class UserController {
             response.setStatus(e.getStatusCode());
         }
     }
+
+//    /**
+//     *
+//     * @param userToInvite
+//     * @param eventId
+//     */
+//    @RequestMapping(value = "/invitations", method = RequestMethod.GET,
+//                    produces = MediaType.APPLICATION_JSON_VALUE)
+//    public String getInvitation(@PathVariable String userToInvite, @PathVariable int eventId, HttpServletResponse response) {
+//        response.setStatus(HttpServletResponse.SC_OK);
+//        return "";
+//    }
 
     @Autowired
     public void setUserLogic(UserLogic userLogic) {

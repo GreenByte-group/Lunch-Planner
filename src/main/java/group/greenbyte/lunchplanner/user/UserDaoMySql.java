@@ -19,7 +19,7 @@ public class UserDaoMySql implements UserDao {
     @Override
     public User getUser(String userName) throws DatabaseException {
         try {
-            return this.userDatabaseConnector.findByUserName(userName);
+            return this.userDatabaseConnector.findUserByUserName(userName);
         } catch (Exception e) {
             throw new DatabaseException();
         }
