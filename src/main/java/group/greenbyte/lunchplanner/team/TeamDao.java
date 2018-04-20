@@ -72,4 +72,23 @@ public interface TeamDao {
      */
     void addUserToTeam(int teamId, String userName) throws DatabaseException;
 
+    /**
+     * Checks if a user has privileges to edit this team
+     *
+     * @param teamId id of the team to edit
+     * @param userName user who wants to edit
+     * @return true when the user has privileges, false if not
+     * @throws DatabaseException
+     */
+    boolean hasAdminPrivileges(int teamId, String userName) throws DatabaseException;
+
+    /**
+     * checks if a user has privileges to views this team
+     *
+     * @param teamId id of the team to view
+     * @param userName user who wants to view the team
+     * @return true when the user has privilges, false if not
+     * @throws DatabaseException
+     */
+    boolean hasViewPrivileges(int teamId, String userName) throws DatabaseException;
 }

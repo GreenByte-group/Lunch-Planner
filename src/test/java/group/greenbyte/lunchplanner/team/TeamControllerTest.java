@@ -181,13 +181,11 @@ public class TeamControllerTest {
 
     @Test
     public void test1inviteTeamMember() throws Exception {
-        MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders.post("/team/" + userName + "/invite/team/" + teamId))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
-                .andReturn();
+        String newUserName = createUserIfNotExists(userLogic, createString(10));
 
-        String response = result.getResponse().getContentAsString();
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/team/" + newUserName + "/invite/team/" + teamId))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
     }
 
     @Test

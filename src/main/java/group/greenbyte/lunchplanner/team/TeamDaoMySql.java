@@ -54,7 +54,7 @@ public class TeamDaoMySql implements TeamDao {
         try {
             Number key = simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
-            //TODO insert admin
+            addAdminToTeam(key.intValue(), adminName);
 
             return key.intValue();
         } catch (Exception e) {
@@ -140,6 +140,37 @@ public class TeamDaoMySql implements TeamDao {
     @Override
     public void addUserToTeam(int teamId, String userName) throws DatabaseException {
         addUserToTeam(teamId, userName, false);
+    }
+
+    @Override
+    public boolean hasAdminPrivileges(int teamId, String userName) throws DatabaseException {
+        try {
+            String SQL = "SELECT count(*) FROM "  + TEAM_MEMBER_TABLE + " WHERE " +
+                    TEAM_MEMBER_TEAM + " = " + teamId + " AND " +
+                    TEAM_MEMBER_USER + " = '" + userName + "' AND " +
+                    TEAM_MEMBER_ADMIN + " = " + 1;
+
+            int count = jdbcTemplate.queryForObject(SQL, Integer.class);
+
+            return count != 0;
+        } catch (Exception e)  {
+            throw new DatabaseException();
+        }
+    }
+
+    @Override
+    public boolean hasViewPrivileges(int teamId, String userName) throws DatabaseException {
+        try {
+            String SQL = "SELECT count(*) FROM "  + TEAM_MEMBER_TABLE + " WHERE " +
+                    TEAM_MEMBER_TEAM + " = " + teamId + " AND " +
+                    TEAM_MEMBER_USER + " = '" + userName + "'";
+
+            int count = jdbcTemplate.queryForObject(SQL, Integer.class);
+
+            return count != 0;
+        } catch (Exception e)  {
+            throw new DatabaseException();
+        }
     }
 
     private void addUserToTeam(int teamId, String userName, boolean admin) throws DatabaseException {

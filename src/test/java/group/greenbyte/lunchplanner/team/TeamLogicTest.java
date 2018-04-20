@@ -46,7 +46,7 @@ public class TeamLogicTest {
         parent = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
     }
 
-    // ------------------------- CREATE TEAM ------------------------------
+    // ------------------------- CREATE TEAM WITH PARENT ------------------------------
 
     @Test
     public void test1CreateTeamWithNoDescription() throws Exception {
@@ -59,6 +59,7 @@ public class TeamLogicTest {
     @Test
     public void test2CreateTeamWithNormalDescriptionMaxUserNameMaxTeamName() throws Exception {
         String userName = createUserIfNotExists(userLogic, createString(50));
+        int parent = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
         String teamName = createString(50);
         String description = "Super Team";
 
@@ -68,6 +69,7 @@ public class TeamLogicTest {
     @Test
     public void test3CreateTeamWithMaxDescriptionMaxUserNameMaxTeamName() throws Exception {
         String userName = createUserIfNotExists(userLogic, createString(50));
+        int parent = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
         String teamName = createString(50);
         String description = createString(1000);
 
@@ -116,12 +118,94 @@ public class TeamLogicTest {
         teamLogic.createTeamWithParent(userName, parent, teamName, description);
     }
 
+    @Test(expected = HttpRequestException.class)
+    public void test7CreateTeamWithoutPermissionForParent() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(50));
+        String teamName = createString(50);
+        String description = createString(1000);
+
+        teamLogic.createTeamWithParent(userName, parent, teamName, description);
+    }
+
+    // ------------------------- CREATE TEAM WITHOUT PARENT ------------------------------
+
+    @Test
+    public void test1CreateTeamNoParentWithNoDescription() throws Exception {
+        String teamName = "A";
+        String description = "";
+
+        teamLogic.createTeamWithoutParent(userName, teamName, description);
+    }
+
+    @Test
+    public void test2CreateTeamWithNoParentNormalDescriptionMaxUserNameMaxTeamName() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(50));
+        int parent = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
+        String teamName = createString(50);
+        String description = "Super Team";
+
+        teamLogic.createTeamWithoutParent(userName, teamName, description);
+    }
+
+    @Test
+    public void test3CreateTeamWithNoParentMaxDescriptionMaxUserNameMaxTeamName() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(50));
+        int parent = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
+        String teamName = createString(50);
+        String description = createString(1000);
+
+        teamLogic.createTeamWithoutParent(userName, teamName, description);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test4CreateTeamWithNoParentNoUserName() throws Exception {
+        String userName = "";
+        String teamName = createString(50);
+        String description = createString(1000);
+
+        teamLogic.createTeamWithoutParent(userName, teamName, description);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test5CreateTeamNoParentUserNameTooLong() throws Exception {
+        String userName = createString(51);
+        String teamName = createString(50);
+        String description = createString(1000);
+
+        teamLogic.createTeamWithoutParent(userName, teamName, description);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test6CreateTeamWithNoParentNoTeamName() throws Exception {
+        String teamName = "";
+        String description = createString(1000);
+
+        teamLogic.createTeamWithoutParent(userName, teamName, description);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test7CreateTeamNoParentTeamNameTooLong() throws Exception {
+        String teamName = createString(51);
+        String description = createString(1000);
+
+        teamLogic.createTeamWithoutParent(userName, teamName, description);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test6CreateTeamNoParentDescriptionTooLong() throws Exception {
+        String teamName = createString(50);
+        String description = createString(1001);
+
+        teamLogic.createTeamWithoutParent(userName, teamName, description);
+    }
+
     // ------------------------- INVITE TEAM MEMBER ------------------------------
 
     @Test
     public void test1InviteTeamMemberWithMinLength() throws Exception {
-        String userName = createUserIfNotExists(userLogic, "A");
-        String userToInvite = createUserIfNotExists(userLogic, "A");
+        String userName = createUserIfNotExists(userLogic, createString(1));
+        int parent = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
+        String userToInvite = createUserIfNotExists(userLogic, createString(1));
 
         teamLogic.inviteTeamMember(userName, userToInvite, parent);
     }
@@ -129,6 +213,7 @@ public class TeamLogicTest {
     @Test
     public void test2InviteTeamMemberWithMaxLength() throws Exception {
         String userName = createUserIfNotExists(userLogic, createString(50));
+        int parent = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
         String userToInvite = createUserIfNotExists(userLogic, createString(50));
 
         teamLogic.inviteTeamMember(userName, userToInvite, parent);
@@ -153,6 +238,7 @@ public class TeamLogicTest {
     @Test(expected = HttpRequestException.class)
     public void test5InviteTeamMemberUserToInviteTooLong() throws Exception {
         String userName = createUserIfNotExists(userLogic, createString(50));
+        int parent = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
         String userToInvite = createUserIfNotExists(userLogic, createString(51));
 
         teamLogic.inviteTeamMember(userName, userToInvite, parent);
@@ -161,7 +247,16 @@ public class TeamLogicTest {
     @Test(expected = HttpRequestException.class)
     public void test6InviteTeamMemberWithNoUserToInvite() throws Exception {
         String userName = createUserIfNotExists(userLogic, createString(50));
+        int parent = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
         String userToInvite = createUserIfNotExists(userLogic, createString(0));
+
+        teamLogic.inviteTeamMember(userName, userToInvite, parent);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test6InviteTeamMemberNoAccessToTeam() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(50));
+        String userToInvite = createUserIfNotExists(userLogic, createString(50));
 
         teamLogic.inviteTeamMember(userName, userToInvite, parent);
     }

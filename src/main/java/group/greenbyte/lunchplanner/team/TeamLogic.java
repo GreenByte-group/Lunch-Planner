@@ -28,13 +28,10 @@ public class TeamLogic {
     int createTeamWithParent(String userName, int parent, String teamName, String description) throws HttpRequestException {
         checkParams(userName, teamName, description);
 
-        /*if(hasRootPrivileges(userName, teamdao.getTeam(parent)))
-            throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "No Privileges");*/
-
-        /*if(canCreateTeam(teamdao.getTeam(parent), teamName))
-            throw new HttpRequestException(HttpStatus.CONFLICT.value(), "Team already exists");*/
-
         try {
+            if(!hasViewPrivileges(userName, parent))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "No Privileges to acces parent team: " + parent);
+
             return teamdao.insertTeamWithParent(teamName, description, userName, parent);
         } catch(DatabaseException d){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), d.getMessage());
@@ -77,19 +74,13 @@ public class TeamLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Description too long");
     }
 
-    //TODO check privileges
+    private boolean hasViewPrivileges(String userName, int teamId) throws DatabaseException {
+        return teamdao.hasViewPrivileges(teamId, userName);
+    }
 
-    /*private boolean hasViewPrivileges(String userName, Team team){
-        return false;
-    }*/
-
-    /*private boolean hasRootPrivileges(String userName, Team team){
-        return false;
-    }*/
-
-    /*private canCreateTeam(Team parent, String teamName) {
-        return false;
-    }*/
+    private boolean hasRootPrivileges(String userName, int teamId) throws DatabaseException {
+        return teamdao.hasAdminPrivileges(teamId, userName);
+    }
 
     /**
      * Invite user to a team
@@ -110,6 +101,9 @@ public class TeamLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username of invited user is not valid, maximun length" + User.MAX_USERNAME_LENGTH + ", minimum length 1");
 
         try{
+            if(!hasRootPrivileges(username, teamId))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have write access to this team");
+
             teamdao.addUserToTeam(teamId, userToInvite);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
@@ -119,13 +113,7 @@ public class TeamLogic {
     }
 
     private boolean isValidName(String name){
-        if(name.length() <= User.MAX_USERNAME_LENGTH && name.length() > 0){
-            System.out.println("isValid");
-            return true;
-        }
-
-        else
-            return false;
+        return name.length() <= User.MAX_USERNAME_LENGTH && name.length() > 0;
     }
 
 
