@@ -142,7 +142,32 @@ public interface EventDao {
 
     void putUserInviteToEventAsAdmin (String userToInviteName, int eventId) throws DatabaseException;
 
+    /**
+     * adds a team to the event
+     *
+     * @param eventId
+     * @param teamId
+     * @throws DatabaseException
+     */
     void addTeamToEvent(int eventId, int teamId) throws DatabaseException;
 
+    /**
+     * checks if a user has admin privileges for the given event
+     *
+     * @param userName
+     * @param eventId
+     * @return true when the user has admin privileges, false if not
+     * @throws DatabaseException
+     */
     boolean userHasAdminPrivileges(String userName, int eventId) throws DatabaseException;
+
+    /**
+     * checks if a user has privileges for the given event
+     *
+     * @param userName
+     * @param eventId
+     * @return true when the user has privileges, false if not
+     * @throws DatabaseException
+     */
+    boolean userHasPrivileges(String userName, int eventId) throws DatabaseException;
 }

@@ -272,6 +272,17 @@ public class EventDaoMySql implements EventDao {
         return count != 0;
     }
 
+    @Override
+    public boolean userHasPrivileges(String userName, int eventId) throws DatabaseException {
+        String SQL = "SELECT count(*) FROM " + EVENT_INVITATION_TABLE + " WHERE " +
+                EVENT_INVITATION_USER + " = '" + userName + "' " +
+                " AND " + EVENT_INVITATION_EVENT + " = " + eventId;
+
+        int count = jdbcTemplate.queryForObject(SQL, Integer.class);
+
+        return count != 0;
+    }
+
     private Event putUserInvited(String userName, int eventId, boolean admin, boolean reply) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(EVENT_INVITATION_TABLE);

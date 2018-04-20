@@ -25,12 +25,23 @@ public class EventLogic {
     /**
      * Checks if a user has privileges to change the event object
      *
-     * @param event to check
+     * @param eventId id of the event to check
      * @param userName who wants to change
      * @return true if the user has permission, false if not
      */
-    private boolean hasAdminPrivileges(Event event, String userName) throws DatabaseException {
-        return eventDao.userHasAdminPrivileges(userName, event.getEventId());
+    private boolean hasAdminPrivileges(int eventId, String userName) throws DatabaseException {
+        return eventDao.userHasAdminPrivileges(userName, eventId);
+    }
+
+    /**
+     * Checks if a user has privileges to view the event object
+     *
+     * @param eventId id of the event to check
+     * @param userName who wants to change
+     * @return true if the user has permission, false if not
+     */
+    private boolean hasPrivileges(int eventId, String userName) throws DatabaseException {
+        return eventDao.userHasPrivileges(userName, eventId);
     }
 
     /**
@@ -100,8 +111,11 @@ public class EventLogic {
 
         try {
             Event event = eventDao.getEvent(eventId);
-            if(event == null || !hasAdminPrivileges(event, username))
-                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Event with eventId does not exist: " + eventId);
+            if(event == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with eventId does not exist: " + eventId);
+
+            if(!hasAdminPrivileges(eventId, username))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have write access to this event");
 
             Event updatedEvent = eventDao.updateEventName(eventId,name);
 
@@ -121,8 +135,11 @@ public class EventLogic {
     void updateEventDescription(String username, int eventId, String description)  throws HttpRequestException {
         try {
             Event event = eventDao.getEvent(eventId);
-            if(event == null || !hasAdminPrivileges(event, username))
-                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Event with eventId does not exist: " + eventId);
+            if(event == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with eventId does not exist: " + eventId);
+
+            if(!hasAdminPrivileges(eventId, username))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have write access to this event");
 
             Event updatedEvent = eventDao.updateEventDescription(eventId, description);
 
@@ -146,8 +163,11 @@ public class EventLogic {
                 throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Location with locationId does not exist: " + locationId);
 
             Event event = eventDao.getEvent(eventId);
-            if(event == null || !hasAdminPrivileges(event, username))
-                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Event with eventId does not exist: " + eventId);
+            if(event == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with eventId does not exist: " + eventId);
+
+            if(!hasAdminPrivileges(eventId, username))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have write access to this event");
 
             Event updatedEvent = eventDao.updateEventLocation(eventId, locationId);
 
@@ -171,8 +191,11 @@ public class EventLogic {
 
         try {
             Event event = eventDao.getEvent(eventId);
-            if(event == null || !hasAdminPrivileges(event, username))
-                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Event with eventId does not exist: " + eventId);
+            if(event == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with eventId does not exist: " + eventId);
+
+            if(!hasAdminPrivileges(eventId, username))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have write access to this event");
 
             if(!timeStart.before(event.getEndDate()))
                 throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Time Start is after time end");
@@ -195,8 +218,11 @@ public class EventLogic {
     void updateEventTimeEnd(String username, int eventId, Date timeEnd)  throws HttpRequestException {
         try {
             Event event = eventDao.getEvent(eventId);
-            if(event == null || !hasAdminPrivileges(event, username))
-                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Event with eventId does not exist: " + eventId);
+            if(event == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with eventId does not exist: " + eventId);
+
+            if(!hasAdminPrivileges(eventId, username))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have write access to this event");
 
             if(timeEnd.before(event.getStartDate()))
                 throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Time end is before time start");
@@ -205,19 +231,6 @@ public class EventLogic {
 
             eventChanged(updatedEvent);
         }catch(DatabaseException e){
-            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-        }
-    }
-
-    /**
-     * For now only for test purpose
-     *
-     * @param isPublic
-     */
-    public void updateEventIsPublic(int eventId, boolean isPublic) throws HttpRequestException {
-        try {
-            eventDao.updateEventIsPublic(eventId, isPublic);
-        } catch (DatabaseException e) {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
     }
@@ -244,9 +257,10 @@ public class EventLogic {
      * @return Event which matched with the given id or null
      */
     public Event getEvent(String userName, int eventId)throws HttpRequestException{
-        //ToDo check if user has permission
-
         try{
+            if(!hasPrivileges(eventId, userName))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");
+
             return eventDao.getEvent(eventId);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
@@ -272,6 +286,9 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username of invited user is not valid, maximun length" + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
 
         try{
+            if(!hasAdminPrivileges(eventId, username))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have write access to this event");
+            
             eventDao.putUserInviteToEvent(userToInvite, eventId);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
