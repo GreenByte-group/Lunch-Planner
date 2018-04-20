@@ -340,7 +340,7 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is to long, empty or null ");
 
         try{
-//            User user = userLogic.getUser(userName);
+            User user = userLogic.getUser(userName);
             return eventDao.findPublicEvents(searchword);
 
         }catch(DatabaseException e){

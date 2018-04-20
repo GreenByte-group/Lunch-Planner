@@ -504,7 +504,7 @@ public class EventControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
-    // ---------------- SEARCH --------------------
+    // ---------------- SEARCH EVENTS--------------------
     @Test
     public void test1SearchEvents() throws Exception {
         String searchWord = eventName;

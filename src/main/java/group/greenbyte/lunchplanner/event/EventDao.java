@@ -3,9 +3,11 @@ package group.greenbyte.lunchplanner.event;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import org.hibernate.dialect.Database;
+import 
 
 import java.util.Date;
 import java.util.List;
+
 
 public interface EventDao {
 

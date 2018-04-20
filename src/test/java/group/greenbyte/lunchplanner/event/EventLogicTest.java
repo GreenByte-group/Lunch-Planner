@@ -510,6 +510,68 @@ public class EventLogicTest {
 
     }
 
+    // ------------------------- SEARCH EVENTS ------------------------------
+
+    @Test
+    public void test1searchEventForUserSearchwordAndUsernameFitIn() throws Exception{
+
+        String username = createString(1);
+        String searchword = createString(0);
+
+        eventLogic.searchEventsForUser(username,searchword);
+
+    }
+
+    @Test
+    public void test2searchEventForUserSearchwordAndUsernameFitIn() throws Exception{
+
+        String username = createString(50);
+        String searchword = createString(50);
+
+        eventLogic.searchEventsForUser(username,searchword);
+
+    }
+
+
+    @Test (expected = HttpRequestException.class)
+    public void test3searchEventForUserUserNameIsNull() throws Exception{
+
+        String username = createString(0);
+        String searchword = createString(1);
+
+        eventLogic.searchEventsForUser(username,searchword);
+
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test4searchEventForUserUserNameIsToLong() throws Exception{
+
+        String username = createString(51);
+        String searchword = createString(1);
+
+        eventLogic.searchEventsForUser(username,searchword);
+
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test5searchEventForUserUSearchwordIsNull() throws Exception{
+
+        String username = createString(1);
+        String searchword = null;
+
+        eventLogic.searchEventsForUser(username,searchword);
+
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test6searchEventForUserSearchwordIsToLong() throws Exception{
+
+        String username = createString(50);
+        String searchword = createString(51);
+
+        eventLogic.searchEventsForUser(username,searchword);
+
+    }
 
 
 }

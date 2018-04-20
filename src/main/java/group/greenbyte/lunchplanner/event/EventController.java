@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.session.
+//import org.springframework.session.
 
 import javax.print.attribute.standard.Media;
 import javax.servlet.http.HttpServletResponse;
@@ -215,6 +215,10 @@ public class EventController {
         }
     }
 
+
+    /**
+     * only here for throwing an exception is no searchword is giving
+     */
     @RequestMapping(value = "/search/", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public void searchEventNoSearchWord() {
