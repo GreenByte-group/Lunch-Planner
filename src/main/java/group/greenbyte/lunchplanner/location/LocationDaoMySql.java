@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.crypto.Data;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +94,21 @@ public class LocationDaoMySql implements LocationDao {
 
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
         } catch(Exception e) {
+            throw new DatabaseException();
+        }
+    }
+
+    @Override
+    public boolean hasAdminPrivileges(int locationId, String userName) throws DatabaseException {
+        try {
+            String SQL = "SELECT count(*) FROM "  + LOCATION_ADMIN_TABLE + " WHERE " +
+                    LOCATION_ADMIN_LOCATION_ID + " = " + locationId + " AND " +
+                    LOCATION_ADMIN_USER + " = '" + userName + "'";
+
+            int count = jdbcTemplate.queryForObject(SQL, Integer.class);
+
+            return count != 0;
+        } catch (Exception e)  {
             throw new DatabaseException();
         }
     }

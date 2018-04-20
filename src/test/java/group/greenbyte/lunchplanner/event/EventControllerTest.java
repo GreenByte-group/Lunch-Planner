@@ -1,19 +1,14 @@
 package group.greenbyte.lunchplanner.event;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.location.LocationLogic;
 import group.greenbyte.lunchplanner.user.UserLogic;
-import group.greenbyte.lunchplanner.user.TestInvitePersonJson;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -26,11 +21,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
-
-import java.io.Serializable;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
@@ -516,7 +507,6 @@ public class EventControllerTest {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/event/search/" + searchWord))
                 .andExpect(MockMvcResultMatchers.status().isOk());
-        //TODO check if right answer is given by search
     }
 
     @Test

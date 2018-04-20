@@ -94,7 +94,6 @@ public interface EventDao {
 
     /**
      * For now only for test purpose
-     * //TODO change to production
      * @param eventId
      * @param isPublic
      * @throws DatabaseException

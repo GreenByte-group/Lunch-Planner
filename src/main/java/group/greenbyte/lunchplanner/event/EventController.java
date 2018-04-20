@@ -1,16 +1,13 @@
 package group.greenbyte.lunchplanner.event;
 
-import com.sun.org.glassfish.gmbal.ParameterNames;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
-import group.greenbyte.lunchplanner.user.TestInvitePersonJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 //import org.springframework.session.
 
-import javax.print.attribute.standard.Media;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;

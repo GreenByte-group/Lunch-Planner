@@ -197,7 +197,6 @@ public class EventLogicTest {
     // ------------------ GET ONE EVENT -------------------
     @Test
     public void test1GetEvent() throws Exception {
-        String userName = "dummy"; //TODO change this username
         Event event = eventLogic.getEvent(userName, eventId);
         Assert.assertEquals(eventName, event.getEventName());
         Assert.assertEquals(eventDescription, event.getEventDescription());
@@ -209,7 +208,6 @@ public class EventLogicTest {
 
     @Test
     public void test2GetEventNull() throws Exception {
-        String userName = "dummy"; //TODO change this username
         Assert.assertNull(eventLogic.getEvent(userName, eventId + 1000));
     }
 
