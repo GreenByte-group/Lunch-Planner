@@ -57,7 +57,7 @@ public class EventDaoMySql implements EventDao {
             eventInvitation.setUserInvited(user);
             eventInvitation.setEventInvited(event);
 
-            event.addUsersInvited(eventInvitation);
+            user.addEventsInvited(eventInvitation);
 
             return eventDatabaseConnector.save(event);
         } catch(Exception e) {
@@ -74,6 +74,13 @@ public class EventDaoMySql implements EventDao {
         source.forEach(target::add);
         return target;
 
+    }
+
+    @Override
+    public List<Event> searchPublicEvents(String username, String searchword) throws DatabaseException {
+        List<Event> result = eventDatabaseConnector.searchInvitetPerson(username, searchword);
+
+        return result;
     }
 
     @Override
@@ -100,9 +107,9 @@ public class EventDaoMySql implements EventDao {
         //TODO einbinden des suchworts
 
         List<Event> toReturn = new ArrayList<>();
-        Iterable<Event> source = eventDatabaseConnector.getAllByTeamsVisibleContaining(teamId);
-
-        source.forEach(toReturn::add);
+//        Iterable<Event> source = eventDatabaseConnector.getAllByTeamsVisibleContaining(teamId);
+//
+//        source.forEach(toReturn::add);
 
         return toReturn;
     }
@@ -115,9 +122,9 @@ public class EventDaoMySql implements EventDao {
             throw new DatabaseException();
 
         List<Event> toReturn = new ArrayList<>();
-        Iterable<Event> source = eventDatabaseConnector.getAllByUsersInvitedContains(userName);
-
-        source.forEach(toReturn::add);
+//        Iterable<Event> source = eventDatabaseConnector.getAllByUsersInvitedContains(userName);
+//
+//        source.forEach(toReturn::add);
 
         return toReturn;
     }

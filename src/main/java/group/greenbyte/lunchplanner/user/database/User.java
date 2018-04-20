@@ -16,10 +16,7 @@ public class User {
     static final public int MAX_PASSWORD_LENGTH = 80;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer userId;
-
-    @Column(unique = true,length = MAX_USERNAME_LENGTH)
+    @Column(length = MAX_USERNAME_LENGTH)
     private String userName;
 
     @Column(nullable = false, length = MAX_MAIL_LENGTH)
@@ -31,10 +28,10 @@ public class User {
     @OneToMany(mappedBy = "eventInvited", cascade = CascadeType.ALL)
     private Set<EventInvitation> eventsInvited;
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private Set<TeamMember> teamsMember = new HashSet<>();
 
-    @OneToMany(mappedBy = "location")
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<LocationAdmin> locationAdmin = new HashSet<>();
 
     public String getUserName() {
@@ -76,11 +73,26 @@ public class User {
         eventsInvited.add(eventInvitation);
     }
 
-    public Integer getUserId() {
-        return userId;
+    public Set<TeamMember> getTeamsMember() {
+        return teamsMember;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setTeamsMember(Set<TeamMember> teamsMember) {
+        this.teamsMember = teamsMember;
+    }
+
+    public Set<LocationAdmin> getLocationAdmin() {
+        return locationAdmin;
+    }
+
+    public void setLocationAdmin(Set<LocationAdmin> locationAdmin) {
+        this.locationAdmin = locationAdmin;
+    }
+
+    public void addLocationAdmin(LocationAdmin locationAdmin) {
+        if(this.locationAdmin == null)
+            this.locationAdmin = new HashSet<>();
+
+        this.locationAdmin.add(locationAdmin);
     }
 }

@@ -202,6 +202,11 @@ public class EventController {
         try {
             List<Event> allSearchingEvents = eventLogic.getAllEvents("dummy");
             response.setStatus(HttpServletResponse.SC_OK);
+
+            for(Event event : allSearchingEvents) {
+                event.getLocation().setEvents(null);
+            }
+
             return allSearchingEvents;
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());

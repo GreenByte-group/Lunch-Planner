@@ -291,6 +291,11 @@ public class EventDaoTest {
         Assert.assertEquals(1, events.size());
     }
 
+    @Test
+    public void tempTest() throws Exception {
+        List<Event> lists = eventDao.searchPublicEvents(userName, eventName);
+    }
+
     //all for teams
     @Test
     public void test1SearchPublicForTeam() throws Exception {

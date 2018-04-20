@@ -41,6 +41,8 @@ public interface EventDao {
     List<Event> search(String username,
                        String searchword)throws DatabaseException;
 
+    List<Event> searchPublicEvents(String username, String searchword) throws DatabaseException;
+
     /**
      *
      * @param eventId id of the event
