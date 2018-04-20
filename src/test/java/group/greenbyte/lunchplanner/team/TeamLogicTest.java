@@ -11,6 +11,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
@@ -22,6 +25,11 @@ import static org.junit.Assert.*;
 @WebAppConfiguration
 @ActiveProfiles("application-test.properties")
 public class TeamLogicTest {
+
+    private MockMvc mockMvc;
+
+    @Autowired
+    private WebApplicationContext context;
 
     @Autowired
     private TeamLogic teamLogic;
@@ -108,5 +116,54 @@ public class TeamLogicTest {
         teamLogic.createTeamWithParent(userName, parent, teamName, description);
     }
 
+    // ------------------------- INVITE TEAM MEMBER ------------------------------
 
+    @Test
+    public void test1InviteTeamMemberWithMinLength() throws Exception {
+        String userName = createUserIfNotExists(userLogic, "A");
+        String userToInvite = createUserIfNotExists(userLogic, "A");
+        //int teamId = 1;
+
+        teamLogic.inviteTeamMember(userName, userToInvite, teamId);
+    }
+
+    @Test
+    public void test2InviteTeamMemberWithMaxLength() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(50));
+        String userToInvite = createUserIfNotExists(userLogic, createString(50));
+
+        teamLogic.inviteTeamMember(userName, userToInvite, teamId);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test3InviteTeamMemberUserNameTooLong() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(51));
+        String userToInvite = createUserIfNotExists(userLogic, createString(50));
+
+        teamLogic.inviteTeamMember(userName, userToInvite, teamId);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test4InviteTeamMemberWithNoUserName() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(0));
+        String userToInvite = createUserIfNotExists(userLogic, createString(50));
+
+        teamLogic.inviteTeamMember(userName, userToInvite, teamId);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test5InviteTeamMemberUserToInviteTooLong() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(50));
+        String userToInvite = createUserIfNotExists(userLogic, createString(51));
+
+        teamLogic.inviteTeamMember(userName, userToInvite, teamId);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test6InviteTeamMemberWithNoUserToInvite() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(50));
+        String userToInvite = createUserIfNotExists(userLogic, createString(0));
+
+        teamLogic.inviteTeamMember(userName, userToInvite, teamId);
+    }
 }

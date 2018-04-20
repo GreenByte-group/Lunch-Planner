@@ -118,4 +118,41 @@ public class TeamDaoTest {
         teamDao.insertTeamWithParent(teamName, description, adminName, parent);
     }
 
+    // ------------------ PUT USER TEAM MEMBER ------------------------
+
+    @Test
+    public void test1PutUserTeamMemberWithMinLength() throws Exception {
+       int teamId = 1;
+       String userToInviteName = "A";
+
+       teamDao.putUserTeamMember(userToInviteName,teamId);
+    }
+
+    @Test
+    public void test2PutUserTeamMemberWithMaxLength() throws Exception {
+        int teamId = 1;
+        String userToInviteName = createString(50);
+
+        teamDao.putUserTeamMember(userToInviteName,teamId);
+    }
+
+    @Test(expected = DatabaseException.class)
+    public void test3PutUserTeamMemberUserToInviteTooLong() throws Exception {
+        int teamId = 1;
+        String userToInviteName = createString(51);
+
+        teamDao.putUserTeamMember(userToInviteName,teamId);
+    }
+
+    @Test(expected = DatabaseException.class)
+    public void test4PutUserTeamMemberWithNoUserToInvite() throws Exception {
+        int teamId = 1;
+        String userToInviteName = "";
+
+        teamDao.putUserTeamMember(userToInviteName,teamId);
+    }
+
+
+
+
 }

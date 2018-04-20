@@ -241,34 +241,40 @@ public class EventControllerTest {
     }
 
     @Test
-    public void test2InviteFriendInvalidName() throws Exception {
+    public void test2InviteFriendMaxUser() throws Exception {
 
-        String myUsername = createString(50);
-        String userToInvite = createString(51);
-        TestInvitePersonJson invitedPerson = new TestInvitePersonJson(myUsername, userToInvite, 1);
+        String userName = createUserIfNotExists(userLogic, createString(50));
 
-        String inventedPersonJson = getJsonFromObject(invitedPerson);
+        MvcResult result = mockMvc.perform(
+                MockMvcRequestBuilders.post("/event/" + userName + "/invite/event/" + eventId))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
+                .andReturn();
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/event/" + userToInvite + "/invite/event/" + 1).contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-
-
+        String response = result.getResponse().getContentAsString();
     }
 
     @Test
-    public void test3InviteFriendEmptyName() throws Exception {
+    public void test3InviteFriendInvalidName() throws Exception {
 
-        String myUsername = createString(50);
-        String userToInvite = createString(0);
-        TestInvitePersonJson invitedPerson = new TestInvitePersonJson(myUsername, userToInvite, 1);
-
-        String inventedPersonJson = getJsonFromObject(invitedPerson);
+        String userName = createUserIfNotExists(userLogic, createString(51));
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/event/" + userToInvite + "/invite/event/" + 1).contentType(MediaType.APPLICATION_JSON_VALUE).content(inventedPersonJson))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                MockMvcRequestBuilders.post("/event/" + userName + "/invite/event/" + eventId))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE));
 
+    }
+
+    @Test (expected = AssertionError.class)
+    public void test4InviteFriendEmptyName() throws Exception {
+
+        String userName = createUserIfNotExists(userLogic, createString(1));
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/event/" + userName + "/invite/event/" + eventId))
+                        .andExpect(MockMvcResultMatchers.status().isNotFound())
+                        .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE));
     }
 
 
