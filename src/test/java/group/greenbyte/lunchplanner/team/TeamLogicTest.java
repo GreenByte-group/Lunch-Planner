@@ -122,9 +122,8 @@ public class TeamLogicTest {
     public void test1InviteTeamMemberWithMinLength() throws Exception {
         String userName = createUserIfNotExists(userLogic, "A");
         String userToInvite = createUserIfNotExists(userLogic, "A");
-        //int teamId = 1;
 
-        teamLogic.inviteTeamMember(userName, userToInvite, teamId);
+        teamLogic.inviteTeamMember(userName, userToInvite, parent);
     }
 
     @Test
@@ -132,7 +131,7 @@ public class TeamLogicTest {
         String userName = createUserIfNotExists(userLogic, createString(50));
         String userToInvite = createUserIfNotExists(userLogic, createString(50));
 
-        teamLogic.inviteTeamMember(userName, userToInvite, teamId);
+        teamLogic.inviteTeamMember(userName, userToInvite, parent);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -140,7 +139,7 @@ public class TeamLogicTest {
         String userName = createUserIfNotExists(userLogic, createString(51));
         String userToInvite = createUserIfNotExists(userLogic, createString(50));
 
-        teamLogic.inviteTeamMember(userName, userToInvite, teamId);
+        teamLogic.inviteTeamMember(userName, userToInvite, parent);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -148,7 +147,7 @@ public class TeamLogicTest {
         String userName = createUserIfNotExists(userLogic, createString(0));
         String userToInvite = createUserIfNotExists(userLogic, createString(50));
 
-        teamLogic.inviteTeamMember(userName, userToInvite, teamId);
+        teamLogic.inviteTeamMember(userName, userToInvite, parent);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -156,7 +155,7 @@ public class TeamLogicTest {
         String userName = createUserIfNotExists(userLogic, createString(50));
         String userToInvite = createUserIfNotExists(userLogic, createString(51));
 
-        teamLogic.inviteTeamMember(userName, userToInvite, teamId);
+        teamLogic.inviteTeamMember(userName, userToInvite, parent);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -164,6 +163,6 @@ public class TeamLogicTest {
         String userName = createUserIfNotExists(userLogic, createString(50));
         String userToInvite = createUserIfNotExists(userLogic, createString(0));
 
-        teamLogic.inviteTeamMember(userName, userToInvite, teamId);
+        teamLogic.inviteTeamMember(userName, userToInvite, parent);
     }
 }

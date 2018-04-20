@@ -110,7 +110,7 @@ public class TeamLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username of invited user is not valid, maximun length" + User.MAX_USERNAME_LENGTH + ", minimum length 1");
 
         try{
-            teamdao.putUserTeamMember(userToInvite, teamId);
+            teamdao.addUserToTeam(teamId, userToInvite);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }

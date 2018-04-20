@@ -122,34 +122,30 @@ public class TeamDaoTest {
 
     @Test
     public void test1PutUserTeamMemberWithMinLength() throws Exception {
-       int teamId = 1;
-       String userToInviteName = "A";
+       String userToInviteName = createUserIfNotExists(userLogic, createString(1));
 
-       teamDao.putUserTeamMember(userToInviteName,teamId);
+       teamDao.addUserToTeam(parent, userToInviteName);
     }
 
     @Test
     public void test2PutUserTeamMemberWithMaxLength() throws Exception {
-        int teamId = 1;
-        String userToInviteName = createString(50);
+        String userToInviteName = createUserIfNotExists(userLogic, createString(50));
 
-        teamDao.putUserTeamMember(userToInviteName,teamId);
+        teamDao.addUserToTeam(parent, userToInviteName);
     }
 
     @Test(expected = DatabaseException.class)
     public void test3PutUserTeamMemberUserToInviteTooLong() throws Exception {
-        int teamId = 1;
-        String userToInviteName = createString(51);
+        String userToInviteName = createUserIfNotExists(userLogic, createString(51));
 
-        teamDao.putUserTeamMember(userToInviteName,teamId);
+        teamDao.addUserToTeam(parent, userToInviteName);
     }
 
     @Test(expected = DatabaseException.class)
     public void test4PutUserTeamMemberWithNoUserToInvite() throws Exception {
-        int teamId = 1;
-        String userToInviteName = "";
+        String userToInviteName = createUserIfNotExists(userLogic, createString(0));
 
-        teamDao.putUserTeamMember(userToInviteName,teamId);
+        teamDao.addUserToTeam(parent, userToInviteName);
     }
 
 
