@@ -6,6 +6,7 @@ import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.session.
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
