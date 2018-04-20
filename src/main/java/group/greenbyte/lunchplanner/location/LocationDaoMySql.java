@@ -1,53 +1,67 @@
 package group.greenbyte.lunchplanner.location;
 
+import group.greenbyte.lunchplanner.event.database.Event;
+import group.greenbyte.lunchplanner.event.database.EventDatabase;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.location.database.Coordinate;
 import group.greenbyte.lunchplanner.location.database.Location;
-import group.greenbyte.lunchplanner.location.database.LocationAdmin;
-import group.greenbyte.lunchplanner.location.database.LocationDatabaseConnector;
+import group.greenbyte.lunchplanner.location.database.LocationDatabase;
 import group.greenbyte.lunchplanner.user.UserDao;
-import group.greenbyte.lunchplanner.user.database.User;
-import org.hibernate.Hibernate;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 public class LocationDaoMySql implements LocationDao {
 
-    private LocationDatabaseConnector locationDatabaseConnector;
     private UserDao userDao;
 
-    @Transactional
+    private final JdbcTemplate jdbcTemplate;
+
+    private static final String LOCATION_TABLE = "location";
+    private static final String LOCATION_NAME = "location_name";
+    private static final String LOCATION_DESCRIPTION = "location_description";
+    private static final String LOCATION_PUBLIC = "is_public";
+    private static final String LOCATION_XCOORDINATE = "x_coordinate";
+    private static final String LOCATION_YCOORDINATE = "y_coordinate";
+    private static final String LOCATION_ID = "location_id";
+
+    private static final String LOCATION_ADMIN_TABLE = "location_admin";
+    private static final String LOCATION_ADMIN_USER = "user_name";
+    private static final String LOCATION_ADMIN_LOCATION_ID = "location_id";
+
+    @Autowired
+    public LocationDaoMySql(JdbcTemplate jdbcTemplate, UserDao userDao) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.userDao = userDao;
+    }
+
     @Override
     public int insertLocation(String locationName, Coordinate coordinate, String description,
                               String adminName) throws DatabaseException {
-
-        if(adminName.length() > User.MAX_USERNAME_LENGTH)
-            throw new DatabaseException();
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        simpleJdbcInsert.withTableName(LOCATION_TABLE).usingGeneratedKeyColumns(LOCATION_ID);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(LOCATION_NAME, locationName);
+        parameters.put(LOCATION_DESCRIPTION, description);
+        parameters.put(LOCATION_XCOORDINATE, coordinate.getxCoordinate());
+        parameters.put(LOCATION_YCOORDINATE, coordinate.getyCoordinate());
 
         try {
-            Location location = new Location();
-            location.setLocationName(locationName);
-            location.setLocationDescription(description);
-            location.setCoordinate(coordinate);
+            Number key = simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
-            User user = userDao.getUser(adminName);
+            addAdminToLocation(key.intValue(), adminName);
 
-            Hibernate.initialize(user.getLocationAdmin());
-
-            LocationAdmin locationAdmin = new LocationAdmin();
-            locationAdmin.setUserAdmin(user);
-            locationAdmin.setLocation(location);
-
-            user.addLocationAdmin(locationAdmin);
-            //location.addLocationAdmin(locationAdmin);
-
-            return locationDatabaseConnector.save(location).getLocationId();
-        } catch(Exception e) {
+            return key.intValue();
+        } catch (Exception e) {
             throw new DatabaseException();
         }
     }
@@ -55,18 +69,31 @@ public class LocationDaoMySql implements LocationDao {
     @Override
     public Location getLocation(int locationId) throws DatabaseException {
         try {
-            Optional<Location> optional = locationDatabaseConnector.findById(locationId);
+            String SQL = "SELECT * FROM " + LOCATION_TABLE + " WHERE " + LOCATION_ID + " = " + locationId;
 
-            return optional.orElse(null);
-        } catch(Exception e) {
+            List<LocationDatabase> locations = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(LocationDatabase.class));
+
+            if (locations.size() == 0)
+                return null;
+            else
+                return locations.get(0).getLocation();
+        } catch (Exception e) {
             throw new DatabaseException();
         }
     }
 
-    @Autowired
-    public void setLocationDatabaseConnector(LocationDatabaseConnector locationDatabaseConnector,
-                                             UserDao userDao) {
-        this.locationDatabaseConnector = locationDatabaseConnector;
-        this.userDao = userDao;
+    @Override
+    public void addAdminToLocation(int locationId, String userName) throws DatabaseException {
+        try {
+            SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+            simpleJdbcInsert.withTableName(LOCATION_ADMIN_TABLE);
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put(LOCATION_ADMIN_USER, userName);
+            parameters.put(LOCATION_ADMIN_LOCATION_ID, locationId);
+
+            simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+        } catch(Exception e) {
+            throw new DatabaseException();
+        }
     }
 }

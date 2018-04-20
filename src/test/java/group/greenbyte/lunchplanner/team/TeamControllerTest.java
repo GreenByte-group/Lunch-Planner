@@ -1,14 +1,13 @@
 package group.greenbyte.lunchplanner.team;
 
 import group.greenbyte.lunchplanner.AppConfig;
+import group.greenbyte.lunchplanner.event.EventLogic;
+import group.greenbyte.lunchplanner.user.UserLogic;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -20,9 +19,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import static org.junit.Assert.*;
+
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
+import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
+import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration (classes = AppConfig.class)
@@ -35,8 +36,27 @@ public class TeamControllerTest {
     @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private EventLogic eventLogic;
+
+    @Autowired
+    private UserLogic userLogic;
+
+    @Autowired
+    private TeamLogic teamLogic;
+
+    private String userName;
+    private int locationId;
+    private int eventId;
+    private int teamId;
+
     @Before
     public void setUp() throws Exception {
+
+        userName = createUserIfNotExists(userLogic, "dummy");
+
+        teamId = createTeamWithoutParent(teamLogic, userName, createString(50), createString(50));
+
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
         //mockMvc = MockMvcBuilders.standaloneSetup(eventController).build();
     }
@@ -157,6 +177,53 @@ public class TeamControllerTest {
 
     }
 
+    // ------------------ INVITE TEAM MEMBER ------------------------
 
+    @Test
+    public void test1inviteTeamMember() throws Exception {
+        MvcResult result = mockMvc.perform(
+                MockMvcRequestBuilders.post("/team/" + userName + "/invite/team/" + teamId))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+    }
+
+    @Test
+    public void test2InviteTeamMemberMaxUser() throws Exception {
+
+        String userName = createUserIfNotExists(userLogic, createString(50));
+
+        MvcResult result = mockMvc.perform(
+                MockMvcRequestBuilders.post("/team/" + userName + "/invite/team/" + teamId))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+    }
+
+    @Test
+    public void test3InviteTeamMemberInvalidName() throws Exception {
+
+        String userName = createUserIfNotExists(userLogic, createString(51));
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/team/" + userName + "/invite/team/" + teamId))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE));
+    }
+
+    @Test (expected = AssertionError.class)
+    public void test4InviteTeamMemberEmptyName() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(1));
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/team/" + userName + "/invite/team/" + teamId))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE));
+
+    }
 
 }

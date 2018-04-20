@@ -77,12 +77,14 @@ public class EventDaoTest {
 
     @Test
     public void test1insertEventLongDescription() throws Exception {
-        String userName = createString(50);
         String eventName = createString(50);
         String description = createString(1000);
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
         long timeEnd = timeStart + 10000;
+
+        //ohne millisekunden
+        timeStart = 1000 * (timeStart / 1000);
+        timeEnd = 1000 * (timeEnd / 1000);
 
         Event result = eventDao.insertEvent(userName, eventName, description, locationId,
                 new Date(timeStart), new Date(timeEnd));
@@ -90,9 +92,9 @@ public class EventDaoTest {
         if(!(
                 result.getEventName().equals(eventName) &&
                 result.getEventDescription().equals(description) &&
-                //result.getLocation().getLocationId() == locationId &&
-                result.getStartDate().equals(new Date(timeStart)) &&
-                result.getEndDate().equals(new Date(timeEnd)))) {
+                result.getLocation().getLocationId() == locationId &&
+                result.getStartDate().getTime() == timeStart) &&
+                result.getEndDate().getTime() == timeEnd) {
             Assert.fail("Event has not the right data");
         }
     }
@@ -185,6 +187,7 @@ public class EventDaoTest {
         eventDao.updateEventLocation(eventId, newLocationId);
 
         Event event = eventDao.getEvent(eventId);
+
         if(event.getLocation().getLocationId() != newLocationId)
             Assert.fail("Location was not updated");
     }
@@ -233,9 +236,7 @@ public class EventDaoTest {
         // alle anderen Tests schlagen fehl, weil eine DB Exception geworfen wird und damit der Statuscode 400 verbunden ist.
         //EventJson event = new EventJson("dummy", "description", 1, System.currentTimeMillis()+1000, System.currentTimeMillis()+2000);
 
-        int eventId = 1;
-
-        String toInviteUsername = createString(50);
+        String toInviteUsername = createUserIfNotExists(userLogic, createString(50));
 
         Event result = eventDao.putUserInviteToEvent(toInviteUsername, eventId);
 

@@ -48,7 +48,6 @@ public class LocationLogicTest {
 
     @Test
     public void test1CreateLocationWithNoDescription() throws Exception{
-        String userName = createString(1);
         String locationName = createString(1);
         double xCoordinate = 1.0;
         double yCoordinate = 1.0;
@@ -59,7 +58,6 @@ public class LocationLogicTest {
 
     @Test
     public void test2CreateLocationWithMaxUserMaxLocationAndNormalDescription() throws Exception{
-        String userName = createString(50);
         String locationName = createString(50);
         double xCoordinate = 1.0;
         double yCoordinate = 1.0;
@@ -92,7 +90,6 @@ public class LocationLogicTest {
 
     @Test(expected = HttpRequestException.class)
     public void test5CreateLocationWithNoLocation() throws Exception {
-        String userName = createString(50);
         String locationName = "";
         double xCoordinate = 1.0;
         double yCoordinate = 1.0;
@@ -103,7 +100,6 @@ public class LocationLogicTest {
 
     @Test(expected = HttpRequestException.class)
     public void test6CreateLocationLocationTooLong() throws Exception {
-        String userName = createString(50);
         String locationName = createString(51);
         double xCoordinate = 1.0;
         double yCoordinate = 1.0;
@@ -114,7 +110,6 @@ public class LocationLogicTest {
 
     @Test(expected = HttpRequestException.class)
     public void test7CreateDescriptionTooLong() throws Exception {
-        String userName = createString(50);
         String locationName = createString(50);
         double xCoordinate = 1.0;
         double yCoordinate = 1.0;

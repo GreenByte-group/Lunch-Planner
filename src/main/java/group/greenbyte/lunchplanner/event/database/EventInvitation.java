@@ -14,7 +14,7 @@ public class EventInvitation implements Serializable {
     private Event eventInvited;
 
     @Id
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userName")
     private User userInvited;
 

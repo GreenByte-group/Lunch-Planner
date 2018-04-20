@@ -14,7 +14,7 @@ public class Location {
     static final public int MAX_USERNAME_LENGTH = 50;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int locationId;
 
     @Column(nullable = false, length = MAX_NAME_LENGTH)

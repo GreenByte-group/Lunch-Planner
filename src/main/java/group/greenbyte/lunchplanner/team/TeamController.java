@@ -24,7 +24,7 @@ public class TeamController {
     public String createTeam(@RequestBody TeamJson teamjson, HttpServletResponse response) {
         try {
 
-            int teamId = teamlogic.createTeam("dummy", teamjson.getParent(), teamjson.getTeamName(), teamjson.getDescription());
+            int teamId = teamlogic.createTeamWithParent("dummy", teamjson.getParent(), teamjson.getTeamName(), teamjson.getDescription());
 
             response.setStatus(HttpServletResponse.SC_CREATED);
             return String.valueOf(teamId);
@@ -36,6 +36,29 @@ public class TeamController {
 
         }
     }
+
+    /**
+     * Invite a team meber
+     *
+     * @param userToInvite id of user to invite
+     * @param teamId id of the team
+     */
+    @RequestMapping(value = "/{userToInvite}/invite/team/{teamId}", method = RequestMethod.POST,
+            produces = MediaType.TEXT_PLAIN_VALUE )
+    @ResponseBody
+    public String inviteTeamMember(@PathVariable("userToInvite") String userToInvite, @PathVariable ("teamId") int teamId, HttpServletResponse response){
+        try {
+            teamlogic.inviteTeamMember("dummy", userToInvite, teamId);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+
+        return "";
+    }
+
+    //TODO create team wihtout parent
 
     @Autowired
     public void setTeamLogic(TeamLogic teamlogic) {

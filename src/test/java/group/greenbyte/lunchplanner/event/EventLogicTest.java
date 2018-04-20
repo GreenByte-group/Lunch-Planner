@@ -85,7 +85,6 @@ public class EventLogicTest {
 
     @Test
     public void test1createEventNoDescription() throws Exception{
-        String userName = createString(50);
         String eventName = createString(50);
         String description = "";
         int locationId = 1;
@@ -99,7 +98,6 @@ public class EventLogicTest {
 
     @Test
     public void test2createEventLongDescription() throws Exception {
-        String userName = createString(50);
         String eventName = createString(50);
         String description = createString(1000);
         int locationId = 1;
@@ -138,7 +136,6 @@ public class EventLogicTest {
 
     @Test(expected = HttpRequestException.class)
     public void test5createEventEmptyEventName() throws Exception {
-        String userName = createString(50);
         String eventName = "";
         String description = "";
         int locationId = 1;
@@ -151,7 +148,6 @@ public class EventLogicTest {
 
     @Test(expected = HttpRequestException.class)
     public void test6createEventTooLongEventName() throws Exception {
-        String userName = createString(50);
         String eventName = createString(51);
         String description = "";
         int locationId = 1;
@@ -164,7 +160,6 @@ public class EventLogicTest {
 
     @Test(expected = HttpRequestException.class)
     public void test7createEventTooLongDescription() throws Exception {
-        String userName = createString(50);
         String eventName = createString(50);
         String description = createString(1001);
         int locationId = 1;
@@ -177,7 +172,6 @@ public class EventLogicTest {
 
     @Test(expected = HttpRequestException.class)
     public void test8createEventTimeStartTooEarly() throws Exception {
-        String userName = createString(50);
         String eventName = createString(50);
         String description = "";
         int locationId = 1;
@@ -190,7 +184,6 @@ public class EventLogicTest {
 
     @Test(expected = HttpRequestException.class)
     public void test4createEventTimeStartAfterTimeEnd() throws Exception {
-        String userName = createString(50);
         String eventName = createString(50);
         String description = "";
         int locationId = 1;
@@ -239,8 +232,6 @@ public class EventLogicTest {
 
     @Test
     public void test5getAllEventsOk() throws Exception {
-        String userName  = createString(50);
-
         List<Event> result = eventLogic.getAllEvents(userName);
     }
 
@@ -416,9 +407,8 @@ public class EventLogicTest {
 
     @Test
     public void test1InviteMaxUsernameLength() throws Exception {
-        String userName = createString(50);
-        String toInviteUsername = createString(50);
-        int eventId = 1;
+        String userName = createUserIfNotExists(userLogic, createString(50));
+        String toInviteUsername = createUserIfNotExists(userLogic, createString(50));
 
         eventLogic.inviteFriend(userName, toInviteUsername, eventId);
     }
@@ -426,8 +416,7 @@ public class EventLogicTest {
     @Test (expected = HttpRequestException.class)
     public void test2InviteInvalidUsername() throws Exception {
         String userName = createString(51);
-        String toInviteUsername = createString(50);
-        int eventId = 1;
+        String toInviteUsername = createUserIfNotExists(userLogic, createString(50));
 
         eventLogic.inviteFriend(userName, toInviteUsername, eventId);
     }
@@ -435,26 +424,23 @@ public class EventLogicTest {
     @Test (expected = HttpRequestException.class)
     public void test3InviteEmptyUsername() throws Exception {
         String userName = createString(0);
-        String toInviteUsername = createString(50);
-        int eventId = 1;
+        String toInviteUsername = createUserIfNotExists(userLogic, createString(50));
 
         eventLogic.inviteFriend(userName, toInviteUsername, eventId);
     }
 
     @Test (expected = HttpRequestException.class)
     public void test4InviteInvalidToInviteUsername() throws Exception {
-        String userName = createString(50);
+        String userName = createUserIfNotExists(userLogic, createString(50));
         String toInviteUsername = createString(51);
-        int eventId = 1;
 
         eventLogic.inviteFriend(userName, toInviteUsername, eventId);
     }
 
     @Test (expected = HttpRequestException.class)
     public void test5InviteEmptyToInviteUsername() throws Exception {
-        String userName = createString(50);
+        String userName = createUserIfNotExists(userLogic, createString(50));
         String toInviteUsername = createString(0);
-        int eventId = 1;
 
         eventLogic.inviteFriend(userName, toInviteUsername, eventId);
     }
@@ -463,11 +449,9 @@ public class EventLogicTest {
 
     @Test
     public void test1SendInvitation() throws Exception {
+        String userToInvite = createUserIfNotExists(userLogic, createString(50));
 
-        String myUsername = createString(50);
-        String userToInvite = createString(50);
-
-        eventLogic.inviteFriend(myUsername, userToInvite, 1);
+        eventLogic.inviteFriend(userName, userToInvite, 1);
 
     }
 
@@ -475,7 +459,7 @@ public class EventLogicTest {
     public void test2SendInvitationEmptyUsername() throws Exception {
 
         String myUsername = createString(0);
-        String userToInvite = createString(50);
+        String userToInvite = createUserIfNotExists(userLogic, createString(50));
 
         eventLogic.inviteFriend(myUsername, userToInvite, 1);
 
@@ -485,28 +469,25 @@ public class EventLogicTest {
     public void test3SendInvitationInvalidUsername() throws Exception {
 
         String myUsername = createString(51);
-        String userToInvite = createString(50);
+        String userToInvite = createUserIfNotExists(userLogic, createString(50));
 
         eventLogic.inviteFriend(myUsername, userToInvite, 1);
     }
 
     @Test (expected = HttpRequestException.class)
     public void test4SendInvitationEmptyToInvitedUsername() throws Exception {
-
-        String myUsername = createString(50);
         String userToInvite = createString(0);
 
-        eventLogic.inviteFriend(myUsername, userToInvite, 1);
+        eventLogic.inviteFriend(userName, userToInvite, 1);
 
     }
 
     @Test (expected = HttpRequestException.class)
     public void test5SendInvitationInvalidToInvitedUsername() throws Exception {
 
-        String myUsername = createString(50);
         String userToInvite = createString(51);
 
-        eventLogic.inviteFriend(myUsername, userToInvite, 1);
+        eventLogic.inviteFriend(userName, userToInvite, 1);
 
     }
 

@@ -1,261 +1,189 @@
 package group.greenbyte.lunchplanner.event;
 
 import group.greenbyte.lunchplanner.event.database.Event;
-import group.greenbyte.lunchplanner.event.database.EventDatabaseConnector;
-import group.greenbyte.lunchplanner.event.database.EventInvitation;
+import group.greenbyte.lunchplanner.event.database.EventDatabase;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.location.LocationDao;
 import group.greenbyte.lunchplanner.location.database.Location;
-import group.greenbyte.lunchplanner.user.UserDao;
-import group.greenbyte.lunchplanner.user.UserJson;
-import group.greenbyte.lunchplanner.user.database.User;
-import org.hibernate.dialect.Database;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.xml.crypto.Data;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import javax.xml.crypto.Data;
-import java.util.*;
+import java.util.Map;
 
 @Repository
 public class EventDaoMySql implements EventDao {
 
-    private final EventDatabaseConnector eventDatabaseConnector;
-    private final LocationDao locationDao;
-    private final UserDao userDao;
+    private LocationDao locationDao;
+
+    private static final String EVENT_INVITATION_TABLE = "event_invitation";
+    private static final String EVENT_INVITATION_ADMIN = "is_admin";
+    private static final String EVENT_INVITATION_REPLY = "confirmed";
+    private static final String EVENT_INVITATION_USER = "user_name";
+    private static final String EVENT_INVITATION_EVENT = "event_id";
+
+    private static final String EVENT_TABLE = "event";
+    private static final String EVENT_ID = "event_id";
+    private static final String EVENT_NAME = "event_name";
+    private static final String EVENT_DESCRIPTION = "event_description";
+    private static final String EVENT_START_DATE = "start_date";
+    private static final String EVENT_END_DATE = "end_date";
+    private static final String EVENT_IS_PUBLIC = "is_public";
+    private static final String EVENT_LOCATION = "location_id";
+
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public EventDaoMySql(EventDatabaseConnector eventDatabaseConnector,
-                         LocationDao locationDao,
-                         UserDao userDao) {
-        this.eventDatabaseConnector = eventDatabaseConnector;
+    public EventDaoMySql(JdbcTemplate jdbcTemplateObject,
+                         LocationDao locationDao) {
+        this.jdbcTemplate = jdbcTemplateObject;
         this.locationDao = locationDao;
-        this.userDao = userDao;
     }
 
     @Override
     public Event insertEvent(String userName, String eventName, String description, int locationId, Date timeStart, Date timeEnd) throws DatabaseException {
-        if(userName.length() > User.MAX_USERNAME_LENGTH)
-            throw new DatabaseException();
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        simpleJdbcInsert.withTableName(EVENT_TABLE).usingGeneratedKeyColumns(EVENT_ID);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(EVENT_NAME, eventName);
+        parameters.put(EVENT_DESCRIPTION, description);
+        parameters.put(EVENT_LOCATION, locationId);
+        parameters.put(EVENT_START_DATE, timeStart);
+        parameters.put(EVENT_END_DATE, timeEnd);
+        parameters.put(EVENT_IS_PUBLIC, false);
 
         try {
-            Event event = new Event();
-            event.setEventName(eventName);
-            event.setEventDescription(description);
-            event.setLocation(locationDao.getLocation(locationId));
-            event.setStartDate(timeStart);
-            event.setEndDate(timeEnd);
+            Number key = simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
-            User user = userDao.getUser(userName);
+            putUserInviteToEventAsAdmin(userName, key.intValue());
 
-            EventInvitation eventInvitation = new EventInvitation();
-            eventInvitation.setAdmin(true);
-            eventInvitation.setConfirmed(true);
-            eventInvitation.setUserInvited(user);
-            eventInvitation.setEventInvited(event);
-
-            user.addEventsInvited(eventInvitation);
-
-            return eventDatabaseConnector.save(event);
-        } catch(Exception e) {
+            return getEvent(key.intValue());
+        } catch (Exception e) {
             throw new DatabaseException();
         }
     }
 
     @Override
     public List<Event> search(String username, String searchword) throws DatabaseException {
-
-        //TODO (searchEvent)
-        Iterable<Event> source = eventDatabaseConnector.findAll();
-        List<Event> target = new ArrayList<>();
-        source.forEach(target::add);
-        return target;
-
+        return null;
     }
 
     @Override
-    public List<Event> searchPublicEvents(String username, String searchword) throws DatabaseException {
-        List<Event> result = eventDatabaseConnector.searchInvitetPerson(username, searchword);
-
-        return result;
-    }
-
-    @Override
-    public List<Event> findPublicEvents(String searchword) throws DatabaseException{
-
-        if(searchword == null || searchword.length() > Event.MAX_SEARCHWORD_LENGTH)
-            throw new DatabaseException();
-
-        //TODO einbinden des suchworts
-
-        List <Event> toReturn = new ArrayList<>();
-        //Iterable<Event> source = eventDatabaseConnector.getAllByIsPublic(true);
-
-        //source.forEach(toReturn::add);
-
-        return toReturn;
-    }
-
-    @Override
-    public List<Event> findEventsForTeam(int teamId, String searchword) throws DatabaseException {
-        if(searchword == null || searchword.length() > Event.MAX_SEARCHWORD_LENGTH)
-            throw new DatabaseException();
-
-        //TODO einbinden des suchworts
-
-        List<Event> toReturn = new ArrayList<>();
-//        Iterable<Event> source = eventDatabaseConnector.getAllByTeamsVisibleContaining(teamId);
-//
-//        source.forEach(toReturn::add);
-
-        return toReturn;
-    }
-
-    @Override
-    public List<Event> findEventsUserInvited(String userName, String searchword) throws DatabaseException {
-        //TODO redundante überprüfung des suchwortes
-        //TODO einbinden des suchworts
-        if(searchword == null || searchword.length() > Event.MAX_SEARCHWORD_LENGTH)
-            throw new DatabaseException();
-
-        List<Event> toReturn = new ArrayList<>();
-//        Iterable<Event> source = eventDatabaseConnector.getAllByUsersInvitedContains(userName);
-//
-//        source.forEach(toReturn::add);
-
-        return toReturn;
-    }
-
-
-    @Override
-    public Event getEvent(int eventId) throws DatabaseException{
-        Optional<Event> optional = eventDatabaseConnector.findById(eventId);
-
-        return optional.orElse(null);
-    }
-
-    @Override
-    public Event updateEventName(int eventId, String eventName) throws DatabaseException {
-        try{
-            Event event = getEvent(eventId);
-            event.setEventName(eventName);
-
-            return eventDatabaseConnector.save(event);
-
-        }catch(Exception e){
-            throw new DatabaseException();
-        }
-    }
-
-    @Override
-    public Event updateEventDescription(int eventId, String description) throws DatabaseException {
-        try{
-            Event event = getEvent(eventId);
-
-            event.setEventDescription(description);
-
-            return eventDatabaseConnector.save(event);
-
-        }catch(Exception e){
-            throw new DatabaseException();
-        }
-    }
-
-    @Override
-    public Event updateEventLocation(int eventId, int locationId) throws DatabaseException {
-        try{
-            Event event = getEvent(eventId);
-            event.setLocation(locationDao.getLocation(locationId));
-
-            return eventDatabaseConnector.save(event);
-        }catch(Exception e){
-            throw new DatabaseException();
-        }
-    }
-
-    @Override
-    public Event updateEventTimeStart(int eventId, Date timeStart) throws DatabaseException {
-        try{
-            Event event = getEvent(eventId);
-            event.setStartDate(timeStart);
-
-            return eventDatabaseConnector.save(event);
-
-        }catch(Exception e){
-            throw new DatabaseException();
-        }
-    }
-
-    @Override
-    public Event updateEventTimeEnd(int eventId, Date timeEnd) throws DatabaseException {
-        try{
-            Event event = getEvent(eventId);
-            event.setEndDate(timeEnd);
-
-            return eventDatabaseConnector.save(event);
-
-        }catch(Exception e){
-            throw new DatabaseException();
-        }
-    }
-
-    @Override
-    public void updateEventIsPublic(int eventId, boolean isPublic) throws DatabaseException {
+    public Event getEvent(int eventId) throws DatabaseException {
         try {
-            Event event = getEvent(eventId);
-            event.setPublic(isPublic);
+            String SQL = "SELECT * FROM " + EVENT_TABLE + " WHERE " + EVENT_ID + " = " + eventId;
 
-            eventDatabaseConnector.save(event);
+            List<EventDatabase> events = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(EventDatabase.class));
+
+            if (events.size() == 0)
+                return null;
+            else {
+                Event event = events.get(0).getEvent();
+                event.setLocation(locationDao.getLocation(events.get(0).getLocationId()));
+
+                return event;
+            }
         } catch (Exception e) {
             throw new DatabaseException();
         }
     }
 
+    @Override
+    public Event updateEventName(int eventId, String eventName) throws DatabaseException {
+        String SQL = "UPDATE " + EVENT_TABLE + " SET " + EVENT_NAME + " = ? WHERE " + EVENT_ID + " = ?";
+
+        try {
+            jdbcTemplate.update(SQL, eventName, eventId);
+        } catch (Exception e) {
+            throw new DatabaseException();
+        }
+
+        return getEvent(eventId);
+    }
+
+    @Override
+    public Event updateEventDescription(int eventId, String description) throws DatabaseException {
+        String SQL = "UPDATE " + EVENT_TABLE + " SET " + EVENT_DESCRIPTION + " = ? WHERE " + EVENT_ID + " = ?";
+
+        try {
+            jdbcTemplate.update(SQL, description, eventId);
+        } catch (Exception e) {
+            throw new DatabaseException();
+        }
+
+        return getEvent(eventId);
+    }
+
+    @Override
+    public Event updateEventLocation(int eventId, int locationId) throws DatabaseException {
+        String SQL = "UPDATE " + EVENT_TABLE + " SET " + EVENT_LOCATION + " = ? WHERE " + EVENT_ID + " = ?";
+
+        try {
+            jdbcTemplate.update(SQL, locationId, eventId);
+        } catch (Exception e) {
+            throw new DatabaseException();
+        }
+
+        return getEvent(eventId);
+    }
+
+    @Override
+    public Event updateEventTimeStart(int eventId, Date timeStart) throws DatabaseException {
+        String SQL = "UPDATE " + EVENT_TABLE + " SET " + EVENT_START_DATE + " = ? WHERE " + EVENT_ID + " = ?";
+
+        try {
+            jdbcTemplate.update(SQL, timeStart, eventId);
+        } catch (Exception e) {
+            throw new DatabaseException();
+        }
+
+        return getEvent(eventId);
+    }
+
+    @Override
+    public Event updateEventTimeEnd(int eventId, Date timeEnd) throws DatabaseException {
+        String SQL = "UPDATE " + EVENT_TABLE + " SET " + EVENT_END_DATE + " = ? WHERE " + EVENT_ID + " = ?";
+
+        try {
+            jdbcTemplate.update(SQL, timeEnd, eventId);
+        } catch (Exception e) {
+            throw new DatabaseException();
+        }
+
+        return getEvent(eventId);
+    }
 
     @Override
     public Event putUserInviteToEvent(String userToInviteName, int eventId) throws DatabaseException {
-
-        if(!isValidName(userToInviteName))
-            throw new DatabaseException();
-
-       try{
-           //User user = userDao.getUser(userToInviteName);
-           //Event event = getEventById(eventId);
-           User user = new User();
-           Event event = new Event();
-           Location location = new Location();
-           int locationId = 1;
-
-           event.setEventName("dummyEvent");
-           event.setEventDescription("description");
-           location.setLocationId(locationId);
-           event.setLocation(location);
-           event.setStartDate(new Date (System.currentTimeMillis()+100));
-           event.setEndDate(new Date (System.currentTimeMillis()+1000));
-           user.setUserName(userToInviteName);
-
-           EventInvitation eventInvitation = new EventInvitation();
-           eventInvitation.setUserInvited(user);
-           eventInvitation.setEventInvited(event);
-
-           event.addUsersInvited(eventInvitation);
-
-           return event;
-           //return eventDatabaseConnector.save(event);
-
-       } catch(Exception e) {
-            throw new DatabaseException();
-       }
+        return putUserInvited(userToInviteName, eventId, false, false);
     }
 
-    private boolean isValidName(String name){
-        if(name.length() <= Event.MAX_USERNAME_LENGHT && name.length() > 0)
-            return true;
-        else
-            return false;
+    @Override
+    public Event putUserInviteToEventAsAdmin(String userToInviteName, int eventId) throws DatabaseException {
+        return putUserInvited(userToInviteName, eventId, true, true);
     }
 
+    private Event putUserInvited(String userName, int eventId, boolean admin, boolean reply) throws DatabaseException {
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        simpleJdbcInsert.withTableName(EVENT_INVITATION_TABLE);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(EVENT_INVITATION_ADMIN, admin);
+        parameters.put(EVENT_INVITATION_EVENT, eventId);
+        parameters.put(EVENT_INVITATION_REPLY, reply);
+        parameters.put(EVENT_INVITATION_USER, userName);
+
+        try {
+            Number key = simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+            return getEvent(key.intValue());
+        } catch (Exception e) {
+            throw new DatabaseException();
+        }
+    }
 }

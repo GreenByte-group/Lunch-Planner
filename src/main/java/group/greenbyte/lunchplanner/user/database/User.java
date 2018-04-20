@@ -16,7 +16,7 @@ public class User {
     static final public int MAX_PASSWORD_LENGTH = 80;
 
     @Id
-    @Column(length = MAX_USERNAME_LENGTH)
+    @Column(unique = true,length = MAX_USERNAME_LENGTH)
     private String userName;
 
     @Column(nullable = false, length = MAX_MAIL_LENGTH)
@@ -71,28 +71,5 @@ public class User {
             eventsInvited = new HashSet<>();
 
         eventsInvited.add(eventInvitation);
-    }
-
-    public Set<TeamMember> getTeamsMember() {
-        return teamsMember;
-    }
-
-    public void setTeamsMember(Set<TeamMember> teamsMember) {
-        this.teamsMember = teamsMember;
-    }
-
-    public Set<LocationAdmin> getLocationAdmin() {
-        return locationAdmin;
-    }
-
-    public void setLocationAdmin(Set<LocationAdmin> locationAdmin) {
-        this.locationAdmin = locationAdmin;
-    }
-
-    public void addLocationAdmin(LocationAdmin locationAdmin) {
-        if(this.locationAdmin == null)
-            this.locationAdmin = new HashSet<>();
-
-        this.locationAdmin.add(locationAdmin);
     }
 }

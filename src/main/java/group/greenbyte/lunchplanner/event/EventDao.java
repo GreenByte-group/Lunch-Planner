@@ -46,6 +46,7 @@ public interface EventDao {
     List<Event> searchPublicEvents(String username, String searchword) throws DatabaseException;
 
     /**
+     * Gets the event with location but without usersInvited and teamsVisible
      *
      * @param eventId id of the event
      * @return the searched event
@@ -155,4 +156,5 @@ public interface EventDao {
      */
     List<Event> findEventsUserInvited(String userName, String searchword) throws DatabaseException;
 
+    Event putUserInviteToEventAsAdmin (String userToInviteName, int eventId) throws DatabaseException;
 }
