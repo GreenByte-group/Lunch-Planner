@@ -257,7 +257,7 @@ public class EventController {
      * @param eventId id of the event
      * @param answer answer of the user
      */
-    @RequestMapping(value = "/event/{eventId}/reply", method = RequestMethod.PUT,
+    @RequestMapping(value = "/{eventId}/reply", method = RequestMethod.PUT,
            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public String reply(@PathVariable("eventId") int eventId, @RequestBody String answer, HttpServletResponse response){

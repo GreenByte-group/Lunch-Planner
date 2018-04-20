@@ -143,4 +143,6 @@ public interface EventDao {
     void putUserInviteToEventAsAdmin (String userToInviteName, int eventId) throws DatabaseException;
 
     void addTeamToEvent(int eventId, int teamId) throws DatabaseException;
+
+    void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException;
 }

@@ -23,7 +23,7 @@ public class EventDaoMySql implements EventDao {
 
     private static final String EVENT_INVITATION_TABLE = "event_invitation";
     private static final String EVENT_INVITATION_ADMIN = "is_admin";
-    private static final String EVENT_INVITATION_REPLY = "confirmed";
+    private static final String EVENT_INVITATION_REPLY = "answer";
     private static final String EVENT_INVITATION_USER = "user_name";
     private static final String EVENT_INVITATION_EVENT = "event_id";
 
@@ -164,7 +164,7 @@ public class EventDaoMySql implements EventDao {
 
     @Override
     public Event putUserInviteToEvent(String userToInviteName, int eventId) throws DatabaseException {
-        return putUserInvited(userToInviteName, eventId, false, false);
+        return putUserInvited(userToInviteName, eventId, false);
     }
 
     @Override
@@ -242,7 +242,7 @@ public class EventDaoMySql implements EventDao {
 
     @Override
     public void putUserInviteToEventAsAdmin(String userToInviteName, int eventId) throws DatabaseException {
-        putUserInvited(userToInviteName, eventId, true, true);
+        putUserInvited(userToInviteName, eventId, true);
     }
 
     @Override
@@ -260,13 +260,28 @@ public class EventDaoMySql implements EventDao {
         }
     }
 
-    private Event putUserInvited(String userName, int eventId, boolean admin, boolean reply) throws DatabaseException {
+    @Override
+    public void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException {
+        String SQL = "UPDATE " + EVENT_INVITATION_TABLE + " SET " + EVENT_INVITATION_REPLY + " = ? WHERE " + EVENT_INVITATION_EVENT + " = ? AND "
+                + EVENT_INVITATION_USER + " = ?";
+
+        try {
+            jdbcTemplate.update(SQL, answer.getValue(), eventId, userName);
+        } catch (Exception e) {
+            throw new DatabaseException();
+        }
+    }
+
+    private Event putUserInvited(String userName, int eventId, boolean admin) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(EVENT_INVITATION_TABLE);
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(EVENT_INVITATION_ADMIN, admin);
         parameters.put(EVENT_INVITATION_EVENT, eventId);
-        parameters.put(EVENT_INVITATION_REPLY, reply);
+        if(admin)
+            parameters.put(EVENT_INVITATION_REPLY, InvitationAnswer.ACCEPT.getValue());
+        else
+            parameters.put(EVENT_INVITATION_REPLY, InvitationAnswer.MAYBE.getValue());
         parameters.put(EVENT_INVITATION_USER, userName);
 
         try {

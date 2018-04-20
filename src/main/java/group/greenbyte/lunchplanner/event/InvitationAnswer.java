@@ -2,11 +2,14 @@ package group.greenbyte.lunchplanner.event;
 
 public enum InvitationAnswer {
 
-    ACCEPT("ACCEPT"), REJECT("REJECT"), MAYBE("MAYBE");
+    ACCEPT(0), REJECT(1), MAYBE(2);
 
-    private String answer;
+    private final int value;
+    private InvitationAnswer(int value) {
+        this.value = value;
+    }
 
-    InvitationAnswer(String answer){
-        this.answer = answer;
+    public int getValue() {
+        return value;
     }
 }

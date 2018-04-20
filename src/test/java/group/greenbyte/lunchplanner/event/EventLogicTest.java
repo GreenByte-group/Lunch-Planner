@@ -491,14 +491,11 @@ public class EventLogicTest {
     }
 
     // ------------------------- REPLY ------------------------------
-    // ------------------------- SEARCH EVENTS ------------------------------
 
     @Test
     public void test1ReplyAccept() throws Exception {
         String userName = "A";
         int eventId = 1;
-    @Test
-    public void test1searchEventForUserSearchwordAndUsernameFitIn() throws Exception{
 
         eventLogic.reply(userName, eventId, InvitationAnswer.ACCEPT);
     }
@@ -537,12 +534,9 @@ public class EventLogicTest {
 
     }
 
-
-
-    
-
-
-
+    // ------------------------- SEARCH EVENTS ------------------------------
+    @Test
+    public void test1searchEventForUserSearchwordAndUsernameFitIn() throws Exception{
         String username = createString(1);
         String searchword = createString(0);
 

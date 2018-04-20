@@ -21,12 +21,10 @@ public class EventInvitation implements Serializable {
 
     private boolean isAdmin;
 
-    //private boolean confirmed;
     private InvitationAnswer answer;
 
     public EventInvitation() {
         isAdmin = false;
-        //confirmed = false;
         answer = InvitationAnswer.MAYBE;
     }
 
@@ -37,14 +35,6 @@ public class EventInvitation implements Serializable {
     public void setAdmin(boolean admin) {
         isAdmin = admin;
     }
-
-    /*public boolean isConfirmed() {
-        return confirmed;
-    }*/
-
-    /*public void setConfirmed(boolean confirmed) {
-        this.confirmed = confirmed;
-    }*/
 
     public Event getEventInvited() {
         return eventInvited;
