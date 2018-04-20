@@ -4,6 +4,7 @@ import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.location.LocationLogic;
+import group.greenbyte.lunchplanner.team.TeamLogic;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,6 +28,7 @@ import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
 import static group.greenbyte.lunchplanner.event.Utils.setEventPublic;
 import static group.greenbyte.lunchplanner.location.Utils.createLocation;
+import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -37,6 +39,9 @@ public class EventDaoTest {
 
     @Autowired
     private EventDao eventDao;
+
+    @Autowired
+    private TeamLogic teamLogic;
 
     @Autowired
     private EventLogic eventLogic;
@@ -279,29 +284,46 @@ public class EventDaoTest {
     //all public
     @Test
     public void test1SearchPublicEventsShouldBeZero() throws Exception {
-        String searchWord = eventName;
+        String searchWord = createString(50);
         List<Event> events = eventDao.findPublicEvents(searchWord);
         Assert.assertEquals(0, events.size());
     }
     @Test
     public void test2SearchPublicEvents() throws Exception {
-        int publicEventId = createEvent(eventLogic, userName, eventName, eventDescription, eventId, new Date(eventTimeStart), new Date(eventTimeEnd));
+        String newEventName = createString(50);
+        int publicEventId = createEvent(eventLogic, userName, newEventName, eventDescription, locationId, new Date(eventTimeStart), new Date(eventTimeEnd));
         setEventPublic(eventLogic, publicEventId);
-        String searchWord = eventName;
+        String searchWord = newEventName;
         List<Event> events = eventDao.findPublicEvents(searchWord);
         Assert.assertEquals(1, events.size());
     }
 
-    @Test
-    public void tempTest() throws Exception {
-        List<Event> lists = eventDao.searchPublicEvents(userName, eventName);
-    }
-
     //all for teams
     @Test
-    public void test1SearchPublicForTeam() throws Exception {
-        //TODO write test
-        //TODO write method to add team to event
-        //TODO create team
+    public void test1SearchForTeam() throws Exception {
+        int teamId = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
+
+        String newEventName = createString(50);
+        int newEventId = createEvent(eventLogic, userName, newEventName, createString(50), locationId, new Date(eventTimeStart) , new Date(eventTimeEnd));
+        eventDao.addTeamToEvent(newEventId, teamId);
+
+        List<Event> events = eventDao.findEventsForTeam(teamId, newEventName);
+        Assert.assertEquals((int) events.get(0).getEventId(), newEventId);
+    }
+
+    @Test
+    public void test1SearchForTeam2() throws Exception {
+        int teamId = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
+        int teamId2 = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
+
+        String newEventName = createString(50);
+        int newEventId = createEvent(eventLogic, userName, newEventName, createString(50), locationId, new Date(eventTimeStart) , new Date(eventTimeEnd));
+        int newEventId2 = createEvent(eventLogic, userName, newEventName, createString(50), locationId, new Date(eventTimeStart) , new Date(eventTimeEnd));
+        eventDao.addTeamToEvent(newEventId, teamId);
+        eventDao.addTeamToEvent(newEventId2, teamId2);
+
+        List<Event> events = eventDao.findEventsForTeam(teamId, newEventName);
+        Assert.assertEquals(1, events.size());
+        Assert.assertEquals(newEventId, (int) events.get(0).getEventId());
     }
 }

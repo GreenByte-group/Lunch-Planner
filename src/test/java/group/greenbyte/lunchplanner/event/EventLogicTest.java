@@ -545,7 +545,7 @@ public class EventLogicTest {
     }
 
     @Test (expected = HttpRequestException.class)
-    public void test6searchEventForUserSearchwordIsToLong() throws Exception{
+    public void test6searchEventForUserSearchwordIsToOLong() throws Exception{
 
         String username = createString(50);
         String searchword = createString(51);

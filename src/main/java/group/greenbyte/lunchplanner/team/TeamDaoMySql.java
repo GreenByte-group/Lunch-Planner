@@ -32,10 +32,10 @@ public class TeamDaoMySql implements TeamDao {
     private static final String TEAM_PUBLIC = "is_public";
     private static final String TEAM_PARENT = "parent_team";
 
-    private static final String TEAM_MEMBER_TABLE = "team_member";
-    private static final String TEAM_MEMBER_USER = "user_name";
-    private static final String TEAM_MEMBER_TEAM = "team_id";
-    private static final String TEAM_MEMBER_ADMIN = "is_admin";
+    public static final String TEAM_MEMBER_TABLE = "team_member";
+    public static final String TEAM_MEMBER_USER = "user_name";
+    public static final String TEAM_MEMBER_TEAM = "team_id";
+    public static final String TEAM_MEMBER_ADMIN = "is_admin";
 
     @Autowired
     public TeamDaoMySql(UserDao userDao, JdbcTemplate jdbcTemplate) {

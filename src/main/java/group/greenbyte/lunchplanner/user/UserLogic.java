@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.regex.Pattern;
 
 @Service
@@ -44,6 +45,14 @@ public class UserLogic {
             userDao.createUser(userName, password, mail);
         } catch (DatabaseException e) {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        }
+    }
+
+    public User getUser(String userName) throws HttpRequestException {
+        try {
+            return userDao.getUser(userName);
+        } catch (DatabaseException e) {
+            throw new HttpRequestException(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
     }
 

@@ -2,11 +2,11 @@ package group.greenbyte.lunchplanner.event;
 
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import org.hibernate.dialect.Database;
-import 
+import group.greenbyte.lunchplanner.team.database.Team;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 
 public interface EventDao {
@@ -32,20 +32,6 @@ public interface EventDao {
                       Date timeEnd) throws DatabaseException;
 
     /**
-     * Get all events for a specific searchword
-     *
-     * @param username id of the user who creates the events
-     * @param searchword word for which is searched
-     * @return List of events with this searchword
-     *
-     * @throws DatabaseException when an unexpected error happens
-     */
-    List<Event> search(String username,
-                       String searchword)throws DatabaseException;
-
-    List<Event> searchPublicEvents(String username, String searchword) throws DatabaseException;
-
-    /**
      * Gets the event with location but without usersInvited and teamsVisible
      *
      * @param eventId id of the event
@@ -53,7 +39,6 @@ public interface EventDao {
      * @throws DatabaseException when an unexpected error happens
      */
     Event getEvent(int eventId) throws DatabaseException;
-
 
     /**
      *
@@ -156,5 +141,7 @@ public interface EventDao {
      */
     List<Event> findEventsUserInvited(String userName, String searchword) throws DatabaseException;
 
-    Event putUserInviteToEventAsAdmin (String userToInviteName, int eventId) throws DatabaseException;
+    void putUserInviteToEventAsAdmin (String userToInviteName, int eventId) throws DatabaseException;
+
+    void addTeamToEvent(int eventId, int teamId) throws DatabaseException;
 }

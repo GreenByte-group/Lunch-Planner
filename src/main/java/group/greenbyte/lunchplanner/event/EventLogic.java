@@ -12,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class EventLogic {
@@ -256,11 +255,7 @@ public class EventLogic {
         if(username.length() == 0 )
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is empty");
 
-        try{
-            return eventDao.search(username, "");
-        }catch(DatabaseException e){
-            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-        }
+        return this.searchEventsForUser(username, "");
     }
 
     /**
@@ -334,14 +329,21 @@ public class EventLogic {
 
     public List<Event> searchEventsForUser(String userName, String searchword) throws HttpRequestException{
 
-        if(searchword == null || searchword.length() == 0 || searchword.length() > Event.MAX_SEARCHWORD_LENGTH)
+        if(searchword == null || searchword.length() > Event.MAX_SEARCHWORD_LENGTH)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Searchword is to long, empty or null ");
         if(userName == null || userName.length()== 0 || userName.length() > Event.MAX_USERNAME_LENGHT)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is to long, empty or null ");
 
         try{
-            User user = userLogic.getUser(userName);
-            return eventDao.findPublicEvents(searchword);
+            Set<Event> searchResults = new HashSet<>();
+            List<Event> temp = eventDao.findPublicEvents(searchword);
+
+            searchResults.addAll(eventDao.findPublicEvents(searchword));
+            searchResults.addAll(eventDao.findEventsUserInvited(userName, searchword));
+
+            //Get teams and get all events for this teams
+
+            return new ArrayList<>(searchResults);
 
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
