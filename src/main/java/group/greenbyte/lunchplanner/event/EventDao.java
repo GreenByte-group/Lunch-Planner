@@ -2,10 +2,12 @@ package group.greenbyte.lunchplanner.event;
 
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import org.hibernate.dialect.Database;
+import group.greenbyte.lunchplanner.team.database.Team;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
 
 public interface EventDao {
 
@@ -30,45 +32,13 @@ public interface EventDao {
                       Date timeEnd) throws DatabaseException;
 
     /**
-<<<<<<< HEAD
-     * Get all events for a specific searchword
-     *
-     * @param username id of the user who creates the events
-     * @param searchword word for which is searched
-     * @return List of events with this searchword
-     *
-     * @throws DatabaseException when an unexpected error happens
-     */
-    List<Event> search(String username,
-                       String searchword)throws DatabaseException;
-
-    /**
+     * Gets the event with location but without usersInvited and teamsVisible
      *
      * @param eventId id of the event
      * @return the searched event
      * @throws DatabaseException when an unexpected error happens
      */
     Event getEvent(int eventId) throws DatabaseException;
-
-    /**
-     *
-     * @param userName id of the user who creates the events
-     * @param eventName name of the event
-     * @param description description of the event
-     * @param locationId id of the location
-     * @param timeStart time when the event starts
-     * @param timEnd time when the events ends
-     * @return the updated event
-     * @throws DatabaseException when an unexpected error happens
-     */
-//    Event updateEvent(String userName,
-//                      int eventId,
-//                      String eventName,
-//                      String description,
-//                      int locationId,
-//                      Date timeStart,
-//                      Date timEnd
-//                      ) throws DatabaseException;
 
     /**
      *
@@ -123,6 +93,14 @@ public interface EventDao {
                              Date timeEnd) throws DatabaseException;
 
     /**
+     * For now only for test purpose
+     * @param eventId
+     * @param isPublic
+     * @throws DatabaseException
+     */
+    void updateEventIsPublic(int eventId, boolean isPublic) throws DatabaseException;
+
+    /**
      * Insert an new invited user into an event
      *
      * @param userToInviteName id of the user who is invited
@@ -134,20 +112,35 @@ public interface EventDao {
     Event putUserInviteToEvent (String userToInviteName, int eventId) throws DatabaseException;
 
     /**
+     * Find all events that are public for all
      *
-     * @param eventId the eventID for searching
-     * @return the Event of the eventID
-     * @throws DatabaseException when an unexpected error happens
+     * @param searchword for what the user is searching
+     * @return a list of events matching the search
+     * @throws DatabaseException when an error happens
      */
-    Event getEventById(int eventId) throws DatabaseException;
+    List<Event> findPublicEvents(String searchword) throws DatabaseException;
 
     /**
+     * Find all event that are public for a team
      *
-     * @param userName user that replies
-     * @param eventId id of the event
-     * @param answer answer of user
-     * @return Event
-     * @throws DatabaseException
+     * @param teamId team
+     * @param searchword for what the user is searching
+     * @return a list of events matching the search
+     * @throws DatabaseException when an error happens
      */
-    void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException;
+    List<Event> findEventsForTeam(int teamId, String searchword) throws DatabaseException;
+
+    /**
+     * Find all event where an user is invited to
+     *
+     * @param userName the user
+     * @param searchword for what the user is searching
+     * @return a list of events matching the search
+     * @throws DatabaseException when an error happens
+     */
+    List<Event> findEventsUserInvited(String userName, String searchword) throws DatabaseException;
+
+    void putUserInviteToEventAsAdmin (String userToInviteName, int eventId) throws DatabaseException;
+
+    void addTeamToEvent(int eventId, int teamId) throws DatabaseException;
 }

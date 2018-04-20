@@ -7,10 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,11 +20,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static group.greenbyte.lunchplanner.team.Utils.createTeam;
-import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
-import static org.junit.Assert.*;
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
+import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
+import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration (classes = AppConfig.class)
@@ -59,7 +55,7 @@ public class TeamControllerTest {
 
         userName = createUserIfNotExists(userLogic, "dummy");
 
-        teamId = createTeam(teamLogic, userName, 0);
+        teamId = createTeamWithoutParent(teamLogic, userName, createString(50), createString(50));
 
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
         //mockMvc = MockMvcBuilders.standaloneSetup(eventController).build();

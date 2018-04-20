@@ -16,9 +16,6 @@ public class User {
     static final public int MAX_PASSWORD_LENGTH = 80;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer userId;
-
     @Column(unique = true,length = MAX_USERNAME_LENGTH)
     private String userName;
 
@@ -31,10 +28,10 @@ public class User {
     @OneToMany(mappedBy = "eventInvited", cascade = CascadeType.ALL)
     private Set<EventInvitation> eventsInvited;
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private Set<TeamMember> teamsMember = new HashSet<>();
 
-    @OneToMany(mappedBy = "location")
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<LocationAdmin> locationAdmin = new HashSet<>();
 
     public String getUserName() {
@@ -74,13 +71,5 @@ public class User {
             eventsInvited = new HashSet<>();
 
         eventsInvited.add(eventInvitation);
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
     }
 }

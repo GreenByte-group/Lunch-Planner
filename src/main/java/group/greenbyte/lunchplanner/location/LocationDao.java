@@ -26,4 +26,23 @@ public interface LocationDao {
      * @throws DatabaseException when a database error happens
      */
     Location getLocation(int locationId) throws DatabaseException;
+
+    /**
+     * Add an admin to the location
+     *
+     * @param locationId
+     * @param userName
+     * @throws DatabaseException
+     */
+    void addAdminToLocation(int locationId, String userName) throws DatabaseException;
+
+    /**
+     * Checks if a user has admin privileges
+     *
+     * @param locationId
+     * @param userName
+     * @return true when the user has privileges and false if not
+     * @throws DatabaseException
+     */
+    boolean hasAdminPrivileges(int locationId, String userName) throws DatabaseException;
 }

@@ -10,13 +10,13 @@ import java.io.Serializable;
 public class EventInvitation implements Serializable {
 
     @Id
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "eventId")
     private Event eventInvited;
 
     @Id
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "userName")
     private User userInvited;
 
     private boolean isAdmin;

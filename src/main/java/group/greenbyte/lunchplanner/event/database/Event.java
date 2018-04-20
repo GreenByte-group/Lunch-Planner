@@ -16,9 +16,8 @@ public class Event {
     static final public int MAX_SEARCHWORD_LENGTH = 50;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer eventId;
-
 
     @Column(name="startDate")
     private Date startDate;
@@ -35,24 +34,12 @@ public class Event {
     @Column(length = MAX_DESCRITION_LENGTH)
     private String eventDescription;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "locationId")
     private Location location;
 
-    @OneToMany(mappedBy = "userInvited")
+    @OneToMany(mappedBy = "userInvited", fetch = FetchType.EAGER)
     private Set<EventInvitation> usersInvited = new HashSet<>();
-
-    @OneToMany(mappedBy = "team")
-    private Set<EventTeamVisible> teamsVisible = new HashSet<>();
-
-    /*
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name="eventAdmin",
-            joinColumns = { @JoinColumn(name = "eventId")},
-            inverseJoinColumns = { @JoinColumn(name = "userName")})
-    private Set<User> usersAdmin = new HashSet<>();
-    */
 
     public Event() {
         isPublic = false;
@@ -129,15 +116,6 @@ public class Event {
 
         usersInvited.add(eventInvitation);
     }
-
-    public Set<EventTeamVisible> getTeamsVisible() {
-        return teamsVisible;
-    }
-
-    public void setTeamsVisible(Set<EventTeamVisible> teamsVisible) {
-        this.teamsVisible = teamsVisible;
-    }
-
 
     public void setEventId(Integer eventId) {
         this.eventId = eventId;

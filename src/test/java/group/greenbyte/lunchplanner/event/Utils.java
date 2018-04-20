@@ -1,5 +1,7 @@
 package group.greenbyte.lunchplanner.event;
 
+import group.greenbyte.lunchplanner.event.database.Event;
+import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -41,12 +43,25 @@ public class Utils {
         long timeStart = System.currentTimeMillis() + 10000;
         long timeEnd = timeStart + 10000;
 
+        return createEvent(eventLogic, userName,
+                createString(10), createString(10),
+                locationId, new Date(timeStart), new Date(timeEnd));
+    }
+
+    public static int createEvent(EventLogic eventLogic, String userName,
+                                  String name, String description, int locationId,
+                                  Date timeStart, Date timeEnd) throws Exception {
+
         return eventLogic.createEvent(userName,
-                createString(10),
-                createString(10),
+                name,
+                description,
                 locationId,
-                new Date(timeStart),
-                new Date(timeEnd));
+                timeStart,
+                timeEnd);
+    }
+
+    public static void setEventPublic(EventLogic eventLogic, int eventId) throws Exception {
+        eventLogic.updateEventIsPublic(eventId, true);
     }
 
 }

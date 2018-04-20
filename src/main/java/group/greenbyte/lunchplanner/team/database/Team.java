@@ -14,7 +14,7 @@ public class Team {
     public static final int MAX_DESCRIPTION_LENGHT = 1000;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int teamId;
 
     @Column
@@ -29,10 +29,7 @@ public class Team {
     @OneToMany(mappedBy = "user")
     private Set<TeamMember> teamsMember;
 
-    @OneToMany(mappedBy = "event")
-    private Set<EventTeamVisible> eventsVisible;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parentTeam")
     private Team parentTeam;
 
@@ -68,14 +65,6 @@ public class Team {
 
     public void setTeamName(String teamName) {
         this.teamName = teamName;
-    }
-
-    public Set<EventTeamVisible> getEventsVisible() {
-        return eventsVisible;
-    }
-
-    public void setEventsVisible(Set<EventTeamVisible> eventsVisible) {
-        this.eventsVisible = eventsVisible;
     }
 
     public Set<TeamMember> getTeamsMember() {

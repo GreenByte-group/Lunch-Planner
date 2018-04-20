@@ -58,12 +58,18 @@ public class LocationLogic {
      * @throws HttpRequestException when a database error happens
      */
     public Location getLocation(String userName, int locationId) throws HttpRequestException {
-        //TODO check privileges
         try {
+            if(!hasAdminPrivileges(userName, locationId))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have right to edit this location");
+
             return locationDao.getLocation(locationId);
         } catch (DatabaseException e) {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
+    }
+
+    private boolean hasAdminPrivileges(String username, int locationId) throws DatabaseException {
+        return locationDao.hasAdminPrivileges(locationId, username);
     }
 
     @Autowired

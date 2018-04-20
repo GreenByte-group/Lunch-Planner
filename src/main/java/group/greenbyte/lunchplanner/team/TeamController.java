@@ -24,7 +24,7 @@ public class TeamController {
     public String createTeam(@RequestBody TeamJson teamjson, HttpServletResponse response) {
         try {
 
-            int teamId = teamlogic.createTeam("dummy", teamjson.getParent(), teamjson.getTeamName(), teamjson.getDescription());
+            int teamId = teamlogic.createTeamWithParent("dummy", teamjson.getParent(), teamjson.getTeamName(), teamjson.getDescription());
 
             response.setStatus(HttpServletResponse.SC_CREATED);
             return String.valueOf(teamId);
@@ -57,6 +57,8 @@ public class TeamController {
 
         return "";
     }
+
+    //TODO create team wihtout parent
 
     @Autowired
     public void setTeamLogic(TeamLogic teamlogic) {

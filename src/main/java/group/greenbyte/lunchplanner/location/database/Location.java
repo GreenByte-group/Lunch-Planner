@@ -14,7 +14,7 @@ public class Location {
     static final public int MAX_USERNAME_LENGTH = 50;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int locationId;
 
     @Column(nullable = false, length = MAX_NAME_LENGTH)
@@ -29,10 +29,10 @@ public class Location {
     @Column
     private boolean isPublic;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "userAdmin")
     private Set<LocationAdmin> locationAdmins = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "location")
     private Set<Event> events = new HashSet<>();
 
     public Location() {
