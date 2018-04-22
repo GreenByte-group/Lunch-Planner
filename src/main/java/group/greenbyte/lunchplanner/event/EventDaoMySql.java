@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
 import java.util.*;
 
 @Repository
@@ -72,9 +73,9 @@ public class EventDaoMySql implements EventDao {
     @Override
     public Event getEvent(int eventId) throws DatabaseException {
         try {
-            String SQL = "SELECT * FROM " + EVENT_TABLE + " WHERE " + EVENT_ID + " = " + eventId;
+            String SQL = "SELECT * FROM " + EVENT_TABLE + " WHERE " + EVENT_ID + " = ?";
 
-            List<EventDatabase> events = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(EventDatabase.class));
+            List<EventDatabase> events = jdbcTemplate.query(SQL, new Object[] {eventId}, new BeanPropertyRowMapper<>(EventDatabase.class));
 
             if (events.size() == 0)
                 return null;
@@ -168,10 +169,12 @@ public class EventDaoMySql implements EventDao {
     public List<Event> findPublicEvents(String searchword) throws DatabaseException {
         try {
             String SQL = "SELECT * FROM " + EVENT_TABLE + " WHERE " +
-                    EVENT_NAME + " LIKE '%" + searchword + "%'" +
-                    " OR " + EVENT_DESCRIPTION + " LIKE '%" + searchword + "%'";
+                    EVENT_NAME + " LIKE ?" +
+                    " OR " + EVENT_DESCRIPTION + " LIKE ?";
 
-            List<EventDatabase> events = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(EventDatabase.class));
+            List<EventDatabase> events = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(EventDatabase.class),
+                    "%" + searchword + "%", "%" + searchword + "%");
 
             List<Event> eventsReturn = new ArrayList<>(events.size());
             for(EventDatabase eventDatabase: events) {
@@ -193,11 +196,13 @@ public class EventDaoMySql implements EventDao {
             String SQL = "select " + EVENT_TEAM_TABLE + "." + EVENT_TEAM_EVENT + " from " + EVENT_TEAM_TABLE +
                     " INNER JOIN " + EVENT_TABLE + " " + EVENT_TABLE + " ON " + EVENT_TABLE + "." + EVENT_ID + " = " +
                     EVENT_TEAM_TABLE + "." + EVENT_TEAM_EVENT + " WHERE (" +
-                    EVENT_NAME + " LIKE '%" + searchword + "%'" +
-                    " OR " + EVENT_DESCRIPTION + " LIKE '%" + searchword + "%'" +
-                    ") AND " + EVENT_TEAM_TEAM + " = " + teamId;
+                    EVENT_NAME + " LIKE ?" +
+                    " OR " + EVENT_DESCRIPTION + " LIKE ?" +
+                    ") AND " + EVENT_TEAM_TEAM + " = ?";
 
-            List<Integer> eventIds = jdbcTemplate.queryForList(SQL, Integer.class);
+            List<Integer> eventIds = jdbcTemplate.queryForList(SQL,
+                    Integer.class,
+                    "%" + searchword + "%", "%" + searchword + "%", teamId);
 
             List<Event> events = new ArrayList<>();
 
@@ -216,12 +221,14 @@ public class EventDaoMySql implements EventDao {
         try {
             String SQL = "select * from " + EVENT_TABLE + " inner join " + EVENT_INVITATION_TABLE + " " + EVENT_INVITATION_TABLE +
                     " on " + EVENT_TABLE + "." + EVENT_ID + " = " + EVENT_INVITATION_TABLE + "." + EVENT_INVITATION_EVENT +
-                    " WHERE (" + EVENT_NAME + " LIKE '%" + searchword + "%'" +
-                    " OR " + EVENT_DESCRIPTION + " LIKE '%" + searchword + "%'" +
-                    ") AND " + EVENT_INVITATION_USER + " = '" + userName + "'";
+                    " WHERE (" + EVENT_NAME + " LIKE ?" +
+                    " OR " + EVENT_DESCRIPTION + " LIKE ?" +
+                    ") AND " + EVENT_INVITATION_USER + " = ?";
 
 
-            List<EventDatabase> events = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(EventDatabase.class));
+            List<EventDatabase> events = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(EventDatabase.class),
+                    "%" + searchword + "%", "%" + searchword + "%", userName);
 
             List<Event> eventsReturn = new ArrayList<>(events.size());
             for(EventDatabase eventDatabase: events) {
@@ -259,25 +266,37 @@ public class EventDaoMySql implements EventDao {
 
     @Override
     public boolean userHasAdminPrivileges(String userName, int eventId) throws DatabaseException {
-        String SQL = "SELECT count(*) FROM " + EVENT_INVITATION_TABLE + " WHERE " +
-                EVENT_INVITATION_USER + " = '" + userName + "' " +
-                " AND " + EVENT_INVITATION_EVENT + " = " + eventId +
-                " AND " + EVENT_INVITATION_ADMIN + " = " + 1;
+        try {
+            String SQL = "SELECT count(*) FROM " + EVENT_INVITATION_TABLE + " WHERE " +
+                    EVENT_INVITATION_USER + " = ? " +
+                    " AND " + EVENT_INVITATION_EVENT + " = ?" +
+                    " AND " + EVENT_INVITATION_ADMIN + " = " + 1;
 
-        int count = jdbcTemplate.queryForObject(SQL, Integer.class);
+            int count = jdbcTemplate.queryForObject(SQL,
+                    Integer.class,
+                    userName, eventId);
 
-        return count != 0;
+            return count != 0;
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
     public boolean userHasPrivileges(String userName, int eventId) throws DatabaseException {
-        String SQL = "SELECT count(*) FROM " + EVENT_INVITATION_TABLE + " WHERE " +
-                EVENT_INVITATION_USER + " = '" + userName + "' " +
-                " AND " + EVENT_INVITATION_EVENT + " = " + eventId;
+        try {
+            String SQL = "SELECT count(*) FROM " + EVENT_INVITATION_TABLE + " WHERE " +
+                    EVENT_INVITATION_USER + " = ? " +
+                    " AND " + EVENT_INVITATION_EVENT + " = ?";
 
-        int count = jdbcTemplate.queryForObject(SQL, Integer.class);
+            int count = jdbcTemplate.queryForObject(SQL,
+                    new Object[]{userName, eventId},
+                    Integer.class);
 
-        return count != 0;
+            return count != 0;
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
     }
       
     public void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException {
