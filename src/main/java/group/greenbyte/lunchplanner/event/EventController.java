@@ -222,8 +222,8 @@ public class EventController {
      */
     @RequestMapping(value = "/search/", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public void searchEventNoSearchWord() {
-
+    public String searchEventNoSearchWord() {
+        return "No searchword";
     }
 
     /**
