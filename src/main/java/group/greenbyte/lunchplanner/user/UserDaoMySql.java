@@ -48,7 +48,7 @@ public class UserDaoMySql implements UserDao {
                 return users.get(0).getUser();
             }
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -64,7 +64,7 @@ public class UserDaoMySql implements UserDao {
         try {
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 }

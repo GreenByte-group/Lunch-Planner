@@ -4,8 +4,6 @@ import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.event.database.EventDatabase;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.location.LocationDao;
-import group.greenbyte.lunchplanner.location.database.Location;
-import group.greenbyte.lunchplanner.team.database.Team;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,7 +11,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import javax.xml.crypto.Data;
 import java.util.*;
 
 @Repository
@@ -68,7 +65,7 @@ public class EventDaoMySql implements EventDao {
 
             return getEvent(key.intValue());
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -88,7 +85,7 @@ public class EventDaoMySql implements EventDao {
                 return event;
             }
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -99,7 +96,7 @@ public class EventDaoMySql implements EventDao {
         try {
             jdbcTemplate.update(SQL, eventName, eventId);
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
 
         return getEvent(eventId);
@@ -112,7 +109,7 @@ public class EventDaoMySql implements EventDao {
         try {
             jdbcTemplate.update(SQL, description, eventId);
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
 
         return getEvent(eventId);
@@ -125,7 +122,7 @@ public class EventDaoMySql implements EventDao {
         try {
             jdbcTemplate.update(SQL, locationId, eventId);
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
 
         return getEvent(eventId);
@@ -138,7 +135,7 @@ public class EventDaoMySql implements EventDao {
         try {
             jdbcTemplate.update(SQL, timeStart, eventId);
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
 
         return getEvent(eventId);
@@ -151,7 +148,7 @@ public class EventDaoMySql implements EventDao {
         try {
             jdbcTemplate.update(SQL, timeEnd, eventId);
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
 
         return getEvent(eventId);
@@ -186,7 +183,7 @@ public class EventDaoMySql implements EventDao {
 
             return eventsReturn;
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -210,7 +207,7 @@ public class EventDaoMySql implements EventDao {
 
             return events;
         } catch(Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -236,7 +233,7 @@ public class EventDaoMySql implements EventDao {
 
             return eventsReturn;
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -256,7 +253,7 @@ public class EventDaoMySql implements EventDao {
         try {
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -268,7 +265,7 @@ public class EventDaoMySql implements EventDao {
         try {
             jdbcTemplate.update(SQL, answer.getValue(), eventId, userName);
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -288,7 +285,7 @@ public class EventDaoMySql implements EventDao {
             Number key = simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
             return getEvent(key.intValue());
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 }
