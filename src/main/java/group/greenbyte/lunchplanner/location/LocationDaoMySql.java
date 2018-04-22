@@ -70,9 +70,11 @@ public class LocationDaoMySql implements LocationDao {
     @Override
     public Location getLocation(int locationId) throws DatabaseException {
         try {
-            String SQL = "SELECT * FROM " + LOCATION_TABLE + " WHERE " + LOCATION_ID + " = " + locationId;
+            String SQL = "SELECT * FROM " + LOCATION_TABLE + " WHERE " + LOCATION_ID + " = ?";
 
-            List<LocationDatabase> locations = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(LocationDatabase.class));
+            List<LocationDatabase> locations = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(LocationDatabase.class),
+                    locationId);
 
             if (locations.size() == 0)
                 return null;
@@ -102,10 +104,12 @@ public class LocationDaoMySql implements LocationDao {
     public boolean hasAdminPrivileges(int locationId, String userName) throws DatabaseException {
         try {
             String SQL = "SELECT count(*) FROM "  + LOCATION_ADMIN_TABLE + " WHERE " +
-                    LOCATION_ADMIN_LOCATION_ID + " = " + locationId + " AND " +
-                    LOCATION_ADMIN_USER + " = '" + userName + "'";
+                    LOCATION_ADMIN_LOCATION_ID + " = ? AND " +
+                    LOCATION_ADMIN_USER + " = ?";
 
-            int count = jdbcTemplate.queryForObject(SQL, Integer.class);
+            int count = jdbcTemplate.queryForObject(SQL,
+                    Integer.class,
+                    locationId, userName);
 
             return count != 0;
         } catch (Exception e)  {
