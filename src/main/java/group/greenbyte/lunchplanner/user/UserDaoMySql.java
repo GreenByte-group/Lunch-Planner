@@ -38,9 +38,11 @@ public class UserDaoMySql implements UserDao {
     @Override
     public User getUser(String userName) throws DatabaseException {
         try {
-            String SQL = "SELECT * FROM " + USER_TABLE + " WHERE " + USER_NAME + " = " + userName;
+            String SQL = "SELECT * FROM " + USER_TABLE + " WHERE " + USER_NAME + " = ?";
 
-            List<UserDatabase> users = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(UserDatabase.class));
+            List<UserDatabase> users = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(UserDatabase.class),
+                    userName);
 
             if (users.size() == 0)
                 return null;
