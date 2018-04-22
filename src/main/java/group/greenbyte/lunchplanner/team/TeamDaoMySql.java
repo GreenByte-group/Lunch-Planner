@@ -58,7 +58,7 @@ public class TeamDaoMySql implements TeamDao {
 
             return key.intValue();
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -78,7 +78,7 @@ public class TeamDaoMySql implements TeamDao {
 
             return key.intValue();
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -95,7 +95,7 @@ public class TeamDaoMySql implements TeamDao {
                 return teams.get(0).getTeam();
             }
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -116,7 +116,7 @@ public class TeamDaoMySql implements TeamDao {
                 return team;
             }
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -133,7 +133,7 @@ public class TeamDaoMySql implements TeamDao {
         try {
             jdbcTemplate.update(SQL, true, userName, teamId);
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -184,7 +184,7 @@ public class TeamDaoMySql implements TeamDao {
         try {
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 }

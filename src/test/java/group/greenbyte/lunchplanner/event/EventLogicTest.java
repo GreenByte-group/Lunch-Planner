@@ -18,6 +18,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -522,11 +524,58 @@ public class EventLogicTest {
 
     }
 
-    // ------------------------- SEARCH EVENTS ------------------------------
+    // ------------------------- REPLY ------------------------------
 
     @Test
-    public void test1searchEventForUserSearchwordAndUsernameFitIn() throws Exception{
+    public void test1ReplyAccept() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(1));
+        int eventId = createEvent(eventLogic, userName, locationId);
 
+        eventLogic.reply(userName, eventId, InvitationAnswer.ACCEPT);
+    }
+
+    @Test
+    public void test2ReplyRejectMaxUsername() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(50));
+        int eventId = createEvent(eventLogic, userName, locationId);
+
+        eventLogic.reply(userName, eventId, InvitationAnswer.REJECT);
+    }
+    @Test (expected = HttpRequestException.class)
+    public void test3ReplyNoUserName() throws Exception {
+        String userName = "";
+
+        eventLogic.reply(userName, eventId, InvitationAnswer.REJECT);
+
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test4ReplyNoUserNameTooLong() throws Exception {
+        String userName = createString(51);
+
+        eventLogic.reply(userName, eventId, InvitationAnswer.REJECT);
+
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test5ReplyAnswerNull() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(50));
+        int eventId = createEvent(eventLogic, userName, locationId);
+
+        eventLogic.reply(userName, eventId, null);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test5ReplyEventNotExists() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(50));
+        int eventId = createEvent(eventLogic, userName, locationId);
+
+        eventLogic.reply(userName, eventId + 100, null);
+    }
+
+    // ------------------------- SEARCH EVENTS ------------------------------
+    @Test
+    public void test1searchEventForUserSearchwordAndUsernameFitIn() throws Exception{
         String username = createString(1);
         String searchword = createString(0);
 

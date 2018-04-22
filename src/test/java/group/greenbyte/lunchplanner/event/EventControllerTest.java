@@ -529,4 +529,38 @@ public class EventControllerTest {
                 MockMvcRequestBuilders.get("/event/search/" + searchWord))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
+
+
+    // ------------------ REPLY -------------------------
+    @Test
+    public void test1ReplyAccept() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/reply").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(InvitationAnswer.ACCEPT)))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    public void test2ReplyReject() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/reply").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(InvitationAnswer.REJECT)))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    public void test3ReplyInvalidAnswer() throws Exception {
+        String answer = "keine lust";
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/reply").contentType(MediaType.TEXT_PLAIN_VALUE).content(answer))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void test4ReplyEventDoesNotExist() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + 100 + "/reply").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(InvitationAnswer.ACCEPT)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+
+
 }

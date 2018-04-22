@@ -4,8 +4,6 @@ import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.event.database.EventDatabase;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.location.LocationDao;
-import group.greenbyte.lunchplanner.location.database.Location;
-import group.greenbyte.lunchplanner.team.database.Team;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,7 +11,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import javax.xml.crypto.Data;
 import java.util.*;
 
 @Repository
@@ -23,7 +20,7 @@ public class EventDaoMySql implements EventDao {
 
     private static final String EVENT_INVITATION_TABLE = "event_invitation";
     private static final String EVENT_INVITATION_ADMIN = "is_admin";
-    private static final String EVENT_INVITATION_REPLY = "confirmed";
+    private static final String EVENT_INVITATION_REPLY = "answer";
     private static final String EVENT_INVITATION_USER = "user_name";
     private static final String EVENT_INVITATION_EVENT = "event_id";
 
@@ -68,7 +65,7 @@ public class EventDaoMySql implements EventDao {
 
             return getEvent(key.intValue());
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -88,7 +85,7 @@ public class EventDaoMySql implements EventDao {
                 return event;
             }
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -99,7 +96,7 @@ public class EventDaoMySql implements EventDao {
         try {
             jdbcTemplate.update(SQL, eventName, eventId);
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
 
         return getEvent(eventId);
@@ -112,7 +109,7 @@ public class EventDaoMySql implements EventDao {
         try {
             jdbcTemplate.update(SQL, description, eventId);
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
 
         return getEvent(eventId);
@@ -125,7 +122,7 @@ public class EventDaoMySql implements EventDao {
         try {
             jdbcTemplate.update(SQL, locationId, eventId);
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
 
         return getEvent(eventId);
@@ -138,7 +135,7 @@ public class EventDaoMySql implements EventDao {
         try {
             jdbcTemplate.update(SQL, timeStart, eventId);
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
 
         return getEvent(eventId);
@@ -151,7 +148,7 @@ public class EventDaoMySql implements EventDao {
         try {
             jdbcTemplate.update(SQL, timeEnd, eventId);
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
 
         return getEvent(eventId);
@@ -164,7 +161,7 @@ public class EventDaoMySql implements EventDao {
 
     @Override
     public Event putUserInviteToEvent(String userToInviteName, int eventId) throws DatabaseException {
-        return putUserInvited(userToInviteName, eventId, false, false);
+        return putUserInvited(userToInviteName, eventId, false);
     }
 
     @Override
@@ -186,7 +183,7 @@ public class EventDaoMySql implements EventDao {
 
             return eventsReturn;
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -210,7 +207,7 @@ public class EventDaoMySql implements EventDao {
 
             return events;
         } catch(Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -236,13 +233,13 @@ public class EventDaoMySql implements EventDao {
 
             return eventsReturn;
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
     @Override
     public void putUserInviteToEventAsAdmin(String userToInviteName, int eventId) throws DatabaseException {
-        putUserInvited(userToInviteName, eventId, true, true);
+        putUserInvited(userToInviteName, eventId, true);
     }
 
     @Override
@@ -256,7 +253,7 @@ public class EventDaoMySql implements EventDao {
         try {
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -282,21 +279,35 @@ public class EventDaoMySql implements EventDao {
 
         return count != 0;
     }
+      
+    public void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException {
+        String SQL = "UPDATE " + EVENT_INVITATION_TABLE + " SET " + EVENT_INVITATION_REPLY + " = ? WHERE " + EVENT_INVITATION_EVENT + " = ? AND "
+                + EVENT_INVITATION_USER + " = ?";
 
-    private Event putUserInvited(String userName, int eventId, boolean admin, boolean reply) throws DatabaseException {
+        try {
+            jdbcTemplate.update(SQL, answer.getValue(), eventId, userName);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    private Event putUserInvited(String userName, int eventId, boolean admin) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(EVENT_INVITATION_TABLE);
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(EVENT_INVITATION_ADMIN, admin);
         parameters.put(EVENT_INVITATION_EVENT, eventId);
-        parameters.put(EVENT_INVITATION_REPLY, reply);
+        if(admin)
+            parameters.put(EVENT_INVITATION_REPLY, InvitationAnswer.ACCEPT.getValue());
+        else
+            parameters.put(EVENT_INVITATION_REPLY, InvitationAnswer.MAYBE.getValue());
         parameters.put(EVENT_INVITATION_USER, userName);
 
         try {
             Number key = simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
             return getEvent(key.intValue());
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 }

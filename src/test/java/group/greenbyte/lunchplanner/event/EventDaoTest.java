@@ -326,4 +326,32 @@ public class EventDaoTest {
         Assert.assertEquals(1, events.size());
         Assert.assertEquals(newEventId, (int) events.get(0).getEventId());
     }
+
+    // ------------------------- Reply Invitation ------------------------------
+
+    @Test
+    public void test1ReplyInvitationAccept() throws Exception {
+        String userName = "A";
+        int eventId = 1;
+
+        eventDao.replyInvitation(userName, eventId, InvitationAnswer.ACCEPT);
+    }
+
+    @Test
+    public void test2ReplyInvitationRejectMaxUsername() throws Exception {
+        String userName = createString(50);
+        int eventId = 1;
+
+        eventDao.replyInvitation(userName, eventId, InvitationAnswer.REJECT);
+    }
+
+    @Test (expected = DatabaseException.class)
+    public void test5ReplyInvitationAnswerNull() throws Exception {
+        String userName = createString(50);
+        int eventId = 1;
+
+        eventDao.replyInvitation(userName, eventId, null);
+
+    }
+
 }

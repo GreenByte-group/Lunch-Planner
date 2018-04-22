@@ -305,6 +305,31 @@ public class EventLogic {
         userLogic.sendInvitation(username, userToInvite);
     }
 
+    /**
+     * Invitation reply
+     *
+     * @param userName user that replies
+     * @param eventId id of the event
+     * @param answer answer of the user
+     */
+    public void reply(String userName, int eventId, InvitationAnswer answer) throws HttpRequestException {
+        if(!isValidName(userName))
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximun length" + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
+        if(answer == null)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Invalid answer");
+
+        try {
+            if(eventDao.getEvent(eventId) == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + eventId + ", was not found");
+
+            //TODO privilege check
+
+            eventDao.replyInvitation(userName, eventId, answer);
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        }
+    }
+
     private boolean isValidName(String name){
         if(name.length() <= Event.MAX_USERNAME_LENGHT && name.length() > 0){
             System.out.println("isValid");

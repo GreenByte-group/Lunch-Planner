@@ -63,7 +63,7 @@ public class LocationDaoMySql implements LocationDao {
 
             return key.intValue();
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -79,7 +79,7 @@ public class LocationDaoMySql implements LocationDao {
             else
                 return locations.get(0).getLocation();
         } catch (Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -94,7 +94,7 @@ public class LocationDaoMySql implements LocationDao {
 
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
         } catch(Exception e) {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 
@@ -109,7 +109,7 @@ public class LocationDaoMySql implements LocationDao {
 
             return count != 0;
         } catch (Exception e)  {
-            throw new DatabaseException();
+            throw new DatabaseException(e);
         }
     }
 }

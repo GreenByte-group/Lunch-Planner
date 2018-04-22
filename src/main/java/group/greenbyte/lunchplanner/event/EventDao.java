@@ -170,4 +170,6 @@ public interface EventDao {
      * @throws DatabaseException
      */
     boolean userHasPrivileges(String userName, int eventId) throws DatabaseException;
+  
+    void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException;
 }

@@ -1,5 +1,6 @@
 package group.greenbyte.lunchplanner.event.database;
 
+import group.greenbyte.lunchplanner.event.InvitationAnswer;
 import group.greenbyte.lunchplanner.user.database.User;
 
 import javax.persistence.*;
@@ -20,11 +21,11 @@ public class EventInvitation implements Serializable {
 
     private boolean isAdmin;
 
-    private boolean confirmed;
+    private InvitationAnswer answer;
 
     public EventInvitation() {
         isAdmin = false;
-        confirmed = false;
+        answer = InvitationAnswer.MAYBE;
     }
 
     public boolean isAdmin() {
@@ -33,14 +34,6 @@ public class EventInvitation implements Serializable {
 
     public void setAdmin(boolean admin) {
         isAdmin = admin;
-    }
-
-    public boolean isConfirmed() {
-        return confirmed;
-    }
-
-    public void setConfirmed(boolean confirmed) {
-        this.confirmed = confirmed;
     }
 
     public Event getEventInvited() {
@@ -57,5 +50,13 @@ public class EventInvitation implements Serializable {
 
     public void setUserInvited(User userInvited) {
         this.userInvited = userInvited;
+    }
+
+    public InvitationAnswer getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(InvitationAnswer answer) {
+        this.answer = answer;
     }
 }
