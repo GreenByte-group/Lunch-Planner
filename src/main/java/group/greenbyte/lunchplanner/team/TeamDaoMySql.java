@@ -85,9 +85,11 @@ public class TeamDaoMySql implements TeamDao {
     @Override
     public Team getTeam(int teamId) throws DatabaseException {
         try {
-            String SQL = "SELECT * FROM " + TEAM_TABLE + " WHERE " + TEAM_ID + " = " + teamId;
+            String SQL = "SELECT * FROM " + TEAM_TABLE + " WHERE " + TEAM_ID + " = ?";
 
-            List<TeamDatabase> teams = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(TeamDatabase.class));
+            List<TeamDatabase> teams = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(TeamDatabase.class),
+                    teamId);
 
             if (teams.size() == 0)
                 return null;
@@ -102,9 +104,11 @@ public class TeamDaoMySql implements TeamDao {
     @Override
     public Team getTeamWithParent(int teamId) throws DatabaseException {
         try {
-            String SQL = "SELECT * FROM " + TEAM_TABLE + " WHERE " + TEAM_ID + " = " + teamId;
+            String SQL = "SELECT * FROM " + TEAM_TABLE + " WHERE " + TEAM_ID + " = ?";
 
-            List<TeamDatabase> teams = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(TeamDatabase.class));
+            List<TeamDatabase> teams = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(TeamDatabase.class),
+                    teamId);
 
             if (teams.size() == 0)
                 return null;
@@ -131,7 +135,8 @@ public class TeamDaoMySql implements TeamDao {
                 " = ? AND " + TEAM_MEMBER_TEAM + " = ?";
 
         try {
-            jdbcTemplate.update(SQL, true, userName, teamId);
+            jdbcTemplate.update(SQL,
+                    true, userName, teamId);
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
@@ -146,11 +151,13 @@ public class TeamDaoMySql implements TeamDao {
     public boolean hasAdminPrivileges(int teamId, String userName) throws DatabaseException {
         try {
             String SQL = "SELECT count(*) FROM "  + TEAM_MEMBER_TABLE + " WHERE " +
-                    TEAM_MEMBER_TEAM + " = " + teamId + " AND " +
-                    TEAM_MEMBER_USER + " = '" + userName + "' AND " +
-                    TEAM_MEMBER_ADMIN + " = " + 1;
+                    TEAM_MEMBER_TEAM + " = ? AND " +
+                    TEAM_MEMBER_USER + " = ? AND " +
+                    TEAM_MEMBER_ADMIN + " = ?";
 
-            int count = jdbcTemplate.queryForObject(SQL, Integer.class);
+            int count = jdbcTemplate.queryForObject(SQL,
+                    Integer.class,
+                    teamId, userName, true);
 
             return count != 0;
         } catch (Exception e)  {
@@ -162,10 +169,12 @@ public class TeamDaoMySql implements TeamDao {
     public boolean hasViewPrivileges(int teamId, String userName) throws DatabaseException {
         try {
             String SQL = "SELECT count(*) FROM "  + TEAM_MEMBER_TABLE + " WHERE " +
-                    TEAM_MEMBER_TEAM + " = " + teamId + " AND " +
-                    TEAM_MEMBER_USER + " = '" + userName + "'";
+                    TEAM_MEMBER_TEAM + " = ? AND " +
+                    TEAM_MEMBER_USER + " = ?";
 
-            int count = jdbcTemplate.queryForObject(SQL, Integer.class);
+            int count = jdbcTemplate.queryForObject(SQL,
+                    Integer.class,
+                    teamId, userName);
 
             return count != 0;
         } catch (Exception e)  {
