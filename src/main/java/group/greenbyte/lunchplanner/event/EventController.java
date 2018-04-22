@@ -5,6 +5,7 @@ import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 //import org.springframework.session.
 
@@ -22,28 +23,29 @@ public class EventController {
      * Returns one event by his id
      *
      * @param eventId id of the event
-     * @param response is used to send a response code
      * @return the event
      */
     @RequestMapping(value = "/{eventId}",
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public Event getEvent(@PathVariable("eventId") int eventId, HttpServletResponse response) {
+    public ResponseEntity getEvent(@PathVariable("eventId") int eventId) {
         try {
             Event event = eventLogic.getEvent(eventId);
             if(event != null) {
-                response.setStatus(HttpServletResponse.SC_OK);
-                return event;
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(event);
             } else {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body("Event with event-id: " + eventId + "was not found");
             }
 
         } catch (HttpRequestException e) {
-            response.setStatus(e.getStatusCode());
-            //TODO how to send error message
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
         }
-
-        return null;
     }
 
     /**
@@ -120,7 +122,7 @@ public class EventController {
 
     /**
      *
-     * @param newEventDescription
+     * @param newEventDescription the updated event description
      * @param eventId id of the updated event
      * @param response response channel
      */
@@ -188,27 +190,29 @@ public class EventController {
     }
 
     /**
+     * Get all events that are visible for the user who created this request
      *
-     * @param response response channel
      * @return a list of all events
      */
     @RequestMapping(value = "", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<Event> getAllEvents(HttpServletResponse response) {
+    public ResponseEntity getAllEvents() {
 
         try {
             List<Event> allSearchingEvents = eventLogic.getAllEvents("dummy");
-            response.setStatus(HttpServletResponse.SC_OK);
 
             for(Event event : allSearchingEvents) {
                 event.getLocation().setEvents(null);
             }
 
-            return allSearchingEvents;
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(allSearchingEvents);
         } catch (HttpRequestException e) {
-            response.setStatus(e.getStatusCode());
-            return null;
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
         }
     }
 
@@ -222,19 +226,27 @@ public class EventController {
 
     }
 
+    /**
+     * Search events that are visible for the user who created this request
+     *
+     * @param searchword what to search
+     * @return all events or an error message
+     */
     @RequestMapping(value = "/search/{searchWord}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<Event> searchEvents(@PathVariable("searchWord") String searchword, HttpServletResponse response){
+    public ResponseEntity searchEvents(@PathVariable("searchWord") String searchword){
+         try{
+             List<Event> searchingEvent = eventLogic.searchEventsForUser("dummy", searchword);
 
-     try{
-         List<Event> searchingEvent = eventLogic.searchEventsForUser("dummy", searchword);
-         response.setStatus(HttpServletResponse.SC_OK);
-         return searchingEvent;
-     } catch (HttpRequestException e) {
-         response.setStatus(e.getStatusCode());
-         return null;
-     }
+             return ResponseEntity
+                     .status(HttpStatus.OK)
+                     .body(searchingEvent);
+         } catch (HttpRequestException e) {
+             return ResponseEntity
+                     .status(e.getStatusCode())
+                     .body(e.getErrorMessage());
+         }
     }
 
     @RequestMapping(value = "/{userToInvite}/invite/event/{eventId}", method = RequestMethod.POST,
