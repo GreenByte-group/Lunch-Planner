@@ -10,10 +10,13 @@ buildscript {
     }
 }
 
+
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'maven'
 
 group = 'group.greenbyte'
 version = '0.0.1-SNAPSHOT'
@@ -22,6 +25,13 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 }
+//jar {
+  //  from('frontend/lunchplanner/src') {
+    //    into 'static'
+    //}
+//}
+
+//processResources.dependsOn('frontend:bundle')
 
 
 dependencies {

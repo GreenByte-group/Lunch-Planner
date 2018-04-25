@@ -28,3 +28,4 @@ nbdist/
 .nb-gradle/
 
 out/
+frontend/lunchplanner/package-lock\.json
