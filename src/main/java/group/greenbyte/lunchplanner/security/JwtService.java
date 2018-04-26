@@ -16,17 +16,17 @@ public class JwtService {
     static final Logger LOGGER = LoggerFactory.getLogger(JwtService.class);
 
     private final int secretLength = 10;
-    private static String secret;
+    private static String secret = "adsfanaekhnKJdnaj";
 
     public JwtService() {
-        if(secret == null) {
-            StringBuilder temp = new StringBuilder();
-            Random r = new Random();
-            for (int i = 0; i < secretLength; i++) {
-                temp.append((char) (r.nextInt(26) + 'a'));
-            }
-            secret = temp.toString();
-        }
+//        if(secret == null) {
+//            StringBuilder temp = new StringBuilder();
+//            Random r = new Random();
+//            for (int i = 0; i < secretLength; i++) {
+//                temp.append((char) (r.nextInt(26) + 'a'));
+//            }
+//            secret = temp.toString();
+//        }
     }
 
     public String createToken(String username, Date expireAt) {

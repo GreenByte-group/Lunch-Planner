@@ -8,6 +8,7 @@
     "base-64": "^0.1.0",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
+    "react-router": "latest",
     "react-scripts": "1.1.4",
     "utf8": "^3.0.0"
   },

@@ -3,13 +3,14 @@ import { HOST } from "../Config";
 import axios from "axios";
 import {doLogin} from "./LoginFunctions";
 
-class Login extends React.Component {
+class Registration extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             username: "",
             password: "",
+            email: "",
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -26,20 +27,18 @@ class Login extends React.Component {
     }
 
     handleSubmit(event) {
-        console.log("Submit");
-        let returnValue = doLogin(this.state.username, this.state.password, message => {
-            console.log(message);
-
-            if(message.type) {
-                if(message.type === "LOGIN_EMPTY") {
-                    console.log("empty")
-                }
-            } else if(message.type === "LOGIN_SUCCESS") {
-                console.log("Success")
-            } else if(message.type === "LOGIN_FAILED") {
-                console.log("Failed")
-            }
-        });
+        if(this.state.username && this.state.password && this.state.email) {
+            let url =  'http://localhost:8080/user';
+            axios.post(url, {userName: this.state.username, password: this.state.password, mail: this.state.email})
+                .then((response) => {
+                    console.log("Respone: "+ response);
+                })
+                .catch((err) => {
+                    console.log("Error: " + err);
+                })
+        } else {
+            //TODO
+        }
 
         event.preventDefault();
     }
@@ -49,10 +48,11 @@ class Login extends React.Component {
             <form onSubmit={this.handleSubmit}>
                 User Name : <input type="text" name="username" onChange={this.handleInputChange}/> <br/><br/>
                 Password: <input type="password" name="password" onChange={this.handleInputChange}/> <br/><br/>
+                Email: <input type="text" name="email" onChange={this.handleInputChange}/> <br/><br/>
                 <input type="submit" value="Login"/>
             </form>
         )
     }
 }
 
-export default Login;
+export default Registration;

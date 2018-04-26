@@ -17,31 +17,29 @@ export function isAuthenticated() {
     }
 }
 
-export function doLogin(username, password) {
+export function doLogin(username, password, responseFunc) {
     if(username && password) {
-        return function(dispatch) {
-            let url =  'http://localhost:8080/login?username=' + username +  '&password=' + password
-            axios.post(url)
-                .then((response) => {
-                    console.log("Login token: " + response.data.token);
-                    localStorage.removeItem( "token" );
-                    localStorage.setItem( "token", response.data.token );
-                    dispatch({type: "LOGIN_SUCCESS", payload: response.data})
-                })
-                .catch((err) => {
-                    console.log("Error: " + err);
-                    dispatch({type: "LOGIN_FAILED", payload: err})
-                })
-        }
-    }
-    return {
-        type: "LOGIN_EMPTY",
-        payload: {
-            message : "Empty username or password.",
-        }
+        let url =  'http://localhost:8080/login?username=' + username +  '&password=' + password;
+        axios.post(url)
+            .then((response) => {
+                console.log("Login token: " + response.data.token);
+                localStorage.removeItem( "token" );
+                localStorage.setItem( "token", response.data.token );
+                responseFunc({type: "LOGIN_SUCCESS", payload: response.data})
+            })
+            .catch((err) => {
+                console.log("Error: " + err);
+                responseFunc({type: "LOGIN_FAILED", payload: err})
+            })
+    } else {
+        responseFunc({
+            type: "LOGIN_EMPTY",
+            payload: {
+                message: "Empty username or password.",
+            }
+        })
     }
 }
-
 
 export function doLogout() {
     localStorage.removeItem( "token" )
