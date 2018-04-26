@@ -15,9 +15,8 @@ import EventList from "./components/EventList"
 ];*/
 
 class App extends React.Component {
-
     // default State object
-    state = {
+   state = {
         events: []
     };
 
