@@ -6,6 +6,7 @@ import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
+import IconSearch from '@material-ui/icons/Search';
 
 import SimpleMenu from "./SimpleMenu";
 
@@ -21,6 +22,10 @@ const styles = {
         marginLeft: -12,
         marginRight: 20,
     },
+    selected: {
+        color:"#75a045"
+    }
+
 };
 
 function ButtonAppBar(props) {
@@ -34,9 +39,11 @@ function ButtonAppBar(props) {
                         <SimpleMenu/>
                     </IconButton>
                     <Typography variant="title" color="inherit" className={classes.flex}>
-                        Title
+                        aktuelle Seite
                     </Typography>
-                    <Button color="inherit">Login</Button>
+                    <Button color="inherit">
+                        <IconSearch/>
+                    </Button>
                 </Toolbar>
             </AppBar>
         </div>

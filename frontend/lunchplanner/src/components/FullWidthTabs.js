@@ -22,7 +22,7 @@ TabContainer.propTypes = {
 const styles = theme => ({
     root: {
         backgroundColor: theme.palette.background.paper,
-        //width: 500,
+        //width: 1500,
     },
 });
 
@@ -50,11 +50,12 @@ class FullWidthTabs extends React.Component {
                         onChange={this.handleChange}
                         indicatorColor="primary"
                         textColor="primary"
+                        centered
                         fullWidth
                     >
-                        <Tab label="Item One" />
-                        <Tab label="Item Two" />
-                        <Tab label="Item Three" />
+                        <Tab label="PERSONAL" />
+                        <Tab label="FOLLOWING" />
+                        <Tab label="BY DATE" />
                     </Tabs>
                 </AppBar>
                 <SwipeableViews
@@ -62,9 +63,9 @@ class FullWidthTabs extends React.Component {
                     index={this.state.value}
                     onChangeIndex={this.handleChangeIndex}
                 >
-                    <TabContainer dir={theme.direction}>Item One</TabContainer>
-                    <TabContainer dir={theme.direction}>Item Two</TabContainer>
-                    <TabContainer dir={theme.direction}>Item Three</TabContainer>
+                    <TabContainer dir={theme.direction}>Eventlist Personal</TabContainer>
+                    <TabContainer dir={theme.direction}>Eventlist Following</TabContainer>
+                    <TabContainer dir={theme.direction}>Eventlist sort by date</TabContainer>
                 </SwipeableViews>
             </div>
         );
