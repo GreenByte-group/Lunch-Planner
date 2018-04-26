@@ -1,5 +1,7 @@
 package group.greenbyte.lunchplanner.user;
 
+import group.greenbyte.lunchplanner.user.database.User;
+
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;

@@ -29,6 +29,7 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_NAME = "user_name";
     public static final String USER_MAIL = "e_mail";
     public static final String USER_PASSWORD = "password";
+    public static final String USER_TOKEN = "token";
 
     @Autowired
     public UserDaoMySql(JdbcTemplate jdbcTemplateObject) {
@@ -68,5 +69,19 @@ public class UserDaoMySql implements UserDao {
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
+    }
+
+    //TODO TEST
+    @Override
+    public User setTokenForUser(String username, String token) throws DatabaseException {
+        String SQL = "UPDATE " + USER_TABLE + " SET " + USER_TOKEN + " = ? WHERE " + USER_NAME + " = ?";
+
+        try {
+            jdbcTemplate.update(SQL, token, username);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+
+        return getUser(username);
     }
 }

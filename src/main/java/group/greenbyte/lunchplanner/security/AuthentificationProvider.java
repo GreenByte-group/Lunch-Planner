@@ -4,6 +4,8 @@ import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.user.SecurityHelper;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import group.greenbyte.lunchplanner.user.database.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,10 +21,9 @@ import java.util.Collections;
 @Component
 public class AuthentificationProvider implements AuthenticationProvider {
 
-    //TODO how to test?
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthentificationProvider.class);
 
     private final UserLogic userLogic;
-
     @Autowired
     public AuthentificationProvider(UserLogic userLogic) {
         this.userLogic = userLogic;

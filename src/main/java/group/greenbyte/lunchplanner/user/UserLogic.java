@@ -2,16 +2,22 @@ package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import group.greenbyte.lunchplanner.security.JwtService;
 import group.greenbyte.lunchplanner.user.database.User;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.security.*;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.crypto.Data;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 import static group.greenbyte.lunchplanner.user.SecurityHelper.validatePassword;
@@ -19,10 +25,75 @@ import static group.greenbyte.lunchplanner.user.SecurityHelper.validatePassword;
 @Service
 public class UserLogic {
 
+    private final JwtService jwtService;
+
     private static final Pattern REGEX_MAIL = Pattern.compile("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
 
     // This variable will be set over the setter Method by java spring
     private UserDao userDao;
+
+    @Autowired
+    public UserLogic(JwtService jwtService) {
+        this.jwtService = jwtService;
+    }
+
+    // ------------------ JWT --------------------
+    public User createUserToken(String username) {
+        String token = jwtService.createToken(username, getExpirationDate());
+        try {
+            return userDao.setTokenForUser(username, token);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public User validateUser(String token) {
+        try {
+            String username = jwtService.getUsername(token);
+            if (username != null ) {
+                User user = userDao.getUser(username);
+
+                if (user != null && token.equals(user.getToken()) && jwtService.isValid(token)) {
+                    return user;
+                }
+            }
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return null;
+    }
+
+    public User isLoginValid(String username, String pass)  {
+        try {
+            if (!StringUtils.hasText(username) || !StringUtils.hasText(pass)) {
+                return null;
+            }
+            String password = pass;
+            User u = userDao.getUser(username);
+            if (u == null) {
+                return null;
+            }
+            if (!SecurityHelper.validatePassword(pass, u.getPassword())) {
+                return null;
+            }
+            return u;
+        } catch(DatabaseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Date getExpirationDate() {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DAY_OF_WEEK, 1);
+        return c.getTime();
+    }
+
+
+    // --------------------- JWT ENDE ----------------------
 
     /**
      * Create a user

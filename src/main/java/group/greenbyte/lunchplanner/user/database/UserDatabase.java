@@ -1,5 +1,7 @@
 package group.greenbyte.lunchplanner.user.database;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class UserDatabase {
 
     private String userName;
@@ -8,11 +10,15 @@ public class UserDatabase {
 
     private String password;
 
+    @JsonIgnore
+    private String token;
+
     public User getUser() {
         User user = new User();
         user.setUserName(userName);
         user.setPassword(password);
         user.seteMail(eMail);
+        user.setToken(token);
 
         return user;
     }
@@ -41,4 +47,7 @@ public class UserDatabase {
         this.password = password;
     }
 
+    public void setToken(String token) {
+        this.token = token;
+    }
 }
