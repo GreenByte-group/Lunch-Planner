@@ -28,4 +28,12 @@ public interface UserDao {
      */
     void createUser(String userName, String password, String mail) throws DatabaseException;
 
+    /**
+     * Sets the jwt token for the user
+     *
+     * @param username
+     * @param token
+     * @return
+     */
+    User setTokenForUser(String username, String token) throws DatabaseException;
 }

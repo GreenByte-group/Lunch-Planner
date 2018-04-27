@@ -15,7 +15,7 @@ import org.springframework.security.core.Authentication.*;
 
 
 @RestController
-
+//@CrossOrigin
 @RequestMapping("/user")
 public class UserController {
 
@@ -32,13 +32,11 @@ public class UserController {
      * @return error message or nothing
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public String createUser(@RequestParam("username") String username,
-                             @RequestParam("password") String password,
-                             @RequestParam("email") String email,
+    public String createUser(@RequestBody UserJson user,
                              HttpServletResponse response) {
 
         try {
-            userLogic.createUser(username, password, email);
+            userLogic.createUser(user.getUserName(), user.getPassword(), user.getMail());
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());
