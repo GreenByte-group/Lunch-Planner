@@ -81,11 +81,11 @@ public class UserControllerTest {
         String mail = "teeeaefst@yuyhinoal.dalk";
         String password = createString(200);
 
+        UserJson userJson = new UserJson(userName, password, mail);
+        String json = getJsonFromObject(userJson);
+
         mockMvc.perform(
-                post("/user")
-                        .param("username", userName)
-                        .param("password", password)
-                        .param("email", mail))
+                post("/user").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isCreated());
     }
 
@@ -95,11 +95,11 @@ public class UserControllerTest {
         String mail = "teasdfast@yuyhinoal.dalk";
         String password = createString(200);
 
+        UserJson userJson = new UserJson(userName, password, mail);
+        String json = getJsonFromObject(userJson);
+
         mockMvc.perform(
-                post("/user")
-                        .param("username", userName)
-                        .param("password", password)
-                        .param("email", mail))
+                post("/user").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isBadRequest());
     }
 
@@ -109,11 +109,11 @@ public class UserControllerTest {
         String mail = "teasdfst@yuyhinoal.dalk";
         String password = createString(200);
 
+        UserJson userJson = new UserJson(userName, password, mail);
+        String json = getJsonFromObject(userJson);
+
         mockMvc.perform(
-                post("/user")
-                        .param("username", userName)
-                        .param("password", password)
-                        .param("email", mail))
+                post("/user").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isBadRequest());
     }
   
@@ -123,11 +123,11 @@ public class UserControllerTest {
         String mail = "tesdaft@yuyhinoal.dalk";
         String password = "";
 
+        UserJson userJson = new UserJson(userName, password, mail);
+        String json = getJsonFromObject(userJson);
+
         mockMvc.perform(
-                post("/user")
-                        .param("username", userName)
-                        .param("password", password)
-                        .param("email", mail))
+                post("/user").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isBadRequest());
     }
 
@@ -137,11 +137,11 @@ public class UserControllerTest {
         String mail = "";
         String password = createString(200);
 
+        UserJson userJson = new UserJson(userName, password, mail);
+        String json = getJsonFromObject(userJson);
+
         mockMvc.perform(
-                post("/user")
-                        .param("username", userName)
-                        .param("password", password)
-                        .param("email", mail))
+                post("/user").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isBadRequest());
     }
 
@@ -151,11 +151,11 @@ public class UserControllerTest {
         String mail = createString(50) + "@yuyhinoal.dalk";
         String password = createString(200);
 
+        UserJson userJson = new UserJson(userName, password, mail);
+        String json = getJsonFromObject(userJson);
+
         mockMvc.perform(
-                post("/user")
-                        .param("username", userName)
-                        .param("password", password)
-                        .param("email", mail))
+                post("/user").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isBadRequest());
     }
 
@@ -165,11 +165,24 @@ public class UserControllerTest {
         String mail = "ungueltige-mail.de";
         String password = createString(200);
 
+        UserJson userJson = new UserJson(userName, password, mail);
+        String json = getJsonFromObject(userJson);
+
         mockMvc.perform(
-                post("/user")
-                        .param("username", userName)
-                        .param("password", password)
-                        .param("email", mail))
+                post("/user").contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void test9CreateUserAlreadyExists() throws Exception {
+        String mail = "mail@mail.de";
+        String password = createString(200);
+
+        UserJson userJson = new UserJson(userName, password, mail);
+        String json = getJsonFromObject(userJson);
+
+        mockMvc.perform(
+                post("/user").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isBadRequest());
     }
 

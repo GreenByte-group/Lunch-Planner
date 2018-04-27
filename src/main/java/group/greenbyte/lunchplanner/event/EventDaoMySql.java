@@ -58,7 +58,6 @@ public class EventDaoMySql implements EventDao {
         parameters.put(EVENT_START_DATE, timeStart);
         parameters.put(EVENT_END_DATE, timeEnd);
         parameters.put(EVENT_IS_PUBLIC, false);
-
         try {
             Number key = simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
@@ -157,7 +156,13 @@ public class EventDaoMySql implements EventDao {
 
     @Override
     public void updateEventIsPublic(int eventId, boolean isPublic) throws DatabaseException {
+        String SQL = "UPDATE " + EVENT_TABLE + " SET " + EVENT_IS_PUBLIC + " = ? WHERE " + EVENT_ID + " = ?";
 
+        try {
+            jdbcTemplate.update(SQL, isPublic, eventId);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override

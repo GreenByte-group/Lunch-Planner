@@ -249,7 +249,7 @@ public class EventLogic {
      */
     public List<Event> getAllEvents(String username) throws HttpRequestException{
         if(username.length() > User.MAX_USERNAME_LENGTH)
-            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is to long, maximun length" + Event.MAX_USERNAME_LENGHT);
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is too long, maximun length" + Event.MAX_USERNAME_LENGHT);
         if(username.length() == 0 )
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is empty");
 
@@ -264,12 +264,10 @@ public class EventLogic {
      */
     public Event getEvent(String userName, int eventId)throws HttpRequestException{
         try{
-
-
             Event event = eventDao.getEvent(eventId);
 
             if(event == null)
-                return null;
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + eventId + "was not found");
             else {
                 if(!hasPrivileges(eventId, userName)) //TODO write test for next line
                     throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");
@@ -359,7 +357,7 @@ public class EventLogic {
 
             List<Event> temp = eventDao.findEventsUserInvited(userName, searchword);
             for(Event event : temp) {
-                if(searchResults.contains(event))
+                if(!searchResults.contains(event))
                     searchResults.add(event);
             }
 

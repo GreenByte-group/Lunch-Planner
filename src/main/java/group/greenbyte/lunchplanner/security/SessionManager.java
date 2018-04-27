@@ -10,7 +10,11 @@ public class SessionManager {
     public static String getUserName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication instanceof UsernamePasswordAuthenticationToken)
-            return (String) ((UsernamePasswordAuthenticationToken) authentication).getPrincipal();
+            //only for tests
+            if(authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User)
+                return ((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername();
+            else
+                return (String) ((UsernamePasswordAuthenticationToken) authentication).getPrincipal();
         else if(authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User)
             return ((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername();
 

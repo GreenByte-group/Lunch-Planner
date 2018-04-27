@@ -16,7 +16,7 @@ public class JwtService {
     static final Logger LOGGER = LoggerFactory.getLogger(JwtService.class);
 
     private final int secretLength = 10;
-    private static String secret = "adsfanaekhnKJdnaj";
+    public static String secret = "adsfanaekhnKJdnaj";
 
     public JwtService() {
 //        if(secret == null) {

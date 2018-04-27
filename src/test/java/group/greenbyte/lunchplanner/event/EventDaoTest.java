@@ -280,6 +280,8 @@ public class EventDaoTest {
         Assert.assertNull(eventDao.getEvent(eventId + 1000));
     }
 
+
+
     // ---------------------- SEARCH EVENT -------------------------------
     //all public
     @Test

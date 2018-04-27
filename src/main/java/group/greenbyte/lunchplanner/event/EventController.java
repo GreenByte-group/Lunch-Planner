@@ -36,16 +36,9 @@ public class EventController {
     public ResponseEntity getEvent(@PathVariable("eventId") int eventId) {
         try {
             Event event = eventLogic.getEvent(SessionManager.getUserName(), eventId);
-            if(event != null) {
-                return ResponseEntity
-                        .status(HttpStatus.OK)
-                        .body(event);
-            } else {
-                return ResponseEntity
-                        .status(HttpStatus.NOT_FOUND)
-                        .body("Event with event-id: " + eventId + "was not found");
-            }
-
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(event);
         } catch (HttpRequestException e) {
             return ResponseEntity
                     .status(e.getStatusCode())
