@@ -1,34 +1,33 @@
 import axios from "axios";
+import {HOST, TOKEN} from "../Config";
+
+const authentication = {
+    isAuthenticated: false,
+}
 
 export function isAuthenticated() {
-    return function(dispatch) {
-        let url =  'http://localhost:8080/login'
-        var config = {
-            headers: {'Authorization': + localStorage.getItem( "token" )}
-        };
-
-        axios.get(url, config)
-            .then((response) => {
-                dispatch({type: "IS_AUTHENTICATED", payload: response.data})
-            })
-            .catch((err) => {
-                dispatch({type: "IS_NOT_AUTHENTICATED", payload: ''})
-            })
+    if(authentication.isAuthenticated)
+        return true;
+    else {
+        if(localStorage.getItem(TOKEN))
+            return true;
     }
 }
 
 export function doLogin(username, password, responseFunc) {
     if(username && password) {
-        let url =  'http://localhost:8080/login?username=' + username +  '&password=' + password;
+        let url =  HOST + '/login?username=' + username +  '&password=' + password;
         axios.post(url)
             .then((response) => {
-                console.log("Login token: " + response.data.token);
-                localStorage.removeItem( "token" );
-                localStorage.setItem( "token", response.data.token );
+                console.log("Token: " + response.data.token);
+                localStorage.removeItem(TOKEN);
+                localStorage.setItem(TOKEN, response.data.token );
+                axios.defaults.headers.common['Authorization'] = response.data.token;
+                authentication.isAuthenticated = true;
                 responseFunc({type: "LOGIN_SUCCESS", payload: response.data})
             })
             .catch((err) => {
-                console.log("Error: " + err);
+                authentication.isAuthenticated = false;
                 responseFunc({type: "LOGIN_FAILED", payload: err})
             })
     } else {
@@ -42,7 +41,8 @@ export function doLogin(username, password, responseFunc) {
 }
 
 export function doLogout() {
-    localStorage.removeItem( "token" )
+    localStorage.removeItem(TOKEN)
+    authentication.isAuthenticated = false;
     return {
         type: "IS_NOT_AUTHENTICATED",
         payload: ''

@@ -1,28 +1,32 @@
 // App.js
 import React from "react";
-import logo from "./logo.svg";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Login from "./components/Login"
-import Registration from "./components/Registration";
+import Registration from "./components/Registration"
+import LunchPlanner from "./components/LunchPlanner"
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import {isAuthenticated} from "./components/LoginFunctions"
+
+function isAuth() {
+    return isAuthenticated();
+}
+
+const PrivateRoute = ({ component: Component, ...rest }) => (
+    <Route{...rest} render={props =>
+            isAuth() ? (<Component {...props} />)
+                : (<Redirect to={{
+                        pathname: "/login",
+                        state: { from: props.location }}}/>)}/>
+);
 
 class App extends React.Component {
 
     render() {
         return (
             <Router>
-                <div className="App" class="container">
-                    <header className="App-header">
-                        <h1 className="App-title">Lunch Planner</h1>
-                    </header>
-
-                    <div class="container">
-                        <Link to="/login">Login</Link>
-                        <br/>
-                        <Link to="/register">Registration</Link>
-
-                        <Route path="/login" component={Login} />
-                        <Route path="/register" component={Registration} />
-                    </div>
+                <div>
+                    <PrivateRoute exact path="/" component={LunchPlanner} />
+                    <Route path="/login" component={Login} />
+                    <Route path="/register" component={Registration} />
                 </div>
             </Router>
         );
