@@ -25,6 +25,9 @@ public class User {
     @Column(nullable = false, length = MAX_PASSWORD_LENGTH)
     private String password;
 
+    @Column
+    private String token;
+
     @OneToMany(mappedBy = "eventInvited", cascade = CascadeType.ALL)
     private Set<EventInvitation> eventsInvited;
 
@@ -71,5 +74,13 @@ public class User {
             eventsInvited = new HashSet<>();
 
         eventsInvited.add(eventInvitation);
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

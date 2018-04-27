@@ -1,18 +1,9 @@
 // App.js
 import React from "react";
 import logo from "./logo.svg";
-import "./App.css";
-import axios from "axios";
-
-import EventList from "./components/EventList"
-
-// Tutorial part 3
-/*const events = [
-    { id: 1, name: "Event1" },
-    { id: 2, name: "Event2" },
-    { id: 3, name: "Event3" },
-    { id: 4, name: "Event4" }
-];*/
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import Login from "./components/Login"
+import Registration from "./components/Registration";
 
 class App extends React.Component {
     // default State object
@@ -49,29 +40,24 @@ class App extends React.Component {
 
     render() {
         return (
-            <div className="App">
-                <header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo" />
-                    <h1 className="App-title">Welcome to our Contact Manager</h1>
-                </header>
+            <Router>
+                <div className="App" class="container">
+                    <header className="App-header">
+                        <h1 className="App-title">Lunch Planner</h1>
+                    </header>
 
-                <EventList events={this.state.events} />
-            </div>
+                    <div class="container">
+                        <Link to="/login">Login</Link>
+                        <br/>
+                        <Link to="/register">Registration</Link>
+
+                        <Route path="/login" component={Login} />
+                        <Route path="/register" component={Registration} />
+                    </div>
+                </div>
+            </Router>
         );
     }
-    // Tutorial part 2
-    /*render() {
-        return (
-            <div className="App">
-                <header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo" />
-                    <h1 className="App-title">React Contact Manager</h1>
-                </header>
-
-                <EventList events={events} />
-            </div>
-        );
-    }*/
 
 }
 
