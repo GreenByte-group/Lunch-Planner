@@ -1,7 +1,6 @@
 import React from "react";
-import { HOST } from "../Config";
 import axios from "axios";
-import {Redirect, Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 
 class Registration extends React.Component {
 

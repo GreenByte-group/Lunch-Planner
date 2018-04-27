@@ -3,26 +3,19 @@ import React from "react";
 import Login from "./components/Login"
 import Registration from "./components/Registration"
 import LunchPlanner from "./components/LunchPlanner"
-import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import {authentication} from "./components/LoginFunctions"
 
 function isAuth() {
-    console.log("Logged in: " + authentication.isAuthenticated)
     return authentication.isAuthenticated;
 }
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route{...rest} render={props =>
-            isAuth() ? (<Component {...props} />
-            ) : (<Redirect
-                    to={{
+            isAuth() ? (<Component {...props} />)
+                : (<Redirect to={{
                         pathname: "/login",
-                        state: { from: props.location }
-                    }}
-                />
-            )
-        }
-    />
+                        state: { from: props.location }}}/>)}/>
 );
 
 class App extends React.Component {

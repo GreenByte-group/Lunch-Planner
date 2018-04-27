@@ -1,8 +1,6 @@
 import React from "react";
-import { HOST } from "../Config";
-import axios from "axios";
 import {doLogin} from "./LoginFunctions";
-import {Redirect, Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 
 class Login extends React.Component {
 
@@ -30,7 +28,7 @@ class Login extends React.Component {
 
     handleSubmit(event) {
         console.log("Submit");
-        let returnValue = doLogin(this.state.username, this.state.password, message => {
+        doLogin(this.state.username, this.state.password, message => {
             console.log(message);
 
             if(message.type === "LOGIN_EMPTY") {
@@ -61,23 +59,23 @@ class Login extends React.Component {
             return <Redirect to={from} />;
         }
         return (
-            <div class="container">
+            <div className="container">
                 <h3>Login</h3>
                 {(error
                         ? <div>{error}</div>
                         : ""
                 )}
-                <form class="form col-md-12 center-block" onSubmit={this.handleSubmit}>
+                <form className="form col-md-12 center-block" onSubmit={this.handleSubmit}>
                     <div className="form-group">
-                        <input class="form-control input-lg" type="text" name="username"
-                               onChange={this.handleInputChange} placeholder="Email"/>
-                    </div>
-                    <div className="form-group">
-                        <input class="form-control input-lg" type="password" name="password"
+                        <input className="form-control input-lg" type="text" name="username"
                                onChange={this.handleInputChange} placeholder="User Name"/>
                     </div>
                     <div className="form-group">
-                        <input class="btn btn-primary btn-lg btn-block" type="submit" value="Login"/>
+                        <input className="form-control input-lg" type="password" name="password"
+                               onChange={this.handleInputChange} placeholder="Password"/>
+                    </div>
+                    <div className="form-group">
+                        <input className="btn btn-primary btn-lg btn-block" type="submit" value="Login"/>
                     </div>
                 </form>
 

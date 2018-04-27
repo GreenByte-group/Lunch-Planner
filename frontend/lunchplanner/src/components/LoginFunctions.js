@@ -1,16 +1,19 @@
 import axios from "axios";
+import {HOST, TOKEN} from "../Config";
 
 export const authentication = {
-    isAuthenticated: true, //TODO change
+    isAuthenticated: false,
 }
 
 export function doLogin(username, password, responseFunc) {
     if(username && password) {
-        let url =  'http://localhost:8080/login?username=' + username +  '&password=' + password;
+        let url =  HOST + '/login?username=' + username +  '&password=' + password;
         axios.post(url)
             .then((response) => {
-                localStorage.removeItem( "token" );
-                localStorage.setItem( "token", response.data.token );
+                console.log("Token: " + response.data.token);
+                localStorage.removeItem(TOKEN);
+                localStorage.setItem(TOKEN, response.data.token );
+                axios.defaults.headers.common['Authorization'] = response.data.token;
                 authentication.isAuthenticated = true;
                 responseFunc({type: "LOGIN_SUCCESS", payload: response.data})
             })
@@ -29,7 +32,7 @@ export function doLogin(username, password, responseFunc) {
 }
 
 export function doLogout() {
-    localStorage.removeItem( "token" )
+    localStorage.removeItem(TOKEN)
     authentication.isAuthenticated = false;
     return {
         type: "IS_NOT_AUTHENTICATED",
