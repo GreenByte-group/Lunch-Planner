@@ -4,10 +4,10 @@ import Login from "./components/Login"
 import Registration from "./components/Registration"
 import LunchPlanner from "./components/LunchPlanner"
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
-import {authentication} from "./components/LoginFunctions"
+import {isAuthenticated} from "./components/LoginFunctions"
 
 function isAuth() {
-    return authentication.isAuthenticated;
+    return isAuthenticated();
 }
 
 const PrivateRoute = ({ component: Component, ...rest }) => (

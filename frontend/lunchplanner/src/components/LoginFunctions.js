@@ -1,8 +1,17 @@
 import axios from "axios";
 import {HOST, TOKEN} from "../Config";
 
-export const authentication = {
+const authentication = {
     isAuthenticated: false,
+}
+
+export function isAuthenticated() {
+    if(authentication.isAuthenticated)
+        return true;
+    else {
+        if(localStorage.getItem(TOKEN))
+            return true;
+    }
 }
 
 export function doLogin(username, password, responseFunc) {
