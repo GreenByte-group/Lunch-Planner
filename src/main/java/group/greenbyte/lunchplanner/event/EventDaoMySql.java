@@ -168,13 +168,16 @@ public class EventDaoMySql implements EventDao {
     @Override
     public List<Event> findPublicEvents(String searchword) throws DatabaseException {
         try {
-            String SQL = "SELECT * FROM " + EVENT_TABLE + " WHERE " +
+            String SQL = "SELECT * FROM " + EVENT_TABLE + " WHERE ((" +
                     EVENT_NAME + " LIKE ?" +
-                    " OR " + EVENT_DESCRIPTION + " LIKE ?";
+                    " OR " + EVENT_DESCRIPTION + " LIKE ?)" +
+                    " AND " + EVENT_IS_PUBLIC + " = ?)";
 
             List<EventDatabase> events = jdbcTemplate.query(SQL,
                     new BeanPropertyRowMapper<>(EventDatabase.class),
-                    "%" + searchword + "%", "%" + searchword + "%");
+                    "%" + searchword + "%",
+                    "%" + searchword + "%",
+                    1);
 
             List<Event> eventsReturn = new ArrayList<>(events.size());
             for(EventDatabase eventDatabase: events) {
