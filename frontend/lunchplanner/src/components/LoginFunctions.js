@@ -1,20 +1,7 @@
 import axios from "axios";
 
-export function isAuthenticated() {
-    return function(dispatch) {
-        let url =  'http://localhost:8080/login'
-        var config = {
-            headers: {'Authorization': + localStorage.getItem( "token" )}
-        };
-
-        axios.get(url, config)
-            .then((response) => {
-                dispatch({type: "IS_AUTHENTICATED", payload: response.data})
-            })
-            .catch((err) => {
-                dispatch({type: "IS_NOT_AUTHENTICATED", payload: ''})
-            })
-    }
+export const authentication = {
+    isAuthenticated: true, //TODO change
 }
 
 export function doLogin(username, password, responseFunc) {
@@ -22,13 +9,13 @@ export function doLogin(username, password, responseFunc) {
         let url =  'http://localhost:8080/login?username=' + username +  '&password=' + password;
         axios.post(url)
             .then((response) => {
-                console.log("Login token: " + response.data.token);
                 localStorage.removeItem( "token" );
                 localStorage.setItem( "token", response.data.token );
+                authentication.isAuthenticated = true;
                 responseFunc({type: "LOGIN_SUCCESS", payload: response.data})
             })
             .catch((err) => {
-                console.log("Error: " + err);
+                authentication.isAuthenticated = false;
                 responseFunc({type: "LOGIN_FAILED", payload: err})
             })
     } else {
@@ -43,6 +30,7 @@ export function doLogin(username, password, responseFunc) {
 
 export function doLogout() {
     localStorage.removeItem( "token" )
+    authentication.isAuthenticated = false;
     return {
         type: "IS_NOT_AUTHENTICATED",
         payload: ''

@@ -5,6 +5,7 @@ import SwipeableViews from 'react-swipeable-views';
 import AppBar from 'material-ui/AppBar';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
+import EventList from "./EventList";
 
 function TabContainer({ children, dir }) {
     return (
@@ -63,7 +64,9 @@ class FullWidthTabs extends React.Component {
                     index={this.state.value}
                     onChangeIndex={this.handleChangeIndex}
                 >
-                    <TabContainer dir={theme.direction}>Eventlist Personal</TabContainer>
+                    <TabContainer dir={theme.direction}>
+                        <EventList/>
+                    </TabContainer>
                     <TabContainer dir={theme.direction}>Eventlist Following</TabContainer>
                     <TabContainer dir={theme.direction}>Eventlist sort by date</TabContainer>
                 </SwipeableViews>

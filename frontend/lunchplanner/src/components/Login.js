@@ -2,6 +2,7 @@ import React from "react";
 import { HOST } from "../Config";
 import axios from "axios";
 import {doLogin} from "./LoginFunctions";
+import {Redirect, Link} from "react-router-dom";
 
 class Login extends React.Component {
 
@@ -10,6 +11,8 @@ class Login extends React.Component {
         this.state = {
             username: "",
             password: "",
+            redirectToReferrer: false,
+            error: "",
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -30,14 +33,19 @@ class Login extends React.Component {
         let returnValue = doLogin(this.state.username, this.state.password, message => {
             console.log(message);
 
-            if(message.type) {
-                if(message.type === "LOGIN_EMPTY") {
-                    console.log("empty")
-                }
+            if(message.type === "LOGIN_EMPTY") {
+                this.setState({
+                    error: message.payload.message,
+                });
             } else if(message.type === "LOGIN_SUCCESS") {
-                console.log("Success")
+                this.setState({
+                    error: "",
+                    redirectToReferrer: true,
+                });
             } else if(message.type === "LOGIN_FAILED") {
-                console.log("Failed")
+                this.setState({
+                    error: "Wrong username or password"
+                });
             }
         });
 
@@ -45,18 +53,36 @@ class Login extends React.Component {
     }
 
     render() {
+        const { from } = this.props.location.state || { from: { pathname: "/" } };
+        const { redirectToReferrer } = this.state;
+        const { error } = this.state;
+
+        if (redirectToReferrer) {
+            return <Redirect to={from} />;
+        }
         return (
-            <form class="form col-md-12 center-block" onSubmit={this.handleSubmit}>
-                <div className="form-group">
-                    <input class="form-control input-lg" type="text" name="username" onChange={this.handleInputChange} placeholder="Email"/>
-                </div>
-                <div className="form-group">
-                    <input class="form-control input-lg" type="password" name="password" onChange={this.handleInputChange} placeholder="User Name"/>
-                </div>
-                <div className="form-group">
-                    <input class="btn btn-primary btn-lg btn-block" type="submit" value="Login"/>
-                </div>
-            </form>
+            <div class="container">
+                <h3>Login</h3>
+                {(error
+                        ? <div>{error}</div>
+                        : ""
+                )}
+                <form class="form col-md-12 center-block" onSubmit={this.handleSubmit}>
+                    <div className="form-group">
+                        <input class="form-control input-lg" type="text" name="username"
+                               onChange={this.handleInputChange} placeholder="Email"/>
+                    </div>
+                    <div className="form-group">
+                        <input class="form-control input-lg" type="password" name="password"
+                               onChange={this.handleInputChange} placeholder="User Name"/>
+                    </div>
+                    <div className="form-group">
+                        <input class="btn btn-primary btn-lg btn-block" type="submit" value="Login"/>
+                    </div>
+                </form>
+
+                <Link to="/register" >Register</Link>
+            </div>
         )
     }
 }
