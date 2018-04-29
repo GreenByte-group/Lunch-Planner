@@ -1,14 +1,13 @@
 import React from 'react';
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
+import PropTypes from "prop-types";
+import Login from "./MyLogin"
+import Register from "./MyRegistration"
+import Tabs, { Tab } from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from 'material-ui/AppBar';
-import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
-import EventList from "./EventList";
-import AddIcon from '@material-ui/icons/Add';
-import Button from 'material-ui/Button';
+import { withStyles } from 'material-ui/styles';
+import axios from "axios";
 
 function TabContainer({ children, dir }) {
     return (
@@ -26,20 +25,11 @@ TabContainer.propTypes = {
 const styles = theme => ({
     root: {
         backgroundColor: theme.palette.background.paper,
-        //width: 1500,,
-        position: 'relative',
-    },
-    fab: {
-        position: 'absolute',
-        bottom: theme.spacing.unit * 2,
-        right: theme.spacing.unit * 2,
-    },
-    whiteSymbol: {
-        color: theme.palette.common.white
+        //width: 500,
     },
 });
 
-class FullWidthTabs extends React.Component {
+class FirstScreen extends React.Component {
     state = {
         value: 0,
     };
@@ -51,6 +41,34 @@ class FullWidthTabs extends React.Component {
     handleChangeIndex = index => {
         this.setState({ value: index });
     };
+    handleSubmit(event) {
+        if(this.state.username && this.state.password && this.state.email) {
+            let url =  'http://localhost:8080/user';
+            axios.post(url, {userName: this.state.username, password: this.state.password, mail: this.state.email})
+                .then((response) => {
+                    if(response.status === 201) {
+                        this.setState({
+                            redirectToReferrer: true,
+                        })
+                    } else {
+                        this.setState({
+                            error: response.data,
+                        })
+                    }
+                })
+                .catch((err) => {
+                    this.setState({
+                        error: err.response.data,
+                    })
+                })
+        } else {
+            this.setState({
+                error: "All fields are requiered"
+            })
+        }
+
+        event.preventDefault();
+    }
 
     render() {
         const { classes, theme } = this.props;
@@ -63,12 +81,11 @@ class FullWidthTabs extends React.Component {
                         onChange={this.handleChange}
                         indicatorColor="secondary"
                         textColor="secondary"
-                        centered
                         fullWidth
+                        centered
                     >
-                        <Tab label="PERSONAL" />
-                        <Tab label="FOLLOWING" />
-                        <Tab label="BY DATE" />
+                        <Tab label="SIGN UP" />
+                        <Tab label="LOGIN" />
                     </Tabs>
                 </AppBar>
                 <SwipeableViews
@@ -77,23 +94,20 @@ class FullWidthTabs extends React.Component {
                     onChangeIndex={this.handleChangeIndex}
                 >
                     <TabContainer dir={theme.direction}>
-                        <EventList/>
-                           <Button style= {theme.fab}variant="fab" color="secondary" aria-label="add" className={classNames(classes.button, classes.whiteSymbol)}>
-                               <AddIcon/>
-                           </Button>
+                        <Register/>
                     </TabContainer>
-                    <TabContainer dir={theme.direction}>Eventlist Following</TabContainer>
-                    <TabContainer dir={theme.direction}>Eventlist sort by date</TabContainer>
+                    <TabContainer dir={theme.direction}>
+                        <Login/>
+                    </TabContainer>
                 </SwipeableViews>
-
             </div>
         );
     }
 }
 
-FullWidthTabs.propTypes = {
+FirstScreen.propTypes = {
     classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(FullWidthTabs);
+export default withStyles(styles, { withTheme: true })(FirstScreen);
