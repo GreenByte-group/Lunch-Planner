@@ -1,7 +1,7 @@
 // App.js
 import React from "react";
-import Login from "./components/MyLogin"
-import Registration from "./components/Registration"
+import MyLogin from "./components/MyLogin"
+import MyRegistration from "./components/MyRegistration"
 import FirstScreen from "./components/FirstScreen"
 import LunchPlanner from "./components/LunchPlanner"
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
@@ -43,21 +43,15 @@ class App extends React.Component {
     render() {
         return (
             <MuiThemeProvider theme={theme}>
-                <FirstScreen/>
                 <Router>
                     <div>
                         <PrivateRoute exact path="/" component={LunchPlanner} />
-
+                        <Route path="/login" component={FirstScreen} />
                     </div>
                 </Router>
             </MuiThemeProvider>
         );
     }
-    /*
-    <Route path="/login" component={Login} />
-     <Route path="/register" component={Registration} />
-     */
-
 }
 
 export default App;

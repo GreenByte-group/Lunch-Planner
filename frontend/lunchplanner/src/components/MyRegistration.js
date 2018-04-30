@@ -9,6 +9,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Button from 'material-ui/Button';
 import LoginIcon from '@material-ui/icons/ExitToApp';
 import {withStyles} from "material-ui/styles/index";
+import {HOST} from "../Config";
 
 const styles = theme => ({
     root: {
@@ -28,12 +29,18 @@ const styles = theme => ({
 
 class MyRegistration extends React.Component {
 
-    state = {
-        password: '',
-        username: '',
-        showPassword: false,
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            password: '',
+            username: '',
+            email: '',
+            showPassword: false,
+        };
 
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
 
     handleChange = prop => event => {
         this.setState({ [prop]: event.target.value });
@@ -49,7 +56,7 @@ class MyRegistration extends React.Component {
 
     handleInputChange(event) {
         const target = event.target;
-        const name = target.name;
+        const name = target.id;
 
         this.setState({
             [name]: target.value
@@ -58,7 +65,7 @@ class MyRegistration extends React.Component {
 
     handleSubmit(event) {
         if(this.state.username && this.state.password && this.state.email) {
-            let url =  'http://localhost:8080/user';
+            let url =  HOST + '/user';
             axios.post(url, {userName: this.state.username, password: this.state.password, mail: this.state.email})
                 .then((response) => {
                     if(response.status === 201) {
@@ -99,7 +106,7 @@ class MyRegistration extends React.Component {
                         id="email"
                         placeholder="E-mail"
                         value={this.state.email}
-                        onChange={this.handleChange('email')}
+                        onChange={this.handleInputChange}
                         inputProps={{
                             'aria-label': 'Email',
                         }}
@@ -115,7 +122,7 @@ class MyRegistration extends React.Component {
                             id="username"
                             placeholder="Username"
                             value={this.state.username}
-                            onChange={this.handleChange('username')}
+                            onChange={this.handleInputChange}
                             inputProps={{
                                 'aria-label': 'Username',
                             }}
@@ -128,10 +135,10 @@ class MyRegistration extends React.Component {
                     >
                     <InputLabel htmlFor="adornment-password">Password</InputLabel>
                     <Input
-                        id="adornment-password"
+                        id="password"
                         type={this.state.showPassword ? 'text' : 'password'}
                         value={this.state.password}
-                        onChange={this.handleChange('password')}
+                        onChange={this.handleInputChange}
                         endAdornment={
                             <InputAdornment position="end">
                                 <IconButton
@@ -145,7 +152,7 @@ class MyRegistration extends React.Component {
                         }
                     />
                 </FormControl>
-                <Button fullWidth variant="raised" color="secondary" className={classes.button} onClick={console.log("Register")}>
+                <Button fullWidth variant="raised" color="secondary" className={classes.button} onClick={this.handleSubmit}>
                     <LoginIcon color={"#FFFFF"}/>REGISTER
                 </Button>
             </div>

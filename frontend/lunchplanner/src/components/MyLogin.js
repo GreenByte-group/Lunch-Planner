@@ -45,7 +45,7 @@ class MyLogin extends React.Component {
 
     handleInputChange(event) {
         const target = event.target;
-        const name = target.name;
+        const name = target.id;
 
         this.setState({
             [name]: target.value
@@ -76,7 +76,7 @@ class MyLogin extends React.Component {
         event.preventDefault();
     }
 
-    /*handleChange = prop => event => {
+    handleChange = prop => event => {
         this.setState({ [prop]: event.target.value });
     };
 
@@ -86,11 +86,17 @@ class MyLogin extends React.Component {
 
     handleClickShowPassword = () => {
         this.setState({ showPassword: !this.state.showPassword });
-    };*/
+    };
 
     render() {
         const { classes } = this.props;
+        const { from } = /*this.props.location.state || */{ from: { pathname: "/" } };
+        const { redirectToReferrer } = this.state;
         const { error } = this.state;
+
+        if (redirectToReferrer) {
+            return <Redirect to={from} />;
+        }
 
         return (
             <div className={classes.root}>
@@ -121,7 +127,7 @@ class MyLogin extends React.Component {
                 >
                     <InputLabel htmlFor="adornment-password">Password</InputLabel>
                     <Input
-                        id="adornment-password"
+                        id="password"
                         type={this.state.showPassword ? 'text' : 'password'}
                         value={this.state.password}
                         onChange={this.handleInputChange}
@@ -138,7 +144,7 @@ class MyLogin extends React.Component {
                         }
                     />
                 </FormControl>
-                <Button fullWidth variant="raised" color="secondary" className={classes.button} onClick={this.handleSubmit("submit")}>
+                <Button fullWidth variant="raised" color="secondary" className={classes.button} onClick={this.handleSubmit}>
                     <LoginIcon color={"#FFFFF"}/>LOGIN
                 </Button>
             </div>
