@@ -1,5 +1,5 @@
 import axios from "axios";
-import {HOST, TOKEN} from "../Config";
+import {HOST, TOKEN} from "../../Config";
 
 const authentication = {
     isAuthenticated: false,

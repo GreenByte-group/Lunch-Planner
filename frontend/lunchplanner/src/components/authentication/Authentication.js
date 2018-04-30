@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from "prop-types";
-import Login from "./MyLogin"
-import Register from "./MyRegistration"
+import Login from "./Login"
+import Register from "./Registration"
 import Tabs, { Tab } from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from 'material-ui/AppBar';
@@ -29,7 +29,7 @@ const styles = theme => ({
     },
 });
 
-class FirstScreen extends React.Component {
+class Authentication extends React.Component {
     state = {
         value: 0,
     };
@@ -105,9 +105,9 @@ class FirstScreen extends React.Component {
     }
 }
 
-FirstScreen.propTypes = {
+Authentication.propTypes = {
     classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(FirstScreen);
+export default withStyles(styles, { withTheme: true })(Authentication);

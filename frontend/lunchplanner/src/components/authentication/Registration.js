@@ -1,18 +1,16 @@
 import React from "react";
-import {doLogin} from "./LoginFunctions";
+import axios from "axios";
 import {Link, Redirect} from "react-router-dom";
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
 import IconButton from 'material-ui/IconButton';
 import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
 import { FormControl, FormHelperText } from 'material-ui/Form';
-import TextField from 'material-ui/TextField';
-import MenuItem from 'material-ui/Menu/MenuItem';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Button from 'material-ui/Button';
 import LoginIcon from '@material-ui/icons/ExitToApp';
+import {withStyles} from "material-ui/styles/index";
+import {HOST} from "../../Config";
+
 const styles = theme => ({
     root: {
         display: 'flex',
@@ -29,51 +27,19 @@ const styles = theme => ({
     },
 });
 
-class MyLogin extends React.Component {
+class Registration extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {
-            username: "",
-            password: "",
-            redirectToReferrer: false,
-            error: "",
+            password: '',
+            username: '',
+            email: '',
+            showPassword: false,
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    handleInputChange(event) {
-        const target = event.target;
-        const name = target.id;
-
-        this.setState({
-            [name]: target.value
-        });
-    }
-
-    handleSubmit(event) {
-        console.log("Submit");
-        doLogin(this.state.username, this.state.password, message => {
-            console.log(message);
-
-            if(message.type === "LOGIN_EMPTY") {
-                this.setState({
-                    error: message.payload.message,
-                });
-            } else if(message.type === "LOGIN_SUCCESS") {
-                this.setState({
-                    error: "",
-                    redirectToReferrer: true,
-                });
-            } else if(message.type === "LOGIN_FAILED") {
-                this.setState({
-                    error: "Wrong username or password"
-                });
-            }
-        });
-
-        event.preventDefault();
     }
 
     handleChange = prop => event => {
@@ -88,43 +54,85 @@ class MyLogin extends React.Component {
         this.setState({ showPassword: !this.state.showPassword });
     };
 
+    handleInputChange(event) {
+        const target = event.target;
+        const name = target.id;
+
+        this.setState({
+            [name]: target.value
+        });
+    }
+
+    handleSubmit(event) {
+        if(this.state.username && this.state.password && this.state.email) {
+            let url =  HOST + '/user';
+            axios.post(url, {userName: this.state.username, password: this.state.password, mail: this.state.email})
+                .then((response) => {
+                    if(response.status === 201) {
+                        this.setState({
+                            redirectToReferrer: true,
+                        })
+                    } else {
+                        this.setState({
+                            error: response.data,
+                        })
+                    }
+                })
+                .catch((err) => {
+                    this.setState({
+                        error: err.response.data,
+                    })
+                })
+        } else {
+            this.setState({
+                error: "All fields are requiered"
+            })
+        }
+
+        event.preventDefault();
+    }
+
     render() {
         const { classes } = this.props;
-        const { from } = /*this.props.location.state || */{ from: { pathname: "/" } };
-        const { redirectToReferrer } = this.state;
-        const { error } = this.state;
-
-        if (redirectToReferrer) {
-            return <Redirect to={from} />;
-        }
 
         return (
             <div className={classes.root}>
-                {(error
-                        ? <div>{error}</div>
-                        : ""
-                )}
-
                 <FormControl
                     fullWidth
                     className={classes.margin}
                     aria-describedby="weight-helper-text"
                 >
                     <Input
-                        id="username"
-                        placeholder="Username"
-                        value={this.state.username}
+                        id="email"
+                        placeholder="E-mail"
+                        value={this.state.email}
                         onChange={this.handleInputChange}
                         inputProps={{
-                            'aria-label': 'Username',
+                            'aria-label': 'Email',
                         }}
 
                     />
                 </FormControl>
-                <FormControl
-                    fullWidth
-                    className={classes.margin}
-                >
+                    <FormControl
+                        fullWidth
+                        className={classes.margin}
+                        aria-describedby="weight-helper-text"
+                    >
+                        <Input
+                            id="username"
+                            placeholder="Username"
+                            value={this.state.username}
+                            onChange={this.handleInputChange}
+                            inputProps={{
+                                'aria-label': 'Username',
+                            }}
+
+                        />
+                    </FormControl>
+                    <FormControl
+                        fullWidth
+                        className={classes.margin}
+                    >
                     <InputLabel htmlFor="adornment-password">Password</InputLabel>
                     <Input
                         id="password"
@@ -145,15 +153,11 @@ class MyLogin extends React.Component {
                     />
                 </FormControl>
                 <Button fullWidth variant="raised" color="secondary" className={classes.button} onClick={this.handleSubmit}>
-                    <LoginIcon color={"#FFFFF"}/>LOGIN
+                    <LoginIcon color={"#FFFFF"}/>REGISTER
                 </Button>
             </div>
         );
     }
 }
 
-MyLogin.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
-
-export default withStyles(styles, { withTheme: true })(MyLogin);
+export default withStyles(styles, { withTheme: true })(Registration);

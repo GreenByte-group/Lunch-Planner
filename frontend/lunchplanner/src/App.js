@@ -1,11 +1,11 @@
 // App.js
 import React from "react";
-import MyLogin from "./components/MyLogin"
-import MyRegistration from "./components/MyRegistration"
-import FirstScreen from "./components/FirstScreen"
+import MyLogin from "./components/authentication/Login"
+import MyRegistration from "./components/authentication/Registration"
+import FirstScreen from "./components/authentication/Authentication"
 import LunchPlanner from "./components/LunchPlanner"
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
-import {isAuthenticated} from "./components/LoginFunctions"
+import {isAuthenticated} from "./components/authentication/LoginFunctions"
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 
 /*
