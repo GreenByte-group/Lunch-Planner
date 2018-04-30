@@ -37,7 +37,6 @@ const styles = theme => ({
     whiteSymbol: {
         color: theme.palette.common.white
     },
-    button:{}
 
 });
 
@@ -78,7 +77,7 @@ class FullWidthTabs extends React.Component {
                     index={this.state.value}
                     onChangeIndex={this.handleChangeIndex}
                 >
-                    <TabContainer dir={theme.direction}>
+                    <TabContainer dir={theme.direction} className={classes.button}>
                         <EventList/>
                            <Button style= {theme.fab}variant="fab" color="secondary" aria-label="add" className={classNames(classes.button, classes.whiteSymbol)}>
                                <AddIcon/>

@@ -30,13 +30,53 @@ const styles = theme => ({
 });
 
 class MyLogin extends React.Component {
-    state = {
-        password: '',
-        username: '',
-        showPassword: false,
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            username: "",
+            password: "",
+            redirectToReferrer: false,
+            error: "",
+        };
 
-    handleChange = prop => event => {
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleInputChange(event) {
+        const target = event.target;
+        const name = target.name;
+
+        this.setState({
+            [name]: target.value
+        });
+    }
+
+    handleSubmit(event) {
+        console.log("Submit");
+        doLogin(this.state.username, this.state.password, message => {
+            console.log(message);
+
+            if(message.type === "LOGIN_EMPTY") {
+                this.setState({
+                    error: message.payload.message,
+                });
+            } else if(message.type === "LOGIN_SUCCESS") {
+                this.setState({
+                    error: "",
+                    redirectToReferrer: true,
+                });
+            } else if(message.type === "LOGIN_FAILED") {
+                this.setState({
+                    error: "Wrong username or password"
+                });
+            }
+        });
+
+        event.preventDefault();
+    }
+
+    /*handleChange = prop => event => {
         this.setState({ [prop]: event.target.value });
     };
 
@@ -46,13 +86,19 @@ class MyLogin extends React.Component {
 
     handleClickShowPassword = () => {
         this.setState({ showPassword: !this.state.showPassword });
-    };
+    };*/
 
     render() {
         const { classes } = this.props;
+        const { error } = this.state;
 
         return (
             <div className={classes.root}>
+                {(error
+                        ? <div>{error}</div>
+                        : ""
+                )}
+
                 <FormControl
                     fullWidth
                     className={classes.margin}
@@ -60,9 +106,9 @@ class MyLogin extends React.Component {
                 >
                     <Input
                         id="username"
-                        placeholder="Your Username or email"
+                        placeholder="Username"
                         value={this.state.username}
-                        onChange={this.handleChange('username')}
+                        onChange={this.handleInputChange}
                         inputProps={{
                             'aria-label': 'Username',
                         }}
@@ -72,13 +118,13 @@ class MyLogin extends React.Component {
                 <FormControl
                     fullWidth
                     className={classes.margin}
-                    >
-                    <InputLabel>Password</InputLabel>
+                >
+                    <InputLabel htmlFor="adornment-password">Password</InputLabel>
                     <Input
-                        id="password"
+                        id="adornment-password"
                         type={this.state.showPassword ? 'text' : 'password'}
                         value={this.state.password}
-                        onChange={this.handleChange('password')}
+                        onChange={this.handleInputChange}
                         endAdornment={
                             <InputAdornment position="end">
                                 <IconButton
@@ -92,7 +138,7 @@ class MyLogin extends React.Component {
                         }
                     />
                 </FormControl>
-                <Button fullWidth variant="raised" color="secondary" className={classes.button} onClick={console.log("Login")}>
+                <Button fullWidth variant="raised" color="secondary" className={classes.button} onClick={this.handleSubmit("submit")}>
                     <LoginIcon color={"#FFFFF"}/>LOGIN
                 </Button>
             </div>
