@@ -37,6 +37,8 @@ const styles = theme => ({
     whiteSymbol: {
         color: theme.palette.common.white
     },
+    button:{}
+
 });
 
 class FullWidthTabs extends React.Component {

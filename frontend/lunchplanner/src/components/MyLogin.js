@@ -73,9 +73,9 @@ class MyLogin extends React.Component {
                     fullWidth
                     className={classes.margin}
                     >
-                    <InputLabel htmlFor="adornment-password">Password</InputLabel>
+                    <InputLabel>Password</InputLabel>
                     <Input
-                        id="adornment-password"
+                        id="password"
                         type={this.state.showPassword ? 'text' : 'password'}
                         value={this.state.password}
                         onChange={this.handleChange('password')}
