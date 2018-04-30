@@ -1,5 +1,6 @@
 import React from "react"
 import axios from "axios"
+import FloatingActionButton from "./FloatingActionButton"
 
 import {HOST, TOKEN} from "../Config"
 
@@ -44,11 +45,14 @@ class EventList extends React.Component {
         let events = this.state.events;
 
         return (
-            <ul>
-                {events.map(function(listValue){
-                    return <li>{listValue.eventName}</li>;
-                })}
-            </ul>
+            <div>
+                <ul>
+                    {events.map(function(listValue){
+                        return <li>{listValue.eventName}</li>;
+                    })}
+                </ul>
+                <FloatingActionButton />
+            </div>
 
         );
     }

@@ -77,7 +77,6 @@ class FullWidthTabs extends React.Component {
                 >
                     <TabContainer dir={theme.direction} className={classes.button}>
                         <EventList/>
-                           <FloatingActionButton />
                     </TabContainer>
                     <TabContainer dir={theme.direction}>Eventlist Following</TabContainer>
                     <TabContainer dir={theme.direction}>Eventlist sort by date</TabContainer>
