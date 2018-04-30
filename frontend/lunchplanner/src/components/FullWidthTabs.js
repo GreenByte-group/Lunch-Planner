@@ -1,14 +1,12 @@
 import React from 'react';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
+import {withStyles} from 'material-ui/styles';
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from 'material-ui/AppBar';
-import Tabs, { Tab } from 'material-ui/Tabs';
+import Tabs, {Tab} from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
 import EventList from "./EventList";
-import AddIcon from '@material-ui/icons/Add';
-import Button from 'material-ui/Button';
+import FloatingActionButton from "./FloatingActionButton"
 
 function TabContainer({ children, dir }) {
     return (
@@ -79,9 +77,7 @@ class FullWidthTabs extends React.Component {
                 >
                     <TabContainer dir={theme.direction} className={classes.button}>
                         <EventList/>
-                           <Button style= {theme.fab}variant="fab" color="secondary" aria-label="add" className={classNames(classes.button, classes.whiteSymbol)}>
-                               <AddIcon/>
-                           </Button>
+                           <FloatingActionButton />
                     </TabContainer>
                     <TabContainer dir={theme.direction}>Eventlist Following</TabContainer>
                     <TabContainer dir={theme.direction}>Eventlist sort by date</TabContainer>
