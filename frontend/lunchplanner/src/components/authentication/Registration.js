@@ -70,7 +70,7 @@ class Registration extends React.Component {
                 .then((response) => {
                     if(response.status === 201) {
                         this.setState({
-                            redirectToReferrer: true,
+                            error: 'successfull registered'
                         })
                     } else {
                         this.setState({
@@ -94,9 +94,14 @@ class Registration extends React.Component {
 
     render() {
         const { classes } = this.props;
+        const { error } = this.state;
 
         return (
             <div className={classes.root}>
+                {(error
+                        ? <div>{error}</div>
+                        : ""
+                )}
                 <FormControl
                     fullWidth
                     className={classes.margin}
