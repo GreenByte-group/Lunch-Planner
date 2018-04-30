@@ -22,7 +22,7 @@ class SimpleMenu extends React.Component {
 
         return (
             <div>
-                <Button color = "inherit"
+                <Button
                     aria-owns={anchorEl ? 'simple-menu' : null}
                     aria-haspopup="true"
                     onClick={this.handleClick}

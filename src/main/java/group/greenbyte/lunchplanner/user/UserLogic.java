@@ -66,27 +66,7 @@ public class UserLogic {
         return null;
     }
 
-    public User isLoginValid(String username, String pass)  {
-        try {
-            if (!StringUtils.hasText(username) || !StringUtils.hasText(pass)) {
-                return null;
-            }
-            String password = pass;
-            User u = userDao.getUser(username);
-            if (u == null) {
-                return null;
-            }
-            if (!SecurityHelper.validatePassword(pass, u.getPassword())) {
-                return null;
-            }
-            return u;
-        } catch(DatabaseException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private Date getExpirationDate() {
+    public Date getExpirationDate() {
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DAY_OF_WEEK, 1);
         return c.getTime();
@@ -124,6 +104,9 @@ public class UserLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "mail is not valid");
 
         try {
+            if(userDao.getUser(userName) != null)
+                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name already exists");
+
             userDao.createUser(userName, SecurityHelper.hashPassword(password), mail);
         } catch (DatabaseException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());

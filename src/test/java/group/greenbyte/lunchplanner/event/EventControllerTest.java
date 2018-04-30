@@ -236,6 +236,8 @@ public class EventControllerTest {
     @Test
     @WithMockUser(username = userName)
     public void test1GetAllEvents() throws Exception {
+        createEvent(eventLogic, userName, locationId);
+
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/event"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -304,10 +306,6 @@ public class EventControllerTest {
                         .andExpect(MockMvcResultMatchers.status().isNotFound())
                         .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE));
     }
-
-
-
-
 
     // ------------------ UPDATE EVENT NAME ------------------------
 
@@ -515,10 +513,6 @@ public class EventControllerTest {
     @Test
     @WithMockUser(username = userName)
     public void test1GetEventValid() throws Exception {
-//        SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.000+0000");
-//        String timeStart = dateTimeFormatter.format(new Date(eventTimeStart));
-//        String timeEnd = dateTimeFormatter.format(new Date(eventTimeEnd));
-
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/event/" + eventId))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -532,10 +526,18 @@ public class EventControllerTest {
 
     @Test
     @WithMockUser(username = userName)
-    public void test2GetEventValid() throws Exception {
+    public void test2GetEventInValid() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/event/" + eventId + 100))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "otherUser")
+    public void test2GetEventInvalidUser() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/event/" + eventId))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
     // ---------------- SEARCH EVENTS--------------------
@@ -546,7 +548,13 @@ public class EventControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/event/search/" + searchWord))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$[0].eventId").value(eventId))
+                .andExpect(jsonPath("$[0].eventName").value(eventName))
+                .andExpect(jsonPath("$[0].eventDescription").value(eventDescription))
+                .andExpect(jsonPath("$[0].location.locationId").value(locationId))
+                .andExpect(jsonPath("$[0].startDate").value(eventTimeStart))
+                .andExpect(jsonPath("$[0].endDate").value(eventTimeEnd));;
     }
 
     @Test

@@ -58,7 +58,6 @@ public class EventDaoMySql implements EventDao {
         parameters.put(EVENT_START_DATE, timeStart);
         parameters.put(EVENT_END_DATE, timeEnd);
         parameters.put(EVENT_IS_PUBLIC, false);
-
         try {
             Number key = simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
@@ -157,7 +156,13 @@ public class EventDaoMySql implements EventDao {
 
     @Override
     public void updateEventIsPublic(int eventId, boolean isPublic) throws DatabaseException {
+        String SQL = "UPDATE " + EVENT_TABLE + " SET " + EVENT_IS_PUBLIC + " = ? WHERE " + EVENT_ID + " = ?";
 
+        try {
+            jdbcTemplate.update(SQL, isPublic, eventId);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
@@ -168,13 +173,16 @@ public class EventDaoMySql implements EventDao {
     @Override
     public List<Event> findPublicEvents(String searchword) throws DatabaseException {
         try {
-            String SQL = "SELECT * FROM " + EVENT_TABLE + " WHERE " +
+            String SQL = "SELECT * FROM " + EVENT_TABLE + " WHERE ((" +
                     EVENT_NAME + " LIKE ?" +
-                    " OR " + EVENT_DESCRIPTION + " LIKE ?";
+                    " OR " + EVENT_DESCRIPTION + " LIKE ?)" +
+                    " AND " + EVENT_IS_PUBLIC + " = ?)";
 
             List<EventDatabase> events = jdbcTemplate.query(SQL,
                     new BeanPropertyRowMapper<>(EventDatabase.class),
-                    "%" + searchword + "%", "%" + searchword + "%");
+                    "%" + searchword + "%",
+                    "%" + searchword + "%",
+                    1);
 
             List<Event> eventsReturn = new ArrayList<>(events.size());
             for(EventDatabase eventDatabase: events) {

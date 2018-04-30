@@ -34,6 +34,10 @@ public class EventDatabase {
         return event;
     }
 
+    public int getLocationId() {
+        return locationId;
+    }
+
     public void setEventId(int eventId) {
         this.eventId = eventId;
     }
@@ -46,6 +50,10 @@ public class EventDatabase {
         this.endDate = endDate;
     }
 
+    public void setIsPublic(boolean aPublic) {
+        isPublic = aPublic;
+    }
+
     public void setEventName(String eventName) {
         this.eventName = eventName;
     }
@@ -56,9 +64,5 @@ public class EventDatabase {
 
     public void setLocationId(int locationId) {
         this.locationId = locationId;
-    }
-
-    public int getLocationId() {
-        return locationId;
     }
 }
