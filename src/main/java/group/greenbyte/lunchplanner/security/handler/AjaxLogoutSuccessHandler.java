@@ -21,7 +21,7 @@ import java.io.IOException;
 public class AjaxLogoutSuccessHandler extends AbstractAuthenticationTargetUrlRequestHandler
         implements LogoutSuccessHandler {
 
-    private final HeaderHandler headerHandler;
+    public HeaderHandler headerHandler;
 
     @Autowired
     public AjaxLogoutSuccessHandler(HeaderHandler headerHandler) {

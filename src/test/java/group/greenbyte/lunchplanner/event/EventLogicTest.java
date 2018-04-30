@@ -204,11 +204,6 @@ public class EventLogicTest {
         Assert.assertEquals(new Date(eventTimeEnd), event.getEndDate());
     }
 
-    @Test
-    public void test2GetEventNull() throws Exception {
-        Assert.assertNull(eventLogic.getEvent(userName, eventId + 1000));
-    }
-
 
     // ------------------------- GET ALL EVENTS ------------------------------
 
