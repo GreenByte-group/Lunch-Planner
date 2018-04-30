@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
+import {withStyles} from 'material-ui/styles';
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from 'material-ui/AppBar';
-import Tabs, { Tab } from 'material-ui/Tabs';
+import Tabs, {Tab} from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
 import EventList from "./EventList";
+import FloatingActionButton from "./FloatingActionButton"
 
 function TabContainer({ children, dir }) {
     return (
@@ -23,8 +24,18 @@ TabContainer.propTypes = {
 const styles = theme => ({
     root: {
         backgroundColor: theme.palette.background.paper,
-        //width: 1500,
+        //width: 1500,,
+        position: 'relative',
     },
+    fab: {
+        position: 'absolute',
+        bottom: theme.spacing.unit * 2,
+        right: theme.spacing.unit * 2,
+    },
+    whiteSymbol: {
+        color: theme.palette.common.white
+    },
+
 });
 
 class FullWidthTabs extends React.Component {
@@ -49,8 +60,8 @@ class FullWidthTabs extends React.Component {
                     <Tabs
                         value={this.state.value}
                         onChange={this.handleChange}
-                        indicatorColor="primary"
-                        textColor="primary"
+                        indicatorColor="secondary"
+                        textColor="secondary"
                         centered
                         fullWidth
                     >
@@ -64,12 +75,13 @@ class FullWidthTabs extends React.Component {
                     index={this.state.value}
                     onChangeIndex={this.handleChangeIndex}
                 >
-                    <TabContainer dir={theme.direction}>
+                    <TabContainer dir={theme.direction} className={classes.button}>
                         <EventList/>
                     </TabContainer>
                     <TabContainer dir={theme.direction}>Eventlist Following</TabContainer>
                     <TabContainer dir={theme.direction}>Eventlist sort by date</TabContainer>
                 </SwipeableViews>
+
             </div>
         );
     }
