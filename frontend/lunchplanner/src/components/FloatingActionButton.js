@@ -25,7 +25,7 @@ class FloatingActionButton extends React.Component {
         const { classes, theme } = this.props;
 
         return (
-            <Button style= {theme.fab}variant="fab" color="secondary" style={buttonStyle} aria-label="add" className={classNames(classes.button, classes.whiteSymbol, floatingButtonClass)}>
+            <Button style= {theme.fab}variant="fab" color="secondary" style={buttonStyle} aria-label="add" className={classNames(classes.button, classes.whiteSymbol)}>
                 <AddIcon/>
             </Button>
         )

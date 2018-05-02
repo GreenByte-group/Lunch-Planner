@@ -1,8 +1,8 @@
 import React from "react"
 import axios from "axios"
-import FloatingActionButton from "./FloatingActionButton"
+import FloatingActionButton from "../FloatingActionButton"
 
-import {HOST, TOKEN} from "../Config"
+import {HOST, TOKEN} from "../../Config"
 
 class EventList extends React.Component {
 
@@ -14,8 +14,6 @@ class EventList extends React.Component {
     }
 
     componentDidMount() {
-        let token = localStorage.getItem(TOKEN);
-
         this.setState({
             search: this.props.search,
         });
@@ -26,14 +24,7 @@ class EventList extends React.Component {
         else
             url = HOST + "/event";
 
-        console.log("Token: " + token);
-        let config = {
-            headers: {
-                'Authorization': token,
-            }
-        };
-
-        axios.get(url, config)
+        axios.get(url)
             .then((response) => {
                 this.setState({
                     events: response.data,
