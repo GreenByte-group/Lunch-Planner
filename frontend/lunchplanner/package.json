@@ -9,13 +9,15 @@
     "bootstrap": "^4.0.0",
     "classnames": "^2.2.5",
     "material-ui": "^1.0.0-beta.44",
+    "material-ui-datetimepicker": "^1.0.7",
     "material-ui-time-picker": "^0.1.7",
+    "moment": "^2.22.1",
     "prop-types": "^15.6.1",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
+    "react": "^16.2.0",
+    "react-datepicker": "^1.4.1",
+    "react-dom": "^16.2.0",
     "react-scripts": "1.1.4",
-    "react-swipeable-views": "^0.12.13",
-    "reactstrap": "^5.0.0-beta.3"
+    "react-swipeable-views": "^0.12.13"
   },
   "scripts": {
     "start": "react-scripts start",

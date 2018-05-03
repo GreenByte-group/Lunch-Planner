@@ -15,10 +15,15 @@ import TimePicker from 'material-ui-time-picker';
 import ExpansionPanel, {ExpansionPanelSummary, ExpansionPanelDetails,} from 'material-ui/ExpansionPanel';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Switch from 'material-ui/Switch';
-import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
+import Input, { InputAdornment } from 'material-ui/Input';
 import AddIcon from '@material-ui/icons/Add';
-import {FormLabel, FormControl, FormGroup, FormControlLabel,FormHelperText,} from 'material-ui/Form';
+import {FormControl, FormGroup, FormControlLabel,FormHelperText,} from 'material-ui/Form';
 import {createEvent} from "./CreateEventFunctions";
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+
+import 'react-datepicker/dist/react-datepicker-cssmodules.css';
+import "../assets/CreateEventScreen.css"
 
 const styles = {
     appBar: {
@@ -28,21 +33,11 @@ const styles = {
         flex: 1,
     },
     textField: {
-        marginTop:1,
-        marginBottom:1,
+        marginTop:20,
+        marginBottom:30,
         marginLeft: 20,
         //marginRight: 20,
         width: "90%",
-    },
-    timePicker:{
-        marginLeft: 20,
-        //marginRight: 20,
-        width: "30%",
-    },
-    dateField:{
-        marginLeft: 20,
-        //marginRight: 20,
-        width: "30%",
     },
     button:{
         color: "white",
@@ -50,6 +45,11 @@ const styles = {
         bottom:0,
         width: "100%"
     },
+    addButton:{
+        width: 10,
+        height:10,
+        backgroundColor: "white",
+    }
 
 };
 const buttonStyle = {
@@ -66,9 +66,9 @@ class CreateEventScreen extends React.Component {
     state = {
         open: false,
         name: "",
-        time:"",
+        time:null,
         visible: false,
-        date: "",
+        date: moment(),
         member:"",
         location:0,
     };
@@ -79,8 +79,8 @@ class CreateEventScreen extends React.Component {
     };
 
     handleClose = () => {
-        console.log("handleClose");
-        createEvent(this.state.name, this.state.location, this.state.date, this.state.time, this.state.member, this.state.visible);
+        console.log("date HandleClose" + this.state.date);
+        createEvent(this.state.location, this.state.date, this.state.time, this.state.member, this.state.visible);
     };
 
     handleChange = name => event => {
@@ -91,8 +91,9 @@ class CreateEventScreen extends React.Component {
         this.setState({ [name]: event.target.time });
     }
 
-    handleDate =  name => event =>{
-        this.setState({ [name]: event.target.date });
+    handleDate =  (date) => {
+        this.setState({ date: date });
+        console.log("date" + this.state.date);
     }
 
     handleVisibility = name => event =>{
@@ -123,77 +124,54 @@ class CreateEventScreen extends React.Component {
 
                         </Toolbar>
                     </AppBar>
-                    <form className={classes.container} noValidate autoComplete="off" >
-                        <TextField
-                            id="name"
-                            label="Name"
-                            className={classes.textField}
-                            value={this.state.name}
-                            onChange={this.handleChange('name')}
-                            margin="normal"
-                        />
+                    <form className={classes.container} noValidate autoComplete="on" >
                         <TextField
                             id="location"
                             label="Location"
                             className={classes.textField}
-                            value={this.state.location}
+                            placeholder ="Add an Location ..."
 
                             margin="normal"
                         />
-                        <TextField
-                            id="date"
-                            label="Date"
-                            type="date"
-                            defaultValue={this.state.date}
-                            className={classes.dateField}
-                            onChange={this.handleChange('date')}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
+                        <DatePicker
+                            selected={this.state.date}
+                            onChange={this.handleDate}
+                            showTimeSelect
+                            timeFormat="HH:mm"
+                            timeIntervals={15}
+                            dateFormat="LLL"
+                            timeCaption="time"
                         />
-                        <TimePicker
-
-                            className={classes.timePicker}
-                            mode='24h'
-                            value={this.state.time}
-                            onChange={this.handleTime}
-                        />
-
                     </form>
                     <ExpansionPanel>
                         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography className={classes.heading}>Invite & Change Vibility</Typography>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails>
-                            <FormControl  classname={classes.invitation}>
-                                <FormHelperText id="participants-invitation">Participants</FormHelperText>
-                                <Input
-                                    placeholder="Invite People"
+                            <FormGroup row>
+                                <TextField
                                     style={{width: 200}}
-                                    id="adornment-participants-invitation"
-                                    onChange={this.handleChange}
-                                    endAdornment={<InputAdornment position="end"
-                                    >
-                                        <Button>
-                                            <AddIcon/>
-                                        </Button>
-                                    </InputAdornment>}
+                                    id="invitation"
+                                    label="Participants"
+                                    placeholder ="Invite People"
                                 />
-                            </FormControl>
-                            <FormControl>
-                            <FormControlLabel
+                                <Button classname={classes.addButton}>
+                                    <AddIcon/>
+                                </Button>
 
-                                control={
-                                    <Switch
-                                        color = "primary"
-                                        checked={this.state.visible}
-                                        onChange={this.handleVisibility("visible")}
-                                        value="visible"
-                                    />
-                                }
-                                label="Only visible if invited"
-                            />
-                            </FormControl>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            float ="left"
+                                            color = "primary"
+                                            checked={this.state.visible}
+                                            onChange={this.handleVisibility("visible")}
+                                            value="visible"
+                                        />
+                                    }
+                                    label="Only visible if invited"
+                                />
+                            </FormGroup>
                         </ExpansionPanelDetails>
                     </ExpansionPanel>
                     <Button variant="raised" color="secondary" onClick={this.handleClose} className={classes.button}>
@@ -208,5 +186,13 @@ class CreateEventScreen extends React.Component {
 CreateEventScreen.propTypes = {
     classes: PropTypes.object.isRequired,
 };
+
+/* <TimePicker
+
+                            className={classes.timePicker}
+                            mode='24h'
+                            value={this.state.time}
+                            onChange={this.handleTime}
+                        />*/
 
 export default withStyles(styles, { withTheme: true })(CreateEventScreen);

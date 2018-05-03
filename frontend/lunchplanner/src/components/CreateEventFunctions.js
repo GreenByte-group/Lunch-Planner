@@ -1,13 +1,10 @@
 import axios from "axios";
-import {HOST, TOKEN} from "../Config";
+import {HOST} from "../Config";
 
-export function createEvent(eventname, locationId, date, time, member, visible) {
-    console.log("Date" + date);
-    //console.log("Date" + date.getTime());
-    console.log("Time" + time);
-    //console.log("time" + time.getTime());
+export function createEvent(locationId, date) {
+    console.log("Date in createEvent" + date);
     let url =  HOST + '/event';
-        axios.post(url, {eventname, locationId, date, time, member, visible})
+        axios.post(url, {name: "dummy",locationId : locationId, timeStart: date})
             .then((response) => {
                 console.log("Event created " + response.data);
             })
