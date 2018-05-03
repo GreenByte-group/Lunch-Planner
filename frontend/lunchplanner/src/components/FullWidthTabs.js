@@ -37,6 +37,12 @@ const styles = theme => ({
     whiteSymbol: {
         color: theme.palette.common.white
     },
+    tab: {
+        fontFamily: "Work Sans",
+        fontWeight: '600',
+        letterSpacing: '0.65px',
+        fontSize: '13px',
+    },
 });
 
 class FullWidthTabs extends React.Component {
@@ -66,9 +72,9 @@ class FullWidthTabs extends React.Component {
                         centered
                         fullWidth
                     >
-                        <Tab label="PERSONAL" />
-                        <Tab label="FOLLOWING" />
-                        <Tab label="BY DATE" />
+                        <Tab className={classes.tab} label="PERSONAL" />
+                        <Tab className={classes.tab} label="FOLLOWING" />
+                        <Tab className={classes.tab} label="BY DATE" />
                     </Tabs>
                 </AppBar>
                 <SwipeableViews

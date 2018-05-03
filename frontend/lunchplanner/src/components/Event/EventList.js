@@ -17,6 +17,9 @@ const styles = {
     },
 };
 
+const lightBackground = 'transparent';
+const darkerBackground = '#03030305';
+
 class EventList extends React.Component {
 
     constructor(props) {
@@ -52,18 +55,27 @@ class EventList extends React.Component {
     render() {
         const { classes } = this.props;
         let events = this.state.events;
+        let showLightBackground = true;
 
         return (
             <div className={classes.root}>
                 <List className={classes.list}>
                     {events.map(function(listValue){
+                        let background;
+                        if(showLightBackground)
+                            background = lightBackground;
+                        else
+                            background = darkerBackground;
+                        showLightBackground = !showLightBackground;
+
                         return <Event name={listValue.eventName}
                                       description={listValue.eventDescription}
                                       date={listValue.startDate}
+                                      background={background}
                         />;
                     })}
                 </List>
-                <FloatingActionButton />
+                {/*<FloatingActionButton />*/}
             </div>
 
         );

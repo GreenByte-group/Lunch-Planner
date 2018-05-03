@@ -11,6 +11,7 @@ import red from "material-ui/colors/red";
 
 const styles = {
     root: {
+        boxShadow: '0 -2px 4px 0 rgba(51,51,51,0.1), 0 2px 4px 0 rgba(0,0,0,0.5)',
         position: 'fixed',
         bottom: 0,
         width: '100%',
