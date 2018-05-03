@@ -78,8 +78,11 @@ class CreateEventScreen extends React.Component {
 
     handleChange = name => event => {
         this.setState({[name]: event.target.value,});
-        this.setState({ [name]: event.target.checked });
     };
+
+    handleVisibility = name => event =>{
+        this.setState({ [name]: event.target.checked });
+    }
 
     render() {
         const { classes } = this.props;
@@ -118,7 +121,7 @@ class CreateEventScreen extends React.Component {
                             id="date"
                             label="Date"
                             type="date"
-                            defaultValue="2018-05-24"
+                            defaultValue="Today"
                             className={classes.dateField}
                             InputLabelProps={{
                                 shrink: true,
@@ -144,7 +147,7 @@ class CreateEventScreen extends React.Component {
                                     <Switch
                                         color = "primary"
                                         checked={this.state.visible}
-                                        onChange={this.handleChange('visible')}
+                                        onChange={this.handleVisibility("visible")}
                                         value="visible"
                                     />
                                 }
