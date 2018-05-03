@@ -21,7 +21,7 @@ const styles = theme => ({
 class FloatingActionButton extends React.Component {
 
     render() {
-        const { classes, theme } = this.props;
+        const { classes } = this.props;
 
         return (
             <Button variant="fab" color="secondary" aria-label="add" className={classNames(classes.button, classes.whiteSymbol, classes.floatingButton)}>

@@ -6,7 +6,6 @@ import AppBar from 'material-ui/AppBar';
 import Tabs, {Tab} from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
 import EventList from "./Event/EventList";
-import FloatingActionButton from "./FloatingActionButton"
 
 function TabContainer({ children, dir }) {
     return (

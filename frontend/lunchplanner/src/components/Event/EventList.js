@@ -1,8 +1,7 @@
 import React from "react"
 import axios from "axios"
-import FloatingActionButton from "../FloatingActionButton"
 
-import {HOST, TOKEN} from "../../Config"
+import {HOST} from "../../Config"
 import Event from "./Event";
 import List from "material-ui/List";
 import {withStyles} from "material-ui/styles/index";
