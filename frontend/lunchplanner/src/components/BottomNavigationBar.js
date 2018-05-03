@@ -5,9 +5,6 @@ import BottomNavigation, { BottomNavigationAction } from 'material-ui/BottomNavi
 import PlaceIcon from '@material-ui/icons/Place';
 import EventIcon from '@material-ui/icons/LocalDining';
 import SocialIcon from '@material-ui/icons/Group';
-import withTheme from "material-ui/es/styles/withTheme";
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
-import red from "material-ui/colors/red";
 
 const styles = {
     root: {
