@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
@@ -37,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration (classes = AppConfig.class)
 @WebAppConfiguration
 @ActiveProfiles("application-test.properties")
+@Transactional
 public class LocationControllerTest {
 
     private MockMvc mockMvc;
@@ -224,20 +226,14 @@ public class LocationControllerTest {
     @Test
     @WithMockUser(username = userName)
     public void searchLocationValidUser() throws Exception {
+        String locationName = createString(50);
+        String locationDescription = createString(1000);
+        createLocation(locationLogic, userName, locationName, locationDescription);
+
         mockMvc.perform(
-                MockMvcRequestBuilders.get("location/search/" + locationName))
+                MockMvcRequestBuilders.get("/location/search/" + locationName))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].locationName").value(locationName))
-                .andExpect(jsonPath("$[0].locationDescription").value(locationDescription))
-                .andExpect(jsonPath("$[0].locationId").value(locationId));
-    }
-
-    @Test
-    @WithMockUser(username = otherUser)
-    public void searchLocationUserNoRights() throws Exception {
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("location/search/" + locationName))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0]").doesNotExist());
+                .andExpect(jsonPath("$[0].locationDescription").value(locationDescription));
     }
 }

@@ -8,6 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Service
 public class LocationLogic {
 
@@ -70,6 +75,25 @@ public class LocationLogic {
                 return location;
             }
         } catch (DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    /**
+     * Search a location. Search in name and description
+     *
+     * @param userName the user who searches
+     * @param word the word he is searching
+     * @return all locations matching the word
+     */
+    public List<Location> searchLocation(String userName, String word) throws HttpRequestException {
+        try {
+            Set<Location> locations = new HashSet<>(locationDao.searchPublicLocations(word));
+
+            locations.addAll(locationDao.searchLocationsUserAdmin(userName, word));
+
+            return new ArrayList<>(locations);
+        } catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
     }

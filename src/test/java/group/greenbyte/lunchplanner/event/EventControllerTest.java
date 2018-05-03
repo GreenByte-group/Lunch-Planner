@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Date;
@@ -36,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration (classes = AppConfig.class)
 @WebAppConfiguration
 @ActiveProfiles("application-test.properties")
+@Transactional
 public class EventControllerTest {
 
     private MockMvc mockMvc;
@@ -77,7 +79,7 @@ public class EventControllerTest {
         eventTimeEnd = 1000 * (eventTimeEnd / 1000);
 
         createUserIfNotExists(userLogic, userName);
-        locationId = createLocation(locationLogic, userName, "Test location", "test description");
+        locationId = createLocation(locationLogic, userName, createString(50), createString(10));
         eventId = createEvent(eventLogic, userName, eventName, eventDescription, locationId,
                 new Date(eventTimeStart), new Date(eventTimeEnd));
 
@@ -91,7 +93,7 @@ public class EventControllerTest {
     public void test1CreateEventNoDescription() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson(createString(50), "", 1, new Date(timeStart), new Date(timeStart + 1000));
+        EventJson event = new EventJson(createString(50), "", locationId, new Date(timeStart), new Date(timeStart + 1000));
 
         String json = getJsonFromObject(event);
 
@@ -115,7 +117,7 @@ public class EventControllerTest {
     public void test2CreateEventNormalDescription() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson(createString(50), "Super Event", 1, new Date(timeStart), new Date(timeStart + 1000));
+        EventJson event = new EventJson(createString(50), "Super Event", locationId, new Date(timeStart), new Date(timeStart + 1000));
 
         String json = getJsonFromObject(event);
 
@@ -139,7 +141,7 @@ public class EventControllerTest {
     public void test3CreateEventLongDescription() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson(createString(50), createString(1000), 1, new Date(timeStart), new Date(timeStart + 1000));
+        EventJson event = new EventJson(createString(50), createString(1000), locationId, new Date(timeStart), new Date(timeStart + 1000));
 
         String json = getJsonFromObject(event);
 
@@ -163,7 +165,7 @@ public class EventControllerTest {
     public void test4CreateEventNoName() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson("", "", 1, new Date(timeStart), new Date(timeStart + 1000));
+        EventJson event = new EventJson("", "", locationId, new Date(timeStart), new Date(timeStart + 1000));
 
         String json = getJsonFromObject(event);
 
@@ -177,7 +179,7 @@ public class EventControllerTest {
     public void test5CreateEventNameTooLong() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson(createString(51), "", 1, new Date(timeStart), new Date(timeStart + 1000));
+        EventJson event = new EventJson(createString(51), "", locationId, new Date(timeStart), new Date(timeStart + 1000));
 
         String json = getJsonFromObject(event);
 
@@ -191,7 +193,7 @@ public class EventControllerTest {
     public void test6CreateEventDescriptionTooLong() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson("", "", 1, new Date(timeStart), new Date(timeStart + 1000));
+        EventJson event = new EventJson("", "", locationId, new Date(timeStart), new Date(timeStart + 1000));
 
         String json = getJsonFromObject(event);
 
@@ -206,7 +208,7 @@ public class EventControllerTest {
         long timeStart = System.currentTimeMillis() - 100000;
         long timeEnd = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson("", "", 1, new Date(timeStart), new Date(timeEnd));
+        EventJson event = new EventJson("", "", locationId, new Date(timeStart), new Date(timeEnd));
 
         String json = getJsonFromObject(event);
 
@@ -221,7 +223,7 @@ public class EventControllerTest {
         long timeStart = System.currentTimeMillis() + 100000;
         long timeEnd = System.currentTimeMillis() + 1000;
 
-        EventJson event = new EventJson("", "", 1, new Date(timeStart), new Date(timeEnd));
+        EventJson event = new EventJson("", "", locationId, new Date(timeStart), new Date(timeEnd));
 
         String json = getJsonFromObject(event);
 
