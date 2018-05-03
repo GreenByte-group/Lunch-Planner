@@ -7,6 +7,7 @@ import Tabs, {Tab} from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
 import EventList from "./EventList";
 import FloatingActionButton from "./FloatingActionButton"
+import CreateEventScreen from "./CreateEventScreen";
 
 function TabContainer({ children, dir }) {
     return (

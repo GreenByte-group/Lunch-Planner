@@ -1,14 +1,17 @@
 import React from "react"
 import axios from "axios"
 import FloatingActionButton from "./FloatingActionButton"
+import {createEvent} from "./CreateEventFunctions";
 
 import {HOST, TOKEN} from "../Config"
+import CreateEventScreen from "./CreateEventScreen";
 
 class EventList extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            open: false,
             events: [],
         }
     }
@@ -40,6 +43,11 @@ class EventList extends React.Component {
                 })
             })
     }
+    handleClickOpen = () => {
+        this.setState({ open: true });
+        console.log("handleClick");
+        <CreateEventScreen/>
+    };
 
     render() {
         let events = this.state.events;
@@ -51,7 +59,8 @@ class EventList extends React.Component {
                         return <li>{listValue.eventName}</li>;
                     })}
                 </ul>
-                <FloatingActionButton />
+                <CreateEventScreen/>
+
             </div>
 
         );

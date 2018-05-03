@@ -7,10 +7,6 @@ import Button from 'material-ui/Button';
 
 const floatingButtonClass = 'floatingButton';
 
-const buttonStyle = {
-    float: 'right',
-    marginBottom: '15px',
-};
 
 const styles = theme => ({
     whiteSymbol: {
@@ -25,7 +21,7 @@ class FloatingActionButton extends React.Component {
         const { classes, theme } = this.props;
 
         return (
-            <Button style= {theme.fab}variant="fab" color="secondary" style={buttonStyle} aria-label="add" className={classNames(classes.button, classes.whiteSymbol, floatingButtonClass)}>
+            <Button style= {theme.fab}variant="fab" color="secondary"  aria-label="add" className={classNames(classes.button, classes.whiteSymbol, floatingButtonClass)}>
                 <AddIcon/>
             </Button>
         )
