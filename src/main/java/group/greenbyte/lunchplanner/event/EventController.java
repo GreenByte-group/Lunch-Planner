@@ -282,6 +282,27 @@ public class EventController {
 
     }
 
+    /**
+     *
+     * @param eventId id of the event
+     * @param comment user comment
+     * @param response response channel
+     * @return
+     */
+    @RequestMapping(value = "/{eventId}/comment")
+    public String createComment(@PathVariable("eventId") int eventId, String comment, HttpServletResponse response){
+        try{
+            eventLogic.newComment(SessionManager.getUserName(), comment, eventId);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+
+            return "";
+        }catch(HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+
+    }
+
 
     @Autowired
     public void setEventLogic(EventLogic eventLogic) {

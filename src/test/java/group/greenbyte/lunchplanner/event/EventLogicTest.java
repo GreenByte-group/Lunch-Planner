@@ -629,5 +629,55 @@ public class EventLogicTest {
 
     }
 
+    // ------------------ NEW COMMENT -------------------
+
+    @Test (expected = HttpRequestException.class)
+    public void test1NewComment() throws Exception {
+        String username = createString(1);
+        String comment = createString(1);
+
+        eventLogic.newComment(username, comment, eventId);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test2NewCommentMaxLength() throws Exception {
+        String username = createString(50);
+        String comment = createString(100);
+
+        eventLogic.newComment(username, comment, eventId);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test3NewCommentNoUserName() throws Exception {
+        String username = "";
+        String comment = createString(100);
+
+        eventLogic.newComment(username, comment, eventId);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test4NewCommentUserNameTooLong() throws Exception {
+        String username = createString(51);
+        String comment = createString(100);
+
+        eventLogic.newComment(username, comment, eventId);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test5NewCommentCommentTooLong() throws Exception {
+        String username = createString(50);
+        String comment = createString(101);
+
+        eventLogic.newComment(username, comment, eventId);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test1NewCommentNoComment() throws Exception {
+        String username = createString(50);
+        String comment = "";
+
+        eventLogic.newComment(username, comment, eventId);
+    }
+
 
 }
