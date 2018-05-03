@@ -3,9 +3,7 @@ package group.greenbyte.lunchplanner.event.database;
 import group.greenbyte.lunchplanner.location.database.Location;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Event {
@@ -14,6 +12,7 @@ public class Event {
     static final public int MAX_DESCRITION_LENGTH = 1000;
     static final public int MAX_EVENTNAME_LENGTH = 50;
     static final public int MAX_SEARCHWORD_LENGTH = 50;
+    static final public int MAX_COMMENT_LENGHT = 100;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +39,8 @@ public class Event {
 
     @OneToMany(mappedBy = "userInvited", fetch = FetchType.EAGER)
     private Set<EventInvitation> usersInvited = new HashSet<>();
+
+    private List<Comment> comments = new ArrayList<>();
 
     public Event() {
         isPublic = false;
