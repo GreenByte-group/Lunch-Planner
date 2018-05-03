@@ -1,17 +1,11 @@
 import React from "react"
-import axios from "axios"
 import moment from "moment"
-
-import {HOST, TOKEN} from "../../Config"
 import ListItem from "material-ui/List/ListItem";
-import {ListItemText} from "material-ui";
+import {withStyles} from "material-ui";
 
 let background = 'white';
 
 const styles = {
-    listItem: {
-      backgroundColor: background,
-    },
     title: {
         fontSize: '12px',
         fontWeight: '500',
@@ -33,8 +27,6 @@ class Event extends React.Component {
     constructor(props) {
         super();
 
-        background = props.background;
-
         //http://momentjs.com/docs/
         let date = moment(props.date);
 
@@ -50,6 +42,8 @@ class Event extends React.Component {
     }
 
     render() {
+        const {classes} = this.props;
+
         let name = this.state.name;
         let description = this.state.description;
         let monthDay = this.state.monthDay;
@@ -57,15 +51,15 @@ class Event extends React.Component {
         let people = this.state.people;
 
         return (
-            <ListItem button style={styles.listItem}>
+            <ListItem button className={classes.listItem}>
                 <div>
-                    <p style={styles.title}>{name}</p>
-                    <p style={styles.date}>{monthDay}</p>
-                    <p style={styles.users}>{people}</p>
+                    <p className={classes.title}>{name}</p>
+                    <p className={classes.date}>{monthDay}</p>
+                    <p className={classes.users}>{people}</p>
                 </div>
             </ListItem>
         );
     }
 }
 
-export default Event;
+export default withStyles(styles)(Event);

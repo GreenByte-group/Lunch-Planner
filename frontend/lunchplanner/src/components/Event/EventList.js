@@ -5,6 +5,7 @@ import FloatingActionButton from "../FloatingActionButton"
 import {HOST, TOKEN} from "../../Config"
 import Event from "./Event";
 import List from "material-ui/List";
+import {withStyles} from "material-ui/styles/index";
 
 const styles = {
     root: {
@@ -49,11 +50,12 @@ class EventList extends React.Component {
     }
 
     render() {
+        const { classes } = this.props;
         let events = this.state.events;
 
         return (
-            <div style={styles.root}>
-                <List style={styles.list}>
+            <div className={classes.root}>
+                <List className={classes.list}>
                     {events.map(function(listValue){
                         return <Event name={listValue.eventName}
                                       description={listValue.eventDescription}
@@ -68,4 +70,4 @@ class EventList extends React.Component {
     }
 }
 
-export default EventList;
+export default withStyles(styles)(EventList);
