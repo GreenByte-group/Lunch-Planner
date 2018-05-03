@@ -1,17 +1,11 @@
 package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.AppConfig;
-import group.greenbyte.lunchplanner.event.EventController;
-import group.greenbyte.lunchplanner.event.EventJson;
 import group.greenbyte.lunchplanner.event.EventLogic;
-import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.location.LocationLogic;
-import org.json.JSONObject;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -19,24 +13,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
 import static group.greenbyte.lunchplanner.location.Utils.createLocation;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -185,6 +171,61 @@ public class UserControllerTest {
                 post("/user").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isBadRequest());
     }
+
+    // ------------------------- SEARCH USER ------------------------------
+
+    @Test
+    public void test1ValidParam() throws Exception {
+
+        String userName = createString(50);
+        String mail = "mail@mail.de";
+        String password = createString(50);
+
+        UserJson userJson = new UserJson(userName, password, mail);
+        String json = getJsonFromObject(userJson);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/user/search")
+                        .param("username", userName)
+                        .param("password", password))
+                .andExpect(MockMvcResultMatchers.status().isAccepted());
+
+
+
+    }
+
+    @Test
+    public void test2SearchwordToLong() throws Exception {
+
+        String name = createString(50);
+        String mail = "mail@mail.de";
+        String password = createString(51);
+
+        UserJson userJson = new UserJson(name, password, mail);
+        String json = getJsonFromObject(userJson);
+
+
+        mockMvc.perform(
+                post("/user/search").contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void test3SearchwordIsNull() throws Exception {
+
+        String name = createString(50);
+        String mail = "mail@mail.de";
+        String password = null;
+
+        UserJson userJson = new UserJson(name, password, mail);
+        String json = getJsonFromObject(userJson);
+
+
+        mockMvc.perform(
+                post("/user/search").contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isBadRequest());
+    }
+
 
     // ------------------------- SEND INVITATION ------------------------------
 
