@@ -1,7 +1,5 @@
 package group.greenbyte.lunchplanner.location;
 
-import group.greenbyte.lunchplanner.event.database.Event;
-import group.greenbyte.lunchplanner.event.database.EventDatabase;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.location.database.Coordinate;
 import group.greenbyte.lunchplanner.location.database.Location;
@@ -13,9 +11,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.crypto.Data;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +52,7 @@ public class LocationDaoMySql implements LocationDao {
         parameters.put(LOCATION_DESCRIPTION, description);
         parameters.put(LOCATION_XCOORDINATE, coordinate.getxCoordinate());
         parameters.put(LOCATION_YCOORDINATE, coordinate.getyCoordinate());
+        parameters.put(LOCATION_PUBLIC, true);
 
         try {
             Number key = simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
@@ -81,6 +79,52 @@ public class LocationDaoMySql implements LocationDao {
             else
                 return locations.get(0).getLocation();
         } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public List<Location> searchPublicLocations(String word) throws DatabaseException {
+        try {
+            String SQL = "SELECT * FROM " + LOCATION_TABLE + " WHERE ((" + LOCATION_NAME + " LIKE ? " +
+                    " OR " + LOCATION_DESCRIPTION + " LIKE ? ) AND " + LOCATION_PUBLIC + " = ?)";
+
+            List<LocationDatabase> locations = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(LocationDatabase.class),
+                    "%"+word+"%",
+                    "%"+word+"%",
+                    1);
+
+            List<Location> locationsReturn = new ArrayList<>(locations.size());
+            for(LocationDatabase location : locations) {
+                locationsReturn.add(location.getLocation());
+            }
+
+            return locationsReturn;
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public List<Location> searchLocationsUserAdmin(String userName, String word) throws DatabaseException {
+        try {
+            String SQL = "SELECT * FROM " + LOCATION_TABLE + " INNER JOIN " + LOCATION_ADMIN_TABLE + " WHERE ((" + LOCATION_ADMIN_USER + " = ? )" +
+                    " AND (" + LOCATION_NAME + " LIKE ? OR " + LOCATION_DESCRIPTION + " LIKE ?))";
+
+            List<LocationDatabase> locations = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(LocationDatabase.class),
+                    userName,
+                    "%"+word+"%",
+                    "%"+word+"%");
+
+            List<Location> locationsReturn = new ArrayList<>(locations.size());
+            for(LocationDatabase location : locations) {
+                locationsReturn.add(location.getLocation());
+            }
+
+            return locationsReturn;
+        } catch(Exception e) {
             throw new DatabaseException(e);
         }
     }

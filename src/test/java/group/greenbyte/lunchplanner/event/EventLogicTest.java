@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +33,7 @@ import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 @ContextConfiguration(classes = AppConfig.class)
 @WebAppConfiguration
 @ActiveProfiles("application-test.properties")
+@Transactional
 public class EventLogicTest {
 
     private MockMvc mockMvc;
@@ -85,7 +87,6 @@ public class EventLogicTest {
     public void test1createEventNoDescription() throws Exception{
         String eventName = createString(50);
         String description = "";
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
         long timeEnd = timeStart + 10000;
 
@@ -98,7 +99,6 @@ public class EventLogicTest {
     public void test2createEventLongDescription() throws Exception {
         String eventName = createString(50);
         String description = createString(1000);
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
         long timeEnd = timeStart + 10000;
 
@@ -111,7 +111,6 @@ public class EventLogicTest {
         String userName = "";
         String eventName = createString(50);
         String description = "";
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
         long timeEnd = timeStart + 10000;
 
@@ -124,7 +123,6 @@ public class EventLogicTest {
         String userName = createString(51);
         String eventName = createString(50);
         String description = "";
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
         long timeEnd = timeStart + 10000;
 
@@ -136,7 +134,6 @@ public class EventLogicTest {
     public void test5createEventEmptyEventName() throws Exception {
         String eventName = "";
         String description = "";
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
         long timeEnd = timeStart + 10000;
 
@@ -148,7 +145,6 @@ public class EventLogicTest {
     public void test6createEventTooLongEventName() throws Exception {
         String eventName = createString(51);
         String description = "";
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
         long timeEnd = timeStart + 10000;
 
@@ -160,7 +156,6 @@ public class EventLogicTest {
     public void test7createEventTooLongDescription() throws Exception {
         String eventName = createString(50);
         String description = createString(1001);
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
         long timeEnd = timeStart + 10000;
 
@@ -172,7 +167,6 @@ public class EventLogicTest {
     public void test8createEventTimeStartTooEarly() throws Exception {
         String eventName = createString(50);
         String description = "";
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() - 10000;
         long timeEnd = timeStart + 10000;
 
@@ -184,7 +178,6 @@ public class EventLogicTest {
     public void test4createEventTimeStartAfterTimeEnd() throws Exception {
         String eventName = createString(50);
         String description = "";
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
         long timeEnd = timeStart - 10000;
 

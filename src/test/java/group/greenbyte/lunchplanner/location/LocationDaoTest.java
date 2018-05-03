@@ -4,7 +4,9 @@ import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.EventLogic;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.location.database.Coordinate;
+import group.greenbyte.lunchplanner.location.database.Location;
 import group.greenbyte.lunchplanner.user.UserLogic;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +15,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.annotation.ExceptionProxy;
+
+import java.util.List;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
@@ -25,6 +30,7 @@ import static org.junit.Assert.*;
 @WebAppConfiguration
 @ContextConfiguration(classes = AppConfig.class)
 @ActiveProfiles("application-test.properties")
+@Transactional
 public class LocationDaoTest {
 
     @Autowired
@@ -112,8 +118,40 @@ public class LocationDaoTest {
     // ------------------ GET LOCATION ----------------------
     @Test
     public void test1GetLocation() throws Exception {
-        int locationId = 1;
+        String locationName = createString(50);
+        String locationDescription = createString(50);
+        int locationId = createLocation(locationLogic, userName, locationName, locationDescription);
 
-        locationDao.getLocation(locationId);
+        Location location = locationDao.getLocation(locationId);
+        Assert.assertEquals(locationId, location.getLocationId());
+        Assert.assertEquals(locationName, location.getLocationName());
+        Assert.assertEquals(locationDescription, location.getLocationDescription());
+    }
+
+    // ----------------- SEARCH LOCATION ---------------------
+    @Test
+    public void test1SearchLocation() throws Exception {
+        String locationName = "Aasdfa";
+        String locationDescription = "afdafdsasa";
+
+        int locationId = createLocation(locationLogic, userName, locationName, locationDescription);
+
+        List<Location> locations = locationDao.searchPublicLocations(locationName);
+        Assert.assertEquals(1, locations.size());
+        Assert.assertEquals(locationId, locations.get(0).getLocationId());
+        Assert.assertEquals(locationName, locations.get(0).getLocationName());
+        Assert.assertEquals(locationDescription, locations.get(0).getLocationDescription());
+        Assert.assertTrue(locations.get(0).isPublic());
+    }
+
+    @Test
+    public void test1SearchLocationNoResult() throws Exception {
+        String locationName = "adsfa";
+        String locationDescription = "aasa";
+
+        createLocation(locationLogic, userName, locationName, locationDescription);
+
+        List<Location> locations = locationDao.searchPublicLocations(locationName + "adsfa");
+        Assert.assertEquals(0, locations.size());
     }
 }

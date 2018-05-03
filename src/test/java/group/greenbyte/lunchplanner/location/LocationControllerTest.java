@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
@@ -30,11 +31,14 @@ import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
 import static group.greenbyte.lunchplanner.location.Utils.createLocation;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration (classes = AppConfig.class)
 @WebAppConfiguration
 @ActiveProfiles("application-test.properties")
+@Transactional
 public class LocationControllerTest {
 
     private MockMvc mockMvc;
@@ -51,14 +55,18 @@ public class LocationControllerTest {
     @Autowired
     private UserLogic userLogic;
 
-    private final String userName = "enafndj";
+    private final String userName = "ajkbsJDKFLnlknasdfknNFnk";
+    private final String otherUser = "NKDNLFnkandsfklnKNKnknkoqoalnksd";
     private int locationId;
+    private String locationName = createString(50);
+    private String locationDescription = createString(50);
     private int eventId;
 
     @Before
     public void setUp() throws Exception {
         createUserIfNotExists(userLogic, userName);
-        locationId = createLocation(locationLogic, userName, "Test location", "test description");
+        createUserIfNotExists(userLogic, otherUser);
+        locationId = createLocation(locationLogic, userName, locationName, locationDescription);
         eventId = createEvent(eventLogic, userName, locationId);
 
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
@@ -78,7 +86,7 @@ public class LocationControllerTest {
 
         MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.post("/location").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
                 .andReturn();
 
@@ -104,7 +112,7 @@ public class LocationControllerTest {
 
         MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.post("/location").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
                 .andReturn();
 
@@ -130,7 +138,7 @@ public class LocationControllerTest {
 
         MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.post("/location").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
                 .andReturn();
 
@@ -156,7 +164,7 @@ public class LocationControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/location").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-                .andExpect(MockMvcResultMatchers.status().isNotExtended());
+                .andExpect(status().isNotExtended());
     }
 
     @Test
@@ -172,7 +180,7 @@ public class LocationControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/location").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -187,7 +195,7 @@ public class LocationControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/location").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(status().isBadRequest());
     }
 
     // --------------------- GET LOCATION -------------------
@@ -200,10 +208,10 @@ public class LocationControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/location/" + locationId))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.locationName").value(locationName))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.locationDescription").value(locationDescription))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.locationId").value(locationId));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.locationName").value(locationName))
+                .andExpect(jsonPath("$.locationDescription").value(locationDescription))
+                .andExpect(jsonPath("$.locationId").value(locationId));
     }
 
     @Test
@@ -211,7 +219,21 @@ public class LocationControllerTest {
     public void test2GetLocationNotFound() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/location/" + locationId + 100))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(status().isNotFound());
     }
 
+    // ----------------------- SEARCH LOCATION ----------------------
+    @Test
+    @WithMockUser(username = userName)
+    public void searchLocationValidUser() throws Exception {
+        String locationName = createString(50);
+        String locationDescription = createString(1000);
+        createLocation(locationLogic, userName, locationName, locationDescription);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/location/search/" + locationName))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].locationName").value(locationName))
+                .andExpect(jsonPath("$[0].locationDescription").value(locationDescription));
+    }
 }

@@ -4,6 +4,9 @@ import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.location.database.Coordinate;
 import group.greenbyte.lunchplanner.location.database.Location;
 
+import java.util.Collection;
+import java.util.List;
+
 public interface LocationDao {
 
     /**
@@ -45,4 +48,21 @@ public interface LocationDao {
      * @throws DatabaseException
      */
     boolean hasAdminPrivileges(int locationId, String userName) throws DatabaseException;
+
+    /**
+     * Search all public location for the word
+     *
+     * @param word to search
+     * @return all locations matching the word
+     */
+    List<Location> searchPublicLocations(String word) throws DatabaseException;
+
+    /**
+     * Search all locations the user is a admin
+     *
+     * @param userName who is admin
+     * @param word searchword
+     * @return list of locations
+     */
+    List<Location> searchLocationsUserAdmin(String userName, String word) throws DatabaseException;
 }

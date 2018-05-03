@@ -4,10 +4,13 @@ import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.location.database.Location;
 import group.greenbyte.lunchplanner.security.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @RestController
 @RequestMapping("/location")
@@ -50,6 +53,22 @@ public class LocationController {
         }
 
         return null;
+    }
+
+    @RequestMapping(value = "/search/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity searchLocation(@PathVariable String word) {
+        try {
+            List<Location> locations = locationLogic.searchLocation(SessionManager.getUserName(), word);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(locations);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
     }
 
     @Autowired

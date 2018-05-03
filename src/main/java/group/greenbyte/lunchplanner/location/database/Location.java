@@ -82,4 +82,22 @@ public class Location {
     public void setEvents(Set<Event> events) {
         this.events = events;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if(object instanceof Location) {
+            Location otherLocation = (Location) object;
+            return otherLocation.getLocationId() == this.getLocationId();
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + locationId;
+        return result;
+    }
 }
