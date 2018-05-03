@@ -10,7 +10,7 @@ import FloatingActionButton from "./FloatingActionButton"
 
 function TabContainer({ children, dir }) {
     return (
-        <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
+        <Typography component="div" dir={dir} style={{ padding: 0 }}>
             {children}
         </Typography>
     );
@@ -26,6 +26,8 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.paper,
         //width: 1500,,
         position: 'relative',
+        marginTop: '56px',
+        marginBottom: '56px',
     },
     fab: {
         position: 'absolute',
@@ -35,7 +37,6 @@ const styles = theme => ({
     whiteSymbol: {
         color: theme.palette.common.white
     },
-
 });
 
 class FullWidthTabs extends React.Component {
@@ -75,7 +76,8 @@ class FullWidthTabs extends React.Component {
                     index={this.state.value}
                     onChangeIndex={this.handleChangeIndex}
                 >
-                    <TabContainer dir={theme.direction} className={classes.button}>
+
+                    <TabContainer dir={theme.direction}>
                         <EventList/>
                     </TabContainer>
                     <TabContainer dir={theme.direction}>Eventlist Following</TabContainer>

@@ -3,6 +3,18 @@ import axios from "axios"
 import FloatingActionButton from "../FloatingActionButton"
 
 import {HOST, TOKEN} from "../../Config"
+import Event from "./Event";
+import List from "material-ui/List";
+
+const styles = {
+    root: {
+        height: '100%',
+        overflow: 'hidden',
+    },
+    list: {
+        padding: 0,
+    },
+};
 
 class EventList extends React.Component {
 
@@ -30,18 +42,25 @@ class EventList extends React.Component {
                     events: response.data,
                 })
             })
+
+        // this.setState({
+        //     events: [{eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}]
+        // })
     }
 
     render() {
         let events = this.state.events;
 
         return (
-            <div>
-                <ul>
+            <div style={styles.root}>
+                <List style={styles.list}>
                     {events.map(function(listValue){
-                        return <li>{listValue.eventName}</li>;
+                        return <Event name={listValue.eventName}
+                                      description={listValue.eventDescription}
+                                      date={listValue.startDate}
+                        />;
                     })}
-                </ul>
+                </List>
                 <FloatingActionButton />
             </div>
 

@@ -9,6 +9,14 @@ import withTheme from "material-ui/es/styles/withTheme";
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import red from "material-ui/colors/red";
 
+const styles = {
+    root: {
+        position: 'fixed',
+        bottom: 0,
+        width: '100%',
+    }
+};
+
 class BottomNavigationBar extends React.Component {
     state = {
         value: 1,
@@ -24,6 +32,7 @@ class BottomNavigationBar extends React.Component {
 
         return (
                 <BottomNavigation
+                    className={classes.root}
                     value={value}
                     onChange={this.handleChange}
                     showLabels
@@ -41,4 +50,4 @@ BottomNavigationBar.propTypes = {
 };
 
 //export default withTheme(MuiThemeProvider) (BottomNavigationBar);
-export default BottomNavigationBar;
+export default withStyles(styles)(BottomNavigationBar);

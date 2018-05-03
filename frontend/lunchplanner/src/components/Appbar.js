@@ -22,13 +22,17 @@ const styles = {
         marginLeft: -12,
         marginRight: 20,
     },
+    appbar: {
+        position: 'fixed',
+        boxShadow: 'none',
+    }
 };
 
 function ButtonAppBar(props) {
     const { classes } = props;
     return (
         <div className={classes.root}>
-            <AppBar position="static">
+            <AppBar className={classes.appbar}>
                 <Toolbar>
                     <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
                         <SimpleMenu />
