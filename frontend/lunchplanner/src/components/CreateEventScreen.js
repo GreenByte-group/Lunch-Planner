@@ -11,13 +11,11 @@ import CloseIcon from '@material-ui/icons/Close';
 import Slide from 'material-ui/transitions/Slide';
 import FloatingActionButton from "./FloatingActionButton";
 import TextField from "material-ui/es/TextField/TextField";
-import TimePicker from 'material-ui-time-picker';
 import ExpansionPanel, {ExpansionPanelSummary, ExpansionPanelDetails,} from 'material-ui/ExpansionPanel';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Switch from 'material-ui/Switch';
-import Input, { InputAdornment } from 'material-ui/Input';
 import AddIcon from '@material-ui/icons/Add';
-import {FormControl, FormGroup, FormControlLabel,FormHelperText,} from 'material-ui/Form';
+import {FormGroup, FormControlLabel,FormHelperText,} from 'material-ui/Form';
 import {createEvent} from "./CreateEventFunctions";
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
@@ -36,7 +34,6 @@ const styles = {
         marginTop:20,
         marginBottom:30,
         marginLeft: 20,
-        //marginRight: 20,
         width: "90%",
     },
     button:{
@@ -45,11 +42,6 @@ const styles = {
         bottom:0,
         width: "100%"
     },
-    addButton:{
-        width: 10,
-        height:10,
-        backgroundColor: "white",
-    }
 
 };
 const buttonStyle = {
@@ -186,13 +178,4 @@ class CreateEventScreen extends React.Component {
 CreateEventScreen.propTypes = {
     classes: PropTypes.object.isRequired,
 };
-
-/* <TimePicker
-
-                            className={classes.timePicker}
-                            mode='24h'
-                            value={this.state.time}
-                            onChange={this.handleTime}
-                        />*/
-
 export default withStyles(styles, { withTheme: true })(CreateEventScreen);
