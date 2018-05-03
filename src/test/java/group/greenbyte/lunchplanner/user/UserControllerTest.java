@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -23,7 +24,9 @@ import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
 import static group.greenbyte.lunchplanner.location.Utils.createLocation;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -175,55 +178,29 @@ public class UserControllerTest {
     // ------------------------- SEARCH USER ------------------------------
 
     @Test
+    @WithMockUser(username = userName)
     public void test1ValidParam() throws Exception {
-
-        String userName = createString(50);
-        String mail = "mail@mail.de";
-        String password = createString(50);
-
-        UserJson userJson = new UserJson(userName, password, mail);
-        String json = getJsonFromObject(userJson);
-
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/user/search")
-                        .param("username", userName)
-                        .param("password", password))
-                .andExpect(MockMvcResultMatchers.status().isAccepted());
-
-
-
+                get("/user/search/" + userName))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$[0].userName").value(userName));
     }
 
     @Test
-    public void test2SearchwordToLong() throws Exception {
-
-        String name = createString(50);
-        String mail = "mail@mail.de";
-        String password = createString(51);
-
-        UserJson userJson = new UserJson(name, password, mail);
-        String json = getJsonFromObject(userJson);
-
-
-        mockMvc.perform(
-                post("/user/search").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
+    @WithMockUser(username = userName)
     public void test3SearchwordIsNull() throws Exception {
-
-        String name = createString(50);
-        String mail = "mail@mail.de";
-        String password = null;
-
-        UserJson userJson = new UserJson(name, password, mail);
-        String json = getJsonFromObject(userJson);
-
-
         mockMvc.perform(
-                post("/user/search").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isBadRequest());
+                get("/user/search/"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test3SearchResultIsNoting() throws Exception {
+        mockMvc.perform(
+                get("/user/search/" + createString(10)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0]").doesNotExist());
     }
 
 

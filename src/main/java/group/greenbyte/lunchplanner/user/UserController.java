@@ -48,15 +48,13 @@ public class UserController {
     /**
      *
      * @param toSearch searchword for Database to search for User/s
-     * @param response HttpRequestExeption
      * @return a List of User/s which is showing async in forntend. If Exception or
      * list is empty, null is returning back
      */
     @RequestMapping(value = "/search/{searchWord}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity searchUser(@PathVariable("searchword") String toSearch,
-                                 HttpServletResponse response) {
+    public ResponseEntity searchUser(@PathVariable("searchWord") String toSearch) {
 
         try {
             List<User> toReturn =  userLogic.searchUserByName(toSearch);

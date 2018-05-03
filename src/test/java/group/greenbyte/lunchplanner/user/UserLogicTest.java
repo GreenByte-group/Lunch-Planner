@@ -112,29 +112,6 @@ public class UserLogicTest {
         userLogic.searchUserByName(userName);
     }
 
-    @Test (expected = HttpRequestException.class)
-    public void test2searchwordToLong() throws Exception{
-        String userName = createString(50);
-        String mail = "gueltige@mail.de";
-        String password = createString(50);
-        String searchword = userName+"a";
-
-        userLogic.createUser(userName, password, mail);
-        userLogic.searchUserByName(searchword);
-    }
-
-    @Test (expected = HttpRequestException.class)
-    public void test3searchwordIsNull() throws Exception{
-        String userName = createString(50);
-        String mail = "gueltige@mail.de";
-        String password = createString(50);
-        String searchword = null;
-
-        userLogic.createUser(userName, password, mail);
-        userLogic.searchUserByName(searchword);
-    }
-
-
     // ------------------------ JWT ------------------------
     @Test
     public void testExpirationDate() {
