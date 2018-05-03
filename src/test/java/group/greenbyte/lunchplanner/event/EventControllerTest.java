@@ -611,6 +611,49 @@ public class EventControllerTest {
                 MockMvcRequestBuilders.put("/event/" + eventId + 100 + "/reply").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(InvitationAnswer.ACCEPT)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
+    // ------------------ CREATE COMMENT -------------------------
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1CreateComment() throws Exception {
+        String comment = createString(1);
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/comment").contentType(MediaType.TEXT_PLAIN_VALUE).content(comment))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
+
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test2CreateCommentMaxComment() throws Exception {
+        String comment = createString(100);
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/comment").contentType(MediaType.TEXT_PLAIN_VALUE).content(comment))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
+
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1CreateCommentTooLong() throws Exception {
+        String comment = createString(101);
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/comment").contentType(MediaType.TEXT_PLAIN_VALUE).content(comment))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1CreateCommentNoComment() throws Exception {
+        String comment = "";
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/comment").contentType(MediaType.TEXT_PLAIN_VALUE).content(comment))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+    }
+
+
 
 
 
