@@ -51,7 +51,7 @@ class Event extends React.Component {
 
         this.state = {
             background: props.background,
-            accepted: props.accepted | true,
+            accepted: props.accepted | false,
             name: props.name,
             description: props.description,
             monthDay: date.format('DD MMM'),
