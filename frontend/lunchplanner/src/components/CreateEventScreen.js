@@ -18,6 +18,7 @@ import Switch from 'material-ui/Switch';
 import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
 import AddIcon from '@material-ui/icons/Add';
 import {FormLabel, FormControl, FormGroup, FormControlLabel,FormHelperText,} from 'material-ui/Form';
+import {createEvent} from "./CreateEventFunctions";
 
 const styles = {
     appBar: {
@@ -27,6 +28,8 @@ const styles = {
         flex: 1,
     },
     textField: {
+        marginTop:1,
+        marginBottom:1,
         marginLeft: 20,
         //marginRight: 20,
         width: "90%",
@@ -43,10 +46,11 @@ const styles = {
     },
     button:{
         color: "white",
+        position: "fixed",
+        bottom:0,
+        width: "100%"
     },
-    invitation:{
-        width: "90%",
-    },
+
 };
 const buttonStyle = {
     float: 'right',
@@ -64,6 +68,9 @@ class CreateEventScreen extends React.Component {
         name: "",
         time:"",
         visible: false,
+        date: "",
+        member:"",
+        location:0,
     };
 
     handleClickOpen = () => {
@@ -73,12 +80,20 @@ class CreateEventScreen extends React.Component {
 
     handleClose = () => {
         console.log("handleClose");
-        this.setState({ open: false });
+        createEvent(this.state.name, this.state.location, this.state.date, this.state.time, this.state.member, this.state.visible);
     };
 
     handleChange = name => event => {
         this.setState({[name]: event.target.value,});
     };
+
+    handleTime = name => event =>{
+        this.setState({ [name]: event.target.time });
+    }
+
+    handleDate =  name => event =>{
+        this.setState({ [name]: event.target.date });
+    }
 
     handleVisibility = name => event =>{
         this.setState({ [name]: event.target.checked });
@@ -118,20 +133,30 @@ class CreateEventScreen extends React.Component {
                             margin="normal"
                         />
                         <TextField
+                            id="location"
+                            label="Location"
+                            className={classes.textField}
+                            value={this.state.location}
+
+                            margin="normal"
+                        />
+                        <TextField
                             id="date"
                             label="Date"
                             type="date"
-                            defaultValue="Today"
+                            defaultValue={this.state.date}
                             className={classes.dateField}
+                            onChange={this.handleChange('date')}
                             InputLabelProps={{
                                 shrink: true,
                             }}
                         />
                         <TimePicker
+
                             className={classes.timePicker}
                             mode='24h'
                             value={this.state.time}
-                            onChange={(time) => this.handleChange(time)}
+                            onChange={this.handleTime}
                         />
 
                     </form>
@@ -140,6 +165,21 @@ class CreateEventScreen extends React.Component {
                             <Typography className={classes.heading}>Invite & Change Vibility</Typography>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails>
+                            <FormControl  classname={classes.invitation}>
+                                <FormHelperText id="participants-invitation">Participants</FormHelperText>
+                                <Input
+                                    placeholder="Invite People"
+                                    style={{width: 200}}
+                                    id="adornment-participants-invitation"
+                                    onChange={this.handleChange}
+                                    endAdornment={<InputAdornment position="end"
+                                    >
+                                        <Button>
+                                            <AddIcon/>
+                                        </Button>
+                                    </InputAdornment>}
+                                />
+                            </FormControl>
                             <FormControl>
                             <FormControlLabel
 
@@ -153,18 +193,6 @@ class CreateEventScreen extends React.Component {
                                 }
                                 label="Only visible if invited"
                             />
-                            </FormControl>
-                            <FormControl classname={classes.invitation}>
-                                <FormHelperText id="participants-invitation">Participants</FormHelperText>
-                                <Input
-                                    id="adornment-participants-invitation"
-                                    onChange={this.handleChange}
-                                    endAdornment={<InputAdornment position="end">
-                                        <Button>
-                                            <AddIcon/>
-                                        </Button>
-                                    </InputAdornment>}
-                                />
                             </FormControl>
                         </ExpansionPanelDetails>
                     </ExpansionPanel>
