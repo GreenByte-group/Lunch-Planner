@@ -3,19 +3,17 @@ package group.greenbyte.lunchplanner.event;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.SessionManager;
-import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-//import org.springframework.session.
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
+
+//import org.springframework.session.
 
 @RestController
 @CrossOrigin
