@@ -84,11 +84,11 @@ public class UserDaoMySql implements UserDao {
     @Override
     public List<User> searchUserByName(String searchword) throws DatabaseException {
         try {
-            String SQL = "SELECT * FROM " + USER_TABLE + " WHERE " + USER_NAME + " = ?";
+            String SQL = "SELECT * FROM " + USER_TABLE + " WHERE " + USER_NAME + " LIKE ?";
 
             List<UserDatabase> users = jdbcTemplate.query(SQL,
                     new BeanPropertyRowMapper<>(UserDatabase.class),
-                    searchword);
+                    "%"+searchword+"%");
 
             if (users.size() == 0)
                 return new ArrayList<>();

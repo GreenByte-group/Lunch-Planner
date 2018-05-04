@@ -41,7 +41,8 @@ class SelectUserScreen extends React.Component {
         let array;
         if(props.location.query && props.location.query.invitedUsers) {
             let string = String(props.location.query.invitedUsers);
-            array = string.split(',');
+            if(string !== "")
+                array = string.split(',');
         }
 
         this.state = {
@@ -67,14 +68,13 @@ class SelectUserScreen extends React.Component {
         axios.get(url)
             .then((response) => {
                 this.setState({
-                    // users: response.data, TODO change to real data
-                    users: [{username: "Martin"}, {username: "Sarah"}, {username: "Test"}, {username: "Test2"}]
+                    users: response.data,
                 })
             });
 
-        this.setState({
-            users: [{username: "Martin"}, {username: "Sarah"}, {username: "Test"}, {username: "Test2"}]
-        });
+        // this.setState({
+        //     users: [{username: "Martin"}, {username: "Sarah"}, {username: "Test"}, {username: "Test2"}]
+        // });
     }
 
     clickHandler = (username, selected) => {
@@ -92,8 +92,9 @@ class SelectUserScreen extends React.Component {
     };
 
     handleSend = () => {
-        this.props.history.push(this.props.location.query.source +
-            "?invitedUsers=" + this.state.selectedUsers);
+        if(this.props.location.query)
+            this.props.history.push(this.props.location.query.source +
+                "?invitedUsers=" + this.state.selectedUsers);
     };
 
     render() {
@@ -131,7 +132,7 @@ class SelectUserScreen extends React.Component {
                     </AppBar>
                     <List className={classes.list}>
                         {users.map((listValue) => {
-                            return <User selected={this.state.selectedUsers.includes(listValue.username)} username={listValue.username} onClick={this.clickHandler}/>;
+                            return <User selected={this.state.selectedUsers.includes(listValue.userName)} username={listValue.userName} onClick={this.clickHandler}/>;
                         })}
                     </List>
                     <FloatingActionButton onClick={this.handleSend} icon="done"/>

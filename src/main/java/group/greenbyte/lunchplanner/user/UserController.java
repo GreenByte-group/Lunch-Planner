@@ -69,6 +69,28 @@ public class UserController {
 
     }
 
+    /**
+     *
+     * @return a List of all users
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getAllUser() {
+
+        try {
+            List<User> toReturn =  userLogic.searchUserByName("");
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(toReturn);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+
+    }
+
 
 
 //    /**
