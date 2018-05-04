@@ -1,5 +1,6 @@
 package group.greenbyte.lunchplanner.event;
 
+import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.event.database.EventDatabase;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
@@ -311,6 +312,21 @@ public class EventDaoMySql implements EventDao {
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
+    }
+
+    @Override
+    public List<Comment> getAllComments(int eventId) throws DatabaseException {
+        try {
+            String SQL = "SELECT * FROM " + EVENT_COMMENT_TABLE + "WHERE" +
+                    EVENT_COMMENT_EVENT + "= ?";
+
+       //TODO
+
+
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+        return null;
     }
 
     @Override

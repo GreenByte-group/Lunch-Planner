@@ -1,5 +1,6 @@
 package group.greenbyte.lunchplanner.event;
 
+import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.SessionManager;
@@ -305,6 +306,28 @@ public class EventController {
 
     }
 
+    /**
+     * Get all comments of an event
+     *
+     * @return a list of all comments
+     */
+    @RequestMapping(value = "/{eventId}/getComments", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getAllComments(@PathVariable("eventId") int eventId) {
+
+        try {
+            List<Comment> allComments = eventLogic.getAllComments(SessionManager.getUserName(), eventId);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(allComments);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
 
     @Autowired
     public void setEventLogic(EventLogic eventLogic) {

@@ -1,5 +1,6 @@
 package group.greenbyte.lunchplanner.event;
 
+import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
@@ -407,6 +408,33 @@ public class EventLogic {
 
     }
 
+    /**
+     *
+     * @param userName the user who wants to access the event
+     * @param eventId  id of the event
+     * @return Event which matched with the given id or null
+     */
+    public List<Comment> getAllComments(String userName, int eventId)throws HttpRequestException{
+        if(!isValidName(userName))
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximun length" + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
+
+        try{
+           Event event = eventDao.getEvent(eventId);
+           if(event == null)
+               throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + eventId + " was not found");
+
+           if(!hasPrivileges(eventId, userName))
+               throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");
+            List<Comment> comments = eventDao.getAllComments(eventId);
+
+            if (comments == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + eventId + " has no comments");
+            return comments;
+
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
 
     @Autowired
     public void setEventDao(EventDao eventDao) {
