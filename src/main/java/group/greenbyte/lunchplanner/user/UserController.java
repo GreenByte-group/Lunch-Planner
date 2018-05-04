@@ -1,17 +1,16 @@
 package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
-import org.springframework.session.Session.*;
-import org.springframework.security.core.Authentication.*;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 
 @RestController
@@ -45,6 +44,54 @@ public class UserController {
 
         return "";
     }
+
+    /**
+     *
+     * @param toSearch searchword for Database to search for User/s
+     * @return a List of User/s which is showing async in forntend. If Exception or
+     * list is empty, null is returning back
+     */
+    @RequestMapping(value = "/search/{searchWord}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity searchUser(@PathVariable("searchWord") String toSearch) {
+
+        try {
+            List<User> toReturn =  userLogic.searchUserByName(toSearch);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(toReturn);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+
+    }
+
+    /**
+     *
+     * @return a List of all users
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getAllUser() {
+
+        try {
+            List<User> toReturn =  userLogic.searchUserByName("");
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(toReturn);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+
+    }
+
+
 
 //    /**
 //     *

@@ -223,7 +223,21 @@ public class EventControllerTest {
         long timeStart = System.currentTimeMillis() + 100000;
         long timeEnd = System.currentTimeMillis() + 1000;
 
-        EventJson event = new EventJson("", "", locationId, new Date(timeStart), new Date(timeEnd));
+        EventJson event = new EventJson("test", "", locationId, new Date(timeStart), new Date(timeEnd));
+
+        String json = getJsonFromObject(event);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test9CreateEventLocationNotExists() throws Exception {
+        long timeStart = System.currentTimeMillis() + 100000;
+
+        EventJson event = new EventJson("", "", locationId + 1000, new Date(timeStart), new Date(timeStart + 10000));
 
         String json = getJsonFromObject(event);
 

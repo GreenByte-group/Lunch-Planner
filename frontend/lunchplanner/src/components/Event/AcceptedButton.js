@@ -5,7 +5,6 @@ import {withStyles} from "material-ui";
 const styles = theme => ({
     root: {
         float: 'right',
-        paddingTop: '15px',
     },
     button: {
         border: '2px solid',
@@ -20,7 +19,7 @@ const styles = theme => ({
     text: {
         fontFamily: "Work Sans",
         fontSize: '11px',
-        lineHeight: '35px',
+        lineHeight: '25px',
         color: theme.palette.primary.main,
         marginLeft: 'auto',
         marginRight: 'auto',
@@ -30,11 +29,15 @@ const styles = theme => ({
 class AcceptedButton extends React.Component {
     render() {
         const {classes} = this.props;
+        const {text} = this.props;
 
         return (
             <div className={classes.root}>
                 <Done color="primary" className={classes.button} />
-                <span className={classes.text} >Accepted</span>
+                {(text
+                    ? <span className={classes.text} >{text}</span>
+                    : ""
+                )}
             </div>
         )
     }

@@ -90,6 +90,10 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "End time must be after start time");
 
         try {
+            Location location = locationDao.getLocation(locationId);
+            if(location == null)
+                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Location with id " + locationId + " does not exist");
+
             return eventDao.insertEvent(userName, eventName, eventDescription, locationId, timeStart, timeEnd)
                     .getEventId();
         }catch(DatabaseException e) {
