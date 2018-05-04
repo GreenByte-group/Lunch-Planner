@@ -10,16 +10,21 @@ const styles = {
         padding: '20px 16px',
         '&:hover': {
             backgroundColor: '#0303031a !important',
-        }
+        },
+        transition: 'background 0.5s',
     },
     content: {
         width: '100%',
     },
     selected: {
-
+        backgroundColor: '#bacfa255',
+        '&:hover': {
+            backgroundColor: '#bacfa288 !important',
+        }
     },
     text: {
         marginLeft: '24px',
+        marginTop: '6px',
         float: 'left',
     },
     username: {
@@ -36,8 +41,8 @@ const styles = {
         float: 'left',
         border: '1px black solid',
         borderRadius: '50%',
-        height: '24px',
-        width: '24px',
+        height: '32px',
+        width: '32px',
     }
 };
 
@@ -47,19 +52,30 @@ class Event extends React.Component {
         super();
 
         this.state = {
-            selected: props.accepted | true,
+            selected: props.selected | false,
             username: props.username,
         }
     }
+
+    clickHandler = () => {
+        this.props.onClick(this.state.username, !this.state.selected);
+
+        this.setState({
+            selected: !this.state.selected,
+        });
+    };
 
     render() {
         const {classes} = this.props;
         let selected= this.state.selected;
         let username = this.state.username;
-        let background = 'white'; //TODO change background
+
+        let listClasses = classes.listItem;
+        if(selected)
+            listClasses += " " + classes.selected;
 
         return (
-            <ListItem style={{backgroundColor: background}} button className={classes.listItem}>
+            <ListItem button className={listClasses} onClick={this.clickHandler}>
                 <div className={classes.content}>
                     {/*TODO picture*/}
                     <div className={classes.profilePicture}></div>

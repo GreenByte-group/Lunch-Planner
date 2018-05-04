@@ -65,22 +65,32 @@ class CreateEventScreen extends React.Component {
 
     constructor(props) {
         super();
+        const params = new URLSearchParams(props.location.search);
+
         this.state = {
             open: true,
-            name: "",
-            time:null,
-            visible: false,
-            date: moment(),
-            member:"",
-            location:0,
+            name: params.get('name') || "",
+            visible: params.get('visible') || false,
+            date: params.get('date') || moment(),
+            invitedUsers: params.get('invitedUsers') || [],
+            location: params.get('location') || 0,
             error: "",
         };
     }
 
+    parseUrl = () => {
+        const params = new URLSearchParams(this.props.location.search);
+        let invitedUsers = params.get('invitedUsers');
+        if(invitedUsers != null && invitedUsers != undefined && invitedUsers !== this.state.invitedUsers) {
+            this.setState({
+                invitedUsers: params.get('invitedUsers'),
+            });
+        }
+    };
+
     handleAccept = () => {
-        createEvent(this.state.location, this.state.date, this.state.member, this.state.visible,
+        createEvent(this.state.location, this.state.date, this.state.invitedUsers, this.state.visible,
             (response) => {
-                console.log(response);
                 if(response.status === 201)
                     this.props.history.push('/event');
                 else
@@ -111,6 +121,7 @@ class CreateEventScreen extends React.Component {
     }
 
     render() {
+        this.parseUrl();
         const { classes } = this.props;
         const error = this.state.error;
 
@@ -143,6 +154,7 @@ class CreateEventScreen extends React.Component {
                         <TextField
                             id="location"
                             label="Location"
+                            value={this.state.location}
                             className={classes.textField}
                             placeholder ="Add an Location ..."
                             onChange={this.handleChange}
@@ -151,6 +163,7 @@ class CreateEventScreen extends React.Component {
                         <DatePicker
                             selected={this.state.date}
                             onChange={this.handleDate}
+                            value={this.state.date}
                             showTimeSelect
                             timeFormat="HH:mm"
                             timeIntervals={15}
@@ -169,8 +182,12 @@ class CreateEventScreen extends React.Component {
                                     id="invitation"
                                     label="Participants"
                                     placeholder ="Invite People"
+                                    value={this.state.invitedUsers}
                                 />
-                                <Link to="/event/create/invite" >
+                                <Link to={{pathname: "/event/create/invite",  query: {
+                                        source: "/event/create",
+                                        invitedUsers: this.state.invitedUsers,
+                                    }}}>
                                     <Button classname={classes.addButton}>
                                         <AddIcon/>
                                     </Button>

@@ -14,6 +14,7 @@ import axios from "axios/index";
 import {HOST} from "../../Config";
 import {List} from "material-ui";
 import User from "./User";
+import FloatingActionButton from "../FloatingActionButton";
 
 const styles = {
     appBar: {
@@ -36,10 +37,20 @@ class SelectUserScreen extends React.Component {
 
     constructor(props) {
         super();
+
+        let array;
+        if(props.location.query && props.location.query.invitedUsers) {
+            let string = String(props.location.query.invitedUsers);
+            array = string.split(',');
+        }
+
         this.state = {
             open: true,
             users: [],
-        }
+            selectedUsers: array || [],
+        };
+
+        console.log(this.state.selectedUsers);
     }
 
     componentDidMount() {
@@ -59,16 +70,43 @@ class SelectUserScreen extends React.Component {
                     // users: response.data, TODO change to real data
                     users: [{username: "Martin"}, {username: "Sarah"}, {username: "Test"}, {username: "Test2"}]
                 })
-            })
+            });
 
         this.setState({
             users: [{username: "Martin"}, {username: "Sarah"}, {username: "Test"}, {username: "Test2"}]
         });
     }
 
+    clickHandler = (username, selected) => {
+        let selectedUsers = this.state.selectedUsers;
+        if(selected) {
+            selectedUsers.push(username);
+        } else {
+            let index = selectedUsers.indexOf(username);
+            selectedUsers.splice(index, 1);
+        }
+
+        this.setState({
+            selectedUsers: selectedUsers,
+        });
+    };
+
+    handleSend = () => {
+        this.props.history.push(this.props.location.query.source +
+            "?invitedUsers=" + this.state.selectedUsers);
+    };
+
     render() {
         const { classes } = this.props;
         let users = this.state.users;
+        let countSelected = this.state.selectedUsers.length;
+        let textTitle = "Select users";
+        if(countSelected !== 0) {
+            textTitle = countSelected + " selected";
+        }
+
+        console.log('--------------');
+        console.log(this.state.selectedUsers);
 
         return (
             <div>
@@ -80,22 +118,23 @@ class SelectUserScreen extends React.Component {
                 >
                     <AppBar className={classes.appBar} color ="white">
                         <Toolbar>
-                            <Link to="/event">
+                            <Link to="/event/create">
                                 <IconButton color="inherit" aria-label="Close">
                                     <CloseIcon />
                                 </IconButton>
                             </Link>
                             <Typography variant="title" color="inherit" className={classes.flex}>
-                                Select user
+                                {textTitle}
                             </Typography>
 
                         </Toolbar>
                     </AppBar>
                     <List className={classes.list}>
-                        {users.map(function(listValue){
-                            return <User username={listValue.username}/>;
+                        {users.map((listValue) => {
+                            return <User selected={this.state.selectedUsers.includes(listValue.username)} username={listValue.username} onClick={this.clickHandler}/>;
                         })}
                     </List>
+                    <FloatingActionButton onClick={this.handleSend} icon="done"/>
                 </Dialog>
             </div>
         );
