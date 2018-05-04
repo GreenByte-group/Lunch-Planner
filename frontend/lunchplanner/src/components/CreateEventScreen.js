@@ -17,8 +17,8 @@ import Switch from 'material-ui/Switch';
 import AddIcon from '@material-ui/icons/Add';
 import {FormGroup, FormControlLabel,FormHelperText,} from 'material-ui/Form';
 import {createEvent} from "./CreateEventFunctions";
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
+import {DatePicker, TimePicker} from 'material-ui-old';
+import {Schedule, Today} from "@material-ui/icons";
 
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import "../assets/CreateEventScreen.css"
@@ -48,8 +48,47 @@ const styles = {
         color: '#ff7700',
         marginTop: '10px',
         marginBottom: '0px',
-    }
-
+    },
+    datePicker: {
+        width: '30% !important',
+        overflow: 'hidden',
+        float: 'left',
+    },
+    timePicker: {
+        marginRight: '20px',
+        width: '30% !important',
+        overflow: 'hidden',
+        float: 'left',
+    },
+    pickerTextField: {
+        fontSize: '14px !important',
+        height: '35px !important',
+        widht: 'auto',
+        lineHeight: '34px',
+    },
+    dateHeader: {
+        paddingLeft: '20px',
+        marginBottom: '0px',
+        float: 'left',
+        width: '50%',
+        fontSize: '11px',
+        color: '#A4A4A4',
+    },
+    timeHeader: {
+        float: 'left',
+        width: '50%',
+        marginBottom: '0px',
+        fontSize: '11px',
+        color: '#A4A4A4',
+    },
+    icons: {
+        marginLeft: '20px',
+        marginTop: '4px',
+        marginRight: '5px',
+        width: '20px',
+        height: 'auto',
+        float: 'left',
+    },
 };
 const buttonStyle = {
     float: 'right',
@@ -71,7 +110,7 @@ class CreateEventScreen extends React.Component {
             open: true,
             name: params.get('name') || "",
             visible: params.get('visible') || false,
-            date: params.get('date') || moment(),
+            date: params.get('date') || new Date(),
             invitedUsers: params.get('invitedUsers') || [],
             location: params.get('location') || 0,
             error: "",
@@ -81,7 +120,7 @@ class CreateEventScreen extends React.Component {
     parseUrl = () => {
         const params = new URLSearchParams(this.props.location.search);
         let invitedUsers = params.get('invitedUsers');
-        if(invitedUsers != null && invitedUsers != undefined && invitedUsers !== this.state.invitedUsers) {
+        if(invitedUsers != null && invitedUsers !== undefined && invitedUsers !== this.state.invitedUsers) {
             this.setState({
                 invitedUsers: params.get('invitedUsers'),
             });
@@ -112,7 +151,8 @@ class CreateEventScreen extends React.Component {
         });
     }
 
-    handleDate =  (date) => {
+    handleDate = (event, date) => {
+        console.log(date);
         this.setState({ date: date });
     }
 
@@ -160,17 +200,25 @@ class CreateEventScreen extends React.Component {
                             onChange={this.handleChange}
                             margin="normal"
                         />
+                    </form>
+                    <div>
+                        <p className={classes.dateHeader}>Date</p><p className={classes.timeHeader}>Time</p>
+                        <Today viewBox="-5 -5 27 27" className={classes.icons} />
                         <DatePicker
-                            selected={this.state.date}
+                            className={classes.datePicker}
                             onChange={this.handleDate}
                             value={this.state.date}
-                            showTimeSelect
-                            timeFormat="HH:mm"
-                            timeIntervals={15}
-                            dateFormat="LLL"
-                            timeCaption="time"
+                            textFieldStyle={styles.pickerTextField}
                         />
-                    </form>
+                        <Schedule viewBox="-5 -5 27 27" className={classes.icons}/>
+                        <TimePicker
+                            className={classes.timePicker}
+                            onChange={this.handleDate}
+                            value={this.state.date}
+                            format="24hr"
+                            textFieldStyle={styles.pickerTextField}
+                        />
+                    </div>
                     <ExpansionPanel>
                         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography className={classes.heading}>Invite & Change Vibility</Typography>
