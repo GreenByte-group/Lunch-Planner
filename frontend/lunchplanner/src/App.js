@@ -1,5 +1,5 @@
 import React from "react";
-import FirstScreen from "./components/authentication/Authentication"
+import FirstScreen, {setAuthenticationHeader} from "./components/authentication/Authentication"
 import LunchPlanner from "./components/LunchPlanner"
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import {isAuthenticated} from "./components/authentication/LoginFunctions"
@@ -33,9 +33,10 @@ class App extends React.Component {
             <MuiThemeProvider theme={theme}>
                 <Router>
                     <div>
-                        <PrivateRoute exact path="/" component={LunchPlanner} />
                         <Route exact path="/login" component={FirstScreen} />
-                        <Route exact path="/event/create" component={CreateEventScreen} />
+                        <PrivateRoute exact path="/" component={LunchPlanner} />
+                        <PrivateRoute path="/event" component={LunchPlanner} />
+                        <PrivateRoute exact path="/event/create" component={CreateEventScreen} />
                     </div>
                 </Router>
             </MuiThemeProvider>

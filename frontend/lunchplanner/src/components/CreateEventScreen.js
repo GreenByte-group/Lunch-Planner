@@ -79,9 +79,15 @@ class CreateEventScreen extends React.Component {
         createEvent(this.state.location, this.state.date, this.state.time, this.state.member, this.state.visible);
     };
 
-    handleChange = name => event => {
-        this.setState({[name]: event.target.value,});
-    };
+    handleChange = (event) => {
+        let target = event.target;
+        console.log('handle change');
+        console.log(target);
+        console.log(target.id);
+        this.setState({
+            [target.id]: target.value,
+        });
+    }
 
     handleTime = name => event =>{
         this.setState({ [name]: event.target.time });
@@ -123,7 +129,7 @@ class CreateEventScreen extends React.Component {
                             label="Location"
                             className={classes.textField}
                             placeholder ="Add an Location ..."
-
+                            onChange={this.handleChange}
                             margin="normal"
                         />
                         <DatePicker

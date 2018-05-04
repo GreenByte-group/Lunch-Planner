@@ -21,6 +21,13 @@ public class EventJson implements Serializable {
         this.timeEnd = timeEnd;
     }
 
+    public EventJson(String name, String description, int locationId, Date timeStart) {
+        this.name = name;
+        this.description = description;
+        this.locationId = locationId;
+        this.timeStart = timeStart;
+    }
+
     private String name;
     private String description;
     private int locationId;
