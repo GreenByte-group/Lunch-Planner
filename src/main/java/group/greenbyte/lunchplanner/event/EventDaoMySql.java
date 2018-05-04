@@ -25,6 +25,12 @@ public class EventDaoMySql implements EventDao {
     private static final String EVENT_INVITATION_USER = "user_name";
     private static final String EVENT_INVITATION_EVENT = "event_id";
 
+    private static final String EVENT_COMMENT_TABLE = "comment";
+    private static final String EVENT_COMMENT_USER = "user_name";
+    private static final String EVENT_COMMENT_DATE = "create_date";
+    private static final String EVENT_COMMENT_EVENT = "event_id";
+    private static final String EVENT_COMMENT_ID = "comment_id";
+
     private static final String EVENT_TABLE = "event";
     private static final String EVENT_ID = "event_id";
     private static final String EVENT_NAME = "event_name";
@@ -306,7 +312,23 @@ public class EventDaoMySql implements EventDao {
             throw new DatabaseException(e);
         }
     }
-      
+
+    @Override
+    public void putCommentForEvent(String userName, int eventId, String comment) throws DatabaseException {
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        simpleJdbcInsert.withTableName(EVENT_COMMENT_TABLE).usingGeneratedKeyColumns(EVENT_COMMENT_ID);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(EVENT_COMMENT_USER, userName);
+        parameters.put(EVENT_COMMENT_EVENT, eventId);
+        parameters.put(EVENT_COMMENT_DATE, new Date());
+
+        try{
+            simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
     public void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException {
         String SQL = "UPDATE " + EVENT_INVITATION_TABLE + " SET " + EVENT_INVITATION_REPLY + " = ? WHERE " + EVENT_INVITATION_EVENT + " = ? AND "
                 + EVENT_INVITATION_USER + " = ?";

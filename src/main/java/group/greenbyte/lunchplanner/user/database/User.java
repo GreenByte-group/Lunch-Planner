@@ -1,11 +1,14 @@
 package group.greenbyte.lunchplanner.user.database;
 
+import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.EventInvitation;
 import group.greenbyte.lunchplanner.location.database.LocationAdmin;
 import group.greenbyte.lunchplanner.team.database.TeamMember;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -36,6 +39,9 @@ public class User {
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<LocationAdmin> locationAdmin = new HashSet<>();
+
+    @OneToMany(mappedBy = "commentId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Comment> comments = new ArrayList<>();
 
     public String getUserName() {
         return userName;
