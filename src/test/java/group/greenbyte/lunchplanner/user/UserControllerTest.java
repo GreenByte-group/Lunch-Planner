@@ -1,44 +1,33 @@
 package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.AppConfig;
-import group.greenbyte.lunchplanner.event.EventController;
-import group.greenbyte.lunchplanner.event.EventJson;
 import group.greenbyte.lunchplanner.event.EventLogic;
-import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.location.LocationLogic;
-import org.json.JSONObject;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
 import static group.greenbyte.lunchplanner.location.Utils.createLocation;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -187,6 +176,35 @@ public class UserControllerTest {
                 post("/user").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isBadRequest());
     }
+
+    // ------------------------- SEARCH USER ------------------------------
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1ValidParam() throws Exception {
+        mockMvc.perform(
+                get("/user/search/" + userName))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$[0].userName").value(userName));
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test3SearchwordIsNull() throws Exception {
+        mockMvc.perform(
+                get("/user/search/"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test3SearchResultIsNoting() throws Exception {
+        mockMvc.perform(
+                get("/user/search/" + createString(10)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0]").doesNotExist());
+    }
+
 
     // ------------------------- SEND INVITATION ------------------------------
 

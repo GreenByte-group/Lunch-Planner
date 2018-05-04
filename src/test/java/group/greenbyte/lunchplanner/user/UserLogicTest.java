@@ -6,7 +6,6 @@ import group.greenbyte.lunchplanner.user.database.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -17,9 +16,7 @@ import java.util.Calendar;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
@@ -103,6 +100,18 @@ public class UserLogicTest {
         String password = createString(80);
 
         userLogic.createUser(userName, password, mail);
+    }
+
+    // ------------------------ SEARCH USER ------------------------
+
+    @Test
+    public  void test1ValidParam()throws Exception{
+        String userName = createString(50);
+        String mail = "gueltige@mail.de";
+        String password = createString(50);
+
+        userLogic.createUser(userName, password, mail);
+        userLogic.searchUserByName(userName);
     }
 
     // ------------------------ JWT ------------------------

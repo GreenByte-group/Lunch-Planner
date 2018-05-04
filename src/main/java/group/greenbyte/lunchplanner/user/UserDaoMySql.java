@@ -15,10 +15,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 public class UserDaoMySql implements UserDao {
@@ -71,7 +68,6 @@ public class UserDaoMySql implements UserDao {
         }
     }
 
-    //TODO TEST
     @Override
     public User setTokenForUser(String username, String token) throws DatabaseException {
         String SQL = "UPDATE " + USER_TABLE + " SET " + USER_TOKEN + " = ? WHERE " + USER_NAME + " = ?";
@@ -84,4 +80,29 @@ public class UserDaoMySql implements UserDao {
 
         return getUser(username);
     }
+
+    @Override
+    public List<User> searchUserByName(String searchword) throws DatabaseException {
+        try {
+            String SQL = "SELECT * FROM " + USER_TABLE + " WHERE " + USER_NAME + " = ?";
+
+            List<UserDatabase> users = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(UserDatabase.class),
+                    searchword);
+
+            if (users.size() == 0)
+                return new ArrayList<>();
+            else {
+                List<User> listOfUser = new ArrayList<>();
+                for(UserDatabase a:users){
+                    listOfUser.add(a.getUser());
+                }
+                return  listOfUser;
+            }
+        }catch (Exception e){
+            throw new DatabaseException(e);
+        }
+    }
+
+
 }
