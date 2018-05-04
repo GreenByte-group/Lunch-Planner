@@ -22,6 +22,7 @@ import moment from 'moment';
 
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import "../assets/CreateEventScreen.css"
+import {Link} from "react-router-dom";
 
 const styles = {
     appBar: {
@@ -42,6 +43,12 @@ const styles = {
         bottom:0,
         width: "100%"
     },
+    error: {
+        textAlign: 'center',
+        color: '#ff7700',
+        marginTop: '10px',
+        marginBottom: '0px',
+    }
 
 };
 const buttonStyle = {
@@ -63,39 +70,40 @@ class CreateEventScreen extends React.Component {
         date: moment(),
         member:"",
         location:0,
+        error: "",
     };
 
     componentDidMount() {
         this.handleClickOpen();
     }
 
-    handleClickOpen = () => {
-        console.log("handleClickOpen");
-        this.setState({ open: true });
+    handleAccept = () => {
+        createEvent(this.state.location, this.state.date, this.state.member, this.state.visible,
+            (response) => {
+                console.log(response);
+                if(response.status === 201)
+                    this.props.history.push('/event');
+                else
+                    this.setState({error: response.response.data});
+            },
+            (error) => {
+                this.setState({error: error.response.data});
+            });
     };
 
-    handleClose = () => {
-        console.log("date HandleClose" + this.state.date);
-        createEvent(this.state.location, this.state.date, this.state.time, this.state.member, this.state.visible);
+    handleClickOpen = () => {
+        this.setState({ open: true });
     };
 
     handleChange = (event) => {
         let target = event.target;
-        console.log('handle change');
-        console.log(target);
-        console.log(target.id);
         this.setState({
             [target.id]: target.value,
         });
     }
 
-    handleTime = name => event =>{
-        this.setState({ [name]: event.target.time });
-    }
-
     handleDate =  (date) => {
         this.setState({ date: date });
-        console.log("date" + this.state.date);
     }
 
     handleVisibility = name => event =>{
@@ -104,6 +112,8 @@ class CreateEventScreen extends React.Component {
 
     render() {
         const { classes } = this.props;
+        const error = this.state.error;
+
         return (
             <div>
                 <Dialog
@@ -114,15 +124,21 @@ class CreateEventScreen extends React.Component {
                 >
                     <AppBar className={classes.appBar} color ="white">
                         <Toolbar>
-                            <IconButton color="inherit" onClick={this.handleClose} aria-label="Close">
-                                <CloseIcon />
-                            </IconButton>
+                            <Link to="/event">
+                                <IconButton color="inherit" aria-label="Close">
+                                    <CloseIcon />
+                                </IconButton>
+                            </Link>
                             <Typography variant="title" color="inherit" className={classes.flex}>
                                 Create Event
                             </Typography>
 
                         </Toolbar>
                     </AppBar>
+                    {(error
+                            ? <p className={classes.error}>{error}</p>
+                            : ""
+                    )}
                     <form className={classes.container} noValidate autoComplete="on" >
                         <TextField
                             id="location"
@@ -173,7 +189,7 @@ class CreateEventScreen extends React.Component {
                             </FormGroup>
                         </ExpansionPanelDetails>
                     </ExpansionPanel>
-                    <Button variant="raised" color="secondary" onClick={this.handleClose} className={classes.button}>
+                    <Button variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
                         Create Event
                     </Button>
                 </Dialog>
