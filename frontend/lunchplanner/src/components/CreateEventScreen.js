@@ -62,19 +62,19 @@ function Transition(props) {
 
 
 class CreateEventScreen extends React.Component {
-    state = {
-        open: false,
-        name: "",
-        time:null,
-        visible: false,
-        date: moment(),
-        member:"",
-        location:0,
-        error: "",
-    };
 
-    componentDidMount() {
-        this.handleClickOpen();
+    constructor(props) {
+        super();
+        this.state = {
+            open: true,
+            name: "",
+            time:null,
+            visible: false,
+            date: moment(),
+            member:"",
+            location:0,
+            error: "",
+        };
     }
 
     handleAccept = () => {
@@ -170,9 +170,11 @@ class CreateEventScreen extends React.Component {
                                     label="Participants"
                                     placeholder ="Invite People"
                                 />
-                                <Button classname={classes.addButton}>
-                                    <AddIcon/>
-                                </Button>
+                                <Link to="/event/create/invite" >
+                                    <Button classname={classes.addButton}>
+                                        <AddIcon/>
+                                    </Button>
+                                </Link>
 
                                 <FormControlLabel
                                     control={

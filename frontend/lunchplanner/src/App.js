@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import {isAuthenticated} from "./components/authentication/LoginFunctions"
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import CreateEventScreen from "./components/CreateEventScreen";
+import SelectUserScreen from "./components/User/SelectUserScreen";
 
 const theme = createMuiTheme({
     palette: {
@@ -34,9 +35,13 @@ class App extends React.Component {
                 <Router>
                     <div>
                         <Route exact path="/login" component={FirstScreen} />
-                        <PrivateRoute exact path="/" component={LunchPlanner} />
+                        <Route exact path="/"
+                                      render={ () => <Redirect to="/event" />}
+                        />
+
                         <PrivateRoute path="/event" component={LunchPlanner} />
-                        <PrivateRoute exact path="/event/create" component={CreateEventScreen} />
+                        <PrivateRoute path="/event/create" component={CreateEventScreen} />
+                        <PrivateRoute path="/event/create/invite" component={SelectUserScreen} />
                     </div>
                 </Router>
             </MuiThemeProvider>
