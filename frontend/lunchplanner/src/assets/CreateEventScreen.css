@@ -1,0 +1,15 @@
+.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list{
+    margin-left: -30px;
+}
+
+.react-datepicker-wrapper{
+    margin-left: 20px;
+    margin-bottom: 20px;
+    font-family: "Calibri Light";
+    font-size: small;
+}
+
+.react-datepicker{
+    margin-left: 20px;
+}
+

@@ -8,6 +8,21 @@ import AppBar from 'material-ui/AppBar';
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import axios from "axios";
+import {TOKEN} from "../../Config";
+
+export function setAuthenticationHeader() {
+    let token = localStorage.getItem(TOKEN);
+
+    axios.interceptors.request.use(function(config) {
+        if ( token != null ) {
+            config.headers.Authorization = token;
+        }
+
+        return config;
+    }, function(err) {
+        return Promise.reject(err);
+    });
+}
 
 function TabContainer({ children, dir }) {
     return (
