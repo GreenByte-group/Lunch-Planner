@@ -40,7 +40,7 @@ public class Event {
     @OneToMany(mappedBy = "userInvited", fetch = FetchType.EAGER)
     private Set<EventInvitation> usersInvited = new HashSet<>();
 
-    @OneToMany(mappedBy = "commentId", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "userComment", fetch = FetchType.EAGER)
     private List<Comment> comments = new ArrayList<>();
 
     public Event() {
