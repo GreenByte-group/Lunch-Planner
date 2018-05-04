@@ -5,6 +5,8 @@ import {HOST} from "../../Config"
 import Event from "./Event";
 import List from "material-ui/List";
 import {withStyles} from "material-ui/styles/index";
+import {Link} from "react-router-dom";
+import FloatingActionButton from "../FloatingActionButton";
 
 const styles = {
     root: {
@@ -75,7 +77,7 @@ class EventList extends React.Component {
                         />;
                     })}
                 </List>
-                {/*<FloatingActionButton />*/}
+                <Link to="/event/create"><FloatingActionButton /></Link>
             </div>
 
         );

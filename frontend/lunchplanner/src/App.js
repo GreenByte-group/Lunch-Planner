@@ -1,9 +1,11 @@
 import React from "react";
-import FirstScreen from "./components/authentication/Authentication"
+import FirstScreen, {setAuthenticationHeader} from "./components/authentication/Authentication"
 import LunchPlanner from "./components/LunchPlanner"
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import {isAuthenticated} from "./components/authentication/LoginFunctions"
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+import CreateEventScreen from "./components/CreateEventScreen";
+import SelectUserScreen from "./components/User/SelectUserScreen";
 
 const theme = createMuiTheme({
     palette: {
@@ -17,7 +19,7 @@ function isAuth() {
     return isAuthenticated();
 }
 
-const PrivateRoute = ({ component: Component, ...rest }) => (
+export const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route{...rest} render={props =>
             isAuth() ? (<Component {...props} />)
                 : (<Redirect to={{
@@ -32,8 +34,14 @@ class App extends React.Component {
             <MuiThemeProvider theme={theme}>
                 <Router>
                     <div>
-                        <PrivateRoute exact path="/" component={LunchPlanner} />
-                        <Route path="/login" component={FirstScreen} />
+                        <Route exact path="/login" component={FirstScreen} />
+                        <Route exact path="/"
+                                      render={ () => <Redirect to="/event" />}
+                        />
+
+                        <PrivateRoute path="/event" component={LunchPlanner} />
+                        <PrivateRoute path="/event/create" component={CreateEventScreen} />
+                        <PrivateRoute path="/event/create/invite" component={SelectUserScreen} />
                     </div>
                 </Router>
             </MuiThemeProvider>

@@ -82,7 +82,7 @@ class Event extends React.Component {
                     <p className={classes.users}>{people}</p>
                 </div>
                 {(accepted
-                        ? <AcceptedButton />
+                        ? <AcceptedButton text="Accepted" />
                         : ""
                 )}
             </ListItem>
