@@ -65,6 +65,10 @@ class CreateEventScreen extends React.Component {
         location:0,
     };
 
+    componentDidMount() {
+        this.handleClickOpen();
+    }
+
     handleClickOpen = () => {
         console.log("handleClickOpen");
         this.setState({ open: true });
@@ -96,9 +100,6 @@ class CreateEventScreen extends React.Component {
         const { classes } = this.props;
         return (
             <div>
-                <Button onClick={this.handleClickOpen} style={buttonStyle}>
-                    <FloatingActionButton/>
-                </Button>
                 <Dialog
                     fullScreen
                     open={this.state.open}

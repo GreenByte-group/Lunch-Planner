@@ -7,6 +7,7 @@ import LunchPlanner from "./components/LunchPlanner"
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import {isAuthenticated} from "./components/authentication/LoginFunctions"
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+import CreateEventScreen from "./components/CreateEventScreen";
 
 /*
 TODO:
@@ -30,7 +31,7 @@ function isAuth() {
     return isAuthenticated();
 }
 
-const PrivateRoute = ({ component: Component, ...rest }) => (
+export const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route{...rest} render={props =>
             isAuth() ? (<Component {...props} />)
                 : (<Redirect to={{
@@ -46,7 +47,8 @@ class App extends React.Component {
                 <Router>
                     <div>
                         <PrivateRoute exact path="/" component={LunchPlanner} />
-                        <Route path="/login" component={FirstScreen} />
+                        <Route exact path="/login" component={FirstScreen} />
+                        <Route exact path="/event/create" component={CreateEventScreen} />
                     </div>
                 </Router>
             </MuiThemeProvider>

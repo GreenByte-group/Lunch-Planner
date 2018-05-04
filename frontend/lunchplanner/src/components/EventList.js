@@ -5,6 +5,7 @@ import {createEvent} from "./CreateEventFunctions";
 
 import {HOST, TOKEN} from "../Config"
 import CreateEventScreen from "./CreateEventScreen";
+import {Link, withRouter} from "react-router-dom";
 
 class EventList extends React.Component {
 
@@ -43,11 +44,6 @@ class EventList extends React.Component {
                 })
             })
     }
-    handleClickOpen = () => {
-        this.setState({ open: true });
-        console.log("handleClick");
-        <CreateEventScreen/>
-    };
 
     render() {
         let events = this.state.events;
@@ -59,7 +55,7 @@ class EventList extends React.Component {
                         return <li>{listValue.eventName}</li>;
                     })}
                 </ul>
-                <CreateEventScreen/>
+                <Link to="/event/create"><FloatingActionButton/></Link>
 
             </div>
 
