@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
@@ -17,23 +16,29 @@ const styles = {
     },
     flex: {
         flex: 1,
+        fontFamily: "Work Sans",
+        fontWeight: '600',
     },
     menuButton: {
         marginLeft: -12,
         marginRight: 20,
     },
+    appbar: {
+        position: 'fixed',
+        boxShadow: 'none',
+    }
 };
 
 function ButtonAppBar(props) {
     const { classes } = props;
     return (
         <div className={classes.root}>
-            <AppBar position="static">
+            <AppBar className={classes.appbar}>
                 <Toolbar>
                     <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
                         <SimpleMenu />
                     </IconButton>
-                    <Typography variant="title" color="inherit" className={classes.flex}>
+                    <Typography variant="Events" color="inherit" className={classes.flex}>
                         Title
                     </Typography>
                     <Button color = "inherit">
@@ -44,9 +49,5 @@ function ButtonAppBar(props) {
         </div>
     );
 }
-
-ButtonAppBar.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
 
 export default withStyles(styles)(ButtonAppBar);
