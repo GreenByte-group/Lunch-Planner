@@ -159,6 +159,7 @@ class CreateEventScreen extends React.Component {
                             placeholder ="Add an Location ..."
                             onChange={this.handleChange}
                             margin="normal"
+
                         />
                         <DatePicker
                             selected={this.state.date}

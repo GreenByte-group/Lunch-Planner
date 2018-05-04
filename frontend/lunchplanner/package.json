@@ -8,6 +8,7 @@
     "axios": "^0.18.0",
     "bootstrap": "^4.0.0",
     "classnames": "^2.2.5",
+    "google-maps-react": "^2.0.2",
     "material-ui": "^1.0.0-beta.44",
     "material-ui-datetimepicker": "^1.0.7",
     "material-ui-time-picker": "^0.1.7",
