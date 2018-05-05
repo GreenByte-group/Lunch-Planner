@@ -2,6 +2,7 @@ import axios from "axios";
 import {HOST} from "../Config";
 
 export function createEvent(locationId, date, member, visible, responseFunc, errorFunc) {
+    //TODO send visibility
     let timeEnd = date.getTime();
     timeEnd = timeEnd + 1;
     let url =  HOST + '/event';
