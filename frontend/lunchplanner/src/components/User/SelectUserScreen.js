@@ -119,7 +119,7 @@ class SelectUserScreen extends React.Component {
                     <AppBar className={classes.appBar} color ="white">
                         <Toolbar>
                             <Link to="/event/create">
-                                <IconButton color="inherit" aria-label="Close">
+                                <IconButton color="primary" aria-label="Close">
                                     <CloseIcon />
                                 </IconButton>
                             </Link>
