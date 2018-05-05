@@ -49,14 +49,17 @@ const styles = {
         marginTop: '10px',
         marginBottom: '0px',
     },
+    pickerWithIcon: {
+        width: '50%',
+        float: 'left',
+    },
     datePicker: {
-        width: '30% !important',
+        width: '60% !important',
         overflow: 'hidden',
         float: 'left',
     },
     timePicker: {
-        marginRight: '20px',
-        width: '30% !important',
+        width: '60% !important',
         overflow: 'hidden',
         float: 'left',
     },
@@ -82,7 +85,6 @@ const styles = {
         color: '#A4A4A4',
     },
     icons: {
-        marginLeft: '18px',
         marginTop: '4px',
         marginRight: '5px',
         width: '20px',
@@ -204,21 +206,25 @@ class CreateEventScreen extends React.Component {
                     </form>
                     <div>
                         <p className={classes.dateHeader}>Date</p><p className={classes.timeHeader}>Time</p>
-                        <Today viewBox="-2 -4 26 26" className={classes.icons} />
-                        <DatePicker
-                            className={classes.datePicker}
-                            onChange={this.handleDate}
-                            value={this.state.date}
-                            textFieldStyle={styles.pickerTextField}
-                        />
-                        <Schedule viewBox="-2 -4 26 26" className={classes.icons}/>
-                        <TimePicker
-                            className={classes.timePicker}
-                            onChange={this.handleDate}
-                            value={this.state.date}
-                            format="24hr"
-                            textFieldStyle={styles.pickerTextField}
-                        />
+                        <div className={classes.pickerWithIcon}>
+                            <Today viewBox="-2 -4 26 26" className={classes.icons} style={{marginLeft: '18px'}} />
+                            <DatePicker
+                                className={classes.datePicker}
+                                onChange={this.handleDate}
+                                value={this.state.date}
+                                textFieldStyle={styles.pickerTextField}
+                            />
+                        </div>
+                        <div className={classes.pickerWithIcon}>
+                            <Schedule viewBox="-2 -4 26 26" className={classes.icons}/>
+                            <TimePicker
+                                className={classes.timePicker}
+                                onChange={this.handleDate}
+                                value={this.state.date}
+                                format="24hr"
+                                textFieldStyle={styles.pickerTextField}
+                            />
+                        </div>
                     </div>
                     <ExpansionPanel>
                         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon color='primary' />}>
