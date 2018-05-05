@@ -82,12 +82,13 @@ const styles = {
         color: '#A4A4A4',
     },
     icons: {
-        marginLeft: '20px',
+        marginLeft: '18px',
         marginTop: '4px',
         marginRight: '5px',
         width: '20px',
         height: 'auto',
         float: 'left',
+        color: '#A4A4A4',
     },
 };
 const buttonStyle = {
@@ -176,8 +177,8 @@ class CreateEventScreen extends React.Component {
                     <AppBar className={classes.appBar} color ="white">
                         <Toolbar>
                             <Link to="/event">
-                                <IconButton color="inherit" aria-label="Close">
-                                    <CloseIcon />
+                                <IconButton color="inherit" aria-label="Close" className={classes.closeIcon}>
+                                    <CloseIcon color='primary' />
                                 </IconButton>
                             </Link>
                             <Typography variant="title" color="inherit" className={classes.flex}>
@@ -203,14 +204,14 @@ class CreateEventScreen extends React.Component {
                     </form>
                     <div>
                         <p className={classes.dateHeader}>Date</p><p className={classes.timeHeader}>Time</p>
-                        <Today viewBox="-5 -5 27 27" className={classes.icons} />
+                        <Today viewBox="-2 -4 26 26" className={classes.icons} />
                         <DatePicker
                             className={classes.datePicker}
                             onChange={this.handleDate}
                             value={this.state.date}
                             textFieldStyle={styles.pickerTextField}
                         />
-                        <Schedule viewBox="-5 -5 27 27" className={classes.icons}/>
+                        <Schedule viewBox="-2 -4 26 26" className={classes.icons}/>
                         <TimePicker
                             className={classes.timePicker}
                             onChange={this.handleDate}
@@ -220,7 +221,7 @@ class CreateEventScreen extends React.Component {
                         />
                     </div>
                     <ExpansionPanel>
-                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon color='primary' />}>
                             <Typography className={classes.heading}>Invite & Change Vibility</Typography>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails>
@@ -237,7 +238,7 @@ class CreateEventScreen extends React.Component {
                                         invitedUsers: this.state.invitedUsers,
                                     }}}>
                                     <Button classname={classes.addButton}>
-                                        <AddIcon/>
+                                        <AddIcon color='primary'/>
                                     </Button>
                                 </Link>
 

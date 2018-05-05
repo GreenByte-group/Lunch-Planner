@@ -17,13 +17,17 @@ import User from "./User";
 import FloatingActionButton from "../FloatingActionButton";
 
 const styles = {
+    root: {
+      position: 'fixed'
+    },
     appBar: {
-        position: 'relative',
+        position: 'fixed',
     },
     flex: {
         flex: 1,
     },
     list: {
+        marginTop: '56px',
         padding: 0,
     },
 
@@ -50,8 +54,6 @@ class SelectUserScreen extends React.Component {
             users: [],
             selectedUsers: array || [],
         };
-
-        console.log(this.state.selectedUsers);
     }
 
     componentDidMount() {
@@ -106,11 +108,8 @@ class SelectUserScreen extends React.Component {
             textTitle = countSelected + " selected";
         }
 
-        console.log('--------------');
-        console.log(this.state.selectedUsers);
-
         return (
-            <div>
+            <div className={classes.root}>
                 <Dialog
                     fullScreen
                     open={this.state.open}
