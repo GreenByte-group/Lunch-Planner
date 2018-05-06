@@ -170,6 +170,14 @@ class CreateEventScreen extends React.Component {
                             dateFormat="LLL"
                             timeCaption="time"
                         />
+                        <TextField
+                            id="description"
+                            label="Description"
+                            placeholder="Description"
+                            multiline
+                            className={classes.textField}
+                            margin="normal"
+                        />
                     </form>
                     <ExpansionPanel>
                         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
