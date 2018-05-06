@@ -54,6 +54,7 @@ class Event extends React.Component {
         this.state = {
             background: props.background,
             accepted: props.accepted | false,
+            id: props.id,
             name: props.name,
             description: props.description,
             monthDay: date.format('DD MMM'),
@@ -80,8 +81,9 @@ class Event extends React.Component {
         let time = this.state.time;
         let people = this.state.people;
 
+        const MyLink = props => <Link to={`/event/${this.state.id}` }{...props} />;
         return (
-            <ListItem style={{backgroundColor: background}} button className={classes.listItem} onClick={this.handleClick.bind(this)}>
+            <ListItem style={{backgroundColor: background}} button className={classes.listItem} component={MyLink} onClick={this.handleClick.bind(this)}>
                 <div className={classes.text}>
                     <p className={classes.title}>{name}</p>
                     <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>

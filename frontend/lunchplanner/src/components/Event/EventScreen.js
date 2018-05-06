@@ -66,7 +66,7 @@ class EventScreen extends React.Component {
     }
 
     componentDidMount() {
-        let url = HOST + "event/" + this.props.eventId;
+        let url = HOST + "event/" + this.props.id;
 
         axios.get(url)
             .then((response) =>{
