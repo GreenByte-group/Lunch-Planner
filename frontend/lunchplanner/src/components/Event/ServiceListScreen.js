@@ -25,10 +25,16 @@ const styles = {
 
 class ServiceListScreen extends React.Component {
 
-    state = {
-        open: true,
-        error:"",
-    };
+    constructor(props) {
+        super();
+        let eventId = props.match.params.eventId;
+        this.state = {
+            id:eventId,
+            open: true,
+            error:"",
+        };
+    }
+
 
     render() {
         const {classes} = this.props;
@@ -43,7 +49,7 @@ class ServiceListScreen extends React.Component {
                 >
                     <AppBar className={classes.appBar} color ="white">
                         <Toolbar>
-                            <Link to="/event">
+                            <Link to={{pathname:`/event/${this.state.id}`}}>
                                 <IconButton color="inherit" aria-label="Close">
                                     <CloseIcon />
                                 </IconButton>

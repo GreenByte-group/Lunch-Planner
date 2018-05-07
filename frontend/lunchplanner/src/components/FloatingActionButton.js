@@ -11,10 +11,10 @@ const styles = theme => ({
         color: theme.palette.common.white
     },
     floatingButton: {
-        position: 'absolute',
+        position: 'inherit',
         float: 'right',
         bottom: '15px',
-        right: '15px',
+        right: '-15px',
     }
 });
 

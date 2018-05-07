@@ -47,7 +47,7 @@ function Transition(props) {
             color: '#ff7700',
             marginTop: '10px',
             marginBottom: '0px',
-        }
+        },
 
     };
 
@@ -73,10 +73,8 @@ class EventScreen extends React.Component {
 
     componentDidMount() {
         let eventName, description, monthDay, time, people, accepted, location;
-        console.log(this.props.location.query.eventName);
         if(this.props.location.query && this.props.location.query.eventName ) {
             eventName = String(this.props.location.query.eventName);
-            console.log("eventName "+ eventName);
             this.setState({
                 name: eventName,
             });
@@ -117,12 +115,10 @@ class EventScreen extends React.Component {
                 location: location,
             });
         }
-
     }
 
 
     render() {
-
         const { classes } = this.props;
         const error = this.state.error;
         let name = this.state.name;
@@ -176,7 +172,7 @@ class EventScreen extends React.Component {
                             className={classes.textField}
                             margin="normal"
                         />
-                    <div>
+                    <div style={{marginLeft:20}}>
                         Participants
                         <br />
                         {people.map(function(p){
@@ -189,11 +185,14 @@ class EventScreen extends React.Component {
                         })}
 
                     </div>
-                    <div>Service List</div>
+                    <div style={{marginLeft:20}}>Service List</div>
                     <Link to={{pathname:`/event/${this.state.id}/service`}}>
-                        <ServiceIcon/>
+                        <ServiceIcon style={{marginLeft:20}}/>
                     </Link>
-                    <AcceptedButton/>
+                    <IconButton>
+                        <AcceptedButton/>
+                    </IconButton>
+
                 </Dialog>
             </div>
         );

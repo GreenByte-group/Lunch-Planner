@@ -200,9 +200,9 @@ class CreateEventScreen extends React.Component {
                                         source: "/event/create",
                                         invitedUsers: this.state.invitedUsers,
                                     }}}>
-                                    <Button classname={classes.addButton}>
-                                        <AddIcon/>
-                                    </Button>
+                                    <IconButton>
+                                        <AddIcon />
+                                    </IconButton>
                                 </Link>
 
                                 <FormControlLabel

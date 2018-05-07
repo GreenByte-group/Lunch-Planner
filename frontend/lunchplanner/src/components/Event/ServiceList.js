@@ -1,16 +1,28 @@
 import React from 'react';
 import {withStyles} from "material-ui/styles/index";
-import PropTypes from 'prop-types';
 import List, { ListItem, ListItemSecondaryAction, ListItemText } from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
 import IconButton from 'material-ui/IconButton';
-import CommentIcon from '@material-ui/icons/Comment';
+import AddIcon from '@material-ui/icons/Add';
+import Button from "material-ui/es/Button/Button";
+import TextField from "material-ui/es/TextField/TextField";
+import Avatar from "material-ui/es/Avatar/Avatar";
 
 const styles = theme => ({
     root: {
         width: '100%',
-        maxWidth: 360,
+        //maxWidth: 360,
         backgroundColor: theme.palette.background.paper,
+    },
+    button:{
+        color: "white",
+        position: "fixed",
+        bottom:0,
+        width: "100%"
+    },
+    textField: {
+        marginLeft: 20,
+        width: "90%",
     },
 });
 
@@ -45,7 +57,24 @@ class ServiceList extends React.Component {
         return (
             <div className={classes.root}>
                 <List>
-                    {[0, 1, 2, 3].map(value => (
+                    <ListItem
+                        role={undefined}
+                        dense
+                        button
+                        className={classes.listItem}>
+                        <TextField
+                            label="Service"
+                            placeholder="What do you want?"
+                            multiline
+                            className={classes.textField}
+                        />
+                        <ListItemSecondaryAction>
+                            <IconButton>
+                                <AddIcon />
+                            </IconButton>
+                        </ListItemSecondaryAction>
+                    </ListItem>
+                    {[0, 1, 2, 3, 4, 5, 6].map(value => (
                         <ListItem
                             key={value}
                             role={undefined}
@@ -58,15 +87,16 @@ class ServiceList extends React.Component {
                                 tabIndex={-1}
                                 disableRipple
                             />
-                            <ListItemText primary={`Line item ${value + 1}`} />
+                            <ListItemText primary={`Participant ${value + 1}`} />
                             <ListItemSecondaryAction>
-                                <IconButton aria-label="Comments">
-                                    <CommentIcon />
-                                </IconButton>
+                                <Avatar >Test</Avatar>
                             </ListItemSecondaryAction>
                         </ListItem>
                     ))}
                 </List>
+                <Button variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
+                    Save
+                </Button>
             </div>
         );
     }

@@ -6,6 +6,8 @@ import {Schedule, Today} from "@material-ui/icons";
 import AcceptedButton from "./AcceptedButton";
 import {Link} from "react-router-dom";
 import EventScreen from "./EventScreen";
+import Avatar from "material-ui/es/Avatar/Avatar";
+import Chip from "material-ui/es/Chip/Chip";
 
 const styles = {
     listItem: {
@@ -86,7 +88,6 @@ class Event extends React.Component {
 
         return (
             <Link to={{pathname:`/event/${this.state.id}`, query:{
-                    source: "/event",
                     eventName: name,
                     description: description,
                     monthDay: monthDay,
@@ -99,7 +100,16 @@ class Event extends React.Component {
                     <div className={classes.text}>
                         <p className={classes.title}>{name}</p>
                         <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
-                        <p className={classes.users}>People</p>
+                        <div className={classes.users}>
+                            {people.map(function(p){
+                                let peopleShortcut = p.short;
+                                return <Chip
+                                    avatar={<Avatar >{peopleShortcut}</Avatar>}
+                                    label={p.userName}
+                                    className={classes.chip}
+                                />
+                            })}
+                        </div>
                     </div>
                     {(accepted
                             ? <AcceptedButton text="Accepted" />
