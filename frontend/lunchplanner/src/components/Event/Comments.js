@@ -1,8 +1,9 @@
 import React from "react";
-import {withStyles} from "material-ui";
+import {List, ListItem, withStyles} from "material-ui";
 import {HOST} from "../../Config";
 import axios from "axios/index";
 import {setAuthenticationHeader} from "../authentication/Authentication";
+import Comment from "./Comment";
 
 const styles = {
     para: {
@@ -24,7 +25,7 @@ class Comments extends React.Component {
 
     componentDidMount() {
         // let eventId = this.props.eventId;
-        let eventId = 5;
+        let eventId = 28;
 
         let url = HOST + "/event/" + eventId + "/getComments";
 
@@ -38,10 +39,19 @@ class Comments extends React.Component {
 
     render() {
         const {classes} = this.props;
-        console.log(this.state.comments);
+        const comments = this.state.comments;
 
         return (
-            <p className={classes.para}>Comments</p>
+            <List>
+                {comments.map((listValue) => {
+                    return (
+                        <Comment
+                            text={listValue.commentText}
+                            date={listValue.date}
+                        />
+                    )
+                })}
+            </List>
         )
     }
 
