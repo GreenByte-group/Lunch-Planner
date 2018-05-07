@@ -1,5 +1,6 @@
 package group.greenbyte.lunchplanner.event;
 
+import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.SessionManager;
@@ -282,6 +283,51 @@ public class EventController {
 
     }
 
+    /**
+     *
+     * @param eventId
+     * @param comment
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/{eventId}/comment", method = RequestMethod.PUT,
+            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String createComment(@PathVariable("eventId") int eventId, @RequestBody String comment, HttpServletResponse response){
+        try{
+            eventLogic.newComment(SessionManager.getUserName(), comment, eventId);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+
+            return "";
+        }catch(HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+
+    }
+
+    /**
+     * Get all comments of an event
+     *
+     * @return a list of all comments
+     */
+    @RequestMapping(value = "/{eventId}/getComments", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getAllComments(@PathVariable("eventId") int eventId) {
+
+        try {
+            List<Comment> allComments = eventLogic.getAllComments(SessionManager.getUserName(), eventId);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(allComments);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
 
     @Autowired
     public void setEventLogic(EventLogic eventLogic) {
