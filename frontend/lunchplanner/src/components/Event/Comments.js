@@ -54,7 +54,13 @@ class Comments extends React.Component {
 
       let url = HOST + "/event/" + this.state.eventId + "/comment";
 
-      axios.put(url, this.state.newComment)
+      let config = {
+          headers: {
+              'Content-Type': 'text/plain',
+          }
+      }
+
+      axios.put(url, this.state.newComment, config)
           .then((response) => {
               console.log(response)
           });
