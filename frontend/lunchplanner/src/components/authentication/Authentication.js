@@ -8,7 +8,7 @@ import AppBar from 'material-ui/AppBar';
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import axios from "axios";
-import {TOKEN} from "../../Config";
+import {TOKEN, USERNAME} from "../../Config";
 
 export function setAuthenticationHeader() {
     let token = localStorage.getItem(TOKEN);
@@ -22,6 +22,10 @@ export function setAuthenticationHeader() {
     }, function(err) {
         return Promise.reject(err);
     });
+}
+
+export function getUsername() {
+    return localStorage.getItem(USERNAME) || "please login again";
 }
 
 function TabContainer({ children, dir }) {
