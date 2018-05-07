@@ -631,17 +631,17 @@ public class EventLogicTest {
 
     // ------------------ NEW COMMENT -------------------
 
-    @Test (expected = HttpRequestException.class)
+    @Test
     public void test1NewComment() throws Exception {
-        String username = createString(1);
+        String username = createUserIfNotExists(userLogic, createString(1));
         String comment = createString(1);
 
         eventLogic.newComment(username, comment, eventId);
     }
 
-    @Test (expected = HttpRequestException.class)
+    @Test
     public void test2NewCommentMaxLength() throws Exception {
-        String username = createString(50);
+        String username = createUserIfNotExists(userLogic, createString(50));
         String comment = createString(100);
 
         eventLogic.newComment(username, comment, eventId);
@@ -678,6 +678,5 @@ public class EventLogicTest {
 
         eventLogic.newComment(username, comment, eventId);
     }
-
 
 }
