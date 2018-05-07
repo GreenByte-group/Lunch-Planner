@@ -29,9 +29,10 @@ public class EventDaoMySql implements EventDao {
 
     private static final String EVENT_COMMENT_TABLE = "comment";
     private static final String EVENT_COMMENT_USER = "user_name";
-    private static final String EVENT_COMMENT_DATE = "create_date";
+    private static final String EVENT_COMMENT_DATE = "date";
     private static final String EVENT_COMMENT_EVENT = "event_id";
     private static final String EVENT_COMMENT_ID = "comment_id";
+    private static final String EVENT_COMMENT_TEXT = "comment_text";
 
     private static final String EVENT_TABLE = "event";
     private static final String EVENT_ID = "event_id";
@@ -345,6 +346,7 @@ public class EventDaoMySql implements EventDao {
         parameters.put(EVENT_COMMENT_USER, userName);
         parameters.put(EVENT_COMMENT_EVENT, eventId);
         parameters.put(EVENT_COMMENT_DATE, new Date());
+        parameters.put(EVENT_COMMENT_TEXT, comment);
 
         try{
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));

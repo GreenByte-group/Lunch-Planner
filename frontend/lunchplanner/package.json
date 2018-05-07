@@ -16,7 +16,8 @@
     "react-datepicker": "^1.4.1",
     "react-dom": "^16.2.0",
     "react-scripts": "1.1.4",
-    "react-swipeable-views": "^0.12.13"
+    "react-swipeable-views": "^0.12.13",
+    "yarn": "^1.6.0"
   },
   "scripts": {
     "start": "react-scripts start",
