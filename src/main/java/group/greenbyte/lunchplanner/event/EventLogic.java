@@ -396,8 +396,9 @@ public class EventLogic {
             if(event == null)
                 throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + eventId + "was not found");
 
-            if(!hasPrivileges(eventId, userName))
-                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");
+            //TODO
+            /*if(!hasPrivileges(eventId, userName))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");*/
 
             eventDao.putCommentForEvent(userName,eventId, comment);
 
@@ -414,7 +415,7 @@ public class EventLogic {
      * @param eventId  id of the event
      * @return Event which matched with the given id or null
      */
-    public List<Comment> getAllComments(String userName, int eventId)throws HttpRequestException{
+    public List<Comment> getAllComments(String userName, int eventId)throws HttpRequestException {
         if(!isValidName(userName))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximun length" + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
 
@@ -423,12 +424,15 @@ public class EventLogic {
            if(event == null)
                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + eventId + " was not found");
 
-           if(!hasPrivileges(eventId, userName))
-               throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");
+           //TODO
+           /*if(!hasPrivileges(eventId, userName))
+               throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");*/
+
             List<Comment> comments = eventDao.getAllComments(eventId);
 
             if (comments == null)
                 throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + eventId + " has no comments");
+
             return comments;
 
         }catch(DatabaseException e){

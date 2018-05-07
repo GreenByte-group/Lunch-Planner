@@ -318,11 +318,12 @@ public class EventDaoMySql implements EventDao {
     @Override
     public List<Comment> getAllComments(int eventId) throws DatabaseException {
         try {
-            String SQL = "SELECT * FROM " + EVENT_COMMENT_TABLE + "WHERE" +
-                    EVENT_COMMENT_EVENT + "= ?";
+            String SQL = "SELECT * FROM " + EVENT_COMMENT_TABLE + " WHERE " +
+                    EVENT_COMMENT_EVENT + " = ?";
 
             List<CommentDatabase> comments = jdbcTemplate.query(SQL,
-                    new BeanPropertyRowMapper<>(CommentDatabase.class));
+                    new BeanPropertyRowMapper<>(CommentDatabase.class),
+                    eventId);
 
             List<Comment> commentsReturn = new ArrayList<>(comments.size());
             for(CommentDatabase commentDatabase : comments){

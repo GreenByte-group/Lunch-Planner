@@ -679,4 +679,34 @@ public class EventLogicTest {
         eventLogic.newComment(username, comment, eventId);
     }
 
+    // ------------------ GET ALL COMMENTS -------------------
+
+    @Test
+    public void test1GetAllCommentsMinUser() throws Exception {
+        String username = createUserIfNotExists(userLogic, createString(1));
+
+        eventLogic.getAllComments(username, eventId);
+    }
+
+    @Test
+    public void test2GetAllCommentsMaxUser() throws Exception {
+        String username = createUserIfNotExists(userLogic, createString(50));
+
+        eventLogic.getAllComments(username, eventId);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test3GetAllCommentsUserTooLong() throws Exception {
+        String username = createUserIfNotExists(userLogic, createString(51));
+
+        eventLogic.getAllComments(username, eventId);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test3GetAllCommentsUserEmpty() throws Exception {
+        String username = createUserIfNotExists(userLogic, createString(0));
+
+        eventLogic.getAllComments(username, eventId);
+    }
+
 }
