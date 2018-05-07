@@ -52,4 +52,8 @@ public class LocationDatabase {
     public void setLocationId(int locationId) {
         this.locationId = locationId;
     }
+
+    public void setIsPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
 }

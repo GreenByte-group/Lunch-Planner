@@ -90,6 +90,10 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "End time must be after start time");
 
         try {
+            Location location = locationDao.getLocation(locationId);
+            if(location == null)
+                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Location with id " + locationId + " does not exist");
+
             return eventDao.insertEvent(userName, eventName, eventDescription, locationId, timeStart, timeEnd)
                     .getEventId();
         }catch(DatabaseException e) {
@@ -396,9 +400,11 @@ public class EventLogic {
                 throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + eventId + "was not found");
 
 
+
             if(!hasUserPrivileges(eventId, userName))
                 if(!hasAdminPrivileges(eventId, userName))
                     throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");
+
 
             eventDao.putCommentForEvent(userName,eventId, comment);
 
@@ -424,9 +430,10 @@ public class EventLogic {
            if(event == null)
                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + eventId + " was not found");
 
-           //TODO
+
            if(!hasUserPrivileges(eventId, userName))
                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");
+
 
             List<Comment> comments = eventDao.getAllComments(eventId);
 

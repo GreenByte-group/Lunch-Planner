@@ -3,30 +3,52 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import {withStyles} from 'material-ui/styles';
 import AddIcon from '@material-ui/icons/Add';
+import DoneIcon from '@material-ui/icons/Done'
 import Button from 'material-ui/Button';
-
-const floatingButtonClass = 'floatingButton';
-
-const buttonStyle = {
-    float: 'right',
-    marginBottom: '15px',
-};
 
 const styles = theme => ({
     whiteSymbol: {
         color: theme.palette.common.white
     },
+    floatingButton: {
+        position: 'fixed',
+        float: 'right',
+        bottom: '15px',
+        right: '25px',
+    }
 });
 
 
 class FloatingActionButton extends React.Component {
 
+    constructor(props) {
+        super();
+        this.state = {
+            icon: props.icon,
+        };
+    }
+
+    componentWillReceiveProps(newProps) {
+        if(newProps.icon && newProps.icon !== this.state.icon)
+            this.setState({
+                icon: newProps.icon,
+            })
+    }
+
     render() {
-        const { classes, theme } = this.props;
+        const { classes } = this.props;
 
         return (
-            <Button style= {theme.fab}variant="fab" color="secondary" style={buttonStyle} aria-label="add" className={classNames(classes.button, classes.whiteSymbol, floatingButtonClass)}>
-                <AddIcon/>
+            <Button variant="fab" color="secondary" className={classNames(classes.button, classes.whiteSymbol, classes.floatingButton)} onClick={this.props.onClick}>
+                {(() => {switch (this.state.icon) {
+                    case 'add':
+                        return <AddIcon />;
+                    case 'done':
+                        return <DoneIcon />;
+                    default:
+                        return <AddIcon/>;
+
+                }})()}
             </Button>
         )
     }

@@ -1,22 +1,21 @@
-// App.js
 import React from "react";
-import MyLogin from "./components/authentication/Login"
-import MyRegistration from "./components/authentication/Registration"
-import FirstScreen from "./components/authentication/Authentication"
+import FirstScreen, {setAuthenticationHeader} from "./components/authentication/Authentication"
 import LunchPlanner from "./components/LunchPlanner"
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import {isAuthenticated} from "./components/authentication/LoginFunctions"
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+import { MuiThemeProvider } from 'material-ui/styles';
+import { MuiThemeProvider as OldMuiThemeProvider } from 'material-ui-old/styles'
+import { createMuiTheme } from 'material-ui/styles'
+import CreateEventScreen from "./components/CreateEventScreen";
+import SelectUserScreen from "./components/User/SelectUserScreen";
+import {getMuiTheme} from "material-ui-old/styles/index";
 
-/*
-TODO:
-- Logik Registration und MyRegistration verbinden
-- Logik Login und MyLogin verbinden
-- Login/Register Button unten fixieren, Schrift weiß
-- Events Button rechte Seite
-- Events Login/Register nicht anzeigen
- */
-
+const oldTheme = getMuiTheme({
+    palette: {
+        primary1Color: '#75a045',
+        accent1Color: '#f29b26',
+    },
+});
 
 const theme = createMuiTheme({
     palette: {
@@ -30,7 +29,7 @@ function isAuth() {
     return isAuthenticated();
 }
 
-const PrivateRoute = ({ component: Component, ...rest }) => (
+export const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route{...rest} render={props =>
             isAuth() ? (<Component {...props} />)
                 : (<Redirect to={{
@@ -42,14 +41,22 @@ class App extends React.Component {
 
     render() {
         return (
-            <MuiThemeProvider theme={theme}>
-                <Router>
-                    <div>
-                        <PrivateRoute exact path="/" component={LunchPlanner} />
-                        <Route path="/login" component={FirstScreen} />
-                    </div>
-                </Router>
-            </MuiThemeProvider>
+            <OldMuiThemeProvider theme={oldTheme}>
+                <MuiThemeProvider theme={theme}>
+                    <Router>
+                        <div>
+                            <Route exact path="/login" component={FirstScreen} />
+                            <Route exact path="/"
+                                          render={ () => <Redirect to="/event" />}
+                            />
+
+                            <PrivateRoute path="/event" component={LunchPlanner} />
+                            <PrivateRoute path="/event/create" component={CreateEventScreen} />
+                            <PrivateRoute path="/event/create/invite" component={SelectUserScreen} />
+                        </div>
+                    </Router>
+                </MuiThemeProvider>
+            </OldMuiThemeProvider>
         );
     }
 }

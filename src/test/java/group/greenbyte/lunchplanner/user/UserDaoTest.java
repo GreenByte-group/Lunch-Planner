@@ -1,7 +1,6 @@
 package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.AppConfig;
-import group.greenbyte.lunchplanner.event.EventDao;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,14 +9,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
-import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = AppConfig.class)
 @ActiveProfiles("application-test.properties")
+@Transactional
 public class UserDaoTest {
 
     @Autowired
@@ -59,5 +59,41 @@ public class UserDaoTest {
         String password = createString(200);
 
         userDao.createUser(userName, password, mail);
+    }
+
+
+
+    @Test
+    public void test1SearchUserValidParam() throws Exception {
+        String userName = createString(50);
+        String mail = "gueltige@mail.de";
+        String password = createString(50);
+        String searchword =userName;
+        userDao.createUser(userName, password, mail);
+        userDao.searchUserByName(searchword);
+    }
+
+    @Test(expected = DatabaseException.class)
+    public void test2SearchUserTooLongSearchword() throws Exception {
+        String userName = createString(50);
+        String mail = createString(51);
+        String password = createString(50);
+        String searchword = userName+"a";
+
+        userDao.createUser(userName, password, mail);
+        userDao.searchUserByName(searchword);
+
+    }
+
+    @Test(expected = DatabaseException.class)
+    public void test3SearchUserSearchwordIsNull() throws Exception {
+        String userName = createString(50);
+        String mail = createString(51);
+        String password = createString(50);
+        String searchword = null;
+
+        userDao.createUser(userName, password, mail);
+        userDao.searchUserByName(searchword);
+
     }
 }

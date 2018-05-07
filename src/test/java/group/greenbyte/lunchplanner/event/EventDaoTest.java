@@ -20,7 +20,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.crypto.Data;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +37,7 @@ import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 @WebAppConfiguration
 @ContextConfiguration(classes = AppConfig.class)
 @ActiveProfiles("application-test.properties")
+@Transactional
 public class EventDaoTest {
 
     @Autowired
@@ -195,6 +198,11 @@ public class EventDaoTest {
 
         if(event.getLocation().getLocationId() != newLocationId)
             Assert.fail("Location was not updated");
+    }
+
+    @Test(expected = DatabaseException.class)
+    public void updateEventLocationNotVaildLocation() throws Exception {
+        eventDao.updateEventLocation(eventId, 10000);
     }
 
     // Event start time

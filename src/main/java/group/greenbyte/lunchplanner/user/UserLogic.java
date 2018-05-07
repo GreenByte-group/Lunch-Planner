@@ -4,23 +4,16 @@ import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.JwtService;
 import group.greenbyte.lunchplanner.user.database.User;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-import org.springframework.security.*;
-import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.crypto.Data;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
-
-import static group.greenbyte.lunchplanner.user.SecurityHelper.validatePassword;
 
 @Service
 public class UserLogic {
@@ -113,6 +106,29 @@ public class UserLogic {
         }
     }
 
+
+    /**
+     *
+     * @param searchword String for searching the Database
+     * @return a List of User in natural sorted order
+     * @throws HttpRequestException
+     */
+    public List<User> searchUserByName(String searchword) throws HttpRequestException{
+        try{
+            return userDao.searchUserByName(searchword);
+        }catch (Exception e){
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        }
+    }
+
+
+
+    /**
+     *
+     * @param userName name of Username for searching in database
+     * @return
+     * @throws HttpRequestException
+     */
     public User getUser(String userName) throws HttpRequestException {
         try {
             return userDao.getUser(userName);
