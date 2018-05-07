@@ -8,6 +8,7 @@ import Toolbar from 'material-ui/Toolbar';
 import IconButton from 'material-ui/IconButton';
 import Typography from 'material-ui/Typography';
 import CloseIcon from '@material-ui/icons/Close';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
 import Slide from 'material-ui/transitions/Slide';
 import FloatingActionButton from "./FloatingActionButton";
 import TextField from "material-ui/es/TextField/TextField";
@@ -31,11 +32,19 @@ const styles = {
     flex: {
         flex: 1,
     },
-    textField: {
+    textFieldWithIcon: {
         marginTop:20,
         marginBottom:30,
         marginLeft: 20,
         width: "90%",
+    },
+
+    textField:{
+        float:"left",
+    },
+
+    icon:{
+      float:"right",
     },
     button:{
         color: "white",
@@ -120,6 +129,10 @@ class CreateEventScreen extends React.Component {
         this.setState({ [name]: event.target.checked });
     }
 
+    mapShow(){
+        <Link to="/event/create/map"/>
+    }
+
     render() {
         this.parseUrl();
         const { classes } = this.props;
@@ -151,16 +164,27 @@ class CreateEventScreen extends React.Component {
                             : ""
                     )}
                     <form className={classes.container} noValidate autoComplete="on" >
-                        <TextField
-                            id="location"
-                            label="Location"
-                            value={this.state.location}
-                            className={classes.textField}
-                            placeholder ="Add an Location ..."
-                            onChange={this.handleChange}
-                            margin="normal"
+                        <div className={classes.textFieldWithIcon}>
+                            <TextField
+                                id="location"
+                                label="Location"
+                                value={this.state.location}
+                                className={classes.textField}
+                                placeholder ="Add an Location ..."
+                                onChange={this.handleChange}
+                                margin="normal"
+                            >
 
-                        />
+                            </TextField>
+
+                            <LocationOnIcon
+                                id="locationMap"
+                                laberl="LocationMap"
+                                onChange={this.mapShover}
+                                margin="normal"
+                                className ={classes.icon}
+                            />
+                        </div>
                         <DatePicker
                             selected={this.state.date}
                             onChange={this.handleDate}

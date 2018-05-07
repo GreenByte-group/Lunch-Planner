@@ -42,6 +42,7 @@ class App extends React.Component {
                         <PrivateRoute path="/event" component={LunchPlanner} />
                         <PrivateRoute path="/event/create" component={CreateEventScreen} />
                         <PrivateRoute path="/event/create/invite" component={SelectUserScreen} />
+                        {/*<PrivateRoute path="/event/create/map" component={ShowMap}/>*/}
                     </div>
                 </Router>
             </MuiThemeProvider>
