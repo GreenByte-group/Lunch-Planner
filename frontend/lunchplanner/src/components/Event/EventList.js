@@ -75,6 +75,7 @@ class EventList extends React.Component {
                                       date={listValue.startDate}
                                       background={background}
                                       accepted={true}
+                                      location={listValue.location.locationName}
                         />;
                     })}
                 </List>

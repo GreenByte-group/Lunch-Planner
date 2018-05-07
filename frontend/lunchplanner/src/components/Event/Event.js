@@ -59,15 +59,17 @@ class Event extends React.Component {
             description: props.description,
             monthDay: date.format('DD MMM'),
             time: date.format('HH:mm'),
+            location: props.location,
 
             //TODO invited people
-            people: 'Can, Santino, Felix, Martin',
+            people:
+                [{userName: "Can", short: "C"},
+                  {userName: "Felix", short: "F"},
+                  {userName: "Martin", short: "M"},
+                ],
         }
     }
 
-    handleClick(event){
-        console.log("clicked");
-    }
 
     render() {
         const {classes} = this.props;
@@ -80,20 +82,32 @@ class Event extends React.Component {
         let monthDay = this.state.monthDay;
         let time = this.state.time;
         let people = this.state.people;
+        let location = this.state.location;
 
-        const MyLink = props => <Link to={`/event/${this.state.id}` }{...props} />;
         return (
-            <ListItem style={{backgroundColor: background}} button className={classes.listItem} component={MyLink} onClick={this.handleClick.bind(this)}>
-                <div className={classes.text}>
-                    <p className={classes.title}>{name}</p>
-                    <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
-                    <p className={classes.users}>{people}</p>
-                </div>
-                {(accepted
-                        ? <AcceptedButton text="Accepted" />
-                        : ""
-                )}
-            </ListItem>
+            <Link to={{pathname:`/event/${this.state.id}`, query:{
+                    source: "/event",
+                    eventName: name,
+                    description: description,
+                    monthDay: monthDay,
+                    time: time,
+                    people: people,
+                    accepted: accepted,
+                    location:location
+                }}}>
+                <ListItem style={{backgroundColor: background}} button className={classes.listItem}>
+                    <div className={classes.text}>
+                        <p className={classes.title}>{name}</p>
+                        <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
+                        <p className={classes.users}>People</p>
+                    </div>
+                    {(accepted
+                            ? <AcceptedButton text="Accepted" />
+                            : ""
+                    )}
+                </ListItem>
+            </Link>
+
         );
     }
 }

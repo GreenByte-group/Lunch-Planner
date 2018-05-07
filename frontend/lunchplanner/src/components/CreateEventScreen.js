@@ -22,6 +22,7 @@ import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import "../assets/CreateEventScreen.css"
 import {Link} from "react-router-dom";
+import {Today, Schedule} from "@material-ui/icons";
 
 const styles = {
     appBar: {
@@ -31,23 +32,23 @@ const styles = {
         flex: 1,
     },
     textField: {
-        marginTop:20,
         marginBottom:30,
         marginLeft: 20,
         width: "90%",
     },
     button:{
         color: "white",
-        position: "fixed",
+        position: "inherit",
         bottom:0,
-        width: "100%"
+        width: "100%",
+        minWidth: '20 important', //warum geht das nicht?
     },
     error: {
         textAlign: 'center',
         color: '#ff7700',
         marginTop: '10px',
         marginBottom: '0px',
-    }
+    },
 
 };
 const buttonStyle = {
@@ -159,23 +160,27 @@ class CreateEventScreen extends React.Component {
                             onChange={this.handleChange}
                             margin="normal"
                         />
-                        <DatePicker
-                            selected={this.state.date}
-                            onChange={this.handleDate}
-                            value={this.state.date}
-                            showTimeSelect
-                            timeFormat="HH:mm"
-                            timeIntervals={15}
-                            dateFormat="LLL"
-                            timeCaption="time"
-                        />
+                        <div className={classes.textField}>
+                            <Today viewBox="-5 -5 27 27"  />
+                            <Schedule viewBox="-5 -5 27 27"/>
+                            <DatePicker
+                                selected={this.state.date}
+                                onChange={this.handleDate}
+                                value={this.state.date}
+                                showTimeSelect
+                                timeFormat="HH:mm"
+                                timeIntervals={15}
+                                dateFormat="LLL"
+                                timeCaption="time"
+                            />
+                        </div>
                         <TextField
                             id="description"
                             label="Description"
                             placeholder="Description"
                             multiline
                             className={classes.textField}
-                            margin="normal"
+                            style={{marginTop:-100}}
                         />
                     </form>
                     <ExpansionPanel>

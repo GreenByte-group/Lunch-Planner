@@ -1,8 +1,6 @@
 import PropTypes from "prop-types";
-import axios from "axios"
 import {withStyles} from "material-ui/styles/index";
 import TextField from "material-ui/es/TextField/TextField";
-import DatePicker from 'react-datepicker';
 import AcceptedButton from "./AcceptedButton";
 import React from 'react';
 import Slide from 'material-ui/transitions/Slide';
@@ -14,6 +12,10 @@ import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import {HOST} from "../../Config";
+import {Today, Schedule} from "@material-ui/icons/es/index";
+import Chip from "material-ui/es/Chip/Chip";
+import Avatar from "material-ui/es/Avatar/Avatar";
+import moment from "moment/moment";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -50,35 +52,69 @@ function Transition(props) {
 class EventScreen extends React.Component {
 
     constructor(props) {
-        super(props);
+        super();
 
         this.state = {
             open: true,
             isAdmin: false,
             name:"",
-            locationId:0,
-            timeStart: 0,
-            timeEnd: 1,
+            location:"",
+            monthDay: null,
+            time: null,
             description: "",
             //TODO invited people
-            people:'Can, Santino, Felix, Martin',
+            people:[],
+            accepted: true,
         };
     }
 
     componentDidMount() {
-        let url = HOST + "event/" + this.props.id;
+        let eventName, description, monthDay, time, people, accepted, location;
+        console.log(this.props.location.query.eventName);
+        if(this.props.location.query && this.props.location.query.eventName ) {
+            eventName = String(this.props.location.query.eventName);
+            console.log("eventName "+ eventName);
+            this.setState({
+                name: eventName,
+            });
+        }
+        if(this.props.location.query && this.props.location.query.description) {
+            description = String(this.props.location.query.description);
+            this.setState({
+                description: description,
+            });
+        }
+        if(this.props.location.query && this.props.location.query.monthDay) {
+            monthDay = this.props.location.query.monthDay;
+            this.setState({
+                monthDay: monthDay,
+            });
+        }
+        if(this.props.location.query && this.props.location.query.time) {
+            time = this.props.location.query.time;
+            this.setState({
+                time: time,
+            });
+        }
+        if(this.props.location.query && this.props.location.query.people) {
+            people = this.props.location.query.people;
+            this.setState({
+                people: people,
+            });
+        }
+        if(this.props.location.query && this.props.location.query.accepted) {
+            accepted = Boolean(this.props.location.query.accepted);
+            this.setState({
+                accepted: accepted,
+            });
+        }
+        if(this.props.location.query && this.props.location.query.location) {
+            location = String(this.props.location.query.location);
+            this.setState({
+                location: location,
+            });
+        }
 
-        axios.get(url)
-            .then((response) =>{
-                this.setState({
-                    name: response.data.name,
-                    // Müsste hier nicht besser die Location zurückkommen?
-                    locationId: response.data.locationId,
-                    timeStart: response.data.timeStart,
-                    timeEnd: response.data.timeEnd,
-                    description: response.data.description
-                })
-            })
     }
 
 
@@ -89,10 +125,10 @@ class EventScreen extends React.Component {
         let name = this.state.name;
         let description = this.state.description;
         // time and date
-        let timeStart = this.state.timeStart;
-        let location = this.state.locationId;
+        let time = this.state.time;
+        let location = this.state.location;
         let people = this.state.people;
-
+        let monthDay = this.state.monthDay;
         return (
             <div>
                 <Dialog
@@ -118,25 +154,16 @@ class EventScreen extends React.Component {
                             ? <p className={classes.error}>{error}</p>
                             : ""
                     )}
-                        <TextField
-                            id="location"
-                            label="Location"
-                            value={location}
-                            className={classes.textField}
-                            placeholder ="Add an Location ..."
-                            onChange={this.handleChange}
-                            margin="normal"
-                        />
-                        <DatePicker
-                            selected={this.state.date}
-                            onChange={this.handleDate}
-                            value={timeStart}
-                            showTimeSelect
-                            timeFormat="HH:mm"
-                            timeIntervals={15}
-                            dateFormat="LLL"
-                            timeCaption="time"
-                        />
+                    <TextField
+                        id="location"
+                        label="Location"
+                        value={location}
+                        className={classes.textField}
+                        placeholder ="Add an Location ..."
+                        onChange={this.handleChange}
+                        margin="normal"
+                    />
+                    <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
                         <TextField
                             id="textarea"
                             label="Description"
@@ -146,8 +173,20 @@ class EventScreen extends React.Component {
                             className={classes.textField}
                             margin="normal"
                         />
-                    <div>{people}</div>
-                    <div>Service</div>
+                    <div>
+                        Participants
+                        <br />
+                        {people.map(function(p){
+                            let peopleShortcut = p.short;
+                            return <Chip
+                                avatar={<Avatar >{peopleShortcut}</Avatar>}
+                                label={p.userName}
+                                className={classes.chip}
+                            />
+                        })}
+
+                    </div>
+                    <div>Service List</div>
                     <AcceptedButton/>
                 </Dialog>
             </div>
@@ -158,3 +197,5 @@ EventScreen.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 export default withStyles(styles, { withTheme: true })(EventScreen);
+
+//                        <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
