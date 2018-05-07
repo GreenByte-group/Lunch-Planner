@@ -7,6 +7,7 @@ import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import CreateEventScreen from "./components/CreateEventScreen";
 import SelectUserScreen from "./components/User/SelectUserScreen";
 import EventScreen from "./components/Event/EventScreen";
+import ServiceListScreen from "./components/Event/ServiceListScreen";
 
 const theme = createMuiTheme({
     palette: {
@@ -47,6 +48,7 @@ class App extends React.Component {
                         <PrivateRoute path="/event/:eventId" component={EventScreen} />
                         <PrivateRoute path="/event/create" component={CreateEventScreen} />
                         <PrivateRoute path="/event/create/invite" component={SelectUserScreen} />
+                        <PrivateRoute path="/event/:eventId/service" component={ServiceListScreen} />
                     </div>
                 </Router>
             </MuiThemeProvider>

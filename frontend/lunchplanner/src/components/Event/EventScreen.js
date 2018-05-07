@@ -16,6 +16,8 @@ import {Today, Schedule} from "@material-ui/icons/es/index";
 import Chip from "material-ui/es/Chip/Chip";
 import Avatar from "material-ui/es/Avatar/Avatar";
 import moment from "moment/moment";
+import Button from "material-ui/es/Button/Button";
+import ServiceIcon from "@material-ui/icons/Toc"
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -53,8 +55,9 @@ class EventScreen extends React.Component {
 
     constructor(props) {
         super();
-
+        let eventId = props.match.params.eventId;
         this.state = {
+            id:eventId,
             open: true,
             isAdmin: false,
             name:"",
@@ -187,6 +190,9 @@ class EventScreen extends React.Component {
 
                     </div>
                     <div>Service List</div>
+                    <Link to={{pathname:`/event/${this.state.id}/service`}}>
+                        <ServiceIcon/>
+                    </Link>
                     <AcceptedButton/>
                 </Dialog>
             </div>
