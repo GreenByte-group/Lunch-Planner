@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -650,6 +651,18 @@ public class EventControllerTest {
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/event/" + eventId + "/comment").contentType(MediaType.TEXT_PLAIN_VALUE).content(comment))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+    }
+
+    // ------------------ GET ALL COMMENTS -------------------------
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1GetAllComments() throws Exception {
+
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get("/event/" + eventId + "/getComments"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
 
     }
 
