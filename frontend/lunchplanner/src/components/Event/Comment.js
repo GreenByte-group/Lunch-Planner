@@ -4,7 +4,18 @@ import ListItem from "material-ui/List/ListItem";
 import {withStyles} from "material-ui";
 
 const styles = {
-
+    root: {
+      width: '100%',
+    },
+    text: {
+        width: '100%',
+        float: 'none',
+    },
+    dateText: {
+        width: '100%',
+        textAlign: 'right',
+        float: 'none',
+    },
 };
 
 class Comment extends React.Component {
@@ -17,6 +28,8 @@ class Comment extends React.Component {
 
         this.state = {
             text: props.text,
+            dateText: date.format("HH:mm"),
+            username: props.creater,
         }
     }
 
@@ -25,7 +38,14 @@ class Comment extends React.Component {
 
         return (
             <ListItem button className={classes.listItem}>
-                <p>{this.state.text}</p>
+                <div className={classes.root}>
+                    <p className={classes.text} >
+                        {this.state.text}
+                    </p>
+                    <p className={classes.dateText}>
+                        {this.state.username}, {this.state.dateText}
+                    </p>
+                </div>
             </ListItem>
         );
     }
