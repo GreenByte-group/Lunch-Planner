@@ -1,5 +1,6 @@
 package group.greenbyte.lunchplanner.event;
 
+import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.team.database.Team;
@@ -170,6 +171,16 @@ public interface EventDao {
      * @throws DatabaseException
      */
     boolean userHasPrivileges(String userName, int eventId) throws DatabaseException;
+
+    /**
+     *
+     * @param eventId
+     * @return
+     * @throws DatabaseException
+     */
+    List<Comment> getAllComments(int eventId) throws DatabaseException;
+
+    void putCommentForEvent(String userName, int eventId, String comment) throws DatabaseException;
   
     void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException;
 }
