@@ -46,13 +46,12 @@ class Comments extends React.Component {
                 })
             })
 
-        //For testing TODO
-        this.setState({
-            comments: [{userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
-                {userName: "Felix", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
-                {userName: "Can", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
-                {userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"}]
-        })
+        // this.setState({
+        //     comments: [{userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
+        //         {userName: "Felix", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
+        //         {userName: "Can", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
+        //         {userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"}]
+        // })
     }
 
     textFieldChanged = (event) => {
