@@ -72,6 +72,8 @@ class EventScreen extends React.Component {
     }
 
     componentDidMount() {
+        //TODO wenn die props nicht übergebn wurden ein GET aufrufen, um die Daten zu holen
+
         let eventName, description, monthDay, time, people, accepted, location;
         if(this.props.location.query && this.props.location.query.eventName ) {
             eventName = String(this.props.location.query.eventName);
