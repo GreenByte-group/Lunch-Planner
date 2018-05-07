@@ -54,6 +54,21 @@ class Event extends React.Component {
         this.state = {
             selected: props.selected | false,
             username: props.username,
+        };
+    }
+
+    componentWillReceiveProps(newProps) {
+        if(newProps.username && newProps.username !== this.state.username) {
+            console.log('username: ' + newProps.username);
+            this.setState ({
+                username: newProps.username,
+            });
+        }
+
+        if(newProps.selected !== undefined && newProps.selected !== null && newProps.selected !== this.state.selected) {
+            this.setState ({
+                selected: newProps.selected,
+            });
         }
     }
 
