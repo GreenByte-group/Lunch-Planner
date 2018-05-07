@@ -629,6 +629,10 @@ public class EventLogicTest {
         String username = createUserIfNotExists(userLogic, createString(1));
         String comment = createString(1);
 
+        int eventId = createEvent(eventLogic, username, eventName, eventDescription, locationId,
+                new Date(eventTimeStart), new Date(eventTimeEnd));
+
+
         eventLogic.newComment(username, comment, eventId);
     }
 
@@ -636,6 +640,10 @@ public class EventLogicTest {
     public void test2NewCommentMaxLength() throws Exception {
         String username = createUserIfNotExists(userLogic, createString(50));
         String comment = createString(100);
+
+        int eventId = createEvent(eventLogic, username, eventName, eventDescription, locationId,
+                new Date(eventTimeStart), new Date(eventTimeEnd));
+
 
         eventLogic.newComment(username, comment, eventId);
     }
@@ -678,12 +686,20 @@ public class EventLogicTest {
     public void test1GetAllCommentsMinUser() throws Exception {
         String username = createUserIfNotExists(userLogic, createString(1));
 
+        int eventId = createEvent(eventLogic, username, eventName, eventDescription, locationId,
+                new Date(eventTimeStart), new Date(eventTimeEnd));
+
+
         eventLogic.getAllComments(username, eventId);
     }
 
     @Test
     public void test2GetAllCommentsMaxUser() throws Exception {
         String username = createUserIfNotExists(userLogic, createString(50));
+
+        int eventId = createEvent(eventLogic, username, eventName, eventDescription, locationId,
+                new Date(eventTimeStart), new Date(eventTimeEnd));
+
 
         eventLogic.getAllComments(username, eventId);
     }

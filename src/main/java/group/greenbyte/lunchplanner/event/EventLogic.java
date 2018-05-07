@@ -5,7 +5,6 @@ import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.location.LocationDao;
-import group.greenbyte.lunchplanner.location.LocationLogic;
 import group.greenbyte.lunchplanner.location.database.Location;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import group.greenbyte.lunchplanner.user.database.User;
@@ -41,7 +40,7 @@ public class EventLogic {
      * @param userName who wants to change
      * @return true if the user has permission, false if not
      */
-    private boolean hasPrivileges(int eventId, String userName) throws DatabaseException {
+    private boolean hasUserPrivileges(int eventId, String userName) throws DatabaseException {
         return eventDao.userHasPrivileges(userName, eventId);
     }
 
@@ -274,7 +273,7 @@ public class EventLogic {
             if(event == null)
                 throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + eventId + "was not found");
             else {
-                if(!hasPrivileges(eventId, userName)) //TODO write test for next line
+                if(!hasUserPrivileges(eventId, userName)) //TODO write test for next line
                     throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");
 
                 return event;
@@ -400,9 +399,12 @@ public class EventLogic {
             if(event == null)
                 throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + eventId + "was not found");
 
-            //TODO
-            /*if(!hasPrivileges(eventId, userName))
-                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");*/
+
+
+            if(!hasUserPrivileges(eventId, userName))
+                if(!hasAdminPrivileges(eventId, userName))
+                    throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");
+
 
             eventDao.putCommentForEvent(userName,eventId, comment);
 
@@ -428,9 +430,10 @@ public class EventLogic {
            if(event == null)
                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + eventId + " was not found");
 
-           //TODO
-           /*if(!hasPrivileges(eventId, userName))
-               throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");*/
+
+           if(!hasUserPrivileges(eventId, userName))
+               throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");
+
 
             List<Comment> comments = eventDao.getAllComments(eventId);
 
