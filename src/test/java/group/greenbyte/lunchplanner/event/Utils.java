@@ -1,7 +1,5 @@
 package group.greenbyte.lunchplanner.event;
 
-import group.greenbyte.lunchplanner.event.database.Event;
-import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -22,9 +20,9 @@ public class Utils {
     public static int createEvent(MockMvc mockMvc) throws Exception {
         long timeStart = System.currentTimeMillis() + 10000;
         long timeEnd = timeStart + 10000;
-        int locationId = 1;
+        String location = "Test";
 
-        EventJson event = new EventJson(createString(50), "", locationId, new Date(timeStart), new Date(timeEnd));
+        EventJson event = new EventJson(createString(50), "", location, new Date(timeStart));
 
         String json = getJsonFromObject(event);
 
@@ -39,25 +37,23 @@ public class Utils {
         return Integer.valueOf(response);
     }
 
-    public static int createEvent(EventLogic eventLogic, String userName, int locationId) throws Exception {
+    public static int createEvent(EventLogic eventLogic, String userName, String location) throws Exception {
         long timeStart = System.currentTimeMillis() + 10000;
-        long timeEnd = timeStart + 10000;
 
         return createEvent(eventLogic, userName,
                 createString(10), createString(10),
-                locationId, new Date(timeStart), new Date(timeEnd));
+                location, new Date(timeStart));
     }
 
     public static int createEvent(EventLogic eventLogic, String userName,
-                                  String name, String description, int locationId,
-                                  Date timeStart, Date timeEnd) throws Exception {
+                                  String name, String description, String location,
+                                  Date timeStart) throws Exception {
 
         return eventLogic.createEvent(userName,
                 name,
                 description,
-                locationId,
-                timeStart,
-                timeEnd);
+                location,
+                timeStart);
     }
 
     public static void setEventPublic(EventDao eventDao, int eventId) throws Exception {
