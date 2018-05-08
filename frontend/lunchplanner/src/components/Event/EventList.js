@@ -47,11 +47,11 @@ class EventList extends React.Component {
                     events: response.data,
                 })
             })
-
+    }
         // this.setState({
         //     events: [{eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}]
         // })
-    }
+
 
     render() {
         const { classes } = this.props;

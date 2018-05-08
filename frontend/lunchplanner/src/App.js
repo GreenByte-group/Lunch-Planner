@@ -9,6 +9,8 @@ import { createMuiTheme } from 'material-ui/styles'
 import CreateEventScreen from "./components/CreateEventScreen";
 import SelectUserScreen from "./components/User/SelectUserScreen";
 import {getMuiTheme} from "material-ui-old/styles/index";
+import SimpleMap from "./components/GoogleMap/SimpleMap";
+import EventsMapPage from "./components/GoogleMap/PlacesAutocomplete";
 
 const oldTheme = getMuiTheme({
     palette: {
@@ -53,6 +55,7 @@ class App extends React.Component {
                             <PrivateRoute path="/event" component={LunchPlanner} />
                             <PrivateRoute path="/event/create" component={CreateEventScreen} />
                             <PrivateRoute path="/event/create/invite" component={SelectUserScreen} />
+                            <PrivateRoute path="/event/create/map" component={SimpleMap}/>
                         </div>
                     </Router>
                 </MuiThemeProvider>

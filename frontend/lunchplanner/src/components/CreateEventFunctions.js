@@ -8,6 +8,7 @@ export function createEvent(locationId, date, member, visible, responseFunc, err
     let url =  HOST + '/event';
     axios.post(url, {name: "dummy", description: "", locationId : locationId, timeStart: date, timeEnd: timeEnd})
         .then((response) => {
+            console.log(response);
             if(response.status === 201) {
                 inviteMember(response.data, member);
             }
