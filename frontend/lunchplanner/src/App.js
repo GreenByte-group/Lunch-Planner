@@ -60,7 +60,6 @@ class App extends React.Component {
                             <PrivateRoute path="/event/create" component={CreateEventScreen} />
                             <PrivateRoute path="/event/create/invite" component={SelectUserScreen} />
                             <PrivateRoute path="/comments" component={Comments} />
-
                         </div>
                     </Router>
                 </MuiThemeProvider>

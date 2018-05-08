@@ -203,6 +203,7 @@ class CreateEventScreen extends React.Component {
                             onChange={this.handleChange}
                             margin="normal"
                         />
+
                         <div className={classes.textField}>
                             <Today viewBox="-5 -5 27 27"  />
                             <Schedule viewBox="-5 -5 27 27"/>
@@ -245,7 +246,6 @@ class CreateEventScreen extends React.Component {
                                 value={this.state.date}
                                 format="24hr"
                                 textFieldStyle={styles.pickerTextField}
-                                //fsdsdvsdvsdv
                             />
                         </div>
                     </div>
@@ -266,6 +266,7 @@ class CreateEventScreen extends React.Component {
                                         source: "/event/create",
                                         invitedUsers: this.state.invitedUsers,
                                     }}}>
+
                                     <IconButton>
                                         <AddIcon />
                                     </IconButton>
