@@ -1,9 +1,6 @@
 package group.greenbyte.lunchplanner.event;
 
-import group.greenbyte.lunchplanner.event.database.Comment;
-import group.greenbyte.lunchplanner.event.database.CommentDatabase;
-import group.greenbyte.lunchplanner.event.database.Event;
-import group.greenbyte.lunchplanner.event.database.EventDatabase;
+import group.greenbyte.lunchplanner.event.database.*;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.location.LocationDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +10,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
 import java.util.*;
 
 @Repository
@@ -89,6 +85,8 @@ public class EventDaoMySql implements EventDao {
             else {
                 Event event = events.get(0).getEvent();
                 event.setLocation(locationDao.getLocation(events.get(0).getLocationId()));
+
+                event.setInvitations(new HashSet<>(getInvitations(eventId)));
 
                 return event;
             }
@@ -197,6 +195,8 @@ public class EventDaoMySql implements EventDao {
                 Event event = eventDatabase.getEvent();
                 event.setLocation(locationDao.getLocation(eventDatabase.getLocationId()));
 
+                event.setInvitations(new HashSet<>(getInvitations(event.getEventId())));
+
                 eventsReturn.add(event);
             }
 
@@ -223,7 +223,9 @@ public class EventDaoMySql implements EventDao {
             List<Event> events = new ArrayList<>();
 
             for(Integer id : eventIds) {
-                events.add(getEvent(id));
+                Event event = getEvent(id);
+
+                events.add(event);
             }
 
             return events;
@@ -250,6 +252,8 @@ public class EventDaoMySql implements EventDao {
             for(EventDatabase eventDatabase: events) {
                 Event event = eventDatabase.getEvent();
                 event.setLocation(locationDao.getLocation(eventDatabase.getLocationId()));
+
+                event.setInvitations(new HashSet<>(getInvitations(event.getEventId())));
 
                 eventsReturn.add(event);
             }
@@ -348,6 +352,20 @@ public class EventDaoMySql implements EventDao {
 
         try{
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public List<EventInvitationDataForReturn> getInvitations(int eventId) throws DatabaseException {
+        try {
+            String SQL = "SELECT * FROM " + EVENT_INVITATION_TABLE + " WHERE " +
+                    EVENT_INVITATION_EVENT + " = ?";
+
+            return jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(EventInvitationDataForReturn.class),
+                    eventId);
         } catch (Exception e) {
             throw new DatabaseException(e);
         }

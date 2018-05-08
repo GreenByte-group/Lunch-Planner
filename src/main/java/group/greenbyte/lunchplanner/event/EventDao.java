@@ -2,12 +2,11 @@ package group.greenbyte.lunchplanner.event;
 
 import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
+import group.greenbyte.lunchplanner.event.database.EventInvitationDataForReturn;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import group.greenbyte.lunchplanner.team.database.Team;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 
 public interface EventDao {
@@ -181,6 +180,9 @@ public interface EventDao {
     List<Comment> getAllComments(int eventId) throws DatabaseException;
 
     void putCommentForEvent(String userName, int eventId, String comment) throws DatabaseException;
-  
+
+    //TODO test
+    List<EventInvitationDataForReturn> getInvitations(int eventId) throws DatabaseException;
+
     void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException;
 }
