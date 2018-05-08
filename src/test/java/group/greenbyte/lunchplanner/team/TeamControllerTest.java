@@ -52,6 +52,7 @@ public class TeamControllerTest {
     private int locationId;
     private int eventId;
     private int teamId;
+    private String teamDescription;
 
     @Before
     public void setUp() throws Exception {
@@ -224,5 +225,10 @@ public class TeamControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE));
 
     }
+
+    // ------------------ GET TEAM -------------------------
+
+
+
 
 }

@@ -112,6 +112,51 @@ public class TeamLogic {
         userLogic.sendInvitation(username, userToInvite);
     }
 
+    /**
+     *
+     * @param userName the user who wants to access the team
+     * @param teamId  id of the team
+     * @return Team which matched with the given id or null
+     */
+    public Team getTeam(String userName, int teamId)throws HttpRequestException{
+        try{
+            Team team = teamdao.getTeam(teamId);
+
+            if(team == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Team with team-id: " + teamId + "was not found");
+            else {
+                if(!hasViewPrivileges(teamId, userName)) //TODO write test for next line
+                    throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this team");
+
+                return team;
+            }
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    /**
+     * Checks if a user has privileges to change the team object
+     *
+     * @param teamId id of the team to check
+     * @param userName who wants to change
+     * @return true if the user has permission, false if not
+     */
+    private boolean hasAdminPrivileges(int teamId, String userName) throws DatabaseException {
+        return teamdao.hasAdminPrivileges(teamId, userName);
+    }
+
+    /**
+     * Checks if a user has privileges to view the team object
+     *
+     * @param teamId id of the team to check
+     * @param userName who wants to change
+     * @return true if the user has permission, false if not
+     */
+    private boolean hasViewPrivileges(int teamId, String userName) throws DatabaseException {
+        return teamdao.hasViewPrivileges(teamId, userName);
+    }
+
     private boolean isValidName(String name){
         return name.length() <= User.MAX_USERNAME_LENGTH && name.length() > 0;
     }
