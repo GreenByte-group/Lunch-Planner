@@ -11,12 +11,9 @@ import {Link} from "react-router-dom";
 import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import {HOST} from "../../Config";
 import {Today, Schedule} from "@material-ui/icons/es/index";
 import Chip from "material-ui/es/Chip/Chip";
 import Avatar from "material-ui/es/Avatar/Avatar";
-import moment from "moment/moment";
-import Button from "material-ui/es/Button/Button";
 import ServiceIcon from "@material-ui/icons/Toc"
 
 function Transition(props) {
@@ -36,12 +33,6 @@ function Transition(props) {
             marginLeft: 20,
             width: "90%",
         },
-        button:{
-            color: "white",
-            position: "fixed",
-            bottom:0,
-            width: "100%"
-        },
         error: {
             textAlign: 'center',
             color: '#ff7700',
@@ -50,6 +41,12 @@ function Transition(props) {
         },
 
     };
+
+const buttonStyle = {
+    display:"block",
+    marginLeft:"auto",
+    marginRight:"auto",
+}
 
 class EventScreen extends React.Component {
 
@@ -164,7 +161,9 @@ class EventScreen extends React.Component {
                         onChange={this.handleChange}
                         margin="normal"
                     />
-                    <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
+                    <div style={{marginLeft: 20}}>
+                        <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
+                    </div>
                         <TextField
                             id="textarea"
                             label="Description"
@@ -187,11 +186,13 @@ class EventScreen extends React.Component {
                         })}
 
                     </div>
-                    <div style={{marginLeft:20}}>Service List</div>
-                    <Link to={{pathname:`/event/${this.state.id}/service`}}>
-                        <ServiceIcon style={{marginLeft:20}}/>
-                    </Link>
-                    <IconButton>
+                    <div style={{marginLeft:20}}>
+                     <Link to={{pathname:`/event/${this.state.id}/service`}}>
+                        <ServiceIcon />
+                     </Link>
+                        Service List
+                    </div>
+                    <IconButton style={buttonStyle}>
                         <AcceptedButton/>
                     </IconButton>
 
@@ -202,7 +203,15 @@ class EventScreen extends React.Component {
 }
 EventScreen.propTypes = {
     classes: PropTypes.object.isRequired,
+    id: PropTypes.number.isRequired,
+    isAdmin: PropTypes.bool.isRequired,
+    name:PropTypes.string.isRequired,
+    location:PropTypes.string.isRequired,
+    monthDay: PropTypes.object.isRequired,
+    time: PropTypes.object.isRequired,
+    description: PropTypes.string.isRequired,
+    people:PropTypes.object.isRequired,
+    accepted: PropTypes.bool.isRequired,
+
 };
 export default withStyles(styles, { withTheme: true })(EventScreen);
-
-//                        <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>

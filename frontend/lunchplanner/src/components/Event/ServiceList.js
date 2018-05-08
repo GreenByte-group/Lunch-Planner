@@ -33,10 +33,20 @@ class ServiceList extends React.Component {
         this.state = {
             error: "",
             checked: [0],
+            people:[
+                {userName: "Benjamin", short: "B", food: "Salad"},
+                {userName: "Gustav", short: "G", food: "Pizza"},
+                {userName: "Donald", short: "D", food: "Döner"},
+            ],
+            service: "service",
         };
     }
+
+    componentDidMount(){
+        //TODO: Load via Request all people who want to use the Service
+    }
     handleToggle = value => () => {
-        const { checked } = this.state;
+        const { checked } = this.state.checked;
         const currentIndex = checked.indexOf(value);
         const newChecked = [...checked];
 
@@ -50,10 +60,24 @@ class ServiceList extends React.Component {
             checked: newChecked,
         });
     };
+    handleAdd = (e) => {
+        let array = this.state.people;
+        array.push({name: "MyName", short: "My", food: this.state.service});
+        this.setState({
+            people: array
+        });
+    }
+
+    handleChange = (event) => {
+        let target = event.target;
+        this.setState({
+            service: target.value,
+        });
+    }
 
     render(){
         const { classes } = this.props;
-
+        let people = this.state.people;
         return (
             <div className={classes.root}>
                 <List>
@@ -63,36 +87,37 @@ class ServiceList extends React.Component {
                         button
                         className={classes.listItem}>
                         <TextField
+                            id="service"
                             label="Service"
                             placeholder="What do you want?"
                             multiline
                             className={classes.textField}
+                            onChange={this.handleChange}
                         />
                         <ListItemSecondaryAction>
-                            <IconButton>
+                            <IconButton onClick={this.handleAdd}>
                                 <AddIcon />
                             </IconButton>
                         </ListItemSecondaryAction>
                     </ListItem>
-                    {[0, 1, 2, 3, 4, 5, 6].map(value => (
-                        <ListItem
-                            key={value}
+                    {people.map(function(p) {
+                        return <ListItem
+                            key={p}
                             role={undefined}
                             dense
                             button
                             className={classes.listItem}
                         >
                             <Checkbox
-                                checked={this.state.checked.indexOf(value) !== -1}
                                 tabIndex={-1}
                                 disableRipple
                             />
-                            <ListItemText primary={`Participant ${value + 1}`} />
+                            <ListItemText primary={p.food}/>
                             <ListItemSecondaryAction>
-                                <Avatar >Test</Avatar>
+                                <Avatar>{p.short}</Avatar>
                             </ListItemSecondaryAction>
                         </ListItem>
-                    ))}
+                    })}
                 </List>
                 <Button variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
                     Save
