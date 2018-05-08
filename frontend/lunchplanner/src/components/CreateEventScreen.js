@@ -17,7 +17,6 @@ import AddIcon from '@material-ui/icons/Add';
 import {FormGroup, FormControlLabel,} from 'material-ui/Form';
 import {createEvent} from "./CreateEventFunctions";
 import {DatePicker, TimePicker} from 'material-ui-old';
-import {Schedule, Today} from "@material-ui/icons";
 
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import "../assets/CreateEventScreen.css"
@@ -38,10 +37,10 @@ const styles = {
     },
     button:{
         color: "white",
-        position: "inherit",
+        position: "absolute",
         bottom:0,
         width: "100%",
-        minWidth: '20 important', //warum geht das nicht?
+        minWidth: '20px important', //warum geht das nicht?
     },
     error: {
         textAlign: 'center',
@@ -204,20 +203,6 @@ class CreateEventScreen extends React.Component {
                             margin="normal"
                         />
 
-                        <div className={classes.textField}>
-                            <Today viewBox="-5 -5 27 27"  />
-                            <Schedule viewBox="-5 -5 27 27"/>
-                            <DatePicker
-                                selected={this.state.date}
-                                onChange={this.handleDate}
-                                value={this.state.date}
-                                showTimeSelect
-                                timeFormat="HH:mm"
-                                timeIntervals={15}
-                                dateFormat="LLL"
-                                timeCaption="time"
-                            />
-                        </div>
                         <TextField
                             id="description"
                             label="Description"
