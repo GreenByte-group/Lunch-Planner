@@ -13,7 +13,6 @@ const styles = {
     },
     dateText: {
         width: '100%',
-        textAlign: 'right',
         float: 'none',
     },
 };
@@ -27,6 +26,7 @@ class Comment extends React.Component {
         let date = moment(props.date);
 
         this.state = {
+            rightAlign: props.rightAlign,
             text: props.text,
             dateText: date.format("HH:mm"),
             username: props.creater,
@@ -35,14 +35,24 @@ class Comment extends React.Component {
 
     render() {
         const {classes} = this.props;
+        let textAlign;
+        let dateAlign;
+
+        if(this.state.rightAlign) {
+            textAlign = 'right';
+            dateAlign = 'left';
+        } else {
+            textAlign = 'left';
+            dateAlign = 'right';
+        }
 
         return (
             <ListItem button className={classes.listItem}>
                 <div className={classes.root}>
-                    <p className={classes.text} >
+                    <p className={classes.text} style={{textAlign: textAlign}}>
                         {this.state.text}
                     </p>
-                    <p className={classes.dateText}>
+                    <p className={classes.dateText} style={{textAlign: dateAlign}}>
                         {this.state.username}, {this.state.dateText}
                     </p>
                 </div>
