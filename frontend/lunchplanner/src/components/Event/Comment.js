@@ -27,7 +27,6 @@ class Comment extends React.Component {
 
         this.state = {
             rightAlign: props.rightAlign,
-
             text: props.text,
             dateText: date.format("HH:mm"),
             username: props.creater,
@@ -46,7 +45,6 @@ class Comment extends React.Component {
             textAlign = 'left';
             dateAlign = 'right';
         }
-
 
         return (
             <ListItem button className={classes.listItem}>

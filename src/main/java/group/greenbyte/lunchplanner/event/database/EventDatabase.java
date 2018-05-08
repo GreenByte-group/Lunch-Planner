@@ -8,15 +8,13 @@ public class EventDatabase {
 
     private Date startDate;
 
-    private Date endDate;
-
     private boolean isPublic;
 
     private String eventName;
 
     private String eventDescription;
 
-    private int locationId;
+    private String location;
 
     /**
      *
@@ -27,15 +25,11 @@ public class EventDatabase {
         event.setEventName(eventName);
         event.setEventDescription(eventDescription);
         event.setStartDate(startDate);
-        event.setEndDate(endDate);
         event.setPublic(isPublic);
         event.setEventId(eventId);
+        event.setLocation(location);
 
         return event;
-    }
-
-    public int getLocationId() {
-        return locationId;
     }
 
     public void setEventId(int eventId) {
@@ -44,10 +38,6 @@ public class EventDatabase {
 
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
     }
 
     public void setIsPublic(boolean aPublic) {
@@ -62,7 +52,7 @@ public class EventDatabase {
         this.eventDescription = eventDescription;
     }
 
-    public void setLocationId(int locationId) {
-        this.locationId = locationId;
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

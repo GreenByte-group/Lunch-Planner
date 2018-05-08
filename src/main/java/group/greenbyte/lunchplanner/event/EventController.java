@@ -60,7 +60,7 @@ public class EventController {
 
         try {
             int eventId = eventLogic.createEvent(SessionManager.getUserName(), event.getName(), event.getDescription(),
-                    event.getLocationId(), event.getTimeStart(), event.getTimeEnd());
+                    event.getLocation(), event.getTimeStart());
 
             response.setStatus(HttpServletResponse.SC_CREATED);
             return String.valueOf(eventId);
@@ -105,16 +105,13 @@ public class EventController {
     @ResponseBody
     public String updateEventLocation(@RequestBody String location, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
         try {
-            eventLogic.updateEventLocation(SessionManager.getUserName(),eventId,Integer.valueOf(location));
+            eventLogic.updateEventLocation(SessionManager.getUserName(),eventId,location);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
             return "";
         }catch(HttpRequestException e){
             response.setStatus(e.getStatusCode());
             return e.getErrorMessage();
-        }catch(NumberFormatException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return "not a number";
         }
     }
 
@@ -157,33 +154,6 @@ public class EventController {
         }catch(HttpRequestException e){
             response.setStatus(e.getStatusCode());
             return e.getErrorMessage();
-        }catch(NumberFormatException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return "not a number";
-        }
-    }
-
-    /**
-     *
-     * @param newTimeEnd new Date to update in Event
-     * @param eventId id of the updated event
-     * @param response response channel
-     */
-    @RequestMapping(value = "{eventId}/timeend", method = RequestMethod.PUT,
-            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-    @ResponseBody
-    public String updateEventTimEnd(@RequestBody String newTimeEnd, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
-        try {
-            eventLogic.updateEventTimeEnd(SessionManager.getUserName(),eventId, new Date(Long.valueOf(newTimeEnd)));
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-
-            return "";
-        }catch(HttpRequestException e){
-            response.setStatus(e.getStatusCode());
-            return e.getErrorMessage();
-        }catch(NumberFormatException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return "not a number";
         }
     }
 
@@ -199,10 +169,6 @@ public class EventController {
 
         try {
             List<Event> allSearchingEvents = eventLogic.getAllEvents(SessionManager.getUserName());
-
-            for(Event event : allSearchingEvents) {
-                event.getLocation().setEvents(null);
-            }
 
             return ResponseEntity
                     .status(HttpStatus.OK)

@@ -45,7 +45,7 @@ class Comments extends React.Component {
                     comments: response.data,
                 })
             })
-
+      
         // this.setState({
         //     comments: [{userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
         //         {userName: "Felix", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
@@ -96,6 +96,7 @@ class Comments extends React.Component {
                         value={this.state.newComment}
                         onChange={this.textFieldChanged}
                         placeholder ="Write a comment ..."
+
                     />
                 </form>
                 <List className={classes.list}>
