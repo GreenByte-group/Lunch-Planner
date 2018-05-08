@@ -52,9 +52,6 @@ class Event extends React.Component {
         let invitations = props.people;
         let people = invitations.map(value => value.userName).join(', ');
 
-        console.log('people');
-        console.log(people);
-
         this.state = {
             background: props.background,
             accepted: props.accepted | false,
