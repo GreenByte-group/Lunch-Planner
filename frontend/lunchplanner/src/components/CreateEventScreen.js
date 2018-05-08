@@ -223,6 +223,7 @@ class CreateEventScreen extends React.Component {
                                 value={this.state.date}
                                 format="24hr"
                                 textFieldStyle={styles.pickerTextField}
+                                //fsdsdvsdvsdv
                             />
                         </div>
                     </div>
