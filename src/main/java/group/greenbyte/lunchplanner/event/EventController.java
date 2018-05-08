@@ -1,5 +1,6 @@
 package group.greenbyte.lunchplanner.event;
 
+import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.SessionManager;
@@ -59,7 +60,7 @@ public class EventController {
 
         try {
             int eventId = eventLogic.createEvent(SessionManager.getUserName(), event.getName(), event.getDescription(),
-                    event.getLocationId(), event.getTimeStart(), event.getTimeEnd());
+                    event.getLocation(), event.getTimeStart());
 
             response.setStatus(HttpServletResponse.SC_CREATED);
             return String.valueOf(eventId);
@@ -104,16 +105,13 @@ public class EventController {
     @ResponseBody
     public String updateEventLocation(@RequestBody String location, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
         try {
-            eventLogic.updateEventLocation(SessionManager.getUserName(),eventId,Integer.valueOf(location));
+            eventLogic.updateEventLocation(SessionManager.getUserName(),eventId,location);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
             return "";
         }catch(HttpRequestException e){
             response.setStatus(e.getStatusCode());
             return e.getErrorMessage();
-        }catch(NumberFormatException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return "not a number";
         }
     }
 
@@ -156,33 +154,6 @@ public class EventController {
         }catch(HttpRequestException e){
             response.setStatus(e.getStatusCode());
             return e.getErrorMessage();
-        }catch(NumberFormatException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return "not a number";
-        }
-    }
-
-    /**
-     *
-     * @param newTimeEnd new Date to update in Event
-     * @param eventId id of the updated event
-     * @param response response channel
-     */
-    @RequestMapping(value = "{eventId}/timeend", method = RequestMethod.PUT,
-            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-    @ResponseBody
-    public String updateEventTimEnd(@RequestBody String newTimeEnd, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
-        try {
-            eventLogic.updateEventTimeEnd(SessionManager.getUserName(),eventId, new Date(Long.valueOf(newTimeEnd)));
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-
-            return "";
-        }catch(HttpRequestException e){
-            response.setStatus(e.getStatusCode());
-            return e.getErrorMessage();
-        }catch(NumberFormatException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return "not a number";
         }
     }
 
@@ -198,10 +169,6 @@ public class EventController {
 
         try {
             List<Event> allSearchingEvents = eventLogic.getAllEvents(SessionManager.getUserName());
-
-            for(Event event : allSearchingEvents) {
-                event.getLocation().setEvents(null);
-            }
 
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -282,6 +249,51 @@ public class EventController {
 
     }
 
+    /**
+     *
+     * @param eventId
+     * @param comment
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/{eventId}/comment", method = RequestMethod.PUT,
+            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String createComment(@PathVariable("eventId") int eventId, @RequestBody String comment, HttpServletResponse response){
+        try{
+            eventLogic.newComment(SessionManager.getUserName(), comment, eventId);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+
+            return "";
+        }catch(HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+
+    }
+
+    /**
+     * Get all comments of an event
+     *
+     * @return a list of all comments
+     */
+    @RequestMapping(value = "/{eventId}/getComments", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getAllComments(@PathVariable("eventId") int eventId) {
+
+        try {
+            List<Comment> allComments = eventLogic.getAllComments(SessionManager.getUserName(), eventId);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(allComments);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
 
     @Autowired
     public void setEventLogic(EventLogic eventLogic) {

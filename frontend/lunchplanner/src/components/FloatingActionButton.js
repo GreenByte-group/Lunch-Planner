@@ -40,7 +40,7 @@ class FloatingActionButton extends React.Component {
 
         return (
             <Button variant="fab" color="secondary" className={classNames(classes.button, classes.whiteSymbol, classes.floatingButton)} onClick={this.props.onClick}>
-                {(() => {console.log('Icon: ' + this.state.icon); switch (this.state.icon) {
+                {(() => {switch (this.state.icon) {
                     case 'add':
                         return <AddIcon />;
                     case 'done':

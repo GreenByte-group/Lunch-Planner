@@ -7,23 +7,28 @@ import Toolbar from 'material-ui/Toolbar';
 import IconButton from 'material-ui/IconButton';
 import Typography from 'material-ui/Typography';
 import CloseIcon from '@material-ui/icons/Close';
+import SearchIcon from '@material-ui/icons/Search';
 import Slide from 'material-ui/transitions/Slide';
 
 import {Link} from "react-router-dom";
 import axios from "axios/index";
 import {HOST} from "../../Config";
-import {List} from "material-ui";
+import {List, TextField} from "material-ui";
 import User from "./User";
 import FloatingActionButton from "../FloatingActionButton";
 
 const styles = {
+    root: {
+      position: 'fixed'
+    },
     appBar: {
-        position: 'relative',
+        position: 'fixed',
     },
     flex: {
         flex: 1,
     },
     list: {
+        marginTop: '56px',
         padding: 0,
     },
 
@@ -48,34 +53,38 @@ class SelectUserScreen extends React.Component {
         this.state = {
             open: true,
             users: [],
+            search: "",
             selectedUsers: array || [],
         };
-
-        console.log(this.state.selectedUsers);
     }
 
     componentDidMount() {
-        this.setState({
-            search: this.props.search,
-        });
+        this.updateUsers(this.props.search);
+    }
 
+    updateUsers(search) {
         let url;
-        if(this.props.search)
-            url = HOST + "/user/search/" + this.props.search;
-        else
+        if(search == null || search === undefined || search === "")
             url = HOST + "/user";
+        else
+            url = HOST + "/user/search/" + search;
 
         axios.get(url)
             .then((response) => {
                 this.setState({
+                    search: search,
                     users: response.data,
                 })
             });
-
-        // this.setState({
-        //     users: [{username: "Martin"}, {username: "Sarah"}, {username: "Test"}, {username: "Test2"}]
-        // });
     }
+
+    searchChanged = (event) => {
+        this.setState({
+            search: event.target.value,
+        });
+
+        this.updateUsers(event.target.value);
+    };
 
     clickHandler = (username, selected) => {
         let selectedUsers = this.state.selectedUsers;
@@ -100,17 +109,16 @@ class SelectUserScreen extends React.Component {
     render() {
         const { classes } = this.props;
         let users = this.state.users;
+
+        // Title for appbar
         let countSelected = this.state.selectedUsers.length;
         let textTitle = "Select users";
         if(countSelected !== 0) {
             textTitle = countSelected + " selected";
         }
 
-        console.log('--------------');
-        console.log(this.state.selectedUsers);
-
         return (
-            <div>
+            <div className={classes.root}>
                 <Dialog
                     fullScreen
                     open={this.state.open}
@@ -120,14 +128,22 @@ class SelectUserScreen extends React.Component {
                     <AppBar className={classes.appBar} color ="white">
                         <Toolbar>
                             <Link to="/event/create">
-                                <IconButton color="inherit" aria-label="Close">
+                                <IconButton color="primary" aria-label="Close">
                                     <CloseIcon />
                                 </IconButton>
                             </Link>
                             <Typography variant="title" color="inherit" className={classes.flex}>
                                 {textTitle}
                             </Typography>
-
+                            <div>
+                                <IconButton color="primary">
+                                    <SearchIcon />
+                                </IconButton>
+                                <TextField
+                                    value={this.state.search}
+                                    onChange={this.searchChanged}
+                                />
+                            </div>
                         </Toolbar>
                     </AppBar>
                     <List className={classes.list}>

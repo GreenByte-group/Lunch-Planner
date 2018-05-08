@@ -1,11 +1,7 @@
 package group.greenbyte.lunchplanner.event.database;
 
-import group.greenbyte.lunchplanner.location.database.Location;
-
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Event {
@@ -14,6 +10,8 @@ public class Event {
     static final public int MAX_DESCRITION_LENGTH = 1000;
     static final public int MAX_EVENTNAME_LENGTH = 50;
     static final public int MAX_SEARCHWORD_LENGTH = 50;
+    static final public int MAX_COMMENT_LENGTH = 100;
+    static final public int MAX_LOCATION_LENGTH = 255;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,9 +19,6 @@ public class Event {
 
     @Column(name="startDate")
     private Date startDate;
-
-    @Column(name="endDate")
-    private Date endDate;
 
     @Column(nullable = false)
     private boolean isPublic;
@@ -34,12 +29,14 @@ public class Event {
     @Column(length = MAX_DESCRITION_LENGTH)
     private String eventDescription;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "locationId")
-    private Location location;
+    @Column(length = MAX_LOCATION_LENGTH)
+    private String location;
 
     @OneToMany(mappedBy = "userInvited", fetch = FetchType.EAGER)
     private Set<EventInvitation> usersInvited = new HashSet<>();
+
+    @OneToMany(mappedBy = "userComment", fetch = FetchType.EAGER)
+    private List<Comment> comments = new ArrayList<>();
 
     public Event() {
         isPublic = false;
@@ -55,14 +52,6 @@ public class Event {
 
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
     }
 
     public boolean isPublic() {
@@ -89,15 +78,19 @@ public class Event {
         this.eventDescription = eventDescription;
     }
 
-    public Location getLocation() {
+    public void setEventId(Integer eventId) {
+        this.eventId = eventId;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public String getLocation() {
         return location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(String location) {
         this.location = location;
-    }
-
-    public void setEventId(Integer eventId) {
-        this.eventId = eventId;
     }
 }
