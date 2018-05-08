@@ -9,30 +9,21 @@ import java.util.Date;
  */
 public class EventJson implements Serializable {
 
-    private static final long serialVersionUID = 465186153151351685L;
+    private static final long serialVersionUID = 465186153151351686L;
 
     public EventJson() { }
 
-    public EventJson(String name, String description, int locationId, Date timeStart, Date timeEnd) {
+    public EventJson(String name, String description, String location, Date timeStart) {
         this.name = name;
         this.description = description;
-        this.locationId = locationId;
         this.timeStart = timeStart;
-        this.timeEnd = timeEnd;
-    }
-
-    public EventJson(String name, String description, int locationId, Date timeStart) {
-        this.name = name;
-        this.description = description;
-        this.locationId = locationId;
-        this.timeStart = timeStart;
+        this.location = location;
     }
 
     private String name;
     private String description;
-    private int locationId;
     private Date timeStart;
-    private Date timeEnd;
+    private String location;
 
     public String getName() {
         return name;
@@ -50,14 +41,6 @@ public class EventJson implements Serializable {
         this.description = description;
     }
 
-    public int getLocationId() {
-        return locationId;
-    }
-
-    public void setLocationId(int locationId) {
-        this.locationId = locationId;
-    }
-
     public Date getTimeStart() {
         return timeStart;
     }
@@ -66,11 +49,11 @@ public class EventJson implements Serializable {
         this.timeStart = timeStart;
     }
 
-    public Date getTimeEnd() {
-        return timeEnd;
+    public String getLocation() {
+        return location;
     }
 
-    public void setTimeEnd(Date timeEnd) {
-        this.timeEnd = timeEnd;
+    public void setLocation(String location) {
+        this.location = location;
     }
 }
