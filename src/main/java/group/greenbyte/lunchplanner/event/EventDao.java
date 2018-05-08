@@ -18,9 +18,7 @@ public interface EventDao {
      * @param userName id of the user who creates the events
      * @param eventName name of the event
      * @param description description of the event
-     * @param locationId id of the location
      * @param timeStart time when the event starts
-     * @param timeEnd time when the events ends
      * @return the inserted Event
      *
      * @throws DatabaseException when an unexpected error happens
@@ -28,9 +26,8 @@ public interface EventDao {
     Event insertEvent(String userName,
                       String eventName,
                       String description,
-                      int locationId,
-                      Date timeStart,
-                      Date timeEnd) throws DatabaseException;
+                      String location,
+                      Date timeStart) throws DatabaseException;
 
     /**
      * Gets the event with location but without usersInvited and teamsVisible
@@ -60,18 +57,17 @@ public interface EventDao {
      * @throws DatabaseException when an unexpected error happens
      */
     Event updateEventDescription(int eventId,
-                                 String description
-                                 ) throws DatabaseException;
+                                 String description) throws DatabaseException;
 
     /**
      *
      * @param eventId id of the event
-     * @param locationId id of the location
+     * @param location Name, Adress or google place api id key
      * @return the updated event
      * @throws DatabaseException when an unexpected error happens
      */
     Event updateEventLocation(int eventId,
-                              int locationId) throws DatabaseException;
+                              String location) throws DatabaseException;
 
     /**
      *
@@ -82,16 +78,6 @@ public interface EventDao {
      */
     Event updateEventTimeStart(int eventId,
                                Date timeStart) throws DatabaseException;
-
-    /**
-     *
-     * @param eventId id of the event
-     * @param timeEnd time when the events ends
-     * @return the updated event
-     * @throws DatabaseException when an unexpected error happens
-     */
-    Event updateEventTimeEnd(int  eventId,
-                             Date timeEnd) throws DatabaseException;
 
     /**
      * For now only for test purpose
