@@ -70,10 +70,12 @@ class EventList extends React.Component {
                         showLightBackground = !showLightBackground;
 
                         return <Event name={listValue.eventName}
+                                      id={listValue.eventId}
                                       description={listValue.eventDescription}
                                       date={listValue.startDate}
                                       background={background}
                                       accepted={true}
+                                      location={listValue.location.locationName}
                         />;
                     })}
                 </List>

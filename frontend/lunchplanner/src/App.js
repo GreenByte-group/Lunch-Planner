@@ -8,6 +8,8 @@ import { MuiThemeProvider as OldMuiThemeProvider } from 'material-ui-old/styles'
 import { createMuiTheme } from 'material-ui/styles'
 import CreateEventScreen from "./components/CreateEventScreen";
 import SelectUserScreen from "./components/User/SelectUserScreen";
+import EventScreen from "./components/Event/EventScreen";
+import ServiceListScreen from "./components/Event/ServiceListScreen";
 import Comments from "./components/Event/Comments"
 import {getMuiTheme} from "material-ui-old/styles/index";
 
@@ -22,6 +24,9 @@ const theme = createMuiTheme({
     palette: {
         primary: {main: "#75a045"},
         secondary: {main: '#f29b26'},
+    },
+    typography: {
+        fontFamily: "Work Sans",
     },
 
 });

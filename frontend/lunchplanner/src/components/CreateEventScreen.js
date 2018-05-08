@@ -9,13 +9,12 @@ import IconButton from 'material-ui/IconButton';
 import Typography from 'material-ui/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from 'material-ui/transitions/Slide';
-import FloatingActionButton from "./FloatingActionButton";
 import TextField from "material-ui/es/TextField/TextField";
 import ExpansionPanel, {ExpansionPanelSummary, ExpansionPanelDetails,} from 'material-ui/ExpansionPanel';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Switch from 'material-ui/Switch';
 import AddIcon from '@material-ui/icons/Add';
-import {FormGroup, FormControlLabel,FormHelperText,} from 'material-ui/Form';
+import {FormGroup, FormControlLabel,} from 'material-ui/Form';
 import {createEvent} from "./CreateEventFunctions";
 import {DatePicker, TimePicker} from 'material-ui-old';
 import {Schedule, Today} from "@material-ui/icons";
@@ -23,6 +22,7 @@ import {Schedule, Today} from "@material-ui/icons";
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import "../assets/CreateEventScreen.css"
 import {Link} from "react-router-dom";
+import {Today, Schedule} from "@material-ui/icons";
 
 const styles = {
     appBar: {
@@ -32,16 +32,16 @@ const styles = {
         flex: 1,
     },
     textField: {
-        marginTop:20,
         marginBottom:30,
         marginLeft: 20,
         width: "90%",
     },
     button:{
         color: "white",
-        position: "fixed",
+        position: "inherit",
         bottom:0,
-        width: "100%"
+        width: "100%",
+        minWidth: '20 important', //warum geht das nicht?
     },
     error: {
         textAlign: 'center',
@@ -203,6 +203,28 @@ class CreateEventScreen extends React.Component {
                             onChange={this.handleChange}
                             margin="normal"
                         />
+                        <div className={classes.textField}>
+                            <Today viewBox="-5 -5 27 27"  />
+                            <Schedule viewBox="-5 -5 27 27"/>
+                            <DatePicker
+                                selected={this.state.date}
+                                onChange={this.handleDate}
+                                value={this.state.date}
+                                showTimeSelect
+                                timeFormat="HH:mm"
+                                timeIntervals={15}
+                                dateFormat="LLL"
+                                timeCaption="time"
+                            />
+                        </div>
+                        <TextField
+                            id="description"
+                            label="Description"
+                            placeholder="Description"
+                            multiline
+                            className={classes.textField}
+                            style={{marginTop:-100}}
+                        />
                     </form>
                     <div>
                         <p className={classes.dateHeader}>Date</p><p className={classes.timeHeader}>Time</p>
@@ -244,9 +266,9 @@ class CreateEventScreen extends React.Component {
                                         source: "/event/create",
                                         invitedUsers: this.state.invitedUsers,
                                     }}}>
-                                    <Button classname={classes.addButton}>
-                                        <AddIcon color='primary'/>
-                                    </Button>
+                                    <IconButton>
+                                        <AddIcon />
+                                    </IconButton>
                                 </Link>
 
                                 <FormControlLabel

@@ -4,6 +4,10 @@ import ListItem from "material-ui/List/ListItem";
 import {withStyles} from "material-ui";
 import {Schedule, Today} from "@material-ui/icons";
 import AcceptedButton from "./AcceptedButton";
+import {Link} from "react-router-dom";
+import EventScreen from "./EventScreen";
+import Avatar from "material-ui/es/Avatar/Avatar";
+import Chip from "material-ui/es/Chip/Chip";
 
 const styles = {
     listItem: {
@@ -52,15 +56,22 @@ class Event extends React.Component {
         this.state = {
             background: props.background,
             accepted: props.accepted | false,
+            id: props.id,
             name: props.name,
             description: props.description,
             monthDay: date.format('DD MMM'),
             time: date.format('HH:mm'),
+            location: props.location,
 
             //TODO invited people
-            people: 'Can, Santino, Felix, Martin',
+            people:
+                [{userName: "Can", short: "C"},
+                  {userName: "Felix", short: "F"},
+                  {userName: "Martin", short: "M"},
+                ],
         }
     }
+
 
     render() {
         const {classes} = this.props;
@@ -73,19 +84,40 @@ class Event extends React.Component {
         let monthDay = this.state.monthDay;
         let time = this.state.time;
         let people = this.state.people;
+        let location = this.state.location;
 
         return (
-            <ListItem style={{backgroundColor: background}} button className={classes.listItem}>
-                <div className={classes.text}>
-                    <p className={classes.title}>{name}</p>
-                    <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
-                    <p className={classes.users}>{people}</p>
-                </div>
-                {(accepted
-                        ? <AcceptedButton text="Accepted" />
-                        : ""
-                )}
-            </ListItem>
+            <Link to={{pathname:`/event/${this.state.id}`, query:{
+                    eventName: name,
+                    description: description,
+                    monthDay: monthDay,
+                    time: time,
+                    people: people,
+                    accepted: accepted,
+                    location:location
+                }}}>
+                <ListItem style={{backgroundColor: background}} button className={classes.listItem}>
+                    <div className={classes.text}>
+                        <p className={classes.title}>{name}</p>
+                        <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
+                        <div className={classes.users}>
+                            {people.map(function(p){
+                                let peopleShortcut = p.short;
+                                return <Chip
+                                    avatar={<Avatar >{peopleShortcut}</Avatar>}
+                                    label={p.userName}
+                                    className={classes.chip}
+                                />
+                            })}
+                        </div>
+                    </div>
+                    {(accepted
+                            ? <AcceptedButton text="Accepted" />
+                            : ""
+                    )}
+                </ListItem>
+            </Link>
+
         );
     }
 }
