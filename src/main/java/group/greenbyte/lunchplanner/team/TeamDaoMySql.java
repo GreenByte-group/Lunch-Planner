@@ -114,7 +114,7 @@ public class TeamDaoMySql implements TeamDao {
                 return null;
             else {
                 Team team = teams.get(0).getTeam();
-                if(teams.get(0).getParentTeam() != -1)
+                if(teams.get(0).getParentTeam() != null)
                     team.setParentTeam(getTeamWithParent(teams.get(0).getParentTeam()));
 
                 return team;

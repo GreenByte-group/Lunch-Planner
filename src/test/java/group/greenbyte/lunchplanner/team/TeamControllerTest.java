@@ -26,6 +26,7 @@ import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration (classes = AppConfig.class)
@@ -50,16 +51,20 @@ public class TeamControllerTest {
 
     private final String userName = "banane";
     private int locationId;
-    private int eventId;
+
+
     private int teamId;
-    private String teamDescription;
+    private String description;
+    private String teamName;
 
     @Before
     public void setUp() throws Exception {
+        teamName = createString(20);
+        description = createString(50);
 
         createUserIfNotExists(userLogic, userName);
 
-        teamId = createTeamWithoutParent(teamLogic, userName, createString(50), createString(50));
+        teamId = createTeamWithoutParent(teamLogic, userName, teamName, description);
 
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
         //mockMvc = MockMvcBuilders.standaloneSetup(eventController).build();
@@ -228,7 +233,32 @@ public class TeamControllerTest {
 
     // ------------------ GET TEAM -------------------------
 
+    @Test
+    @WithMockUser(username = userName)
+    public void test1GetTeamValid() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/team/" + teamId))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.teamId").value(teamId))
+                .andExpect(jsonPath("$.teamName").value(teamName))
+                .andExpect(jsonPath("$.description").value(description));
 
+    }
 
+    @Test
+    @WithMockUser(username = userName)
+    public void test2GetTeamInValid() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/team/" + teamId + 100))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "otherUser")
+    public void test3GetTeamInvalidUser() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/team/" + teamId))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
 
 }
