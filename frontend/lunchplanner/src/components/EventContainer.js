@@ -45,7 +45,7 @@ const styles = theme => ({
     },
 });
 
-class FullWidthTabs extends React.Component {
+class EventContainer extends React.Component {
     state = {
         value: 0,
     };
@@ -95,9 +95,9 @@ class FullWidthTabs extends React.Component {
     }
 }
 
-FullWidthTabs.propTypes = {
+EventContainer.propTypes = {
     classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(FullWidthTabs);
+export default withStyles(styles, { withTheme: true })(EventContainer);

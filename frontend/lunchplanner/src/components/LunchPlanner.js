@@ -1,6 +1,6 @@
 import React from "react";
 import Appbar from "./Appbar";
-import FullWidthTabs from "./FullWidthTabs";
+import FullWidthTabs from "./EventContainer";
 import BottomNavigationBar from "./BottomNavigationBar";
 import axios from "axios"
 import {TOKEN} from "../Config";

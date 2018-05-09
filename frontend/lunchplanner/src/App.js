@@ -12,6 +12,7 @@ import EventScreen from "./components/Event/EventScreen";
 import ServiceListScreen from "./components/Event/ServiceListScreen";
 import Comments from "./components/Event/Comments"
 import {getMuiTheme} from "material-ui-old/styles/index";
+import SocialScreen from "./components/SocialScreen";
 
 const oldTheme = getMuiTheme({
     palette: {
@@ -57,6 +58,7 @@ class App extends React.Component {
                             />
 
                             <PrivateRoute path="/event" component={LunchPlanner} />
+                            <PrivateRoute path="/social" component={SocialScreen} />
                             <PrivateRoute path="/event/:eventId" component={EventScreen} />
                             <PrivateRoute path="/event/:eventId/service" component={ServiceListScreen} />
                             <PrivateRoute path="/event/create" component={CreateEventScreen} />

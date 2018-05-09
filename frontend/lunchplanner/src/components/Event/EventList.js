@@ -27,6 +27,7 @@ class EventList extends React.Component {
         super(props);
         this.state = {
             events: [],
+            search:null,
         }
     }
 
