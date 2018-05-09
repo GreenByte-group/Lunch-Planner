@@ -53,6 +53,9 @@ class Event extends React.Component {
         //http://momentjs.com/docs/
         let date = moment(props.date);
 
+        let invitations = props.people;
+        let people = invitations.map(value => value.userName).join(', ');
+
         this.state = {
             background: props.background,
             accepted: props.accepted | false,
@@ -61,14 +64,8 @@ class Event extends React.Component {
             description: props.description,
             monthDay: date.format('DD MMM'),
             time: date.format('HH:mm'),
+            people: people,
             location: props.location,
-
-            //TODO invited people
-            people:
-                [{userName: "Can", short: "C"},
-                  {userName: "Felix", short: "F"},
-                  {userName: "Martin", short: "M"},
-                ],
         }
     }
 
@@ -85,6 +82,9 @@ class Event extends React.Component {
         let time = this.state.time;
         let people = this.state.people;
         let location = this.state.location;
+
+        console.log('people');
+        console.log(people);
 
         return (
             <Link to={{pathname:`/event/${this.state.id}`, query:{

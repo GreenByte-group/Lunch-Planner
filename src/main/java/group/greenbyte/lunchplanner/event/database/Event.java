@@ -38,6 +38,9 @@ public class Event {
     @OneToMany(mappedBy = "userComment", fetch = FetchType.EAGER)
     private List<Comment> comments = new ArrayList<>();
 
+    @Transient
+    private Set<EventInvitationDataForReturn> invitations = new HashSet<>();
+
     public Event() {
         isPublic = false;
     }
@@ -92,5 +95,13 @@ public class Event {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public Set<EventInvitationDataForReturn> getInvitations() {
+        return invitations;
+    }
+
+    public void setInvitations(Set<EventInvitationDataForReturn> invitations) {
+        this.invitations = invitations;
     }
 }
