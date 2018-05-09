@@ -78,6 +78,7 @@ public class EventDaoMySql implements EventDao {
             if (events.size() == 0)
                 return null;
             else {
+                Event event = events.get(0).getEvent();
                 event.setInvitations(new HashSet<>(getInvitations(eventId)));
 
                 return event;

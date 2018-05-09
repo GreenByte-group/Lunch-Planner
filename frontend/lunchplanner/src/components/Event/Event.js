@@ -83,8 +83,8 @@ class Event extends React.Component {
         let people = this.state.people;
         let location = this.state.location;
 
-        console.log('people');
-        console.log(people);
+        people = people.split(',');
+        people = people.map((value) => value.trim());
 
         return (
             <Link to={{pathname:`/event/${this.state.id}`, query:{
@@ -96,16 +96,17 @@ class Event extends React.Component {
                     accepted: accepted,
                     location:location
                 }}}>
+
                 <ListItem style={{backgroundColor: background}} button className={classes.listItem}>
                     <div className={classes.text}>
                         <p className={classes.title}>{name}</p>
                         <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
                         <div className={classes.users}>
-                            {people.map(function(p){
-                                let peopleShortcut = p.short;
+                            {people.map((person) => {
+                                let peopleShortcut = person.charAt(0);
                                 return <Chip
                                     avatar={<Avatar >{peopleShortcut}</Avatar>}
-                                    label={p.userName}
+                                    label={person}
                                     className={classes.chip}
                                 />
                             })}
