@@ -23,35 +23,31 @@ class Comments extends React.Component {
         setAuthenticationHeader();
 
         this.state = {
-            eventId: "",
+            eventId: props.eventId,
             comments: [],
             newComment: "",
         }
     }
 
-    componentDidMount() {
-        // let eventId = this.props.eventId;
-        let eventId = 28;
+    componentWillReceiveProps(newProps, newContext) {
+        if(this.state.eventId !== newProps.eventId) {
+            console.log("EventId: " + newProps.eventId);
+            let url = HOST + "/event/" + newProps.eventId + "/getComments";
 
-        this.setState({
-            eventId: eventId,
-        });
-
-        let url = HOST + "/event/" + eventId + "/getComments";
-
-        axios.get(url)
-            .then((response) => {
-                this.setState({
-                    comments: response.data,
+            axios.get(url)
+                .then((response) => {
+                    this.setState({
+                        comments: response.data,
+                    })
                 })
-            })
-      
-        // this.setState({
-        //     comments: [{userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
-        //         {userName: "Felix", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
-        //         {userName: "Can", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
-        //         {userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"}]
-        // })
+
+            // this.setState({
+            //     comments: [{userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
+            //         {userName: "Felix", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
+            //         {userName: "Can", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
+            //         {userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"}]
+            // })
+        }
     }
 
     textFieldChanged = (event) => {

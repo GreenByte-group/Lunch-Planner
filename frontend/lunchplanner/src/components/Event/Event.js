@@ -42,6 +42,7 @@ const styles = {
     text: {
         float: 'left',
         width: '100%',
+        color: 'black',
     }
 };
 
@@ -102,14 +103,17 @@ class Event extends React.Component {
                         <p className={classes.title}>{name}</p>
                         <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
                         <div className={classes.users}>
-                            {people.map((person) => {
-                                let peopleShortcut = person.charAt(0);
-                                return <Chip
-                                    avatar={<Avatar >{peopleShortcut}</Avatar>}
-                                    label={person}
-                                    className={classes.chip}
-                                />
-                            })}
+                            {
+                                people.join(', ')
+                                // people.map((person) => {
+                                // let peopleShortcut = person.charAt(0);
+                                // return <Chip
+                                //     avatar={<Avatar >{peopleShortcut}</Avatar>}
+                                //     label={person}
+                                //     className={classes.chip}
+                                // />
+                                //})
+                            }
                         </div>
                     </div>
                     {(accepted
