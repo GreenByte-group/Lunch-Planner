@@ -2,8 +2,11 @@ package group.greenbyte.lunchplanner.team;
 
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.SessionManager;
+import group.greenbyte.lunchplanner.team.database.Team;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +16,29 @@ import javax.servlet.http.HttpServletResponse;
 public class TeamController {
 
     private TeamLogic teamlogic;
+
+    /**
+     * Returns one team by his id
+     *
+     * @param teamId id of the team
+     * @return the team
+     */
+    @RequestMapping(value = "/{teamId}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getTeam(@PathVariable("teamId") int teamId) {
+        try {
+            Team team = teamlogic.getTeam(SessionManager.getUserName(), teamId);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(team);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
     /**
      * Create a Team with all the data given in TeamJson
      *

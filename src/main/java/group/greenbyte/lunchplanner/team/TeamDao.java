@@ -43,7 +43,7 @@ public interface TeamDao {
      * @return returns a team object
      * @throws DatabaseException
      */
-    Team getTeamWithParent(int teamId) throws DatabaseException;
+    //Team getTeamWithParent(int teamId) throws DatabaseException;
 
     /**
      * Adds an admin to the existing team. The user wasnt in the team before

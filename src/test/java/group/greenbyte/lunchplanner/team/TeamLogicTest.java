@@ -2,7 +2,9 @@ package group.greenbyte.lunchplanner.team;
 
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import group.greenbyte.lunchplanner.team.database.Team;
 import group.greenbyte.lunchplanner.user.UserLogic;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,10 +44,19 @@ public class TeamLogicTest {
     private String userName;
     private int parent;
 
+    private String teamName;
+    private int teamId;
+    private String description;
+
     @Before
     public void setUp() throws Exception {
         userName = createUserIfNotExists(userLogic, "dummy");
         parent = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
+
+        description = createString(50);
+        teamName = createString(20);
+
+        teamId = createTeamWithoutParent(teamLogic, userName, teamName, description);
     }
 
     // ------------------------- CREATE TEAM WITH PARENT ------------------------------
@@ -262,4 +273,15 @@ public class TeamLogicTest {
 
         teamLogic.inviteTeamMember(userName, userToInvite, parent);
     }
+
+    // ------------------ GET TEAM ------------------------
+
+    @Test
+    public void test1GetTeam() throws Exception {
+        Team team = teamLogic.getTeam(userName,teamId);
+        Assert.assertEquals(teamName, team.getTeamName());
+        Assert.assertEquals(description, team.getDescription());
+        Assert.assertEquals((int) teamId, (int) team.getTeamId());
+    }
+
 }
