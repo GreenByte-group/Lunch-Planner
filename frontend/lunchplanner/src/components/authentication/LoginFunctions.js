@@ -1,5 +1,5 @@
 import axios from "axios";
-import {HOST, TOKEN} from "../../Config";
+import {HOST, TOKEN, USERNAME} from "../../Config";
 
 const authentication = {
     isAuthenticated: false,
@@ -22,7 +22,7 @@ export function doLogin(username, password, responseFunc) {
                 console.log("Token: " + response.data.token);
                 localStorage.removeItem(TOKEN);
                 localStorage.setItem(TOKEN, response.data.token );
-                axios.defaults.headers.common['Authorization'] = response.data.token;
+                localStorage.setItem(USERNAME, username);
                 authentication.isAuthenticated = true;
                 responseFunc({type: "LOGIN_SUCCESS", payload: response.data})
             })
@@ -41,7 +41,7 @@ export function doLogin(username, password, responseFunc) {
 }
 
 export function doLogout() {
-    localStorage.removeItem(TOKEN)
+    localStorage.removeItem(TOKEN);
     authentication.isAuthenticated = false;
     return {
         type: "IS_NOT_AUTHENTICATED",

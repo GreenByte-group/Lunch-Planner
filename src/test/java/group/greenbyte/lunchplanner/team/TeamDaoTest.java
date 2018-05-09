@@ -3,9 +3,11 @@ package group.greenbyte.lunchplanner.team;
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.EventLogic;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
+
 import group.greenbyte.lunchplanner.location.LocationLogic;
 import group.greenbyte.lunchplanner.location.database.Coordinate;
 import group.greenbyte.lunchplanner.team.database.Team;
+
 import group.greenbyte.lunchplanner.user.UserLogic;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,10 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
-import static group.greenbyte.lunchplanner.location.Utils.createLocation;
 import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
-import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -44,11 +44,7 @@ public class TeamDaoTest {
     @Autowired
     private UserLogic userLogic;
 
-    @Autowired
-    private LocationLogic locationLogic;
-
     private String userName;
-    private int locationId;
     private int eventId;
     private int parent;
 
@@ -59,8 +55,7 @@ public class TeamDaoTest {
     @Before
     public void setUp() throws Exception {
         userName = createUserIfNotExists(userLogic, "dummy");
-        locationId = createLocation(locationLogic, userName, "Test location", "test description");
-        eventId = createEvent(eventLogic, userName, locationId);
+        eventId = createEvent(eventLogic, userName, "Test location");
         parent = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
 
         description = createString(50);

@@ -1,11 +1,6 @@
 package group.greenbyte.lunchplanner.user;
 
-import group.greenbyte.lunchplanner.event.database.Event;
-import group.greenbyte.lunchplanner.event.database.EventDatabase;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import group.greenbyte.lunchplanner.location.LocationDao;
-import group.greenbyte.lunchplanner.team.TeamDaoMySql;
-import group.greenbyte.lunchplanner.team.database.Team;
 import group.greenbyte.lunchplanner.user.database.User;
 import group.greenbyte.lunchplanner.user.database.UserDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +10,10 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 public class UserDaoMySql implements UserDao {
