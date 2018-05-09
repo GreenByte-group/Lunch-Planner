@@ -94,14 +94,18 @@ public class TeamDaoMySql implements TeamDao {
             if (teams.size() == 0)
                 return null;
             else {
-                return teams.get(0).getTeam();
+                Team team = teams.get(0).getTeam();
+                if(teams.get(0).getParentTeam() != null)
+                    team.setParentTeam(getTeam(teams.get(0).getParentTeam()));
+
+                return team;
             }
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
     }
 
-    @Override
+    /*@Override
     public Team getTeamWithParent(int teamId) throws DatabaseException {
         try {
             String SQL = "SELECT * FROM " + TEAM_TABLE + " WHERE " + TEAM_ID + " = ?";
@@ -122,7 +126,7 @@ public class TeamDaoMySql implements TeamDao {
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
-    }
+    }*/
 
     @Override
     public void addAdminToTeam(int teamId, String userName) throws DatabaseException {

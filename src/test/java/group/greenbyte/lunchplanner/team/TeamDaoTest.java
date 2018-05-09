@@ -5,7 +5,9 @@ import group.greenbyte.lunchplanner.event.EventLogic;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.location.LocationLogic;
 import group.greenbyte.lunchplanner.location.database.Coordinate;
+import group.greenbyte.lunchplanner.team.database.Team;
 import group.greenbyte.lunchplanner.user.UserLogic;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,12 +52,21 @@ public class TeamDaoTest {
     private int eventId;
     private int parent;
 
+    private String teamName;
+    private String description;
+    private int teamId;
+
     @Before
     public void setUp() throws Exception {
         userName = createUserIfNotExists(userLogic, "dummy");
         locationId = createLocation(locationLogic, userName, "Test location", "test description");
         eventId = createEvent(eventLogic, userName, locationId);
         parent = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
+
+        description = createString(50);
+        teamName = createString(20);
+
+        teamId = createTeamWithoutParent(teamLogic, userName, teamName, description);
     }
 
     @Test
@@ -150,7 +161,21 @@ public class TeamDaoTest {
         teamDao.addUserToTeam(parent, userToInviteName);
     }
 
+    // ------------------ GET TEAM ------------------------
 
+    @Test
+    public void test1GetTeam() throws Exception {
+        Team team = teamDao.getTeam(teamId);
+        Assert.assertEquals(teamName, team.getTeamName());
+        Assert.assertEquals(description, team.getDescription());
+        Assert.assertEquals((int) teamId, (int) team.getTeamId());
+
+    }
+
+    @Test
+    public void test2GetTeam() throws Exception {
+        Assert.assertNull(teamDao.getTeam(teamId + 1000));
+    }
 
 
 }
