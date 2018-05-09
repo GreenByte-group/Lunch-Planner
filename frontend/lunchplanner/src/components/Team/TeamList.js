@@ -35,9 +35,9 @@ class TeamList extends React.Component {
 
         let url;
         if(this.props.search)
-            url = HOST + "/team/search/" + this.props.search;
+            url = HOST + "/event/search/" + this.props.search;
         else
-            url = HOST + "/team";
+            url = HOST + "/event";
 
         axios.get(url)
             .then((response) => {
@@ -54,9 +54,9 @@ class TeamList extends React.Component {
             <div className={classes.root}>
                 <List className={classes.list}>
                     {teams.map((listValue)=>{
-                        return <Team name={listValue.teamName}
-                                      id={listValue.teamId}
-                                     member={listValue.member}
+                        return <Team name={listValue.eventName}
+                                      id={listValue.eventId}
+                                     member={listValue.invitations}
                         />;
                     })}
                 </List>
