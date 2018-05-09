@@ -16,6 +16,8 @@ import Chip from "material-ui/es/Chip/Chip";
 import Avatar from "material-ui/es/Avatar/Avatar";
 import ServiceIcon from "@material-ui/icons/Toc"
 import Comments from "./Comments";
+import {HOST} from "../../Config";
+import axios from "axios/index";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -60,8 +62,8 @@ class EventScreen extends React.Component {
             isAdmin: false,
             name:"",
             location:"",
-            monthDay: null,
-            time: null,
+            monthDay: "",
+            time: "",
             description: "",
             people:[],
             accepted: true,
@@ -69,13 +71,12 @@ class EventScreen extends React.Component {
     }
 
     componentDidMount() {
-        //TODO wenn die props nicht übergebn wurden ein GET aufrufen, um die Daten zu holen
-
         let eventName, description, monthDay, time, people, accepted, location, eventId;
 
         eventId = this.props.match.params.eventId;
 
         if(this.props.location.query) {
+            console.log("Query exists");
             if (this.props.location.query.eventName) {
                 eventName = String(this.props.location.query.eventName);
             }
@@ -108,14 +109,25 @@ class EventScreen extends React.Component {
                 accepted: accepted,
                 location: location,
             })
+        } else {
+            console.log("Query does not exists");
+            let url = HOST + "/event/" + eventId;
+
+            axios.get(url)
+                .then((response) => {
+                    this.setState({
+                        eventId: response.data.eventId,
+                        name: response.data.eventName,
+                        description: response.data.eventDescription,
+                        location: response.data.location,
+                        people: response.data.invitations.map((value) => value.userName),
+                    })
+                });
         }
     }
 
 
     render() {
-        console.log('State');
-        console.log(this.state);
-
         const { classes } = this.props;
         const error = this.state.error;
         let name = this.state.name;
@@ -126,6 +138,9 @@ class EventScreen extends React.Component {
         let people = this.state.people;
         let monthDay = this.state.monthDay;
         let eventId = this.state.eventId;
+
+        console.log("State");
+        console.log(this.state);
 
         return (
             <div>

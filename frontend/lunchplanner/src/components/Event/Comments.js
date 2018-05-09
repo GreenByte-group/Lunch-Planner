@@ -29,22 +29,25 @@ class Comments extends React.Component {
         }
     }
 
-    componentDidMount() {
-        let url = HOST + "/event/" + this.state.eventId + "/getComments";
+    componentWillReceiveProps(newProps, newContext) {
+        if(this.state.eventId !== newProps.eventId) {
+            console.log("EventId: " + newProps.eventId);
+            let url = HOST + "/event/" + newProps.eventId + "/getComments";
 
-        axios.get(url)
-            .then((response) => {
-                this.setState({
-                    comments: response.data,
+            axios.get(url)
+                .then((response) => {
+                    this.setState({
+                        comments: response.data,
+                    })
                 })
-            })
-      
-        // this.setState({
-        //     comments: [{userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
-        //         {userName: "Felix", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
-        //         {userName: "Can", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
-        //         {userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"}]
-        // })
+
+            // this.setState({
+            //     comments: [{userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
+            //         {userName: "Felix", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
+            //         {userName: "Can", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
+            //         {userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"}]
+            // })
+        }
     }
 
     textFieldChanged = (event) => {
