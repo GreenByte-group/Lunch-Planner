@@ -23,21 +23,14 @@ class Comments extends React.Component {
         setAuthenticationHeader();
 
         this.state = {
-            eventId: "",
+            eventId: props.eventId,
             comments: [],
             newComment: "",
         }
     }
 
     componentDidMount() {
-        // let eventId = this.props.eventId;
-        let eventId = 28;
-
-        this.setState({
-            eventId: eventId,
-        });
-
-        let url = HOST + "/event/" + eventId + "/getComments";
+        let url = HOST + "/event/" + this.state.eventId + "/getComments";
 
         axios.get(url)
             .then((response) => {

@@ -15,6 +15,7 @@ import {Today, Schedule} from "@material-ui/icons/es/index";
 import Chip from "material-ui/es/Chip/Chip";
 import Avatar from "material-ui/es/Avatar/Avatar";
 import ServiceIcon from "@material-ui/icons/Toc"
+import Comments from "./Comments";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -52,9 +53,9 @@ class EventScreen extends React.Component {
 
     constructor(props) {
         super();
-        let eventId = props.match.params.eventId;
+
         this.state = {
-            id:eventId,
+            eventId: 0,
             open: true,
             isAdmin: false,
             name:"",
@@ -62,7 +63,6 @@ class EventScreen extends React.Component {
             monthDay: null,
             time: null,
             description: "",
-            //TODO invited people
             people:[],
             accepted: true,
         };
@@ -71,53 +71,51 @@ class EventScreen extends React.Component {
     componentDidMount() {
         //TODO wenn die props nicht übergebn wurden ein GET aufrufen, um die Daten zu holen
 
-        let eventName, description, monthDay, time, people, accepted, location;
-        if(this.props.location.query && this.props.location.query.eventName ) {
-            eventName = String(this.props.location.query.eventName);
+        let eventName, description, monthDay, time, people, accepted, location, eventId;
+
+        eventId = this.props.match.params.eventId;
+
+        if(this.props.location.query) {
+            if (this.props.location.query.eventName) {
+                eventName = String(this.props.location.query.eventName);
+            }
+            if (this.props.location.query.description) {
+                description = String(this.props.location.query.description);
+            }
+            if (this.props.location.query.monthDay) {
+                monthDay = this.props.location.query.monthDay;
+            }
+            if (this.props.location.query.time) {
+                time = this.props.location.query.time;
+            }
+            if (this.props.location.query.people) {
+                people = this.props.location.query.people;
+            }
+            if (this.props.location.query.accepted) {
+                accepted = Boolean(this.props.location.query.accepted);
+            }
+            if (this.props.location.query.location) {
+                location = String(this.props.location.query.location);
+            }
+
             this.setState({
+                eventId: eventId,
                 name: eventName,
-            });
-        }
-        if(this.props.location.query && this.props.location.query.description) {
-            description = String(this.props.location.query.description);
-            this.setState({
                 description: description,
-            });
-        }
-        if(this.props.location.query && this.props.location.query.monthDay) {
-            monthDay = this.props.location.query.monthDay;
-            this.setState({
                 monthDay: monthDay,
-            });
-        }
-        if(this.props.location.query && this.props.location.query.time) {
-            time = this.props.location.query.time;
-            this.setState({
                 time: time,
-            });
-        }
-        if(this.props.location.query && this.props.location.query.people) {
-            people = this.props.location.query.people;
-            this.setState({
                 people: people,
-            });
-        }
-        if(this.props.location.query && this.props.location.query.accepted) {
-            accepted = Boolean(this.props.location.query.accepted);
-            this.setState({
                 accepted: accepted,
-            });
-        }
-        if(this.props.location.query && this.props.location.query.location) {
-            location = String(this.props.location.query.location);
-            this.setState({
                 location: location,
-            });
+            })
         }
     }
 
 
     render() {
+        console.log('State');
+        console.log(this.state);
+
         const { classes } = this.props;
         const error = this.state.error;
         let name = this.state.name;
@@ -127,6 +125,8 @@ class EventScreen extends React.Component {
         let location = this.state.location;
         let people = this.state.people;
         let monthDay = this.state.monthDay;
+        let eventId = this.state.eventId;
+
         return (
             <div>
                 <Dialog
@@ -176,22 +176,23 @@ class EventScreen extends React.Component {
                     <div style={{marginLeft:20}}>
                         Participants
                         <br />
-                        {people.map(function(p){
-                            let peopleShortcut = p.short;
+                        {people.map((person) => {
+                            let peopleShortcut = person.charAt(0);
                             return <Chip
                                 avatar={<Avatar >{peopleShortcut}</Avatar>}
-                                label={p.userName}
+                                label={person}
                                 className={classes.chip}
                             />
                         })}
 
                     </div>
                     <div style={{marginLeft:20}}>
-                     <Link to={{pathname:`/event/${this.state.id}/service`}}>
+                     <Link to={{pathname:`/event/${eventId}/service`}}>
                         <ServiceIcon />
                      </Link>
                         Service List
                     </div>
+                    <Comments eventId={eventId}/>
                     <IconButton style={buttonStyle}>
                         <AcceptedButton/>
                     </IconButton>
