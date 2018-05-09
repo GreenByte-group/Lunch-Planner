@@ -1,7 +1,5 @@
 package group.greenbyte.lunchplanner.event.database;
 
-import group.greenbyte.lunchplanner.location.database.Location;
-
 import javax.persistence.*;
 import java.util.*;
 
@@ -13,6 +11,7 @@ public class Event {
     static final public int MAX_EVENTNAME_LENGTH = 50;
     static final public int MAX_SEARCHWORD_LENGTH = 50;
     static final public int MAX_COMMENT_LENGTH = 100;
+    static final public int MAX_LOCATION_LENGTH = 255;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,9 +19,6 @@ public class Event {
 
     @Column(name="startDate")
     private Date startDate;
-
-    @Column(name="endDate")
-    private Date endDate;
 
     @Column(nullable = false)
     private boolean isPublic;
@@ -33,9 +29,8 @@ public class Event {
     @Column(length = MAX_DESCRITION_LENGTH)
     private String eventDescription;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "locationId")
-    private Location location;
+    @Column(length = MAX_LOCATION_LENGTH)
+    private String location;
 
     @OneToMany(mappedBy = "userInvited", fetch = FetchType.EAGER)
     private Set<EventInvitation> usersInvited = new HashSet<>();
@@ -62,14 +57,6 @@ public class Event {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
     public boolean isPublic() {
         return isPublic;
     }
@@ -94,14 +81,6 @@ public class Event {
         this.eventDescription = eventDescription;
     }
 
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
     public void setEventId(Integer eventId) {
         this.eventId = eventId;
     }
@@ -110,8 +89,12 @@ public class Event {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public Set<EventInvitationDataForReturn> getInvitations() {

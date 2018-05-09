@@ -2,7 +2,6 @@ package group.greenbyte.lunchplanner.event;
 
 import group.greenbyte.lunchplanner.event.database.*;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import group.greenbyte.lunchplanner.location.LocationDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,8 +14,6 @@ import java.util.*;
 @Repository
 public class EventDaoMySql implements EventDao {
 
-    private LocationDao locationDao;
-
     private static final String EVENT_INVITATION_TABLE = "event_invitation";
     private static final String EVENT_INVITATION_ADMIN = "is_admin";
     private static final String EVENT_INVITATION_REPLY = "answer";
@@ -25,18 +22,18 @@ public class EventDaoMySql implements EventDao {
 
     private static final String EVENT_COMMENT_TABLE = "comment";
     private static final String EVENT_COMMENT_USER = "user_name";
-    private static final String EVENT_COMMENT_DATE = "create_date";
+    private static final String EVENT_COMMENT_DATE = "date";
     private static final String EVENT_COMMENT_EVENT = "event_id";
     private static final String EVENT_COMMENT_ID = "comment_id";
+    private static final String EVENT_COMMENT_TEXT = "comment_text";
 
     private static final String EVENT_TABLE = "event";
     private static final String EVENT_ID = "event_id";
     private static final String EVENT_NAME = "event_name";
     private static final String EVENT_DESCRIPTION = "event_description";
     private static final String EVENT_START_DATE = "start_date";
-    private static final String EVENT_END_DATE = "end_date";
     private static final String EVENT_IS_PUBLIC = "is_public";
-    private static final String EVENT_LOCATION = "location_id";
+    private static final String EVENT_LOCATION = "location";
 
     private static final String EVENT_TEAM_TABLE = "event_team_visible";
     private static final String EVENT_TEAM_TEAM = "team_id";
@@ -45,23 +42,21 @@ public class EventDaoMySql implements EventDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public EventDaoMySql(JdbcTemplate jdbcTemplateObject,
-                         LocationDao locationDao) {
+    public EventDaoMySql(JdbcTemplate jdbcTemplateObject) {
         this.jdbcTemplate = jdbcTemplateObject;
-        this.locationDao = locationDao;
     }
 
     @Override
-    public Event insertEvent(String userName, String eventName, String description, int locationId, Date timeStart, Date timeEnd) throws DatabaseException {
+    public Event insertEvent(String userName, String eventName, String description, String location, Date timeStart) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(EVENT_TABLE).usingGeneratedKeyColumns(EVENT_ID);
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(EVENT_NAME, eventName);
         parameters.put(EVENT_DESCRIPTION, description);
-        parameters.put(EVENT_LOCATION, locationId);
         parameters.put(EVENT_START_DATE, timeStart);
-        parameters.put(EVENT_END_DATE, timeEnd);
         parameters.put(EVENT_IS_PUBLIC, false);
+        parameters.put(EVENT_LOCATION, location);
+
         try {
             Number key = simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
@@ -83,9 +78,6 @@ public class EventDaoMySql implements EventDao {
             if (events.size() == 0)
                 return null;
             else {
-                Event event = events.get(0).getEvent();
-                event.setLocation(locationDao.getLocation(events.get(0).getLocationId()));
-
                 event.setInvitations(new HashSet<>(getInvitations(eventId)));
 
                 return event;
@@ -122,11 +114,11 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
-    public Event updateEventLocation(int eventId, int locationId) throws DatabaseException {
+    public Event updateEventLocation(int eventId, String location) throws DatabaseException {
         String SQL = "UPDATE " + EVENT_TABLE + " SET " + EVENT_LOCATION + " = ? WHERE " + EVENT_ID + " = ?";
 
         try {
-            jdbcTemplate.update(SQL, locationId, eventId);
+            jdbcTemplate.update(SQL, location, eventId);
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
@@ -140,19 +132,6 @@ public class EventDaoMySql implements EventDao {
 
         try {
             jdbcTemplate.update(SQL, timeStart, eventId);
-        } catch (Exception e) {
-            throw new DatabaseException(e);
-        }
-
-        return getEvent(eventId);
-    }
-
-    @Override
-    public Event updateEventTimeEnd(int eventId, Date timeEnd) throws DatabaseException {
-        String SQL = "UPDATE " + EVENT_TABLE + " SET " + EVENT_END_DATE + " = ? WHERE " + EVENT_ID + " = ?";
-
-        try {
-            jdbcTemplate.update(SQL, timeEnd, eventId);
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
@@ -193,7 +172,6 @@ public class EventDaoMySql implements EventDao {
             List<Event> eventsReturn = new ArrayList<>(events.size());
             for(EventDatabase eventDatabase: events) {
                 Event event = eventDatabase.getEvent();
-                event.setLocation(locationDao.getLocation(eventDatabase.getLocationId()));
 
                 event.setInvitations(new HashSet<>(getInvitations(event.getEventId())));
 
@@ -251,7 +229,6 @@ public class EventDaoMySql implements EventDao {
             List<Event> eventsReturn = new ArrayList<>(events.size());
             for(EventDatabase eventDatabase: events) {
                 Event event = eventDatabase.getEvent();
-                event.setLocation(locationDao.getLocation(eventDatabase.getLocationId()));
 
                 event.setInvitations(new HashSet<>(getInvitations(event.getEventId())));
 
@@ -349,6 +326,7 @@ public class EventDaoMySql implements EventDao {
         parameters.put(EVENT_COMMENT_USER, userName);
         parameters.put(EVENT_COMMENT_EVENT, eventId);
         parameters.put(EVENT_COMMENT_DATE, new Date());
+        parameters.put(EVENT_COMMENT_TEXT, comment);
 
         try{
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
