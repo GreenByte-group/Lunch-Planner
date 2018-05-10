@@ -43,7 +43,7 @@ const styles = {
         color: 'black',
     },
     row: {
-        display: 'flex',
+        display: 'inline-flex',
         justifyContent: 'center',
     },
 };
@@ -58,6 +58,7 @@ class Team extends React.Component {
             name:  props.name,
             teamId: props.id,
             people: people,
+            current: true,
         }
     }
 
@@ -83,13 +84,13 @@ class Team extends React.Component {
                             {
                                 people.map((person) =>{
                                     return(
-                                    <div className={classes.member}>
-                                        <Avatar >{person}</Avatar>
-                                    </div>)
+                                        <div className={classes.member}>
+                                              <Avatar >{person.charAt(0)}</Avatar>
+                                        </div>)
 
-                            })
+                                })
                             }
-                        </div>
+                       </div>
                         <p className={classes.title}>{name}</p>
                     </div>
                     <IconButton>

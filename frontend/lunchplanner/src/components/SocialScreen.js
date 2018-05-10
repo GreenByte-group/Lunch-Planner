@@ -90,7 +90,7 @@ class SocialScreen extends React.Component {
                         <Teamlist/>
                     </TabContainer>
                 </SwipeableViews>
-                <BottomNavigationBar/>
+                <BottomNavigationBar s/>
             </div>
         );
     }

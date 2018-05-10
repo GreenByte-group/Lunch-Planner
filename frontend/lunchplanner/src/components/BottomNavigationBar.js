@@ -56,8 +56,8 @@ class BottomNavigationBar extends React.Component {
                             Events
                         </Button>
                     </Link>
-                    <Link to="/social">
-                        <Button>
+                        <Link to="/social">
+                        <Button >
                             <IconButton
                                 label="Social">
                                 <SocialIcon />
