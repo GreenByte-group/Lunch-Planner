@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @RestController
 @RequestMapping("/team")
@@ -32,6 +33,29 @@ public class TeamController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(team);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    /**
+     * Get all teams that are visible for the user who created this request
+     *
+     * @return a list of all teams
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getAllTeams() {
+
+        try {
+            List<Team> allTeams = teamlogic.getAllTeams(SessionManager.getUserName());
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(allTeams);
         } catch (HttpRequestException e) {
             return ResponseEntity
                     .status(e.getStatusCode())

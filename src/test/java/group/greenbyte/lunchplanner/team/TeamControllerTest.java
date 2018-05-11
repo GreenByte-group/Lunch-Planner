@@ -261,4 +261,26 @@ public class TeamControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
+    // ------------------ GET ALL TEAMS -------------------------
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1GetAllTeams() throws Exception {
+        createTeamWithoutParent(teamLogic, userName, teamName, description);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/team"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test2SearchTeamsForUserSearchwordToBig() throws Exception {
+        String searchword = createString(51);
+        String json = getJsonFromObject(searchword);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/team").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
 }

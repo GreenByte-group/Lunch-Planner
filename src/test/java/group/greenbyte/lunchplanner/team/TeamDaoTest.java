@@ -4,8 +4,7 @@ import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.EventLogic;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 
-import group.greenbyte.lunchplanner.location.LocationLogic;
-import group.greenbyte.lunchplanner.location.database.Coordinate;
+
 import group.greenbyte.lunchplanner.team.database.Team;
 
 import group.greenbyte.lunchplanner.user.UserLogic;
@@ -20,9 +19,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
 import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
+import static group.greenbyte.lunchplanner.team.Utils.setTeamPublic;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -172,5 +174,24 @@ public class TeamDaoTest {
         Assert.assertNull(teamDao.getTeam(teamId + 1000));
     }
 
+    // ------------------ SEARCH TEAM ------------------------
+
+    @Test
+    public void test1FindPublicTeams() throws Exception {
+        String searchWord = createString(50);
+        List<Team> teams = teamDao.findPublicTeams(searchWord);
+        Assert.assertEquals(0, teams.size());
+
+    }
+
+    @Test
+    public void test2SearchPublicTeams() throws Exception {
+        String newTeamName = createString(50);
+        int publicTeamId = createTeamWithoutParent(teamLogic, userName, newTeamName, description);
+        setTeamPublic(teamDao, publicTeamId);
+        String searchWord = newTeamName;
+        List<Team> events = teamDao.findPublicTeams(searchWord);
+        Assert.assertEquals(1, events.size());
+    }
 
 }
