@@ -2,6 +2,9 @@ package group.greenbyte.lunchplanner.team;
 
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.team.database.Team;
+import group.greenbyte.lunchplanner.team.database.TeamInvitationDataForReturn;
+
+import java.util.List;
 
 public interface TeamDao {
 
@@ -91,4 +94,37 @@ public interface TeamDao {
      * @throws DatabaseException
      */
     boolean hasViewPrivileges(int teamId, String userName) throws DatabaseException;
+
+    /**
+     *
+     * @param searchword
+     * @return
+     * @throws DatabaseException
+     */
+    List<Team> findPublicTeams(String searchword) throws DatabaseException;
+
+    /**
+     *
+     * @param teamId
+     * @return
+     * @throws DatabaseException
+     */
+    List<TeamInvitationDataForReturn> getInvitations(int teamId) throws DatabaseException;
+
+    /**
+     *
+     * @param userName
+     * @param searchword
+     * @return
+     * @throws DatabaseException
+     */
+    List<Team> findTeamsUserInvited(String userName, String searchword) throws DatabaseException;
+
+    /**
+     *
+     * @param teamId
+     * @param isPublic
+     * @throws DatabaseException
+     */
+    void updateTeamIsPublic(int teamId, boolean isPublic) throws DatabaseException;
 }

@@ -12,6 +12,7 @@ public class Team {
 
     public static final int MAX_TEAMNAME_LENGHT = 50;
     public static final int MAX_DESCRIPTION_LENGHT = 1000;
+    static final public int MAX_SEARCHWORD_LENGTH = 50;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +39,9 @@ public class Team {
 
     @OneToMany(mappedBy = "userInvited")
     private Set<TeamInvitation> usersInvited = new HashSet<>();
+
+    @Transient
+    private Set<TeamInvitationDataForReturn> invitations = new HashSet<>();
 
     public Team() {
         isPublic = false;
@@ -81,5 +85,13 @@ public class Team {
 
     public void setParentTeam(Team parentTeam) {
         this.parentTeam = parentTeam;
+    }
+
+    public Set<TeamInvitationDataForReturn> getInvitations() {
+        return invitations;
+    }
+
+    public void setInvitations(Set<TeamInvitationDataForReturn> invitations) {
+        this.invitations = invitations;
     }
 }

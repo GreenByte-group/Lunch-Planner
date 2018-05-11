@@ -9,6 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Service
 public class TeamLogic {
 
@@ -130,6 +135,53 @@ public class TeamLogic {
 
                 return team;
             }
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    /**
+     *
+     * @param username  userName that is logged in
+     * @return List<Team> List with generic typ of Team which includes all teams matching with the searchword
+     *
+     */
+    public List<Team> getAllTeams(String username) throws HttpRequestException{
+        if(username.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is too long, maximum length: " + User.MAX_USERNAME_LENGTH);
+        if(username.length() == 0 )
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is empty");
+
+        return this.searchTeamsForUser(username, "");
+    }
+
+
+    /**
+     *
+     * @param userName
+     * @param searchword
+     * @return
+     * @throws HttpRequestException
+     */
+    public List<Team> searchTeamsForUser(String userName, String searchword) throws HttpRequestException{
+
+        if(searchword == null || searchword.length() > Team.MAX_SEARCHWORD_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Searchword is too long or null ");
+        if(userName == null || userName.length()== 0 || userName.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is too long, empty or null ");
+
+        try{
+
+            Set<Team> searchResults = new HashSet<>(teamdao.findPublicTeams(searchword));
+
+            List<Team> temp = teamdao.findTeamsUserInvited(userName, searchword);
+            for(Team team : temp) {
+                if(!searchResults.contains(team))
+                    searchResults.add(team);
+            }
+
+            return new ArrayList<>(searchResults);
+
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
