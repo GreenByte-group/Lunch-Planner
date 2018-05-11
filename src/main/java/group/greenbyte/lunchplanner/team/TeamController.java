@@ -64,6 +64,15 @@ public class TeamController {
     }
 
     /**
+     * only here for throwing an exception is no searchword is giving
+     */
+    @RequestMapping(value = "/search/", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String searchTeamsNoSearchWord() {
+        return "No searchword";
+    }
+
+    /**
      * Search teams that are visible for the user who created this request
      *
      * @param searchword what to search
