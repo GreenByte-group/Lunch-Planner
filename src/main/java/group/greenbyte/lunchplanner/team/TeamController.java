@@ -64,6 +64,29 @@ public class TeamController {
     }
 
     /**
+     * Search teams that are visible for the user who created this request
+     *
+     * @param searchword what to search
+     * @return all teams or an error message
+     */
+    @RequestMapping(value = "/search/{searchWord}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity searchTeams(@PathVariable("searchWord") String searchword){
+        try{
+            List<Team> searchingTeam = teamlogic.searchTeamsForUser(SessionManager.getUserName(), searchword);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(searchingTeam);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    /**
      * Create a Team with all the data given in TeamJson
      *
      * @param teamjson the object that describes the JSON object in java format
