@@ -55,6 +55,8 @@ public class TeamDaoMySql implements TeamDao {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(TEAM_NAME, teamName);
         parameters.put(TEAM_DESCRIPTION, description);
+        // fürs erste auf true gesetzt damit findPublicTeams funktioniert
+        parameters.put(TEAM_PUBLIC, true);
 
         try {
             Number key = simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
