@@ -39,32 +39,13 @@ class BottomNavigationBar extends React.Component {
                     showLabels
                 >
                     <Link to="/location">
-                        <Button>
-                            <IconButton
-                                label="Places">
-                                <PlaceIcon />
-                            </IconButton>
-                            Places
-                        </Button>
+                        <BottomNavigationAction label="Places" icon={<PlaceIcon />} />
                     </Link>
                     <Link to="/event">
-                        <Button>
-                            <IconButton
-                                label="Events">
-                                <EventIcon />
-                            </IconButton>
-                            Events
-                        </Button>
+                        <BottomNavigationAction label="Events" icon={<EventIcon />} />
                     </Link>
                         <Link to="/social">
-                        <Button >
-                            <IconButton
-                                label="Social">
-                                <SocialIcon />
-                            </IconButton>
-                            Social
-                        </Button>
-
+                        <BottomNavigationAction label="Social" icon={<SocialIcon />}/>
                     </Link>
                 </BottomNavigation>
         );

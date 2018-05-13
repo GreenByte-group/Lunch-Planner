@@ -1,9 +1,7 @@
 import React from "react";
 import Appbar from "./Appbar";
-import FullWidthTabs from "./EventContainer";
+import EventContainer from "./EventContainer";
 import BottomNavigationBar from "./BottomNavigationBar";
-import axios from "axios"
-import {TOKEN} from "../Config";
 import {setAuthenticationHeader} from "./authentication/Authentication";
 
 class LunchPlanner extends React.Component {
@@ -17,8 +15,8 @@ class LunchPlanner extends React.Component {
     render() {
         return (
             <div>
-                <Appbar />
-                <FullWidthTabs />
+                <Appbar currentScreen="Events"/>
+                <EventContainer />
                 <BottomNavigationBar />
             </div>
         )

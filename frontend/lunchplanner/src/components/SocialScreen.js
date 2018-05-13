@@ -65,7 +65,7 @@ class SocialScreen extends React.Component {
 
         return (
             <div className={classes.root}>
-                <Appbar/>
+                <Appbar currentScreen="Social"/>
                 <AppBar position="static" color="default">
                     <Tabs
                         value={this.state.value}
@@ -90,7 +90,7 @@ class SocialScreen extends React.Component {
                         <Teamlist/>
                     </TabContainer>
                 </SwipeableViews>
-                <BottomNavigationBar s/>
+                <BottomNavigationBar />
             </div>
         );
     }
