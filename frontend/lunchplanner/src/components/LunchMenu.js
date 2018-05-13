@@ -17,13 +17,28 @@ import IconButton from "material-ui/es/IconButton/IconButton";
 import {Link} from "react-router-dom";
 import Menu from "material-ui/es/Menu/Menu";
 import MenuItem from "material-ui/es/Menu/MenuItem";
+import FormControlLabel from "material-ui/es/Form/FormControlLabel";
+import Switch from "material-ui/es/Switch/Switch";
 
 const styles = {
     list: {
         width: 250,
+        color:"white",
     },
+    profile:{
+        fontSize: 10,
+        textAlign: "center",
+        backgroundColor: "darkGrey",
+    },
+    avatar:{
+        marginLeft: 15,
+        marginBottom: 15,
+
+    },
+    icon:{
+        marginRight: 20,
+    }
 };
-//Only in Chrome not in Firefox
 class LunchMenu extends React.Component {
 
     constructor(){
@@ -33,7 +48,8 @@ class LunchMenu extends React.Component {
         this.handleOutsideClick = this.handleOutsideClick.bind(this);
 
         this.state = {
-            popupVisible: false
+            popupVisible: false,
+            visible: false,
         };
 
     }
@@ -59,6 +75,10 @@ class LunchMenu extends React.Component {
         this.handleClick();
     }
 
+    handleVisibility = name => event =>{
+        this.setState({ [name]: event.target.checked });
+    }
+
     render() {
 
         const { classes } = this.props;
@@ -78,46 +98,60 @@ class LunchMenu extends React.Component {
                         >
                             <div className={classes.list}>
                                 <List className={classes.profile}>
-                                    <Avatar alt="Remy Sharp" className={classes.avatar} >MM</Avatar>
-                                    <p>Name - Email-Adresse</p>
+                                    <Avatar alt="Max Mustermann" className={classes.avatar} >MM</Avatar>
+                                    <p>Max Mustermann ● max.mustermann@gmail.com</p>
                                 </List>
                                 <Divider />
-                                <List>
+                                <List className ={classes.menu}>
                                     <Link to="/location">
                                         <MenuItem>
-                                            <PlaceIcon />
+                                            <PlaceIcon className={classes.icon}/>
                                             Places
                                         </MenuItem>
                                     </Link>
                                     <Link to="/event">
                                         <MenuItem>
-                                            <EventIcon />
+                                            <EventIcon className={classes.icon}/>
                                             Event
                                         </MenuItem>
                                     </Link>
                                     <Link to="/social">
                                         <MenuItem>
-                                            <SocialIcon />
+                                            <SocialIcon className={classes.icon}/>
                                             Social
                                         </MenuItem>
                                     </Link>
                                     <Divider />
                                     <Link to="/notifications">
                                         <MenuItem>
-                                            <NotificationIcon />
+                                            <NotificationIcon className={classes.icon}/>
                                             Notifications
                                         </MenuItem>
                                     </Link>
+                                    <MenuItem>
+                                        <FormControlLabel
+                                            control={
+                                                <Switch
+                                                    float ="left"
+                                                    color = "primary"
+                                                    checked={this.state.visible}
+                                                    onChange={this.handleVisibility("visible")}
+                                                    value="visible"
+                                                />
+                                            }
+                                            label="No notifications today"
+                                        />
+                                    </MenuItem>
                                     <Divider />
                                     <Link to="/options">
                                         <MenuItem>
-                                            <OptionIcon />
+                                            <OptionIcon className={classes.icon}/>
                                             Options
                                         </MenuItem>
                                     </Link>
                                     <Link to="/signout">
                                         <MenuItem>
-                                            <SignOutIcon />
+                                            <SignOutIcon className={classes.icon}/>
                                             Sign Out
                                         </MenuItem>
                                     </Link>
