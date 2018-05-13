@@ -5,6 +5,9 @@ import BottomNavigation, { BottomNavigationAction } from 'material-ui/BottomNavi
 import PlaceIcon from '@material-ui/icons/Place';
 import EventIcon from '@material-ui/icons/LocalDining';
 import SocialIcon from '@material-ui/icons/Group';
+import {Link} from "react-router-dom";
+import IconButton from "material-ui/es/IconButton/IconButton";
+import Button from "material-ui/es/Button/Button";
 
 const styles = {
     root: {
@@ -35,9 +38,34 @@ class BottomNavigationBar extends React.Component {
                     onChange={this.handleChange}
                     showLabels
                 >
-                    <BottomNavigationAction label="Places" icon={<PlaceIcon />} />
-                    <BottomNavigationAction label="Events" icon={<EventIcon />} />
-                    <BottomNavigationAction label="Social" icon={<SocialIcon />} />
+                    <Link to="/location">
+                        <Button>
+                            <IconButton
+                                label="Places">
+                                <PlaceIcon />
+                            </IconButton>
+                            Places
+                        </Button>
+                    </Link>
+                    <Link to="/event">
+                        <Button>
+                            <IconButton
+                                label="Events">
+                                <EventIcon />
+                            </IconButton>
+                            Events
+                        </Button>
+                    </Link>
+                        <Link to="/social">
+                        <Button >
+                            <IconButton
+                                label="Social">
+                                <SocialIcon />
+                            </IconButton>
+                            Social
+                        </Button>
+
+                    </Link>
                 </BottomNavigation>
         );
     }

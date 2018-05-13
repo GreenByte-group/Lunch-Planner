@@ -2,9 +2,19 @@ import React from 'react';
 import Button from 'material-ui/Button';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import MenuIcon from '@material-ui/icons/Menu';
+import List from "material-ui/es/List/List";
+import Divider from "material-ui/es/Divider/Divider";
+import SwipeableDrawer from "material-ui/es/SwipeableDrawer/SwipeableDrawer";
+import {withStyles} from "material-ui";
 
+const styles = {
+    list: {
+        width: 250,
+    },
+};
 //Only in Chrome not in Firefox
-class SimpleMenu extends React.Component {
+class LunchMenu extends React.Component {
+
     state = {
         anchorEl: null,
     };
@@ -27,7 +37,7 @@ class SimpleMenu extends React.Component {
                     aria-haspopup="true"
                     onClick={this.handleClick}
                 >
-                    <MenuIcon />
+                    <MenuIcon/>
                 </Button>
                 <Menu
                     id="simple-menu"
@@ -44,4 +54,4 @@ class SimpleMenu extends React.Component {
     }
 }
 
-export default SimpleMenu;
+export default withStyles(styles) (LunchMenu);
