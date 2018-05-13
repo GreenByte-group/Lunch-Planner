@@ -1,6 +1,5 @@
 package group.greenbyte.lunchplanner.team;
 
-import group.greenbyte.lunchplanner.location.LocationLogic;
 
 public class Utils {
 
@@ -9,6 +8,10 @@ public class Utils {
                                               String teamName,
                                               String description) throws Exception {
         return teamLogic.createTeamWithoutParent(userName, teamName, description);
+    }
+
+    public static void setTeamPublic(TeamDao teamDao, int teamId) throws Exception {
+        teamDao.updateTeamIsPublic(teamId, true);
     }
 
 }

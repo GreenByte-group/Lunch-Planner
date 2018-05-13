@@ -4,6 +4,7 @@ import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.event.database.EventDatabase;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.team.database.TeamDatabase;
+import group.greenbyte.lunchplanner.team.database.TeamInvitationDataForReturn;
 import group.greenbyte.lunchplanner.team.database.TeamMember;
 import group.greenbyte.lunchplanner.user.UserDao;
 import group.greenbyte.lunchplanner.user.database.User;
@@ -15,9 +16,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import group.greenbyte.lunchplanner.team.database.Team;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class TeamDaoMySql implements TeamDao {
@@ -37,6 +36,12 @@ public class TeamDaoMySql implements TeamDao {
     public static final String TEAM_MEMBER_TEAM = "team_id";
     public static final String TEAM_MEMBER_ADMIN = "is_admin";
 
+    private static final String TEAM_INVITATION_TABLE = "team_invitation";
+    private static final String TEAM_INVITATION_ADMIN = "is_admin";
+    private static final String TEAM_INVITATION_REPLY = "answer";
+    private static final String TEAM_INVITATION_USER = "user_name";
+    private static final String TEAM_INVITATION_TEAM = "team_id";
+
     @Autowired
     public TeamDaoMySql(UserDao userDao, JdbcTemplate jdbcTemplate) {
         this.userDao = userDao;
@@ -50,6 +55,8 @@ public class TeamDaoMySql implements TeamDao {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(TEAM_NAME, teamName);
         parameters.put(TEAM_DESCRIPTION, description);
+        // fürs erste auf true gesetzt damit findPublicTeams funktioniert
+        parameters.put(TEAM_PUBLIC, true);
 
         try {
             Number key = simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
@@ -127,6 +134,110 @@ public class TeamDaoMySql implements TeamDao {
             throw new DatabaseException(e);
         }
     }*/
+
+    @Override
+    public List<Team> findPublicTeams(String searchword) throws DatabaseException {
+        try {
+            String SQL = "SELECT * FROM " + TEAM_TABLE + " WHERE ((" +
+                    TEAM_NAME + " LIKE ?" +
+                    " OR " + TEAM_DESCRIPTION + " LIKE ?)" +
+                    " AND " + TEAM_PUBLIC + " = ?)";
+
+            List<TeamDatabase> teams = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(TeamDatabase.class),
+                    "%" + searchword + "%",
+                    "%" + searchword + "%",
+                    1);
+
+            List<Team> teamsReturn = new ArrayList<>(teams.size());
+            for(TeamDatabase teamDatabase: teams) {
+                Team team = teamDatabase.getTeam();
+
+                team.setInvitations(new HashSet<>(getInvitations(team.getTeamId())));
+
+                teamsReturn.add(team);
+            }
+
+            return teamsReturn;
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public List<Team> findTeamsUserInvited(String userName, String searchword) throws DatabaseException {
+        try {
+            String SQL = "select * from " + TEAM_TABLE + " inner join " + TEAM_INVITATION_TABLE + " " + TEAM_INVITATION_TABLE +
+                    " on " + TEAM_TABLE + "." + TEAM_ID + " = " + TEAM_INVITATION_TABLE + "." + TEAM_INVITATION_TEAM +
+                    " WHERE (" + TEAM_NAME + " LIKE ?" +
+                    " OR " + TEAM_DESCRIPTION + " LIKE ?" +
+                    ") AND " + TEAM_INVITATION_USER + " = ?";
+
+
+            List<TeamDatabase> teams = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(TeamDatabase.class),
+                    "%" + searchword + "%", "%" + searchword + "%", userName);
+
+            List<Team> teamsReturn = new ArrayList<>(teams.size());
+            for(TeamDatabase teamDatabase: teams) {
+                Team team = teamDatabase.getTeam();
+
+                team.setInvitations(new HashSet<>(getInvitations(team.getTeamId())));
+
+                teamsReturn.add(team);
+            }
+
+            return teamsReturn;
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public List<TeamInvitationDataForReturn> getInvitations(int teamId) throws DatabaseException {
+        try {
+            String SQL = "SELECT * FROM " + TEAM_INVITATION_TABLE + " WHERE " +
+                    TEAM_INVITATION_TEAM + " = ?";
+
+            return jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(TeamInvitationDataForReturn.class),
+                    teamId);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void updateTeamIsPublic(int teamId, boolean isPublic) throws DatabaseException {
+        String SQL = "UPDATE " + TEAM_TABLE + " SET " + TEAM_PUBLIC + " = ? WHERE " + TEAM_ID + " = ?";
+
+        try {
+            jdbcTemplate.update(SQL, isPublic, teamId);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+
+    private Team putUserInvited(String userName, int teamId, boolean admin) throws DatabaseException {
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        simpleJdbcInsert.withTableName(TEAM_INVITATION_TABLE);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(TEAM_INVITATION_ADMIN, admin);
+        parameters.put(TEAM_INVITATION_TEAM, teamId);
+        if(admin)
+            parameters.put(TEAM_INVITATION_REPLY, InvitationAnswer.ACCEPT.getValue());
+        else
+            parameters.put(TEAM_INVITATION_REPLY, InvitationAnswer.MAYBE.getValue());
+        parameters.put(TEAM_INVITATION_USER, userName);
+
+        try {
+            Number key = simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+            return getTeam(key.intValue());
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
 
     @Override
     public void addAdminToTeam(int teamId, String userName) throws DatabaseException {

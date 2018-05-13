@@ -261,4 +261,60 @@ public class TeamControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
+    // ------------------ GET ALL TEAMS -------------------------
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1GetAllTeams() throws Exception {
+        createTeamWithoutParent(teamLogic, userName, teamName, description);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/team"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test2SearchTeamsForUserSearchwordToBig() throws Exception {
+        String searchword = createString(51);
+        String json = getJsonFromObject(searchword);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/team").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    // ------------------ SEARCH TEAM -------------------------
+    @Test
+    @WithMockUser(username = userName)
+    public void test1SearchTeams() throws Exception {
+        String searchWord = teamName;
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/team/search/" + searchWord))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$[0].teamId").value(teamId))
+                .andExpect(jsonPath("$[0].teamName").value(teamName))
+                .andExpect(jsonPath("$[0].description").value(description));
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1SearchTeamsTooLongSearchWord() throws Exception {
+        String searchWord = createString(51);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/team/search/" + searchWord))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1SearchTeamsNoSearchWord() throws Exception {
+        String searchWord = "";
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/team/search/" + searchWord))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
 }
