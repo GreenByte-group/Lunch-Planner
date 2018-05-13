@@ -31,6 +31,7 @@ const styles = {
 
 function ButtonAppBar(props) {
     const { classes } = props;
+    let titel = props.currentScreen;
     return (
         <div className={classes.root}>
             <AppBar className={classes.appbar}>
@@ -39,7 +40,7 @@ function ButtonAppBar(props) {
                         <LunchMenu open={false}/>
                     </IconButton>
                     <Typography variant="Events" color="inherit" className={classes.flex}>
-                        Title
+                        {titel}
                     </Typography>
                     <Button color = "inherit">
                         <IconSearch/>
