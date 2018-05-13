@@ -8,7 +8,7 @@ import IconSearch from '@material-ui/icons/Search';
 import { withStyles } from 'material-ui/styles';
 
 
-import SimpleMenu from "./SimpleMenu";
+import LunchMenu from "./LunchMenu";
 
 const styles = {
     root: {
@@ -36,7 +36,7 @@ function ButtonAppBar(props) {
             <AppBar className={classes.appbar}>
                 <Toolbar>
                     <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-                        <SimpleMenu />
+                        <LunchMenu open={false}/>
                     </IconButton>
                     <Typography variant="Events" color="inherit" className={classes.flex}>
                         Title
