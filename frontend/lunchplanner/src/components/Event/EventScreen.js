@@ -63,8 +63,7 @@ class EventScreen extends React.Component {
             isAdmin: false,
             name:"",
             location:"",
-            monthDay: "",
-            time: "",
+            date: "",
             description: "",
             people:[],
             accepted: true,
@@ -180,15 +179,15 @@ class EventScreen extends React.Component {
                     <div style={{marginLeft: 20}}>
                         <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
                     </div>
-                        <TextField
-                            id="textarea"
-                            label="Description"
-                            value={description}
-                            placeholder="Description"
-                            multiline
-                            className={classes.textField}
-                            margin="normal"
-                        />
+                        {/*<TextField*/}
+                            {/*id="textarea"*/}
+                            {/*label="Description"*/}
+                            {/*value={description}*/}
+                            {/*placeholder="Description"*/}
+                            {/*multiline*/}
+                            {/*className={classes.textField}*/}
+                            {/*margin="normal"*/}
+                        {/*/>*/}
                     <div style={{marginLeft:20}}>
                         Participants
                         <br />
