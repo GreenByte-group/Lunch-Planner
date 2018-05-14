@@ -179,6 +179,9 @@ public class EventDaoMySql implements EventDao {
                 eventsReturn.add(event);
             }
 
+            //eventsReturn.sort((e1, e2) -> e1.getStartDate().compareTo(e2.getStartDate()));
+            eventsReturn.sort(Comparator.comparing(Event::getStartDate));
+
             return eventsReturn;
         } catch (Exception e) {
             throw new DatabaseException(e);
@@ -206,6 +209,8 @@ public class EventDaoMySql implements EventDao {
 
                 events.add(event);
             }
+            //events.sort((e1, e2) -> e1.getStartDate().compareTo(e2.getStartDate()));
+            events.sort(Comparator.comparing(Event::getStartDate));
 
             return events;
         } catch(Exception e) {
@@ -235,6 +240,9 @@ public class EventDaoMySql implements EventDao {
 
                 eventsReturn.add(event);
             }
+
+            //eventsReturn.sort((e1, e2) -> e1.getStartDate().compareTo(e2.getStartDate()));
+            eventsReturn.sort(Comparator.comparing(Event::getStartDate));
 
             return eventsReturn;
         } catch (Exception e) {
@@ -313,6 +321,10 @@ public class EventDaoMySql implements EventDao {
 
                 commentsReturn.add(comment);
             }
+
+            //commentsReturn.sort((c1, c2) -> c1.getStartDate().compareTo(c2.getStartDate()));
+            commentsReturn.sort(Comparator.comparing(Comment::getDate));
+
         return commentsReturn;
         } catch (Exception e) {
             throw new DatabaseException(e);
