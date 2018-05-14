@@ -1,5 +1,6 @@
 package group.greenbyte.lunchplanner.team.database;
 
+import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.event.database.EventTeamVisible;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int teamId;
+    private Integer teamId;
 
     @Column
     private boolean isPublic;
@@ -47,11 +48,11 @@ public class Team {
         isPublic = false;
     }
 
-    public int getTeamId() {
+    public Integer getTeamId() {
         return teamId;
     }
 
-    public void setTeamId(int teamId) {
+    public void setTeamId(Integer teamId) {
         this.teamId = teamId;
     }
 
@@ -93,5 +94,24 @@ public class Team {
 
     public void setInvitations(Set<TeamInvitationDataForReturn> invitations) {
         this.invitations = invitations;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(getTeamId());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Team) {
+            Team team = (Team) obj;
+            return team.getTeamId().equals(getTeamId());
+        } else {
+            return false;
+        }
+    }
+
+    public int hashCode() {
+        return getTeamId().hashCode();
     }
 }

@@ -104,4 +104,25 @@ public class Event {
     public void setInvitations(Set<EventInvitationDataForReturn> invitations) {
         this.invitations = invitations;
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(getEventId());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Event) {
+            Event event = (Event) obj;
+            return event.getEventId().equals(getEventId());
+        } else {
+            return false;
+        }
+    }
+
+    public int hashCode() {
+        return getEventId().hashCode();
+    }
+
+
 }
