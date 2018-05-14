@@ -45,7 +45,6 @@ class LunchMenu extends React.Component {
         super();
 
         this.handleClick = this.handleClick.bind(this);
-        this.handleOutsideClick = this.handleOutsideClick.bind(this);
 
         this.state = {
             popupVisible: false,
@@ -57,26 +56,20 @@ class LunchMenu extends React.Component {
     handleClick() {
         if (!this.state.popupVisible) {
             // attach/remove event handler
-            document.addEventListener('click', this.handleOutsideClick, false);
+            document.addEventListener('click', this.handleClick, false);
         } else {
-            document.removeEventListener('click', this.handleOutsideClick, false);
+            document.removeEventListener('click', this.handleClick, false);
         }
         this.setState(prevState => ({
             popupVisible: !prevState.popupVisible,
         }));
     }
 
-    handleOutsideClick(e) {
-        // ignore clicks on the component itself
-        if (this.node.contains(e.target)) {
-            return;
-        }
-
-        this.handleClick();
-    }
-
     handleVisibility = name => event =>{
-        this.setState({ [name]: event.target.checked });
+        this.setState({
+            [name]: event.target.checked,
+            popupVisible : false,
+        });
     }
 
     render() {
@@ -88,7 +81,7 @@ class LunchMenu extends React.Component {
                 <Button
                     onClick={this.handleClick}
                 >
-                    <MenuIcon/>
+                    <MenuIcon style={{color: "white"}}/>
                 </Button>
                 {this.state.popupVisible && (
                     <Drawer open={this.state.popupVisible}>
