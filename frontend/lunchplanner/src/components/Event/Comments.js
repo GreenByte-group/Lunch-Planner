@@ -27,27 +27,38 @@ class Comments extends React.Component {
             comments: [],
             newComment: "",
         }
+
+        this.loadComments();
     }
 
     componentWillReceiveProps(newProps, newContext) {
         if(this.state.eventId !== newProps.eventId) {
-            console.log("EventId: " + newProps.eventId);
-            let url = HOST + "/event/" + newProps.eventId + "/getComments";
-
-            axios.get(url)
-                .then((response) => {
-                    this.setState({
-                        comments: response.data,
-                    })
-                })
-
-            // this.setState({
-            //     comments: [{userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
-            //         {userName: "Felix", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
-            //         {userName: "Can", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
-            //         {userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"}]
-            // })
+            this.loadComments(newProps.eventId);
+            this.setState({
+                eventId: newProps.eventId,
+            });
         }
+    }
+
+    loadComments(eventId) {
+        if(eventId == null || eventId === undefined)
+            eventId = this.state.eventId;
+
+        let url = HOST + "/event/" + eventId + "/getComments";
+
+        axios.get(url)
+            .then((response) => {
+                this.setState({
+                    comments: response.data,
+                })
+            })
+
+        // this.setState({
+        //     comments: [{userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
+        //         {userName: "Felix", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
+        //         {userName: "Can", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
+        //         {userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"}]
+        // })
     }
 
     textFieldChanged = (event) => {
@@ -57,7 +68,6 @@ class Comments extends React.Component {
     };
 
     onSubmit = (event) => {
-      console.log(this.state.newComment);
 
       let url = HOST + "/event/" + this.state.eventId + "/comment";
 
@@ -69,7 +79,7 @@ class Comments extends React.Component {
 
       axios.put(url, this.state.newComment, config)
           .then((response) => {
-              console.log(response)
+              this.loadComments();
           });
 
       event.preventDefault();
