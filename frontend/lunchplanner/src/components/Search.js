@@ -19,11 +19,15 @@ import Menu from "material-ui/es/Menu/Menu";
 import MenuItem from "material-ui/es/Menu/MenuItem";
 import FormControlLabel from "material-ui/es/Form/FormControlLabel";
 import Switch from "material-ui/es/Switch/Switch";
+import SearchIcon from '@material-ui/icons/Search';
+import TextField from "material-ui/es/TextField/TextField";
+import ListItemSecondaryAction from "material-ui/es/List/ListItemSecondaryAction";
 
 const styles = {
     list: {
-        width: 250,
+        width: "auto",
         color:"white",
+        height: 200,
     },
     profile:{
         fontSize: 10,
@@ -39,7 +43,7 @@ const styles = {
         marginRight: 20,
     }
 };
-class LunchMenu extends React.Component {
+class Search extends React.Component {
 
     constructor(){
         super();
@@ -81,27 +85,35 @@ class LunchMenu extends React.Component {
                 <Button
                     onClick={this.handleClick}
                 >
-                    <MenuIcon style={{color: "white"}}/>
+                    <SearchIcon style={{color: "white"}}/>
                 </Button>
                 {this.state.popupVisible && (
-                    <Drawer open={this.state.popupVisible}>
+                    <Drawer anchor="top" open={this.state.popupVisible}>
                         <div
                             tabIndex={0}
                             role="button"
                         >
                             <div className={classes.list}>
-                                <List className={classes.profile}>
-                                    <Avatar alt="Max Mustermann" className={classes.avatar} >MM</Avatar>
-                                    <p>Max Mustermann ● max.mustermann@gmail.com</p>
-                                </List>
-                                <Divider />
                                 <List className ={classes.menu}>
-                                    <Link to="/location">
-                                        <MenuItem>
-                                            <PlaceIcon className={classes.icon}/>
-                                            Places
-                                        </MenuItem>
-                                    </Link>
+                                    <ListItem
+                                        role={undefined}
+                                        dense
+                                        button
+                                        className={classes.listItem}>
+                                        <TextField
+                                            id="service"
+                                            label="Service"
+                                            placeholder="What do you want?"
+                                            multiline
+                                            className={classes.textField}
+                                            onChange={this.handleChange}
+                                        />
+                                        <ListItemSecondaryAction>
+                                            <IconButton onClick={this.handleSearch}>
+                                                <SearchIcon />
+                                            </IconButton>
+                                        </ListItemSecondaryAction>
+                                    </ListItem>
                                     <Link to="/event">
                                         <MenuItem>
                                             <EventIcon className={classes.icon}/>
@@ -158,4 +170,4 @@ class LunchMenu extends React.Component {
     }
 }
 
-export default withStyles(styles) (LunchMenu);
+export default withStyles(styles) (Search);

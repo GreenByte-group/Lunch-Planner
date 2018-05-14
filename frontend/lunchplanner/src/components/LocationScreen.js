@@ -6,9 +6,7 @@ import AppBar from 'material-ui/AppBar';
 import Tabs, {Tab} from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
 import Appbar from "./Appbar";
-import Teamlist from "./Team/TeamList";
 import BottomNavigationBar from "./BottomNavigationBar";
-import {setAuthenticationHeader} from "./authentication/Authentication";
 
 
 function TabContainer({ children, dir }) {
@@ -48,17 +46,10 @@ const styles = theme => ({
     },
 });
 
-class SocialScreen extends React.Component {
-
-    constructor(props) {
-        super();
-        this.state = {
-            value: 0,
-        };
-
-        setAuthenticationHeader();
-    }
-
+class LocationScreen extends React.Component {
+    state = {
+        value: 0,
+    };
 
     handleChange = (event, value) => {
         this.setState({ value });
@@ -73,7 +64,7 @@ class SocialScreen extends React.Component {
 
         return (
             <div className={classes.root}>
-                <Appbar currentScreen="Social"/>
+                <Appbar currentScreen="Places"/>
                 <AppBar position="static" color="default">
                     <Tabs
                         value={this.state.value}
@@ -83,8 +74,8 @@ class SocialScreen extends React.Component {
                         centered
                         fullWidth
                     >
-                        <Tab className={classes.tab} label="PERSON" />
-                        <Tab className={classes.tab} label="TEAMS" />
+                        <Tab className={classes.tab} label="LOCATION" />
+                        <Tab className={classes.tab} label="LOCATION" />
                     </Tabs>
                 </AppBar>
                 <SwipeableViews
@@ -94,9 +85,7 @@ class SocialScreen extends React.Component {
                 >
 
                     <TabContainer dir={theme.direction}></TabContainer>
-                    <TabContainer dir={theme.direction}>
-                        <Teamlist/>
-                    </TabContainer>
+                    <TabContainer dir={theme.direction}></TabContainer>
                 </SwipeableViews>
                 <BottomNavigationBar />
             </div>
@@ -104,9 +93,9 @@ class SocialScreen extends React.Component {
     }
 }
 
-SocialScreen.propTypes = {
+LocationScreen.propTypes = {
     classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(SocialScreen);
+export default withStyles(styles, { withTheme: true })(LocationScreen);
