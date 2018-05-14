@@ -8,6 +8,7 @@ import Typography from 'material-ui/Typography';
 import Appbar from "./Appbar";
 import Teamlist from "./Team/TeamList";
 import BottomNavigationBar from "./BottomNavigationBar";
+import {setAuthenticationHeader} from "./authentication/Authentication";
 
 
 function TabContainer({ children, dir }) {
@@ -48,9 +49,16 @@ const styles = theme => ({
 });
 
 class SocialScreen extends React.Component {
-    state = {
-        value: 0,
-    };
+
+    constructor(props) {
+        super();
+        this.state = {
+            value: 0,
+        };
+
+        setAuthenticationHeader();
+    }
+
 
     handleChange = (event, value) => {
         this.setState({ value });
