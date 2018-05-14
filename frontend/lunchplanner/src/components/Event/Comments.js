@@ -32,8 +32,6 @@ class Comments extends React.Component {
     }
 
     componentWillReceiveProps(newProps, newContext) {
-        console.log("----------COMMENTS-------------");
-        console.log(newProps);
         if(this.state.eventId !== newProps.eventId) {
             this.loadComments(newProps.eventId);
             this.setState({
@@ -70,7 +68,6 @@ class Comments extends React.Component {
     };
 
     onSubmit = (event) => {
-      console.log(this.state.newComment);
 
       let url = HOST + "/event/" + this.state.eventId + "/comment";
 
