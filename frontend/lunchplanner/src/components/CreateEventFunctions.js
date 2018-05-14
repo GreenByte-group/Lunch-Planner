@@ -1,12 +1,14 @@
 import axios from "axios";
 import {HOST} from "../Config";
+import moment from "moment";
 
 export function createEvent(location, date, member, visible, responseFunc, errorFunc) {
     //TODO send visibility
+    let momentDate = moment(date);
+
     let timeEnd = date.getTime();
-    timeEnd = timeEnd + 1;
     let url =  HOST + '/event';
-    axios.post(url, {name: "dummy", description: "", location : location, timeStart: date, timeEnd: timeEnd})
+    axios.post(url, {name: location + " " + momentDate.format('DD MMM, HH:mm'), description: "", location : location, timeStart: date})
         .then((response) => {
             if(response.status === 201) {
                 inviteMember(response.data, member);
