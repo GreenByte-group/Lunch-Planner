@@ -59,10 +59,11 @@ class Event extends React.Component {
 
         this.state = {
             background: props.background,
-            accepted: props.accepted | false,
+            accepted: props.accepted || false,
             id: props.id,
             name: props.name,
             description: props.description,
+            date: date,
             monthDay: date.format('DD MMM'),
             time: date.format('HH:mm'),
             people: people,
@@ -81,6 +82,7 @@ class Event extends React.Component {
         let description = this.state.description;
         let monthDay = this.state.monthDay;
         let time = this.state.time;
+        let date = this.state.date;
         let people = this.state.people;
         let location = this.state.location;
 
@@ -91,8 +93,7 @@ class Event extends React.Component {
             <Link to={{pathname:`/event/${this.state.id}`, query:{
                     eventName: name,
                     description: description,
-                    monthDay: monthDay,
-                    time: time,
+                    date: date,
                     people: people,
                     accepted: accepted,
                     location:location

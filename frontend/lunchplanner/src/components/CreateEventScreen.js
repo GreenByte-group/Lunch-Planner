@@ -163,6 +163,15 @@ class CreateEventScreen extends React.Component {
     }
 
     handleDate = (event, date) => {
+        let newDate = moment(date);
+        let dateBefore = moment(this.state.date);
+        newDate.hour(dateBefore.hour());
+        newDate.minute(dateBefore.minute());
+
+        this.setState({ date: newDate.toDate() });
+    }
+
+    handleTime = (event, date) => {
         this.setState({ date: date });
     }
 
@@ -235,7 +244,7 @@ class CreateEventScreen extends React.Component {
                             <Schedule viewBox="-2 -4 26 26" className={classes.icons}/>
                             <TimePicker
                                 className={classes.timePicker}
-                                onChange={this.handleDate}
+                                onChange={this.handleTime}
                                 value={this.state.date}
                                 format="24hr"
                                 textFieldStyle={styles.pickerTextField}
