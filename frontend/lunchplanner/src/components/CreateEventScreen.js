@@ -22,6 +22,7 @@ import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import "../assets/CreateEventScreen.css"
 import {Link} from "react-router-dom";
 import {Today, Schedule} from "@material-ui/icons";
+import {eventListNeedReload, needReload} from "./Event/EventList";
 
 const styles = {
     appBar: {
@@ -130,15 +131,20 @@ class CreateEventScreen extends React.Component {
     };
 
     handleAccept = () => {
+        let created = this.state.created;
+
         createEvent(this.state.location, this.state.date, this.state.invitedUsers, this.state.visible,
             (response) => {
-                if(response.status === 201)
+                if(response.status === 201) {
+                    eventListNeedReload();
                     this.props.history.push('/event');
-                else
+                } else {
                     this.setState({error: response.response.data});
+                }
             },
             (error) => {
-                this.setState({error: error.response.data});
+                if(error)
+                    this.setState({error: error.response.data});
             });
     };
 
@@ -154,7 +160,6 @@ class CreateEventScreen extends React.Component {
     }
 
     handleDate = (event, date) => {
-        console.log(date);
         this.setState({ date: date });
     }
 

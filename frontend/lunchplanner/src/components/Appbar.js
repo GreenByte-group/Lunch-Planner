@@ -18,6 +18,7 @@ const styles = {
         flex: 1,
         fontFamily: "Work Sans",
         fontWeight: '600',
+        fontSize: '14px',
     },
     menuButton: {
         marginLeft: -12,
@@ -36,15 +37,15 @@ function ButtonAppBar(props) {
         <div className={classes.root}>
             <AppBar className={classes.appbar}>
                 <Toolbar>
-                    <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
+                    <div className={classes.menuButton} color="inherit" aria-label="Menu">
                         <LunchMenu open={false}/>
-                    </IconButton>
-                    <Typography variant="Events" color="inherit" className={classes.flex}>
+                    </div>
+                    <Typography color="inherit" className={classes.flex}>
                         {titel}
                     </Typography>
-                    <Button color = "inherit">
+                    <div color = "inherit">
                        <Search/>
-                    </Button>
+                    </div>
                 </Toolbar>
             </AppBar>
         </div>

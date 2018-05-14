@@ -18,13 +18,19 @@ const styles = {
     },
 };
 
+export let needReload = false;
+
+export function eventListNeedReload() {
+    needReload = true;
+}
+
 const lightBackground = 'transparent';
 const darkerBackground = '#03030305';
 
 class EventList extends React.Component {
 
     constructor(props) {
-        super(props);
+        super();
         this.state = {
             events: [],
             search:null,
@@ -36,9 +42,20 @@ class EventList extends React.Component {
             search: this.props.search,
         });
 
+        this.loadEvents(this.props.search);
+
+        // this.setState({
+        //     events: [{eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}]
+        // })
+    }
+
+    loadEvents(search) {
+        if(search === null || search === undefined)
+            search = this.state.search;
+
         let url;
-        if(this.props.search)
-            url = HOST + "/event/search/" + this.props.search;
+        if(search)
+            url = HOST + "/event/search/" + search;
         else
             url = HOST + "/event";
 
@@ -48,16 +65,17 @@ class EventList extends React.Component {
                     events: response.data,
                 })
             })
-
-        // this.setState({
-        //     events: [{eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}]
-        // })
     }
 
     render() {
         const { classes } = this.props;
         let events = this.state.events;
         let showLightBackground = true;
+
+        if(needReload) {
+            needReload = !needReload;
+            this.loadEvents();
+        }
 
         return (
             <div className={classes.root}>
@@ -71,6 +89,7 @@ class EventList extends React.Component {
                         showLightBackground = !showLightBackground;
 
                         return <Event name={listValue.eventName}
+                                      key={'Event' + listValue.eventId}
                                       id={listValue.eventId}
                                       description={listValue.eventDescription}
                                       date={listValue.startDate}
@@ -81,7 +100,9 @@ class EventList extends React.Component {
                         />;
                     })}
                 </List>
-                <Link to="/event/create"><FloatingActionButton /></Link>
+                <Link to={{pathname:'/event/create'}}>
+                    <FloatingActionButton />
+                </Link>
             </div>
 
         );

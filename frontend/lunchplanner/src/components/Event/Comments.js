@@ -27,12 +27,15 @@ class Comments extends React.Component {
             comments: [],
             newComment: "",
         }
+
+        this.loadComments();
     }
 
     componentWillReceiveProps(newProps, newContext) {
+        console.log("----------COMMENTS-------------");
+        console.log(newProps);
         if(this.state.eventId !== newProps.eventId) {
-
-            this.loadComments(newProps.eventId)
+            this.loadComments(newProps.eventId);
             this.setState({
                 eventId: newProps.eventId,
             });
