@@ -23,6 +23,7 @@ import "../assets/CreateEventScreen.css"
 import {Link} from "react-router-dom";
 import {Today, Schedule} from "@material-ui/icons";
 import {eventListNeedReload, needReload} from "./Event/EventList";
+import moment from "moment";
 
 const styles = {
     appBar: {
@@ -109,13 +110,15 @@ class CreateEventScreen extends React.Component {
         super();
         const params = new URLSearchParams(props.location.search);
 
+        let defaultDate = moment().add(30, 'm').toDate();
+
         this.state = {
             open: true,
             name: params.get('name') || "",
             visible: params.get('visible') || false,
-            date: params.get('date') || new Date(),
+            date: params.get('date') || defaultDate,
             invitedUsers: params.get('invitedUsers') || [],
-            location: params.get('location') || 0,
+            location: params.get('location') || "",
             error: "",
         };
     }
@@ -208,14 +211,14 @@ class CreateEventScreen extends React.Component {
                             margin="normal"
                         />
 
-                        <TextField
-                            id="description"
-                            label="Description"
-                            placeholder="Description"
-                            multiline
-                            className={classes.textField}
-                            style={{marginTop:-100}}
-                        />
+                        {/*<TextField*/}
+                            {/*id="description"*/}
+                            {/*label="Description"*/}
+                            {/*placeholder="Description"*/}
+                            {/*multiline*/}
+                            {/*className={classes.textField}*/}
+                            {/*style={{marginTop:-100}}*/}
+                        {/*/>*/}
                     </form>
                     <div>
                         <p className={classes.dateHeader}>Date</p><p className={classes.timeHeader}>Time</p>
