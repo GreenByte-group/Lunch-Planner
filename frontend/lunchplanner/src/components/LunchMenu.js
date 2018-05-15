@@ -8,7 +8,7 @@ import EventIcon from '@material-ui/icons/LocalDining';
 import SocialIcon from '@material-ui/icons/Group';
 import NotificationIcon from '@material-ui/icons/NotificationsNone';
 import SignOutIcon from '@material-ui/icons/ExitToApp';
-import OptionIcon from '@material-ui/icons/Build';
+import OptionIcon from '@material-ui/icons/Settings';
 import {withStyles} from "material-ui";
 import Drawer from "material-ui/es/Drawer/Drawer";
 import Avatar from "material-ui/es/Avatar/Avatar";
@@ -37,7 +37,8 @@ const styles = {
     },
     icon:{
         marginRight: 20,
-    }
+        color: "#1EA185",
+    },
 };
 class LunchMenu extends React.Component {
 
