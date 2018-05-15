@@ -18,6 +18,7 @@ import ServiceIcon from "@material-ui/icons/Toc"
 import Comments from "./Comments";
 import {HOST} from "../../Config";
 import axios from "axios/index";
+import moment from "moment";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -62,8 +63,7 @@ class EventScreen extends React.Component {
             isAdmin: false,
             name:"",
             location:"",
-            monthDay: "",
-            time: "",
+            date: "",
             description: "",
             people:[],
             accepted: true,
@@ -71,7 +71,7 @@ class EventScreen extends React.Component {
     }
 
     componentDidMount() {
-        let eventName, description, monthDay, time, people, accepted, location, eventId;
+        let eventName, description, date, people, accepted, location, eventId;
 
         eventId = this.props.match.params.eventId;
 
@@ -83,11 +83,8 @@ class EventScreen extends React.Component {
             if (this.props.location.query.description) {
                 description = String(this.props.location.query.description);
             }
-            if (this.props.location.query.monthDay) {
-                monthDay = this.props.location.query.monthDay;
-            }
-            if (this.props.location.query.time) {
-                time = this.props.location.query.time;
+            if (this.props.location.query.date) {
+                date = this.props.location.query.date;
             }
             if (this.props.location.query.people) {
                 people = this.props.location.query.people;
@@ -103,8 +100,7 @@ class EventScreen extends React.Component {
                 eventId: eventId,
                 name: eventName,
                 description: description,
-                monthDay: monthDay,
-                time: time,
+                date: date,
                 people: people,
                 accepted: accepted,
                 location: location,
@@ -121,6 +117,7 @@ class EventScreen extends React.Component {
                         description: response.data.eventDescription,
                         location: response.data.location,
                         people: response.data.invitations.map((value) => value.userName),
+                        date: response.data.startDate,
                     })
                 });
         }
@@ -132,12 +129,15 @@ class EventScreen extends React.Component {
         const error = this.state.error;
         let name = this.state.name;
         let description = this.state.description;
-        // time and date
-        let time = this.state.time;
+        let date = this.state.date;
         let location = this.state.location;
         let people = this.state.people;
-        let monthDay = this.state.monthDay;
         let eventId = this.state.eventId;
+
+        let momentDate = moment(date);
+
+        let time = momentDate.format('HH:mm');
+        let monthDay = momentDate.format('DD MMM');
 
         console.log("State");
         console.log(this.state);
@@ -179,15 +179,15 @@ class EventScreen extends React.Component {
                     <div style={{marginLeft: 20}}>
                         <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
                     </div>
-                        <TextField
-                            id="textarea"
-                            label="Description"
-                            value={description}
-                            placeholder="Description"
-                            multiline
-                            className={classes.textField}
-                            margin="normal"
-                        />
+                        {/*<TextField*/}
+                            {/*id="textarea"*/}
+                            {/*label="Description"*/}
+                            {/*value={description}*/}
+                            {/*placeholder="Description"*/}
+                            {/*multiline*/}
+                            {/*className={classes.textField}*/}
+                            {/*margin="normal"*/}
+                        {/*/>*/}
                     <div style={{marginLeft:20}}>
                         Participants
                         <br />
