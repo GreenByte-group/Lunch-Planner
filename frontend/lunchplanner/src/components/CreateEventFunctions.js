@@ -8,7 +8,7 @@ export function createEvent(location, date, member, visible, responseFunc, error
 
     let timeEnd = date.getTime();
     let url =  HOST + '/event';
-    axios.post(url, {name: location + " - " + momentDate.format('DD MMM, HH:mm'), description: "", location : location, timeStart: date})
+    axios.post(url, {name: location, description: "", location : location, timeStart: date})
         .then((response) => {
             if(response.status === 201) {
                 inviteMember(response.data, member);
