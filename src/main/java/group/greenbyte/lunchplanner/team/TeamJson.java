@@ -18,11 +18,11 @@ public class TeamJson implements Serializable {
         this.description = description;
     }
 
-    private int parent;
+    private Integer parent;
     private String teamName;
     private String description;
 
-    public int getParent() {
+    public Integer getParent() {
         return parent;
     }
 
