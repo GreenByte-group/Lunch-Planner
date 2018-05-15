@@ -10,6 +10,11 @@ import Avatar from "material-ui/es/Avatar/Avatar";
 import Chip from "material-ui/es/Chip/Chip";
 
 const styles = {
+    link: {
+      '&:hover': {
+          textDecoration: 'none',
+      }
+    },
     listItem: {
         padding: '7px 16px',
         '&:hover': {
@@ -90,7 +95,7 @@ class Event extends React.Component {
         people = people.map((value) => value.trim());
 
         return (
-            <Link to={{pathname:`/event/${this.state.id}`, query:{
+            <Link className={classes.link} to={{pathname:`/event/${this.state.id}`, query:{
                     eventName: name,
                     description: description,
                     date: date,
