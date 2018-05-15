@@ -184,6 +184,10 @@ class CreateEventScreen extends React.Component {
         const { classes } = this.props;
         const error = this.state.error;
 
+        let buttonEnabled = false;
+        if(this.state.location)
+            buttonEnabled = true;
+
         return (
             <div>
                 <Dialog
@@ -289,7 +293,7 @@ class CreateEventScreen extends React.Component {
                             </FormGroup>
                         </ExpansionPanelDetails>
                     </ExpansionPanel>
-                    <Button variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
+                    <Button disabled={!buttonEnabled} variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
                         Create Event
                     </Button>
                 </Dialog>

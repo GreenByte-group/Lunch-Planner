@@ -17,7 +17,8 @@ const styles = {
         width: '100%',
         '&:hover': {
             textDecoration: 'none',
-        }
+        },
+    },
     link: {
       '&:hover': {
           textDecoration: 'none',
