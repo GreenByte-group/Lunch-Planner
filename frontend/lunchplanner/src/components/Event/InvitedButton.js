@@ -1,5 +1,5 @@
 import React from "react"
-import {Done} from "@material-ui/icons";
+import {DateRange} from "@material-ui/icons";
 import {withStyles} from "material-ui";
 
 const styles = theme => ({
@@ -29,12 +29,12 @@ const styles = theme => ({
     },
 });
 
-class AcceptedButton extends React.Component {
+class InvitedButton extends React.Component {
     render() {
         const {classes} = this.props;
         const {text} = this.props;
 
-        let styleButton = {};
+        let styleButton = "";
         if(text)
             styleButton = {height: '12px', width:'12px', padding: '1px', borderWidth: '1px', marginRight: '16px', marginTop: '3px', marginBottom: '11px'};
 
@@ -44,10 +44,10 @@ class AcceptedButton extends React.Component {
                         ? <span className={classes.text} >{text}</span>
                         : ""
                 )}
-                <Done style={styleButton} color="primary" className={classes.button} />
+                <DateRange style={styleButton} color="primary" className={classes.button} />
             </div>
         )
     }
 }
 
-export default withStyles(styles)(AcceptedButton);
+export default withStyles(styles)(InvitedButton);

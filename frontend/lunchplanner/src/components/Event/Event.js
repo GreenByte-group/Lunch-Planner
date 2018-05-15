@@ -4,12 +4,21 @@ import ListItem from "material-ui/List/ListItem";
 import {withStyles} from "material-ui";
 import {Schedule, Today} from "@material-ui/icons";
 import AcceptedButton from "./AcceptedButton";
+import InvitedButton from "./InvitedButton";
 import {Link} from "react-router-dom";
 import EventScreen from "./EventScreen";
 import Avatar from "material-ui/es/Avatar/Avatar";
-import Chip from "material-ui/es/Chip/Chip";
+import Card, { CardActions, CardContent } from 'material-ui/Card';
+import Button from 'material-ui/Button';
+import Typography from 'material-ui/Typography';
 
 const styles = {
+    card: {
+        width: '100%',
+        '&:hover': {
+            textDecoration: 'none',
+        }
+    },
     listItem: {
         padding: '7px 16px',
         '&:hover': {
@@ -23,10 +32,23 @@ const styles = {
         marginBottom: '0px',
     },
     date: {
+        marginLeft: '16px',
+        fontFamily: "Work Sans",
+        fontSize: '11px',
+        lineHeight: '20px',
+        marginBottom: '0px',
+        width: 'auto',
+        float: 'left',
+        color: 'black',
+    },
+    time : {
         fontFamily: "Work Sans",
         fontSize: '14px',
         lineHeight: '20px',
         marginBottom: '0px',
+        marginTop: '5px',
+        width: 'auto',
+        float: 'left',
     },
     users: {
         fontFamily: "Work Sans",
@@ -34,15 +56,31 @@ const styles = {
         lineHeight: '20px',
         marginBottom: '0px',
         color: '#A4A4A4',
+        float: 'right',
     },
     icons: {
         width: '13px',
         height: 'auto',
     },
     text: {
-        float: 'left',
-        width: '100%',
+        width: 'auto',
         color: 'black',
+        marginLeft: '72px',
+    },
+    imageDiv: {
+        width: '48px',
+        height: '48px',
+        borderRadius: '50%',
+        border: '1px black solid',
+        float: 'left',
+    },
+    cardContent: {
+        width: '100%',
+        float: 'none',
+    },
+    footer: {
+        width: '100%',
+        float: 'none',
     }
 };
 
@@ -99,27 +137,36 @@ class Event extends React.Component {
                 }}}>
 
                 <ListItem style={{backgroundColor: background}} button className={classes.listItem}>
-                    <div className={classes.text}>
-                        <p className={classes.title}>{name}</p>
-                        <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
-                        <div className={classes.users}>
-                            {
-                                people.join(', ')
-                                // people.map((person) => {
-                                // let peopleShortcut = person.charAt(0);
-                                // return <Chip
-                                //     avatar={<Avatar >{peopleShortcut}</Avatar>}
-                                //     label={person}
-                                //     className={classes.chip}
-                                // />
-                                //})
-                            }
+
+                    <Card className={classes.card}>
+                        <CardContent className={classes.cardContent}>
+                            <div className={classes.imageDiv}>
+
+                            </div>
+                            <div className={classes.text}>
+                                <p className={classes.title}>{name}</p>
+                                <p className={classes.time}>
+                                    <Schedule viewBox="0 0 22 22" className={classes.icons}/> {time}
+                                </p>
+                                <div className={classes.users}>
+                                    {
+                                        people.join(', ')
+                                    }
+                                </div>
+                            </div>
+                        </CardContent>
+                        <hr style={{marginBottom: '11px'}} />
+                        <div className={classes.footer}>
+                            <p className={classes.date}>
+                                <Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay}
+                            </p>
+                            {(accepted
+                                    ? <AcceptedButton text="Accepted" />
+                                    : <InvitedButton text="Invited" />
+                            )}
                         </div>
-                    </div>
-                    {(accepted
-                            ? <AcceptedButton text="Accepted" />
-                            : ""
-                    )}
+                    </Card>
+
                 </ListItem>
             </Link>
 
