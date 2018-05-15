@@ -106,8 +106,13 @@ public class TeamController {
     @ResponseBody
     public String createTeam(@RequestBody TeamJson teamjson, HttpServletResponse response) {
         try {
+            int teamId;
 
-            int teamId = teamlogic.createTeamWithParent(SessionManager.getUserName(), teamjson.getParent(), teamjson.getTeamName(), teamjson.getDescription());
+            if(teamjson.getParent()!= null) {
+                teamId = teamlogic.createTeamWithParent(SessionManager.getUserName(), teamjson.getParent(), teamjson.getTeamName(), teamjson.getDescription());
+            }else{
+                teamId = teamlogic.createTeamWithoutParent(SessionManager.getUserName(),teamjson.getTeamName(), teamjson.getDescription());
+            }
 
             response.setStatus(HttpServletResponse.SC_CREATED);
             return String.valueOf(teamId);
