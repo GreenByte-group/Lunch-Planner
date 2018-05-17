@@ -1,21 +1,18 @@
 import PropTypes from "prop-types";
 import {withStyles} from "material-ui/styles/index";
-import TextField from "material-ui/es/TextField/TextField";
-import AcceptedButton from "./AcceptedButton";
 import React from 'react';
 import Slide from 'material-ui/transitions/Slide';
 import {Link} from "react-router-dom";
-import IconButton from 'material-ui/IconButton';
 import {Today, Schedule} from "@material-ui/icons/es/index";
-import Chip from "material-ui/es/Chip/Chip";
-import Avatar from "material-ui/es/Avatar/Avatar";
 import ServiceIcon from "@material-ui/icons/Toc"
-import Comments from "./Comments";
+import ListIcon from "@material-ui/icons/Assignment"
 import {HOST} from "../../Config";
 import axios from "axios/index";
 import moment from "moment";
 import Dialog from "../Dialog";
 import CommentsIcon from '@material-ui/icons/Message';
+import UserList from "../User/UserList";
+import {Button} from "material-ui";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -68,6 +65,7 @@ function Transition(props) {
             float: 'right',
             display: 'flex',
             flexDirection: 'column',
+            color: 'white',
         },
         commentIcon: {
             marginTop: '12px',
@@ -79,13 +77,45 @@ function Transition(props) {
             lineHeight: '16px',
         },
         invitations: {
-            marginLeft: '16px',
+            marginLeft: '0px',
             marginTop: '8px',
         },
         invitaionsHeader: {
+            marginLeft: '16px',
+            marginBottom: '0px',
             fontSize: '16px',
             fontWeight: '500',
             lineHeight: '24px',
+        },
+        button:{
+            fontSize: '16px',
+            fontFamily: 'Work Sans',
+            color: "white",
+            position: "relative",
+            bottom:0,
+            width: "100%",
+            height: '96px',
+        },
+        serviceListLink: {
+            minHeight: '171px',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            backgroundColor: '#FAFAFA',
+        },
+        serviceList: {
+            alignSelf: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            textAlign: 'center',
+            color: 'black',
+        },
+        serviceListIcon: {
+            height: '58px',
+            width: '41px',
+            marginLeft: 'auto',
+            marginRight: 'auto',
         },
     };
 
@@ -148,6 +178,8 @@ class EventScreen extends React.Component {
                 accepted: accepted,
                 location: location,
             })
+
+            console.log(people);
         } else {
             console.log("Query does not exists");
             let url = HOST + "/event/" + eventId;
@@ -159,7 +191,7 @@ class EventScreen extends React.Component {
                         name: response.data.eventName,
                         description: response.data.eventDescription,
                         location: response.data.location,
-                        people: response.data.invitations.map((value) => value.userName),
+                        people: response.data.invitations,
                         date: response.data.startDate,
                     })
                 });
@@ -182,8 +214,21 @@ class EventScreen extends React.Component {
         let time = momentDate.format('HH:mm');
         let monthDay = momentDate.format('DD MMM');
 
-        console.log("State");
-        console.log(this.state);
+        let admin = "";
+        let selectedUsers = [];
+        people.forEach((listValue) => {
+            console.log(listValue);
+            if(listValue.answer === 0) {
+                selectedUsers.push(listValue.userName);
+            }
+
+            if(listValue.admin) {
+                admin = listValue.userName;
+            }
+        });
+
+        console.log("eventscreen");
+        console.log(selectedUsers);
 
         return (
             <Dialog
@@ -193,42 +238,32 @@ class EventScreen extends React.Component {
             >
                 <div className={classes.header}>
                     <div className={classes.headerText}>
-                        <p className={classes.fontSmall}>Created by ...</p>
+                        <p className={classes.fontSmall}>Created by {admin}</p>
                         <p className={classes.fontBig}>{name}</p>
                         <p className={classes.fontSmall}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
                     </div>
-                    <div className={classes.headerComment}>
-                        <CommentsIcon className={classes.commentIcon} />
-                        <p className={classes.commentText}>2 Comments</p>
-                    </div>
+                    <Link to={{pathname:`/event/${eventId}/comments`}}>
+                        <div className={classes.headerComment}>
+                            <CommentsIcon className={classes.commentIcon} />
+                            <p className={classes.commentText}>2 Comments</p>
+                        </div>
+                    </Link>
                 </div>
-                {(error
-                        ? <p className={classes.error}>{error}</p>
-                        : ""
-                )}
                 <div className={classes.invitations}>
                     <p className={classes.invitaionsHeader}>Invited People ({people.length})</p>
-                    <br />
-                    {people.map((person) => {
-                        let peopleShortcut = person.charAt(0);
-                        return <Chip
-                            avatar={<Avatar >{peopleShortcut}</Avatar>}
-                            label={person}
-                            className={classes.chip}
-                        />
-                    })}
-
+                    <UserList selectedUsers={selectedUsers} users={people} selectable={false} />
                 </div>
-                <div style={{marginLeft:20}}>
-                 <Link to={{pathname:`/event/${eventId}/service`}}>
-                    <ServiceIcon />
-                 </Link>
-                    Service List
-                </div>
-                <IconButton style={buttonStyle}>
-                    <AcceptedButton/>
-                </IconButton>
 
+                <Link className={classes.serviceListLink} to={{pathname:`/event/${eventId}/service`}}>
+                    <div className={classes.serviceList}>
+                        <ListIcon className={classes.serviceListIcon} />
+                        <p>Add a task</p>
+                    </div>
+                </Link>
+
+                <Button variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
+                    Join Event
+                </Button>
             </Dialog>
         );
     }

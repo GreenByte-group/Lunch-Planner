@@ -109,6 +109,7 @@ class Event extends React.Component {
             date: date,
             monthDay: date.format('DD MMM'),
             time: date.format('HH:mm'),
+            invitations: invitations,
             people: people,
             location: props.location,
         }
@@ -127,6 +128,7 @@ class Event extends React.Component {
         let time = this.state.time;
         let date = this.state.date;
         let people = this.state.people;
+        let invitations = this.state.invitations;
         let location = this.state.location;
 
         people = people.split(',');
@@ -137,7 +139,7 @@ class Event extends React.Component {
                     eventName: name,
                     description: description,
                     date: date,
-                    people: people,
+                    people: invitations,
                     accepted: accepted,
                     location:location
                 }}}>

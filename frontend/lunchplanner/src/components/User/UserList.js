@@ -15,27 +15,31 @@ class UserList extends React.Component {
         super();
 
         this.state = {
-            selectedUsers: props.selectedUsers,
-            users: props.users,
+            selectedUsers: props.selectedUsers || [],
+            users: props.users || [],
             selectable: props.selectable || false,
             onSelectionChanged: props.onSelectionChanged,
-        }
+        };
+
+        console.log("const")
+        console.log(props.selectedUsers);
     }
 
     componentWillReceiveProps(newProps) {
         let selectedUsers, users;
 
-        // if(newProps.selectedUsers && newProps.selectedUsers !== this.state.selectedUsers) {
-        //     selectedUsers = newProps.selectedUsers;
-        // }
+        if(newProps.selectedUsers && newProps.selectedUsers !== this.state.selectedUsers) {
+            selectedUsers = newProps.selectedUsers;
+        }
+
         if(newProps.users && newProps.users !== this.state.users) {
             users = newProps.users;
         }
 
-        if(selectedUsers || users) {
+        if(users) {
             this.setState({
-                selectedUsers: selectedUsers || this.state.selectedUsers,
                 users: users || this.state.users,
+                selectedUsers: selectedUsers || this.state.selectedUsers,
             });
         }
     }
@@ -63,10 +67,13 @@ class UserList extends React.Component {
         let users = this.state.users;
         let selectedUsers = this.state.selectedUsers;
 
+        console.log("selected users render");
+        console.log(selectedUsers);
+
         return (
             <List className={classes.list}>
                 {users.map((listValue) => {
-                    return <User selected={selectedUsers.includes(listValue.userName)} username={listValue.userName} onClick={this.clickHandler}/>;
+                    return <User selectable={this.state.selectable} selected={selectedUsers.includes(listValue.userName)} username={listValue.userName} onClick={this.clickHandler}/>;
                 })}
             </List>
         );
