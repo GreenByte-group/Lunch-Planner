@@ -9,11 +9,16 @@ import Dialog from "../Dialog";
 const styles = {
     list: {
         padding: '0px',
+        height: '100%',
     },
     textField: {
         width: '100%',
         padding: '16px',
-    }
+    },
+    formComment: {
+        height: '168px',
+        boxShadow: '0 -10px 15px 0 rgba(0,0,0,0.05)',
+    },
 };
 
 class Comments extends React.Component {
@@ -62,13 +67,19 @@ class Comments extends React.Component {
         // })
     }
 
+    keyPress = (e) => {
+        if(e.keyCode === 13){
+            this.onSubmit();
+        }
+    };
+
     textFieldChanged = (event) => {
         this.setState({
             newComment: event.target.value,
         })
     };
 
-    onSubmit = (event) => {
+    onSubmit = () => {
 
       let url = HOST + "/event/" + this.state.eventId + "/comment";
 
@@ -82,8 +93,6 @@ class Comments extends React.Component {
           .then((response) => {
               this.loadComments();
           });
-
-      event.preventDefault();
     };
 
     render() {
@@ -92,23 +101,9 @@ class Comments extends React.Component {
 
         return (
             <Dialog
-            title="Comments"
+            title={"Comments (" + comments.length + ")"}
             closeUrl={"/event/" + this.state.eventId}
             >
-                <form
-                    className={classes.textFieldComment}
-                    noValidate autoComplete="on"
-                    onSubmit={this.onSubmit}
-                >
-                    <TextField
-                        className={classes.textField}
-                        id="textFieldComment"
-                        value={this.state.newComment}
-                        onChange={this.textFieldChanged}
-                        placeholder ="Write a comment ..."
-
-                    />
-                </form>
                 <List className={classes.list}>
                     {comments.map((listValue) => {
                         let rightAlign = false;
@@ -125,6 +120,21 @@ class Comments extends React.Component {
                         )
                     })}
                 </List>
+                <form
+                    className={classes.formComment}
+                    noValidate autoComplete="on"
+                >
+                    <TextField
+                        className={classes.textField}
+                        id="textFieldComment"
+                        value={this.state.newComment}
+                        onChange={this.textFieldChanged}
+                        onKeyDown={this.keyPress}
+                        placeholder ="Write a comment ..."
+                        multiline
+                        rows="6"
+                    />
+                </form>
             </Dialog>
         )
     }

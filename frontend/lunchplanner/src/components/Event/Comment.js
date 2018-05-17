@@ -10,10 +10,18 @@ const styles = {
     text: {
         width: '100%',
         float: 'none',
+        fontSize: '13px',
+        lineHeight: '20px',
     },
     dateText: {
         width: '100%',
         float: 'none',
+        color: '#A4A4A4',
+        fontSize: '11px',
+        lineHeight: '16px',
+    },
+    listItem: {
+        borderTop: '1px solid #F2F2F2',
     },
 };
 
@@ -49,11 +57,11 @@ class Comment extends React.Component {
         return (
             <ListItem button className={classes.listItem}>
                 <div className={classes.root}>
-                    <p className={classes.text} style={{textAlign: textAlign}}>
-                        {this.state.text}
+                    <p className={classes.dateText}>
+                        {this.state.username} - {this.state.dateText}
                     </p>
-                    <p className={classes.dateText} style={{textAlign: dateAlign}}>
-                        {this.state.username}, {this.state.dateText}
+                    <p className={classes.text}>
+                        {this.state.text}
                     </p>
                 </div>
             </ListItem>
