@@ -16,6 +16,7 @@ import {HOST} from "../../Config";
 import {List, TextField} from "material-ui";
 import User from "./User";
 import FloatingActionButton from "../FloatingActionButton";
+import {getHistory} from "../../utils/HistoryUtils";
 
 const styles = {
     root: {
@@ -102,7 +103,7 @@ class SelectUserScreen extends React.Component {
 
     handleSend = () => {
         if(this.props.location.query)
-            this.props.history.push(this.props.location.query.source +
+            getHistory().push(this.props.location.query.source +
                 "?invitedUsers=" + this.state.selectedUsers);
     };
 

@@ -2,12 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
-import Dialog from 'material-ui/Dialog';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
+import Dialog from './Dialog';
 import IconButton from 'material-ui/IconButton';
 import Typography from 'material-ui/Typography';
-import CloseIcon from '@material-ui/icons/Close';
 import Slide from 'material-ui/transitions/Slide';
 import TextField from "material-ui/es/TextField/TextField";
 import ExpansionPanel, {ExpansionPanelSummary, ExpansionPanelDetails,} from 'material-ui/ExpansionPanel';
@@ -24,6 +21,8 @@ import {Link} from "react-router-dom";
 import {Today, Schedule} from "@material-ui/icons";
 import {eventListNeedReload, needReload} from "./Event/EventList";
 import moment from "moment";
+
+import {getHistory} from "../utils/HistoryUtils";
 
 const styles = {
     appBar: {
@@ -140,7 +139,7 @@ class CreateEventScreen extends React.Component {
             (response) => {
                 if(response.status === 201) {
                     eventListNeedReload();
-                    this.props.history.push('/event');
+                    getHistory().push('/event');
                 } else {
                     this.setState({error: response.response.data});
                 }
@@ -189,115 +188,97 @@ class CreateEventScreen extends React.Component {
             buttonEnabled = true;
 
         return (
-            <div>
-                <Dialog
-                    fullScreen
-                    open={this.state.open}
-                    onClose={this.handleClose}
-                    transition={Transition}
-                >
-                    <AppBar className={classes.appBar} color ="white">
-                        <Toolbar>
-                            <Link to="/event">
-                                <IconButton color="inherit" aria-label="Close" className={classes.closeIcon}>
-                                    <CloseIcon color='primary' />
+            <Dialog
+                title="Create Event"
+            >
+                {(error
+                        ? <p className={classes.error}>{error}</p>
+                        : ""
+                )}
+                <form className={classes.container} noValidate autoComplete="on" >
+                    <TextField
+                        id="location"
+                        label="Location"
+                        value={this.state.location}
+                        className={classes.textField}
+                        placeholder ="Add an Location ..."
+                        onChange={this.handleChange}
+                        margin="normal"
+                    />
+
+                    {/*<TextField*/}
+                        {/*id="description"*/}
+                        {/*label="Description"*/}
+                        {/*placeholder="Description"*/}
+                        {/*multiline*/}
+                        {/*className={classes.textField}*/}
+                        {/*style={{marginTop:-100}}*/}
+                    {/*/>*/}
+                </form>
+                <div>
+                    <p className={classes.dateHeader}>Date</p><p className={classes.timeHeader}>Time</p>
+                    <div className={classes.pickerWithIcon}>
+                        <Today viewBox="-2 -4 26 26" className={classes.icons} style={{marginLeft: '18px'}} />
+                        <DatePicker
+                            className={classes.datePicker}
+                            onChange={this.handleDate}
+                            value={this.state.date}
+                            textFieldStyle={styles.pickerTextField}
+                        />
+                    </div>
+                    <div className={classes.pickerWithIcon}>
+                        <Schedule viewBox="-2 -4 26 26" className={classes.icons}/>
+                        <TimePicker
+                            className={classes.timePicker}
+                            onChange={this.handleTime}
+                            value={this.state.date}
+                            format="24hr"
+                            textFieldStyle={styles.pickerTextField}
+                        />
+                    </div>
+                </div>
+                <ExpansionPanel>
+                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon color='primary' />}>
+                        <Typography className={classes.heading}>Invite & Change Vibility</Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                        <FormGroup row>
+                            <TextField
+                                style={{width: 200}}
+                                id="invitation"
+                                label="Participants"
+                                placeholder ="Invite People"
+                                value={this.state.invitedUsers}
+                            />
+                            <Link to={{pathname: "/event/create/invite",  query: {
+                                    source: "/event/create",
+                                    invitedUsers: this.state.invitedUsers,
+                                }}}>
+
+                                <IconButton>
+                                    <AddIcon />
                                 </IconButton>
                             </Link>
-                            <Typography variant="title" color="inherit" className={classes.flex}>
-                                Create Event
-                            </Typography>
 
-                        </Toolbar>
-                    </AppBar>
-                    {(error
-                            ? <p className={classes.error}>{error}</p>
-                            : ""
-                    )}
-                    <form className={classes.container} noValidate autoComplete="on" >
-                        <TextField
-                            id="location"
-                            label="Location"
-                            value={this.state.location}
-                            className={classes.textField}
-                            placeholder ="Add an Location ..."
-                            onChange={this.handleChange}
-                            margin="normal"
-                        />
-
-                        {/*<TextField*/}
-                            {/*id="description"*/}
-                            {/*label="Description"*/}
-                            {/*placeholder="Description"*/}
-                            {/*multiline*/}
-                            {/*className={classes.textField}*/}
-                            {/*style={{marginTop:-100}}*/}
-                        {/*/>*/}
-                    </form>
-                    <div>
-                        <p className={classes.dateHeader}>Date</p><p className={classes.timeHeader}>Time</p>
-                        <div className={classes.pickerWithIcon}>
-                            <Today viewBox="-2 -4 26 26" className={classes.icons} style={{marginLeft: '18px'}} />
-                            <DatePicker
-                                className={classes.datePicker}
-                                onChange={this.handleDate}
-                                value={this.state.date}
-                                textFieldStyle={styles.pickerTextField}
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        float ="left"
+                                        color = "primary"
+                                        checked={this.state.visible}
+                                        onChange={this.handleVisibility("visible")}
+                                        value="visible"
+                                    />
+                                }
+                                label="Only visible if invited"
                             />
-                        </div>
-                        <div className={classes.pickerWithIcon}>
-                            <Schedule viewBox="-2 -4 26 26" className={classes.icons}/>
-                            <TimePicker
-                                className={classes.timePicker}
-                                onChange={this.handleTime}
-                                value={this.state.date}
-                                format="24hr"
-                                textFieldStyle={styles.pickerTextField}
-                            />
-                        </div>
-                    </div>
-                    <ExpansionPanel>
-                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon color='primary' />}>
-                            <Typography className={classes.heading}>Invite & Change Vibility</Typography>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
-                            <FormGroup row>
-                                <TextField
-                                    style={{width: 200}}
-                                    id="invitation"
-                                    label="Participants"
-                                    placeholder ="Invite People"
-                                    value={this.state.invitedUsers}
-                                />
-                                <Link to={{pathname: "/event/create/invite",  query: {
-                                        source: "/event/create",
-                                        invitedUsers: this.state.invitedUsers,
-                                    }}}>
-
-                                    <IconButton>
-                                        <AddIcon />
-                                    </IconButton>
-                                </Link>
-
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            float ="left"
-                                            color = "primary"
-                                            checked={this.state.visible}
-                                            onChange={this.handleVisibility("visible")}
-                                            value="visible"
-                                        />
-                                    }
-                                    label="Only visible if invited"
-                                />
-                            </FormGroup>
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
-                    <Button disabled={!buttonEnabled} variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
-                        Create Event
-                    </Button>
-                </Dialog>
-            </div>
+                        </FormGroup>
+                    </ExpansionPanelDetails>
+                </ExpansionPanel>
+                <Button disabled={!buttonEnabled} variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
+                    Create Event
+                </Button>
+            </Dialog>
         );
     }
 }

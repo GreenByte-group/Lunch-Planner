@@ -207,7 +207,6 @@ class EventScreen extends React.Component {
                      </Link>
                         Service List
                     </div>
-                    <Comments eventId={eventId}/>
                     <IconButton style={buttonStyle}>
                         <AcceptedButton/>
                     </IconButton>

@@ -1,7 +1,7 @@
 import React from "react";
 import FirstScreen, {setAuthenticationHeader} from "./components/authentication/Authentication"
 import LunchPlanner from "./components/LunchPlanner"
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import { Router, Route, Redirect } from "react-router-dom";
 import {isAuthenticated} from "./components/authentication/LoginFunctions"
 import { MuiThemeProvider } from 'material-ui/styles';
 import { MuiThemeProvider as OldMuiThemeProvider } from 'material-ui-old/styles'
@@ -13,6 +13,9 @@ import ServiceListScreen from "./components/Event/ServiceListScreen";
 import {getMuiTheme} from "material-ui-old/styles/index";
 import SocialScreen from "./components/SocialScreen";
 import LocationScreen from "./components/LocationScreen";
+import Comments from "./components/Event/Comments";
+import { createBrowserHistory as createHistory } from "history";
+import {setHistory, getHistory} from "./utils/HistoryUtils";
 
 const oldTheme = getMuiTheme({
     palette: {
@@ -36,7 +39,7 @@ function isAuth() {
     return isAuthenticated();
 }
 
-export const PrivateRoute = ({ component: Component, ...rest }) => (
+const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route{...rest} render={props =>
             isAuth() ? (<Component {...props} />)
                 : (<Redirect to={{
@@ -46,11 +49,17 @@ export const PrivateRoute = ({ component: Component, ...rest }) => (
 
 class App extends React.Component {
 
+    constructor(props) {
+        super();
+
+        setHistory(createHistory(props));
+    }
+
     render() {
         return (
             <OldMuiThemeProvider theme={oldTheme}>
                 <MuiThemeProvider theme={theme}>
-                    <Router>
+                    <Router history={getHistory()}>
                         <div>
                             <Route exact path="/login" component={FirstScreen} />
                             <Route exact path="/"
@@ -63,6 +72,7 @@ class App extends React.Component {
                             <PrivateRoute path="/event/create" component={CreateEventScreen} />
                             <PrivateRoute path="/event/create/invite" component={SelectUserScreen} />
                             <PrivateRoute path="/event/:eventId(\d+)" component={EventScreen} />
+                            <PrivateRoute path="/event/:eventId(\d+)/comments" component={Comments} />
                             <PrivateRoute path="/event/:eventId(\d+)/service" component={ServiceListScreen} />
                         </div>
                     </Router>

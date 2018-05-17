@@ -4,6 +4,7 @@ import {HOST} from "../../Config";
 import axios from "axios/index";
 import {getUsername, setAuthenticationHeader} from "../authentication/Authentication";
 import Comment from "./Comment";
+import Dialog from "../Dialog";
 
 const styles = {
     list: {
@@ -23,7 +24,7 @@ class Comments extends React.Component {
         setAuthenticationHeader();
 
         this.state = {
-            eventId: props.eventId,
+            eventId: props.match.params.eventId,
             comments: [],
             newComment: "",
         }
@@ -90,7 +91,7 @@ class Comments extends React.Component {
         const comments = this.state.comments;
 
         return (
-            <div>
+            <Dialog>
                 <form
                     className={classes.textFieldComment}
                     noValidate autoComplete="on"
@@ -121,7 +122,7 @@ class Comments extends React.Component {
                         )
                     })}
                 </List>
-            </div>
+            </Dialog>
         )
     }
 
