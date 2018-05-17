@@ -106,16 +106,11 @@ class Comments extends React.Component {
             >
                 <List className={classes.list}>
                     {comments.map((listValue) => {
-                        let rightAlign = false;
-                        if(listValue.userName === getUsername())
-                            rightAlign = true;
-
                         return (
                             <Comment
                                 text={listValue.commentText}
                                 date={listValue.date}
                                 creater={listValue.userName}
-                                rightAlign={rightAlign}
                             />
                         )
                     })}
