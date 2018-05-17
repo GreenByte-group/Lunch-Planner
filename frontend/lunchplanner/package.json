@@ -4,6 +4,7 @@
   "private": true,
   "proxy": "http://localhost:8080",
   "dependencies": {
+    "@google/maps": "^0.4.6",
     "@material-ui/icons": "^1.0.0-beta.43",
     "axios": "^0.18.0",
     "bootstrap": "^4.0.0",

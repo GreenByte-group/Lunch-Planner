@@ -10,7 +10,7 @@ import CreateEventScreen from "./components/CreateEventScreen";
 import SelectUserScreen from "./components/User/SelectUserScreen";
 import {getMuiTheme} from "material-ui-old/styles/index";
 import SimpleMap from "./components/GoogleMap/SimpleMap";
-import EventsMapPage from "./components/GoogleMap/PlacesAutocomplete";
+import GoogleMapsContainer from "./components/GoogleMap/GoogleMapsContainer";
 
 const oldTheme = getMuiTheme({
     palette: {

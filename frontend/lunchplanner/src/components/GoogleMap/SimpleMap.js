@@ -1,7 +1,7 @@
 import React from 'react'
 import GoogleMapReact from 'google-map-react';
 import Dialog from 'material-ui/Dialog';
-
+import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
 
 
 
@@ -39,12 +39,12 @@ class SimpleMap extends React.Component {
         this.setState({ showModal: false });
     }
 
-    onMarkerClick = (props, marker, e) =>
+    onMarkerClick (props, marker, e) {
         this.setState({
             selectedPlace: props,
             activeMarker: marker,
             showingInfoWindow: true
-        });
+        });}
 
     onMapClicked = (props) => {
         if (this.state.showingInfoWindow) {
@@ -72,16 +72,21 @@ class SimpleMap extends React.Component {
                 <Dialog fullScreen
                     open={this.state.open}>
                     <div style={{ height: '50%', width: '70%' }}>
+
+
                         <GoogleMapReact
                         bootstrapURLKeys={{ key: "AIzaSyBxwL_2v8uEcq3ItG-gNI21NnSWgekJGNs" }}
                         defaultCenter={this.props.center}
                         defaultZoom={this.props.zoom}>
-                            <AnyReactComponent
-                                lat={ 49.378835  }
+
+                            <Marker
+                                onclick = {this.onMarkerClick}
+                                lat={ 49.578839  }
                                 lng={ 8.675512 }
-                                text={ "nope, there´s no weed!"}
-                            />
+                                text={'sdhsod'}/>
+
                         </GoogleMapReact>
+
                     </div>
                 </Dialog>
             </div>
