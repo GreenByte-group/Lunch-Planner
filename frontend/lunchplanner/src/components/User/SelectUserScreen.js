@@ -1,21 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from 'material-ui/styles';
-import Dialog from 'material-ui/Dialog';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import IconButton from 'material-ui/IconButton';
-import Typography from 'material-ui/Typography';
-import CloseIcon from '@material-ui/icons/Close';
-import SearchIcon from '@material-ui/icons/Search';
 import Slide from 'material-ui/transitions/Slide';
 
-import {Link} from "react-router-dom";
 import axios from "axios/index";
 import {HOST} from "../../Config";
 import {List, TextField} from "material-ui";
 import User from "./User";
 import FloatingActionButton from "../FloatingActionButton";
+import {getHistory} from "../../utils/HistoryUtils";
+import Dialog from "../Dialog";
 
 const styles = {
     root: {
@@ -78,12 +72,8 @@ class SelectUserScreen extends React.Component {
             });
     }
 
-    searchChanged = (event) => {
-        this.setState({
-            search: event.target.value,
-        });
-
-        this.updateUsers(event.target.value);
+    searchChanged = (search) => {
+        this.updateUsers(search);
     };
 
     clickHandler = (username, selected) => {
@@ -102,7 +92,7 @@ class SelectUserScreen extends React.Component {
 
     handleSend = () => {
         if(this.props.location.query)
-            this.props.history.push(this.props.location.query.source +
+            getHistory().push(this.props.location.query.source +
                 "?invitedUsers=" + this.state.selectedUsers);
     };
 
@@ -118,42 +108,17 @@ class SelectUserScreen extends React.Component {
         }
 
         return (
-            <div className={classes.root}>
-                <Dialog
-                    fullScreen
-                    open={this.state.open}
-                    onClose={this.handleClose}
-                    transition={Transition}
-                >
-                    <AppBar className={classes.appBar} color ="white">
-                        <Toolbar>
-                            <Link to="/event/create">
-                                <IconButton color="primary" aria-label="Close">
-                                    <CloseIcon />
-                                </IconButton>
-                            </Link>
-                            <Typography variant="title" color="inherit" className={classes.flex}>
-                                {textTitle}
-                            </Typography>
-                            <div>
-                                <IconButton color="primary">
-                                    <SearchIcon />
-                                </IconButton>
-                                <TextField
-                                    value={this.state.search}
-                                    onChange={this.searchChanged}
-                                />
-                            </div>
-                        </Toolbar>
-                    </AppBar>
-                    <List className={classes.list}>
-                        {users.map((listValue) => {
-                            return <User selected={this.state.selectedUsers.includes(listValue.userName)} username={listValue.userName} onClick={this.clickHandler}/>;
-                        })}
-                    </List>
-                    <FloatingActionButton onClick={this.handleSend} icon="done"/>
-                </Dialog>
-            </div>
+            <Dialog
+                title={textTitle}
+                onSearch={this.searchChanged}
+            >
+                <List className={classes.list}>
+                    {users.map((listValue) => {
+                        return <User selected={this.state.selectedUsers.includes(listValue.userName)} username={listValue.userName} onClick={this.clickHandler}/>;
+                    })}
+                </List>
+                <FloatingActionButton onClick={this.handleSend} icon="done"/>
+            </Dialog>
         );
     }
 }
