@@ -15,6 +15,7 @@ import {HOST} from "../../Config";
 import axios from "axios/index";
 import moment from "moment";
 import Dialog from "../Dialog";
+import CommentsIcon from '@material-ui/icons/Message';
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -39,7 +40,53 @@ function Transition(props) {
             marginTop: '10px',
             marginBottom: '0px',
         },
-
+        header: {
+            backgroundColor: '#1EA185',
+            height: '100px',
+            color: 'white',
+            padding: '16px',
+            fontFamily: 'Work Sans',
+            fontSize: '16px',
+            lineHeight: '24px',
+        },
+        fontBig: {
+            fontSize: '16px',
+            margin: '0px',
+        },
+        fontSmall: {
+            fontSize: '13px',
+            margin: '0px',
+        },
+        icons: {
+            height: '13px',
+            width: '13px',
+        },
+        headerText: {
+            float: 'left',
+        },
+        headerComment: {
+            float: 'right',
+            display: 'flex',
+            flexDirection: 'column',
+        },
+        commentIcon: {
+            marginTop: '12px',
+            marginRight: 'auto',
+            marginLeft: 'auto',
+        },
+        commentText: {
+            fontSize: '11px',
+            lineHeight: '16px',
+        },
+        invitations: {
+            marginLeft: '16px',
+            marginTop: '8px',
+        },
+        invitaionsHeader: {
+            fontSize: '16px',
+            fontWeight: '500',
+            lineHeight: '24px',
+        },
     };
 
 const buttonStyle = {
@@ -142,34 +189,25 @@ class EventScreen extends React.Component {
             <Dialog
                 title={name}
                 closeUrl="/event"
+                imageUrl="https://greenbyte.group/assets/images/logo.png"
             >
+                <div className={classes.header}>
+                    <div className={classes.headerText}>
+                        <p className={classes.fontSmall}>Created by ...</p>
+                        <p className={classes.fontBig}>{name}</p>
+                        <p className={classes.fontSmall}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
+                    </div>
+                    <div className={classes.headerComment}>
+                        <CommentsIcon className={classes.commentIcon} />
+                        <p className={classes.commentText}>2 Comments</p>
+                    </div>
+                </div>
                 {(error
                         ? <p className={classes.error}>{error}</p>
                         : ""
                 )}
-                <TextField
-                    id="location"
-                    label="Location"
-                    value={location}
-                    className={classes.textField}
-                    placeholder ="Add an Location ..."
-                    onChange={this.handleChange}
-                    margin="normal"
-                />
-                <div style={{marginLeft: 20}}>
-                    <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
-                </div>
-                    {/*<TextField*/}
-                        {/*id="textarea"*/}
-                        {/*label="Description"*/}
-                        {/*value={description}*/}
-                        {/*placeholder="Description"*/}
-                        {/*multiline*/}
-                        {/*className={classes.textField}*/}
-                        {/*margin="normal"*/}
-                    {/*/>*/}
-                <div style={{marginLeft:20}}>
-                    Participants
+                <div className={classes.invitations}>
+                    <p className={classes.invitaionsHeader}>Invited People ({people.length})</p>
                     <br />
                     {people.map((person) => {
                         let peopleShortcut = person.charAt(0);

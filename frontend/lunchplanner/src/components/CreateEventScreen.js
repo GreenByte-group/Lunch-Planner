@@ -189,7 +189,7 @@ class CreateEventScreen extends React.Component {
 
         return (
             <Dialog
-                title="Create Event"
+                title="Create Event"closeIconAbsolute
                 closeUrl="/event"
             >
                 {(error
