@@ -4,13 +4,8 @@ import TextField from "material-ui/es/TextField/TextField";
 import AcceptedButton from "./AcceptedButton";
 import React from 'react';
 import Slide from 'material-ui/transitions/Slide';
-import Dialog from 'material-ui/Dialog';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
 import {Link} from "react-router-dom";
-import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 import {Today, Schedule} from "@material-ui/icons/es/index";
 import Chip from "material-ui/es/Chip/Chip";
 import Avatar from "material-ui/es/Avatar/Avatar";
@@ -19,6 +14,7 @@ import Comments from "./Comments";
 import {HOST} from "../../Config";
 import axios from "axios/index";
 import moment from "moment";
+import Dialog from "../Dialog";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -143,76 +139,59 @@ class EventScreen extends React.Component {
         console.log(this.state);
 
         return (
-            <div>
-                <Dialog
-                    fullScreen
-                    open={this.state.open}
-                    onClose={this.handleClose}
-                    transition={Transition}
-                >
-                    <AppBar className={classes.appBar} color ="white">
-                        <Toolbar>
-                            <Link to="/event">
-                                <IconButton color="inherit" aria-label="Close">
-                                    <CloseIcon />
-                                </IconButton>
-                            </Link>
-                            <Typography variant="title" color="inherit" className={classes.flex}>
-                                {name}
-                            </Typography>
+            <Dialog
+                title={name}
+                closeUrl="/event"
+            >
+                {(error
+                        ? <p className={classes.error}>{error}</p>
+                        : ""
+                )}
+                <TextField
+                    id="location"
+                    label="Location"
+                    value={location}
+                    className={classes.textField}
+                    placeholder ="Add an Location ..."
+                    onChange={this.handleChange}
+                    margin="normal"
+                />
+                <div style={{marginLeft: 20}}>
+                    <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
+                </div>
+                    {/*<TextField*/}
+                        {/*id="textarea"*/}
+                        {/*label="Description"*/}
+                        {/*value={description}*/}
+                        {/*placeholder="Description"*/}
+                        {/*multiline*/}
+                        {/*className={classes.textField}*/}
+                        {/*margin="normal"*/}
+                    {/*/>*/}
+                <div style={{marginLeft:20}}>
+                    Participants
+                    <br />
+                    {people.map((person) => {
+                        let peopleShortcut = person.charAt(0);
+                        return <Chip
+                            avatar={<Avatar >{peopleShortcut}</Avatar>}
+                            label={person}
+                            className={classes.chip}
+                        />
+                    })}
 
-                        </Toolbar>
-                    </AppBar>
-                    {(error
-                            ? <p className={classes.error}>{error}</p>
-                            : ""
-                    )}
-                    <TextField
-                        id="location"
-                        label="Location"
-                        value={location}
-                        className={classes.textField}
-                        placeholder ="Add an Location ..."
-                        onChange={this.handleChange}
-                        margin="normal"
-                    />
-                    <div style={{marginLeft: 20}}>
-                        <p className={classes.date}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
-                    </div>
-                        {/*<TextField*/}
-                            {/*id="textarea"*/}
-                            {/*label="Description"*/}
-                            {/*value={description}*/}
-                            {/*placeholder="Description"*/}
-                            {/*multiline*/}
-                            {/*className={classes.textField}*/}
-                            {/*margin="normal"*/}
-                        {/*/>*/}
-                    <div style={{marginLeft:20}}>
-                        Participants
-                        <br />
-                        {people.map((person) => {
-                            let peopleShortcut = person.charAt(0);
-                            return <Chip
-                                avatar={<Avatar >{peopleShortcut}</Avatar>}
-                                label={person}
-                                className={classes.chip}
-                            />
-                        })}
+                </div>
+                <div style={{marginLeft:20}}>
+                 <Link to={{pathname:`/event/${eventId}/service`}}>
+                    <ServiceIcon />
+                 </Link>
+                    Service List
+                </div>
+                <IconButton style={buttonStyle}>
+                    <AcceptedButton/>
+                </IconButton>
 
-                    </div>
-                    <div style={{marginLeft:20}}>
-                     <Link to={{pathname:`/event/${eventId}/service`}}>
-                        <ServiceIcon />
-                     </Link>
-                        Service List
-                    </div>
-                    <IconButton style={buttonStyle}>
-                        <AcceptedButton/>
-                    </IconButton>
-
-                </Dialog>
-            </div>
+            </Dialog>
         );
     }
 }

@@ -91,7 +91,10 @@ class Comments extends React.Component {
         const comments = this.state.comments;
 
         return (
-            <Dialog>
+            <Dialog
+            title="Comments"
+            closeUrl={"/event/" + this.state.eventId}
+            >
                 <form
                     className={classes.textFieldComment}
                     noValidate autoComplete="on"
