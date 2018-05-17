@@ -1,5 +1,9 @@
 package group.greenbyte.lunchplanner.event.database;
 
+<<<<<<< HEAD
+=======
+import group.greenbyte.lunchplanner.event.InvitationAnswer;
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
 import group.greenbyte.lunchplanner.user.database.User;
 
 import javax.persistence.*;
@@ -9,17 +13,26 @@ import java.io.Serializable;
 public class EventInvitation implements Serializable {
 
     @Id
+<<<<<<< HEAD
     @ManyToOne(cascade = CascadeType.ALL)
+=======
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
     @JoinColumn(name = "eventId")
     private Event eventInvited;
 
     @Id
     @ManyToOne(cascade = CascadeType.ALL)
+<<<<<<< HEAD
     @JoinColumn(name = "userId")
+=======
+    @JoinColumn(name = "userName")
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
     private User userInvited;
 
     private boolean isAdmin;
 
+<<<<<<< HEAD
     private boolean confirmed;
 
     public EventInvitation() {
@@ -58,4 +71,7 @@ public class EventInvitation implements Serializable {
     public void setUserInvited(User userInvited) {
         this.userInvited = userInvited;
     }
+=======
+    private InvitationAnswer answer;
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
 }

@@ -1,5 +1,9 @@
 package group.greenbyte.lunchplanner.team.database;
 
+<<<<<<< HEAD
+=======
+import group.greenbyte.lunchplanner.event.database.Event;
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
 import group.greenbyte.lunchplanner.event.database.EventTeamVisible;
 
 import javax.persistence.*;
@@ -12,10 +16,18 @@ public class Team {
 
     public static final int MAX_TEAMNAME_LENGHT = 50;
     public static final int MAX_DESCRIPTION_LENGHT = 1000;
+<<<<<<< HEAD
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int teamId;
+=======
+    static final public int MAX_SEARCHWORD_LENGTH = 50;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer teamId;
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
 
     @Column
     private boolean isPublic;
@@ -29,25 +41,46 @@ public class Team {
     @OneToMany(mappedBy = "user")
     private Set<TeamMember> teamsMember;
 
+<<<<<<< HEAD
     @OneToMany(mappedBy = "event")
     private Set<EventTeamVisible> eventsVisible;
 
     @ManyToOne
+=======
+    @ManyToOne(fetch = FetchType.EAGER)
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
     @JoinColumn(name = "parentTeam")
     private Team parentTeam;
 
     @OneToMany(mappedBy = "parentTeam")
     private Set<Team> childTeams = new HashSet<>();
 
+<<<<<<< HEAD
+=======
+    @OneToMany(mappedBy = "userInvited")
+    private Set<TeamInvitation> usersInvited = new HashSet<>();
+
+    @Transient
+    private Set<TeamInvitationDataForReturn> invitations = new HashSet<>();
+
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
     public Team() {
         isPublic = false;
     }
 
+<<<<<<< HEAD
     public int getTeamId() {
         return teamId;
     }
 
     public void setTeamId(int teamId) {
+=======
+    public Integer getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(Integer teamId) {
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
         this.teamId = teamId;
     }
 
@@ -67,6 +100,7 @@ public class Team {
         this.teamName = teamName;
     }
 
+<<<<<<< HEAD
     public Set<EventTeamVisible> getEventsVisible() {
         return eventsVisible;
     }
@@ -90,6 +124,8 @@ public class Team {
         teamsMember.add(teamMember);
     }
 
+=======
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
     public String getDescription() {
         return description;
     }
@@ -106,11 +142,39 @@ public class Team {
         this.parentTeam = parentTeam;
     }
 
+<<<<<<< HEAD
     public Set<Team> getChildTeams() {
         return childTeams;
     }
 
     public void setChildTeams(Set<Team> childTeams) {
         this.childTeams = childTeams;
+=======
+    public Set<TeamInvitationDataForReturn> getInvitations() {
+        return invitations;
+    }
+
+    public void setInvitations(Set<TeamInvitationDataForReturn> invitations) {
+        this.invitations = invitations;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(getTeamId());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Team) {
+            Team team = (Team) obj;
+            return team.getTeamId().equals(getTeamId());
+        } else {
+            return false;
+        }
+    }
+
+    public int hashCode() {
+        return getTeamId().hashCode();
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
     }
 }

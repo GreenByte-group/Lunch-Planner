@@ -9,12 +9,20 @@ import java.io.Serializable;
 public class TeamMember implements Serializable {
 
     @Id
+<<<<<<< HEAD
     @ManyToOne(cascade = CascadeType.ALL)
+=======
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
     @JoinColumn(name = "teamId")
     private Team team;
 
     @Id
+<<<<<<< HEAD
     @ManyToOne(cascade = CascadeType.ALL)
+=======
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
     @JoinColumn(name = "userName")
     private User user;
 

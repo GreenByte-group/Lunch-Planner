@@ -9,11 +9,16 @@ import java.io.Serializable;
 public class EventTeamVisible implements Serializable {
 
     @Id
+<<<<<<< HEAD
     @ManyToOne(cascade = CascadeType.ALL)
+=======
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
     @JoinColumn(name = "eventId")
     private Event event;
 
     @Id
+<<<<<<< HEAD
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "teamId")
     private Team team;
@@ -33,4 +38,9 @@ public class EventTeamVisible implements Serializable {
     public void setTeam(Team team) {
         this.team = team;
     }
+=======
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "teamId")
+    private Team team;
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
 }

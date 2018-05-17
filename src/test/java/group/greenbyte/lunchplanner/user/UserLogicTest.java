@@ -2,6 +2,10 @@ package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+<<<<<<< HEAD
+=======
+import group.greenbyte.lunchplanner.user.database.User;
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +13,27 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+<<<<<<< HEAD
 
 import static group.greenbyte.lunchplanner.Utils.createString;
+=======
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Calendar;
+
+import static group.greenbyte.lunchplanner.Utils.createString;
+import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
+import static org.junit.Assert.*;
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
 @WebAppConfiguration
 @ActiveProfiles("application-test.properties")
+<<<<<<< HEAD
+=======
+@Transactional
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
 public class UserLogicTest {
 
     @Autowired
@@ -94,4 +112,59 @@ public class UserLogicTest {
 
         userLogic.createUser(userName, password, mail);
     }
+<<<<<<< HEAD
+=======
+
+    // ------------------------ SEARCH USER ------------------------
+
+    @Test
+    public  void test1ValidParam()throws Exception{
+        String userName = createString(50);
+        String mail = "gueltige@mail.de";
+        String password = createString(50);
+
+        userLogic.createUser(userName, password, mail);
+        userLogic.searchUserByName(userName);
+    }
+
+    // ------------------------ JWT ------------------------
+    @Test
+    public void testExpirationDate() {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DAY_OF_WEEK, 1);
+
+        Calendar c2 = Calendar.getInstance();
+        c2.setTime(userLogic.getExpirationDate());
+
+        assertEquals(c.get(Calendar.DAY_OF_WEEK), c2.get(Calendar.DAY_OF_WEEK));
+        assertEquals(c.get(Calendar.DAY_OF_MONTH), c2.get(Calendar.DAY_OF_MONTH));
+        assertEquals(c.get(Calendar.MONTH), c2.get(Calendar.MONTH));
+        assertEquals(c.get(Calendar.YEAR), c2.get(Calendar.YEAR));
+        assertEquals(c.get(Calendar.HOUR_OF_DAY), c2.get(Calendar.HOUR_OF_DAY));
+    }
+
+    @Test
+    public void testCreateUserToken() throws Exception {
+        String userName = createUserIfNotExists(userLogic, "usernaem");
+        User auth = userLogic.createUserToken(userName);
+        assertNotNull(auth);
+        assertEquals(userName, auth.getUserName());
+    }
+
+    @Test
+    public void testValidateUser() throws Exception {
+        String userName = createUserIfNotExists(userLogic, "usernaem");
+        User auth = userLogic.createUserToken(userName);
+
+        User authenticated = userLogic.validateUser(auth.getToken());
+
+        assertEquals(auth.getUserName(), authenticated.getUserName());
+        assertEquals(auth.getPassword(), authenticated.getPassword());
+        assertEquals(auth.geteMail(), authenticated.geteMail());
+        assertEquals(auth.getToken(), authenticated.getToken());
+
+        User notAuth = userLogic.validateUser(auth.getToken() + "a");
+        assertNull(notAuth);
+    }
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
 }

@@ -18,6 +18,14 @@ public class UserJson implements Serializable {
         this.mail = mail;
     }
 
+<<<<<<< HEAD
+=======
+    public UserJson(String userName,String password){
+        this.userName = userName;
+        this.password = password;
+    }
+
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
     public UserJson() {}
 
     public String getUserName() {

@@ -3,7 +3,7 @@
 organise your lunch break to socialize with friends and colleagues
 
 # Getting Started
-Our small group of computer science students are developing the Luch Planner.
+Our small group of computer science students are developing the Lunch Planner.
 During the SEP (Software engineer project, length: 1 SEM), at the university of applied sciences mannheim.
 We decided to advance our project from beeing a software, only in use by companies to beeing a
 open source software, usable for all. We had the luck to work together with a high motivated 

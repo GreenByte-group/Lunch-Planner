@@ -10,10 +10,13 @@ buildscript {
     }
 }
 
+
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'maven'
 
 group = 'group.greenbyte'
 version = '0.0.1-SNAPSHOT'
@@ -22,18 +25,41 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 }
+//jar {
+  //  from('frontend/lunchplanner/src') {
+    //    into 'static'
+    //}
+//}
+
+//processResources.dependsOn('frontend:bundle')
 
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-mail')
-    //compile('org.springframework.boot:spring-boot-starter-security')
+    compile('org.springframework.boot:spring-boot-starter-security')
+    compile('io.jsonwebtoken:jjwt:0.7.0')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.session:spring-session-core')
     compile('org.springframework.boot:spring-boot-starter-data-jpa:2.0.0.RELEASE')
+<<<<<<< HEAD
     runtime('org.springframework.boot:spring-boot-devtools')
+=======
+    //compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
     runtime('mysql:mysql-connector-java')
     testCompile('com.h2database:h2')
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('org.springframework.security:spring-security-test')
+<<<<<<< HEAD
 
+=======
+    //changes in frontend without restarting server
+    compile("org.springframework.boot:spring-boot-devtools")
+}
+
+
+bootRun {
+    //sourceResources sourceSets.main.resources
+    classpath = sourceSets.main.allSource
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
 }

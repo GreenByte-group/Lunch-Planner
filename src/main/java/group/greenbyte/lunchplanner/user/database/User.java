@@ -1,11 +1,22 @@
 package group.greenbyte.lunchplanner.user.database;
 
+<<<<<<< HEAD
 import group.greenbyte.lunchplanner.event.database.EventInvitation;
 import group.greenbyte.lunchplanner.location.database.LocationAdmin;
 import group.greenbyte.lunchplanner.team.database.TeamMember;
 
 import javax.persistence.*;
 import java.util.HashSet;
+=======
+import group.greenbyte.lunchplanner.event.database.Comment;
+import group.greenbyte.lunchplanner.event.database.EventInvitation;
+import group.greenbyte.lunchplanner.team.database.TeamMember;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
 import java.util.Set;
 
 @Entity
@@ -13,12 +24,18 @@ public class User {
 
     static final public int MAX_USERNAME_LENGTH = 50;
     static final public int MAX_MAIL_LENGTH = 50;
+<<<<<<< HEAD
     static final public int MAX_PASSWORD_LENGTH = 80;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer userId;
 
+=======
+    static final public int MAX_PASSWORD_LENGTH = 200;
+
+    @Id
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
     @Column(unique = true,length = MAX_USERNAME_LENGTH)
     private String userName;
 
@@ -28,6 +45,7 @@ public class User {
     @Column(nullable = false, length = MAX_PASSWORD_LENGTH)
     private String password;
 
+<<<<<<< HEAD
     @OneToMany(mappedBy = "eventInvited", cascade = CascadeType.ALL)
     private Set<EventInvitation> eventsInvited;
 
@@ -36,6 +54,19 @@ public class User {
 
     @OneToMany(mappedBy = "location")
     private Set<LocationAdmin> locationAdmin = new HashSet<>();
+=======
+    @Column
+    private String token;
+
+    @OneToMany(mappedBy = "eventInvited", cascade = CascadeType.ALL)
+    private Set<EventInvitation> eventsInvited;
+
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    private Set<TeamMember> teamsMember = new HashSet<>();
+
+    @OneToMany(mappedBy = "eventComment", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Comment> comments = new ArrayList<>();
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
 
     public String getUserName() {
         return userName;
@@ -76,11 +107,20 @@ public class User {
         eventsInvited.add(eventInvitation);
     }
 
+<<<<<<< HEAD
     public Integer getUserId() {
         return userId;
     }
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+=======
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
     }
 }

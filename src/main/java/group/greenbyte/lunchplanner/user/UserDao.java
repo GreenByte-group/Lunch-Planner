@@ -3,6 +3,11 @@ package group.greenbyte.lunchplanner.user;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.user.database.User;
 
+<<<<<<< HEAD
+=======
+import java.util.List;
+
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
 public interface UserDao {
 
     /**
@@ -15,7 +20,10 @@ public interface UserDao {
     User getUser(String userName) throws DatabaseException;
 
     /**
+<<<<<<< HEAD
      * TODO: write tests
+=======
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
      * Creates a user
      *
      * @param userName his username
@@ -25,4 +33,25 @@ public interface UserDao {
      */
     void createUser(String userName, String password, String mail) throws DatabaseException;
 
+<<<<<<< HEAD
+=======
+    /**
+     * Sets the jwt token for the user
+     *
+     * @param username
+     * @param token
+     * @return
+     */
+    User setTokenForUser(String username, String token) throws DatabaseException;
+
+    /**
+     *
+     * @param searchword
+     * @return
+     * @throws DatabaseException
+     */
+    List<User> searchUserByName(String searchword) throws DatabaseException;
+
+
+>>>>>>> faa515c581e217f842d716b6e6b224743202cf56
 }
