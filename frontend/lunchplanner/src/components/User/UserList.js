@@ -6,6 +6,7 @@ import User from "./User";
 const styles = {
     list: {
         padding: 0,
+        marginTop: '0px !important',
     },
 };
 
@@ -67,11 +68,10 @@ class UserList extends React.Component {
         let users = this.state.users;
         let selectedUsers = this.state.selectedUsers;
 
-        console.log("selected users render");
-        console.log(selectedUsers);
-
         return (
-            <List className={classes.list}>
+            <List
+                className={classes.list}
+            >
                 {users.map((listValue) => {
                     return <User selectable={this.state.selectable} selected={selectedUsers.includes(listValue.userName)} username={listValue.userName} onClick={this.clickHandler}/>;
                 })}

@@ -1,20 +1,16 @@
 package group.greenbyte.lunchplanner.team;
 
-import group.greenbyte.lunchplanner.event.database.Event;
-import group.greenbyte.lunchplanner.event.database.EventDatabase;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
+import group.greenbyte.lunchplanner.team.database.Team;
 import group.greenbyte.lunchplanner.team.database.TeamDatabase;
-import group.greenbyte.lunchplanner.team.database.TeamInvitationDataForReturn;
-import group.greenbyte.lunchplanner.team.database.TeamMember;
+import group.greenbyte.lunchplanner.team.database.TeamMemberDataForReturn;
 import group.greenbyte.lunchplanner.user.UserDao;
-import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import group.greenbyte.lunchplanner.team.database.Team;
 
 import java.util.*;
 
@@ -35,12 +31,6 @@ public class TeamDaoMySql implements TeamDao {
     public static final String TEAM_MEMBER_USER = "user_name";
     public static final String TEAM_MEMBER_TEAM = "team_id";
     public static final String TEAM_MEMBER_ADMIN = "is_admin";
-
-    private static final String TEAM_INVITATION_TABLE = "team_invitation";
-    private static final String TEAM_INVITATION_ADMIN = "is_admin";
-    private static final String TEAM_INVITATION_REPLY = "answer";
-    private static final String TEAM_INVITATION_USER = "user_name";
-    private static final String TEAM_INVITATION_TEAM = "team_id";
 
     @Autowired
     public TeamDaoMySql(UserDao userDao, JdbcTemplate jdbcTemplate) {
@@ -167,11 +157,11 @@ public class TeamDaoMySql implements TeamDao {
     @Override
     public List<Team> findTeamsUserInvited(String userName, String searchword) throws DatabaseException {
         try {
-            String SQL = "select * from " + TEAM_TABLE + " inner join " + TEAM_INVITATION_TABLE + " " + TEAM_INVITATION_TABLE +
-                    " on " + TEAM_TABLE + "." + TEAM_ID + " = " + TEAM_INVITATION_TABLE + "." + TEAM_INVITATION_TEAM +
+            String SQL = "select * from " + TEAM_TABLE + " inner join " + TEAM_MEMBER_TABLE + " " + TEAM_MEMBER_TABLE +
+                    " on " + TEAM_TABLE + "." + TEAM_ID + " = " + TEAM_MEMBER_TABLE + "." + TEAM_MEMBER_TEAM +
                     " WHERE (" + TEAM_NAME + " LIKE ?" +
                     " OR " + TEAM_DESCRIPTION + " LIKE ?" +
-                    ") AND " + TEAM_INVITATION_USER + " = ?";
+                    ") AND " + TEAM_MEMBER_USER + " = ?";
 
 
             List<TeamDatabase> teams = jdbcTemplate.query(SQL,
@@ -194,13 +184,13 @@ public class TeamDaoMySql implements TeamDao {
     }
 
     @Override
-    public List<TeamInvitationDataForReturn> getInvitations(int teamId) throws DatabaseException {
+    public List<TeamMemberDataForReturn> getInvitations(int teamId) throws DatabaseException {
         try {
-            String SQL = "SELECT * FROM " + TEAM_INVITATION_TABLE + " WHERE " +
-                    TEAM_INVITATION_TEAM + " = ?";
+            String SQL = "SELECT * FROM " + TEAM_MEMBER_TABLE + " WHERE " +
+                    TEAM_MEMBER_TEAM + " = ?";
 
             return jdbcTemplate.query(SQL,
-                    new BeanPropertyRowMapper<>(TeamInvitationDataForReturn.class),
+                    new BeanPropertyRowMapper<>(TeamMemberDataForReturn.class),
                     teamId);
         } catch (Exception e) {
             throw new DatabaseException(e);
@@ -221,15 +211,11 @@ public class TeamDaoMySql implements TeamDao {
 
     private Team putUserInvited(String userName, int teamId, boolean admin) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        simpleJdbcInsert.withTableName(TEAM_INVITATION_TABLE);
+        simpleJdbcInsert.withTableName(TEAM_MEMBER_TABLE);
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put(TEAM_INVITATION_ADMIN, admin);
-        parameters.put(TEAM_INVITATION_TEAM, teamId);
-        if(admin)
-            parameters.put(TEAM_INVITATION_REPLY, InvitationAnswer.ACCEPT.getValue());
-        else
-            parameters.put(TEAM_INVITATION_REPLY, InvitationAnswer.MAYBE.getValue());
-        parameters.put(TEAM_INVITATION_USER, userName);
+        parameters.put(TEAM_MEMBER_ADMIN, admin);
+        parameters.put(TEAM_MEMBER_TEAM, teamId);
+        parameters.put(TEAM_MEMBER_USER, userName);
 
         try {
             Number key = simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));

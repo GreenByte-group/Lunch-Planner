@@ -105,6 +105,7 @@ class Comments extends React.Component {
             <Dialog
             title={"Comments (" + comments.length + ")"}
             closeUrl={"/event/" + this.state.eventId}
+            zIndex={10001}
             >
                 <List className={classes.list}>
                     {comments.map((listValue) => {

@@ -237,6 +237,7 @@ class EventScreen extends React.Component {
                     title={name}
                     closeUrl="/event"
                     imageUrl="https://greenbyte.group/assets/images/logo.png"
+                    paddingBottom={'48px'}
                 >
                     <div className={classes.header}>
                         <div className={classes.headerText}>

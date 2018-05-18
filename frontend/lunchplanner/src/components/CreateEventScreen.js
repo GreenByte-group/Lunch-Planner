@@ -14,6 +14,7 @@ import AddIcon from '@material-ui/icons/Add';
 import {FormGroup, FormControlLabel,} from 'material-ui/Form';
 import {createEvent} from "./CreateEventFunctions";
 import {DatePicker, TimePicker} from 'material-ui-old';
+import PeopleIcon from '@material-ui/icons/People'
 
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import "../assets/CreateEventScreen.css"
@@ -23,6 +24,7 @@ import {eventListNeedReload, needReload} from "./Event/EventList";
 import moment from "moment";
 
 import {getHistory} from "../utils/HistoryUtils";
+import {InputAdornment} from "material-ui";
 
 const styles = {
     appBar: {
@@ -95,6 +97,9 @@ const styles = {
         float: 'left',
         color: '#A4A4A4',
     },
+    inviteTextField: {
+        width: '100%',
+    }
 };
 const buttonStyle = {
     float: 'right',
@@ -195,6 +200,7 @@ class CreateEventScreen extends React.Component {
                 <Dialog
                     title="Create Event"closeIconAbsolute
                     closeUrl="/event"
+                    paddingBottom={'48px'}
                 >
                     {(error
                             ? <p className={classes.error}>{error}</p>
@@ -244,25 +250,31 @@ class CreateEventScreen extends React.Component {
                     </div>
                     <ExpansionPanel>
                         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon color='primary' />}>
-                            <Typography className={classes.heading}>Invite & Change Vibility</Typography>
+                            <Typography className={classes.heading}>Invite & Change Visibility</Typography>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails>
                             <FormGroup row>
-                                <TextField
-                                    style={{width: 200}}
-                                    id="invitation"
-                                    label="Participants"
-                                    placeholder ="Invite People"
-                                    value={this.state.invitedUsers}
-                                />
-                                <Link to={{pathname: "/event/create/invite",  query: {
+                                <Link className={classes.inviteTextField}
+                                      to={{pathname: "/event/create/invite",  query: {
                                         source: "/event/create",
                                         invitedUsers: this.state.invitedUsers,
                                     }}}>
-
-                                    <IconButton>
-                                        <AddIcon />
-                                    </IconButton>
+                                    <TextField
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        id="invitation"
+                                        label="Participants"
+                                        placeholder ="Invite People"
+                                        value={this.state.invitedUsers}
+                                        fullWidth
+                                        InputProps={{
+                                            startAdornment: <InputAdornment position="start"><PeopleIcon/></InputAdornment>,
+                                            endAdornment: <InputAdornment position="end">
+                                                <AddIcon />
+                                            </InputAdornment>
+                                        }}
+                                    />
                                 </Link>
 
                                 <FormControlLabel

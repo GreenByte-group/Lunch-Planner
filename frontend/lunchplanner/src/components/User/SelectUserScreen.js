@@ -2,11 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from 'material-ui/styles';
 import Slide from 'material-ui/transitions/Slide';
-
 import axios from "axios/index";
 import {HOST} from "../../Config";
-import {List, TextField} from "material-ui";
-import User from "./User";
 import FloatingActionButton from "../FloatingActionButton";
 import {getHistory} from "../../utils/HistoryUtils";
 import Dialog from "../Dialog";
@@ -22,10 +19,6 @@ const styles = {
     flex: {
         flex: 1,
     },
-    list: {
-        padding: 0,
-    },
-
 };
 
 function Transition(props) {
@@ -101,6 +94,7 @@ class SelectUserScreen extends React.Component {
 
         return (
             <Dialog
+                zIndex={10001}
                 title={textTitle}
                 onSearch={this.searchChanged}
             >

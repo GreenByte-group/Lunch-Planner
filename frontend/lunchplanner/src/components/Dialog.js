@@ -62,6 +62,8 @@ class Dialog extends React.Component {
             onSearch: props.onSearch,
             search: "",
             imageUrl: props.imageUrl,
+            zIndex: props.zIndex || 1300,
+            paddingBottom: props.paddingBottom || '0px',
         }
     }
 
@@ -109,6 +111,7 @@ class Dialog extends React.Component {
         return (
             <div>
                 <DialogMaterial
+                    style={{zIndex: this.state.zIndex}}
                     fullScreen
                     open={this.state.open}
                     transition={Transition}
@@ -145,7 +148,7 @@ class Dialog extends React.Component {
 
                     {(this.props.children) ? this.props.children : ""}
 
-                    <div className={classes.paddingBottom}></div>
+                    <div style={{paddingBottom: this.state.paddingBottom}}></div>
                 </DialogMaterial>
             </div>
         )

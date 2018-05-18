@@ -16,6 +16,7 @@ import LocationScreen from "./components/LocationScreen";
 import Comments from "./components/Event/Comments";
 import { createBrowserHistory as createHistory } from "history";
 import {setHistory, getHistory} from "./utils/HistoryUtils";
+import CreateTeamScreen from "./components/Team/CreateTeamScreen";
 
 const oldTheme = getMuiTheme({
     palette: {
@@ -68,6 +69,8 @@ class App extends React.Component {
 
                             <PrivateRoute path="/event" component={LunchPlanner} />
                             <PrivateRoute path="/social" component={SocialScreen} />
+                            <PrivateRoute path="/team/create" component={CreateTeamScreen}/>
+                            <PrivateRoute path="/team/create/invite" component={SelectUserScreen} />
                             <PrivateRoute path="/location" component={LocationScreen} />
                             <PrivateRoute path="/event/create" component={CreateEventScreen} />
                             <PrivateRoute path="/event/create/invite" component={SelectUserScreen} />

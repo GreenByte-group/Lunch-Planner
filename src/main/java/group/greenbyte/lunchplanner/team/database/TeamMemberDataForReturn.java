@@ -1,9 +1,8 @@
 package group.greenbyte.lunchplanner.team.database;
 
-public class TeamInvitationDataForReturn {
+public class TeamMemberDataForReturn {
 
     private String userName;
-    private int answer;
     private boolean admin;
 
     public String getUserName() {
@@ -12,14 +11,6 @@ public class TeamInvitationDataForReturn {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public int getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(int answer) {
-        this.answer = answer;
     }
 
     public boolean isAdmin() {
