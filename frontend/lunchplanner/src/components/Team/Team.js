@@ -42,10 +42,15 @@ const styles = {
     memberAvatar: {
         height: '24px',
         width: '24px',
+        border: '1px solid white',
     },
     memberAvatarText: {
         fontSize:'10px',
         marginLeft: '-6px',
+    },
+    memberAvatarTextLast: {
+        marginLeft: '0px',
+        fontSize: '10px',
     },
     icons: {
         width: '13px',
@@ -101,10 +106,17 @@ class Team extends React.Component {
                     <div className={classes.text}>
                         <div className={classes.row}>
                             {
-                                people.map((person) =>{
+                                people.map((person, index) =>{
                                     return(
                                         <div className={classes.member}>
-                                            <Avatar className={classes.memberAvatar} ><span className={classes.memberAvatarText}>{person.charAt(0)}</span></Avatar>
+                                            {(index === people.length - 1)
+                                                ?
+                                                <Avatar className={classes.memberAvatar}><span
+                                                    className={classes.memberAvatarTextLast}>{person.charAt(0)}</span></Avatar>
+                                                :
+                                                <Avatar className={classes.memberAvatar}><span
+                                                    className={classes.memberAvatarText}>{person.charAt(0)}</span></Avatar>
+                                            }
                                         </div>)
 
                                 })
@@ -112,8 +124,8 @@ class Team extends React.Component {
                        </div>
                         <p className={classes.title}>{name}</p>
                     </div>
-                    <IconButton className={classes.icon}>
-                        <TeamIcon color="primary" />
+                    <IconButton>
+                        <TeamIcon className={classes.icon} color="primary" />
                     </IconButton>
                 </ListItem>
             </Link>
