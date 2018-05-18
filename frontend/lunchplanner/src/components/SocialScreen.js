@@ -53,15 +53,36 @@ class SocialScreen extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            value: 0,
+            value: this.getTabValue(props),
         };
 
         setAuthenticationHeader();
     }
 
+    getTabValue(props) {
+        const params = new URLSearchParams(props.location.search);
+        let tab = params.get('tab');
+        if(tab != null && tab !== undefined) {
+            console.log('tab value: ' + tab);
+            return tab;
+        } else {
+            return 0;
+        }
+    }
+
+    parseUrl = (props) => {
+        const params = new URLSearchParams(props.location.search);
+        let tab = params.get('tab');
+        if(tab != null && tab !== undefined && tab !== this.state.value) {
+            console.log('tab value: ' + tab);
+            this.setState({
+                value: tab,
+            });
+        }
+    };
 
     handleChange = (event, value) => {
-        this.setState({ value });
+        this.setState({ value: value });
     };
 
     handleChangeIndex = index => {
