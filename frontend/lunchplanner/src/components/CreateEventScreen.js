@@ -222,15 +222,6 @@ class CreateEventScreen extends React.Component {
                             onChange={this.handleChange}
                             margin="normal"
                         />
-
-                        {/*<TextField*/}
-                            {/*id="description"*/}
-                            {/*label="Description"*/}
-                            {/*placeholder="Description"*/}
-                            {/*multiline*/}
-                            {/*className={classes.textField}*/}
-                            {/*style={{marginTop:-100}}*/}
-                        {/*/>*/}
                     </form>
                     <div>
                         <p className={classes.dateHeader}>Date</p><p className={classes.timeHeader}>Time</p>

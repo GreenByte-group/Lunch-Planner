@@ -13,6 +13,7 @@ import Dialog from "../Dialog";
 import CommentsIcon from '@material-ui/icons/Message';
 import UserList from "../User/UserList";
 import {Button} from "material-ui";
+import ServiceList from "./ServiceList";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -263,7 +264,7 @@ class EventScreen extends React.Component {
                             <p className={classes.invitaionsHeader}>Invited People ({people.length})</p>
                             <UserList selectedUsers={selectedUsers} users={people} selectable={false} />
                         </div>
-
+                        <ServiceList eventId={eventId} />
                         <Link className={classes.serviceListLink} to={{pathname:`/event/${eventId}/service`}}>
                             <div className={classes.serviceList}>
                                 <ListIcon className={classes.serviceListIcon} />
