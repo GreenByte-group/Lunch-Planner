@@ -106,7 +106,7 @@ class CreateTeamScreen extends React.Component {
             (response) => {
                 if(response.status === 201) {
                     eventListNeedReload();
-                    getHistory().push('/event');
+                    getHistory().push('/social?tab=1');
                 } else {
                     this.setState({error: response.response.data});
                 }
@@ -145,7 +145,7 @@ class CreateTeamScreen extends React.Component {
         return (
             <Dialog
                 title="Create Team"closeIconAbsolute
-                closeUrl="/social"
+                closeUrl="/social?tab=1"
             >
                 <div className={classes.overButton}>
                     {(error

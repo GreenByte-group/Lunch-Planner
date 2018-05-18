@@ -10,15 +10,18 @@ import Chip from "material-ui/es/Chip/Chip";
 const styles = {
     listItem: {
         padding: '7px 16px',
+        height: '64px',
         '&:hover': {
             backgroundColor: '#0303031a !important',
         }
     },
     title: {
         fontFamily: "Work Sans",
-        fontSize: '16px',
-        lineHeight: '24px',
+        color: 'rgba(46,46,46,0.87)',
+        fontSize: '13px',
+        lineHeight: '20px',
         marginBottom: '0px',
+        marginLeft: '88px',
     },
     date: {
         fontFamily: "Work Sans",
@@ -27,11 +30,22 @@ const styles = {
         marginBottom: '0px',
     },
     member: {
+        height: '24px',
+        width: '24px',
         fontFamily: "Work Sans",
         fontSize: '13px',
         lineHeight: '20px',
         marginBottom: '0px',
         color: '#A4A4A4',
+        marginLeft: '-12px',
+    },
+    memberAvatar: {
+        height: '24px',
+        width: '24px',
+    },
+    memberAvatarText: {
+        fontSize:'10px',
+        marginLeft: '-6px',
     },
     icons: {
         width: '13px',
@@ -43,9 +57,15 @@ const styles = {
         color: 'black',
     },
     row: {
+        marginLeft: '12px',
+        float: 'left',
         display: 'inline-flex',
         justifyContent: 'center',
     },
+    icon: {
+        height: '24px',
+        width: '24px',
+    }
 };
 
 class Team extends React.Component {
@@ -77,7 +97,6 @@ class Team extends React.Component {
 
         return (
             <Link to={{pathname:`/team/${this.state.id}`}}>
-
                 <ListItem style={{backgroundColor: background}} button className={classes.listItem}>
                     <div className={classes.text}>
                         <div className={classes.row}>
@@ -85,7 +104,7 @@ class Team extends React.Component {
                                 people.map((person) =>{
                                     return(
                                         <div className={classes.member}>
-                                              <Avatar >{person.charAt(0)}</Avatar>
+                                            <Avatar className={classes.memberAvatar} ><span className={classes.memberAvatarText}>{person.charAt(0)}</span></Avatar>
                                         </div>)
 
                                 })
@@ -93,8 +112,8 @@ class Team extends React.Component {
                        </div>
                         <p className={classes.title}>{name}</p>
                     </div>
-                    <IconButton>
-                        <TeamIcon/>
+                    <IconButton className={classes.icon}>
+                        <TeamIcon color="primary" />
                     </IconButton>
                 </ListItem>
             </Link>
