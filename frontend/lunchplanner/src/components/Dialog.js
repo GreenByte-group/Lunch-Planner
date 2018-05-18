@@ -19,10 +19,34 @@ function Transition(props) {
 const styles = {
     appBar: {
         position: 'relative',
+        padding: '0px',
     },
     flex: {
         flex: 1,
-    }
+    },
+    closeIconAbsolute: {
+        position: 'absolute',
+        top: '12px',
+        left: '12px',
+    },
+    closeIcon: {
+        float: 'left',
+    },
+    image: {
+        height: '152px',
+        width: '100%',
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+    },
+    noPadding: {
+        padding: '0px',
+    },
+    dialog: {
+        height: '100%',
+    },
+    paddingBottom: {
+        paddingBottom: '56px',
+    },
 };
 
 class Dialog extends React.Component {
@@ -37,6 +61,7 @@ class Dialog extends React.Component {
             open: true,
             onSearch: props.onSearch,
             search: "",
+            imageUrl: props.imageUrl,
         }
     }
 
@@ -73,24 +98,37 @@ class Dialog extends React.Component {
         const { classes } = this.props;
         const search = !!this.state.onSearch;
 
+        let classesCloseButton = classes.closeIcon;
+
+        if(this.state.imageUrl) {
+            classesCloseButton = classes.closeIconAbsolute;
+        }
+
         console.log("Search: " + search);
 
         return (
-            <DialogMaterial
-                fullScreen
-                open={this.state.open}
-                transition={Transition}
-            >
-                <AppBar className={classes.appBar} color ="white">
-                    <Toolbar>
-                        <IconButton onClick={this.onClose} color="inherit" aria-label="Close" className={classes.closeIcon}>
-                            <CloseIcon color='primary' />
-                        </IconButton>
-                        <Typography variant="title" color="inherit" className={classes.flex}>
-                            {this.state.title}
-                        </Typography>
+            <div>
+                <DialogMaterial
+                    fullScreen
+                    open={this.state.open}
+                    transition={Transition}
+                    className={classes.dialog}
+                >
+                    <AppBar className={classes.appBar} color ="white">
+                        <Toolbar className={classes.noPadding}>
+                            <IconButton onClick={this.onClose} color="inherit" aria-label="Close" className={classesCloseButton}>
+                                <CloseIcon color='primary' />
+                            </IconButton>
+                            {(this.state.imageUrl)
+                                ?
+                                <div className={classes.image} style={{backgroundImage:"url(" + this.state.imageUrl + ")"}} />
+                                :
+                                <Typography variant="title" color="inherit" className={classes.flex}>
+                                    {this.state.title}
+                                </Typography>
+                            }
 
-                        {(search) ?
+                            {(search) ?
                                 <div>
                                     <IconButton color="primary">
                                         <SearchIcon />
@@ -100,14 +138,16 @@ class Dialog extends React.Component {
                                         onChange={this.searchChanged}
                                     />
                                 </div>
-                            : ""}
+                                : ""}
 
-                    </Toolbar>
-                </AppBar>
+                        </Toolbar>
+                    </AppBar>
 
-                {(this.props.children) ? this.props.children : ""}
+                    {(this.props.children) ? this.props.children : ""}
 
-            </DialogMaterial>
+                    <div className={classes.paddingBottom}></div>
+                </DialogMaterial>
+            </div>
         )
     }
 }

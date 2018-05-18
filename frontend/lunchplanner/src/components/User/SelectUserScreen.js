@@ -10,6 +10,7 @@ import User from "./User";
 import FloatingActionButton from "../FloatingActionButton";
 import {getHistory} from "../../utils/HistoryUtils";
 import Dialog from "../Dialog";
+import UserList from "./UserList";
 
 const styles = {
     root: {
@@ -22,7 +23,6 @@ const styles = {
         flex: 1,
     },
     list: {
-        marginTop: '56px',
         padding: 0,
     },
 
@@ -76,15 +76,7 @@ class SelectUserScreen extends React.Component {
         this.updateUsers(search);
     };
 
-    clickHandler = (username, selected) => {
-        let selectedUsers = this.state.selectedUsers;
-        if(selected) {
-            selectedUsers.push(username);
-        } else {
-            let index = selectedUsers.indexOf(username);
-            selectedUsers.splice(index, 1);
-        }
-
+    selectionChanged = (selectedUsers) => {
         this.setState({
             selectedUsers: selectedUsers,
         });
@@ -112,11 +104,12 @@ class SelectUserScreen extends React.Component {
                 title={textTitle}
                 onSearch={this.searchChanged}
             >
-                <List className={classes.list}>
-                    {users.map((listValue) => {
-                        return <User selected={this.state.selectedUsers.includes(listValue.userName)} username={listValue.userName} onClick={this.clickHandler}/>;
-                    })}
-                </List>
+                <UserList
+                    selectedUsers={this.state.selectedUsers}
+                    users={this.state.users}
+                    selectable={true}
+                    onSelectionChanged={this.selectionChanged}
+                />
                 <FloatingActionButton onClick={this.handleSend} icon="done"/>
             </Dialog>
         );

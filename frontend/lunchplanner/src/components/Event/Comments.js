@@ -14,6 +14,8 @@ const styles = {
     textField: {
         width: '100%',
         padding: '16px',
+        fontSize: '16px',
+        lineHeight: '24px',
     },
     formComment: {
         height: '168px',

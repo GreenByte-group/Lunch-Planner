@@ -52,8 +52,9 @@ class Event extends React.Component {
         super();
 
         this.state = {
-            selected: props.selected | false,
+            selected: props.selected || false,
             username: props.username,
+            selectable: props.selectable || false,
         };
     }
 
@@ -73,11 +74,13 @@ class Event extends React.Component {
     }
 
     clickHandler = () => {
-        this.props.onClick(this.state.username, !this.state.selected);
+        if(this.state.selectable) {
+            this.props.onClick(this.state.username, !this.state.selected);
 
-        this.setState({
-            selected: !this.state.selected,
-        });
+            this.setState({
+                selected: !this.state.selected,
+            });
+        }
     };
 
     render() {
@@ -86,7 +89,7 @@ class Event extends React.Component {
         let username = this.state.username;
 
         let listClasses = classes.listItem;
-        if(selected)
+        if(selected && this.state.selectable)
             listClasses += " " + classes.selected;
 
         return (
