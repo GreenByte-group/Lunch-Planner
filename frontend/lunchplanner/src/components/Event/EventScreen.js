@@ -91,10 +91,11 @@ function Transition(props) {
             fontSize: '16px',
             fontFamily: 'Work Sans',
             color: "white",
-            position: "relative",
-            bottom:0,
+            position: "fixed",
+            bottom: 0,
             width: "100%",
-            height: '96px',
+            height: '56px',
+            zIndex: '10000',
         },
         serviceListLink: {
             minHeight: '171px',
@@ -231,40 +232,41 @@ class EventScreen extends React.Component {
         console.log(selectedUsers);
 
         return (
-            <Dialog
-                title={name}
-                closeUrl="/event"
-                imageUrl="https://greenbyte.group/assets/images/logo.png"
-            >
-                <div className={classes.header}>
-                    <div className={classes.headerText}>
-                        <p className={classes.fontSmall}>Created by {admin}</p>
-                        <p className={classes.fontBig}>{name}</p>
-                        <p className={classes.fontSmall}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
+            <div>
+                <Dialog
+                    title={name}
+                    closeUrl="/event"
+                    imageUrl="https://greenbyte.group/assets/images/logo.png"
+                >
+                    <div className={classes.header}>
+                        <div className={classes.headerText}>
+                            <p className={classes.fontSmall}>Created by {admin}</p>
+                            <p className={classes.fontBig}>{name}</p>
+                            <p className={classes.fontSmall}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
+                        </div>
+                        <Link to={{pathname:`/event/${eventId}/comments`}}>
+                            <div className={classes.headerComment}>
+                                <CommentsIcon className={classes.commentIcon} />
+                                <p className={classes.commentText}>2 Comments</p>
+                            </div>
+                        </Link>
                     </div>
-                    <Link to={{pathname:`/event/${eventId}/comments`}}>
-                        <div className={classes.headerComment}>
-                            <CommentsIcon className={classes.commentIcon} />
-                            <p className={classes.commentText}>2 Comments</p>
+                    <div className={classes.invitations}>
+                        <p className={classes.invitaionsHeader}>Invited People ({people.length})</p>
+                        <UserList selectedUsers={selectedUsers} users={people} selectable={false} />
+                    </div>
+
+                    <Link className={classes.serviceListLink} to={{pathname:`/event/${eventId}/service`}}>
+                        <div className={classes.serviceList}>
+                            <ListIcon className={classes.serviceListIcon} />
+                            <p>Add a task</p>
                         </div>
                     </Link>
-                </div>
-                <div className={classes.invitations}>
-                    <p className={classes.invitaionsHeader}>Invited People ({people.length})</p>
-                    <UserList selectedUsers={selectedUsers} users={people} selectable={false} />
-                </div>
-
-                <Link className={classes.serviceListLink} to={{pathname:`/event/${eventId}/service`}}>
-                    <div className={classes.serviceList}>
-                        <ListIcon className={classes.serviceListIcon} />
-                        <p>Add a task</p>
-                    </div>
-                </Link>
-
+                </Dialog>
                 <Button variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
                     Join Event
                 </Button>
-            </Dialog>
+            </div>
         );
     }
 }
