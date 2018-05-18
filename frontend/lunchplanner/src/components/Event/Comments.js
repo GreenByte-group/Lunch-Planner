@@ -18,7 +18,11 @@ const styles = {
         lineHeight: '24px',
     },
     formComment: {
+        zIndex: '10002',
         height: '168px',
+        position: 'fixed',
+        bottom: 0,
+        width: '100%',
         boxShadow: '0 -10px 15px 0 rgba(0,0,0,0.05)',
     },
 };
@@ -102,22 +106,25 @@ class Comments extends React.Component {
         const comments = this.state.comments;
 
         return (
-            <Dialog
-            title={"Comments (" + comments.length + ")"}
-            closeUrl={"/event/" + this.state.eventId}
-            zIndex={10001}
-            >
-                <List className={classes.list}>
-                    {comments.map((listValue) => {
-                        return (
-                            <Comment
-                                text={listValue.commentText}
-                                date={listValue.date}
-                                creater={listValue.userName}
-                            />
-                        )
-                    })}
-                </List>
+            <div>
+                <Dialog
+                    title={"Comments (" + comments.length + ")"}
+                    closeUrl={"/event/" + this.state.eventId}
+                    zIndex={10001}
+                    paddingBottom={'168px'}
+                >
+                    <List className={classes.list}>
+                        {comments.map((listValue) => {
+                            return (
+                                <Comment
+                                    text={listValue.commentText}
+                                    date={listValue.date}
+                                    creater={listValue.userName}
+                                />
+                            )
+                        })}
+                    </List>
+                </Dialog>
                 <form
                     className={classes.formComment}
                     noValidate autoComplete="on"
@@ -133,7 +140,7 @@ class Comments extends React.Component {
                         rows="6"
                     />
                 </form>
-            </Dialog>
+            </div>
         )
     }
 
