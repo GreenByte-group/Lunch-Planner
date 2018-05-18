@@ -118,6 +118,13 @@ function Transition(props) {
             marginLeft: 'auto',
             marginRight: 'auto',
         },
+        overButton: {
+            height: 'calc(100% - 112px)',
+            marginBottom: '56px',
+            overflowY: 'scroll',
+            display: 'flex',
+            flexDirection: 'column',
+        },
     };
 
 const buttonStyle = {
@@ -237,36 +244,37 @@ class EventScreen extends React.Component {
                     title={name}
                     closeUrl="/event"
                     imageUrl="https://greenbyte.group/assets/images/logo.png"
-                    paddingBottom={'48px'}
                 >
-                    <div className={classes.header}>
-                        <div className={classes.headerText}>
-                            <p className={classes.fontSmall}>Created by {admin}</p>
-                            <p className={classes.fontBig}>{name}</p>
-                            <p className={classes.fontSmall}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
+                    <div className={classes.overButton}>
+                        <div className={classes.header}>
+                            <div className={classes.headerText}>
+                                <p className={classes.fontSmall}>Created by {admin}</p>
+                                <p className={classes.fontBig}>{name}</p>
+                                <p className={classes.fontSmall}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
+                            </div>
+                            <Link to={{pathname:`/event/${eventId}/comments`}}>
+                                <div className={classes.headerComment}>
+                                    <CommentsIcon className={classes.commentIcon} />
+                                    <p className={classes.commentText}>2 Comments</p>
+                                </div>
+                            </Link>
                         </div>
-                        <Link to={{pathname:`/event/${eventId}/comments`}}>
-                            <div className={classes.headerComment}>
-                                <CommentsIcon className={classes.commentIcon} />
-                                <p className={classes.commentText}>2 Comments</p>
+                        <div className={classes.invitations}>
+                            <p className={classes.invitaionsHeader}>Invited People ({people.length})</p>
+                            <UserList selectedUsers={selectedUsers} users={people} selectable={false} />
+                        </div>
+
+                        <Link className={classes.serviceListLink} to={{pathname:`/event/${eventId}/service`}}>
+                            <div className={classes.serviceList}>
+                                <ListIcon className={classes.serviceListIcon} />
+                                <p>Add a task</p>
                             </div>
                         </Link>
                     </div>
-                    <div className={classes.invitations}>
-                        <p className={classes.invitaionsHeader}>Invited People ({people.length})</p>
-                        <UserList selectedUsers={selectedUsers} users={people} selectable={false} />
-                    </div>
-
-                    <Link className={classes.serviceListLink} to={{pathname:`/event/${eventId}/service`}}>
-                        <div className={classes.serviceList}>
-                            <ListIcon className={classes.serviceListIcon} />
-                            <p>Add a task</p>
-                        </div>
-                    </Link>
+                    <Button variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
+                        Join Event
+                    </Button>
                 </Dialog>
-                <Button variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
-                    Join Event
-                </Button>
             </div>
         );
     }

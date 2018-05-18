@@ -99,7 +99,13 @@ const styles = {
     },
     inviteTextField: {
         width: '100%',
-    }
+    },
+    overButton: {
+        height: 'calc(100% - 112px)',
+        overflowY: 'scroll',
+        display: 'flex',
+        flexDirection: 'column',
+    },
 };
 const buttonStyle = {
     float: 'right',
@@ -196,12 +202,12 @@ class CreateEventScreen extends React.Component {
             buttonEnabled = true;
 
         return (
-            <div>
-                <Dialog
-                    title="Create Event"closeIconAbsolute
-                    closeUrl="/event"
-                    paddingBottom={'48px'}
-                >
+            <Dialog
+                title="Create Event"closeIconAbsolute
+                closeUrl="/event"
+                paddingBottom={'48px'}
+            >
+                <div className={classes.overButton}>
                     {(error
                             ? <p className={classes.error}>{error}</p>
                             : ""
@@ -292,11 +298,11 @@ class CreateEventScreen extends React.Component {
                             </FormGroup>
                         </ExpansionPanelDetails>
                     </ExpansionPanel>
-                </Dialog>
+                </div>
                 <Button disabled={!buttonEnabled} variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
                     Create Event
                 </Button>
-            </div>
+            </Dialog>
         );
     }
 }

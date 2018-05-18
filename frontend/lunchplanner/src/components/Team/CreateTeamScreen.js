@@ -53,6 +53,12 @@ const styles = {
         margin: '0px',
         marginLeft: '24px',
     },
+    overButton: {
+        height: 'calc(100% - 112px)',
+        overflowY: 'scroll',
+        display: 'flex',
+        flexDirection: 'column',
+    },
 };
 const buttonStyle = {
     float: 'right',
@@ -137,12 +143,11 @@ class CreateTeamScreen extends React.Component {
         }
 
         return (
-            <div>
-                <Dialog
-                    title="Create Team"closeIconAbsolute
-                    closeUrl="/social"
-                    paddingBottom={'60px'}
-                >
+            <Dialog
+                title="Create Team"closeIconAbsolute
+                closeUrl="/social"
+            >
+                <div className={classes.overButton}>
                     {(error
                             ? <p className={classes.error}>{error}</p>
                             : ""
@@ -221,11 +226,11 @@ class CreateTeamScreen extends React.Component {
                             Only visible to invited members.
                         </FormHelperText>
                     </div>
-                </Dialog>
+                </div>
                 <Button disabled={!buttonEnabled} variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
                     Create Team
                 </Button>
-            </div>
+            </Dialog>
         );
     }
 }

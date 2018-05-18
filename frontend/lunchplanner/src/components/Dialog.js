@@ -109,7 +109,6 @@ class Dialog extends React.Component {
         console.log("Search: " + search);
 
         return (
-            <div>
                 <DialogMaterial
                     style={{zIndex: this.state.zIndex}}
                     fullScreen
@@ -147,10 +146,7 @@ class Dialog extends React.Component {
                     </AppBar>
 
                     {(this.props.children) ? this.props.children : ""}
-
-                    <div style={{paddingBottom: this.state.paddingBottom}}></div>
                 </DialogMaterial>
-            </div>
         )
     }
 }
