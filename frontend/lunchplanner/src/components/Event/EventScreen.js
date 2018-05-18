@@ -132,7 +132,7 @@ const buttonStyle = {
     display:"block",
     marginLeft:"auto",
     marginRight:"auto",
-}
+};
 
 class EventScreen extends React.Component {
 

@@ -12,6 +12,12 @@ const styles = theme => ({
     },
 });
 
+export let serviceNeedReload = false;
+
+export function serviceListNeedReload() {
+    serviceNeedReload = true;
+}
+
 class ServiceList extends React.Component {
     constructor(props) {
         super();
@@ -41,6 +47,12 @@ class ServiceList extends React.Component {
     render(){
         const { classes } = this.props;
         let people = this.state.people;
+
+        if(serviceNeedReload) {
+            serviceNeedReload = !serviceNeedReload;
+            this.getServiceList(this.state.eventId);
+        }
+
         return (
             <List className={classes.root}>
                 {

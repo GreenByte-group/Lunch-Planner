@@ -59,6 +59,7 @@ class ServiceListItem extends React.Component {
     constructor(props) {
         super();
         this.state = {
+            error: "",
             eventId: props.eventId,
             serviceId: props.serviceId,
             food: props.food,
@@ -78,7 +79,7 @@ class ServiceListItem extends React.Component {
             .then((response) => {
                 if(response.status !== 204) {
                     this.setState({
-                        //TODO error message
+                        error: response.response.data,
                         accepter: null,
                     })
                 }
@@ -92,12 +93,17 @@ class ServiceListItem extends React.Component {
         let creator = this.state.creator;
         let accepter = this.state.accepter;
 
+        let error = this.state.error;
+
         let classesListItem = classes.listItem;
         if(accepter)
             classesListItem = classes.listItemAccepted;
 
         return (
             <ListItem button className={classesListItem}>
+                {(error)
+                ? <p className={classes.error}>{error}</p>
+                : ''}
 
                 <Card className={classes.card}>
                     <CardContent className={classes.cardContent}>

@@ -2,7 +2,7 @@ import React from "react";
 import axios from 'axios';
 import {withStyles} from "material-ui/styles/index";
 import Slide from 'material-ui/transitions/Slide';
-import ServiceList from "./ServiceList";
+import ServiceList, {serviceListNeedReload} from "./ServiceList";
 import Dialog from "../Dialog";
 import {Button, TextField} from "material-ui";
 import {getHistory} from "../../utils/HistoryUtils";
@@ -58,16 +58,14 @@ class ServiceListScreen extends React.Component {
         axios.put(url, {food: this.state.food, description: this.state.description})
             .then((response) => {
                 if(response.status === 201) {
+                    serviceListNeedReload();
                     getHistory().push("/event/" + this.state.eventId);
-                    //TODO reload service list after this
-                }
-            })
-            .error((error) => {
-                if(error)
+                } else {
                     this.setState({
-                        error: error.response.data,
+                        error: response.response.data,
                     })
-            })
+                }
+            }) //TODO catch
     };
 
     handleChange = (event) => {
@@ -111,7 +109,7 @@ class ServiceListScreen extends React.Component {
                         id="description"
                         label="Description"
                         value={this.state.description}
-                        onChange={this.textFieldChanged}
+                        onChange={this.handleChange}
                         placeholder ="Remark for your coworkers etc. (optional)"
                         multiline
                         rows="6"
