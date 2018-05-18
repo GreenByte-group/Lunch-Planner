@@ -46,7 +46,7 @@ const styles = {
     },
     memberAvatarText: {
         fontSize:'10px',
-        marginLeft: '-6px',
+        marginLeft: '-8px',
     },
     memberAvatarTextLast: {
         marginLeft: '0px',
