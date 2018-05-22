@@ -8,10 +8,16 @@ import FloatingActionButton from "../FloatingActionButton";
 import {getHistory} from "../../utils/HistoryUtils";
 import Dialog from "../Dialog";
 import UserList from "./UserList";
+import Tab from "material-ui/es/Tabs/Tab";
+import Tabs from "material-ui/es/Tabs/Tabs";
+import SwipeableViews from 'react-swipeable-views';
+import Typography from 'material-ui/Typography';
+import TeamsList from "../Team/TeamsList";
 
-const styles = {
+const styles = theme =>({
     root: {
-      position: 'fixed'
+      position: 'fixed',
+        backgroundColor: theme.palette.background.paper,
     },
     appBar: {
         position: 'fixed',
@@ -19,29 +25,50 @@ const styles = {
     flex: {
         flex: 1,
     },
-};
+});
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
 }
+
+function TabContainer({ children, dir }) {
+    return (
+        <Typography component="div" dir={dir} style={{ padding: 0 }}>
+            {children}
+        </Typography>
+    );
+}
+
+TabContainer.propTypes = {
+    children: PropTypes.node.isRequired,
+    dir: PropTypes.string.isRequired,
+};
 
 class SelectUserScreen extends React.Component {
 
     constructor(props) {
         super();
 
-        let array;
+        let arrayUsers, arrayTeams;
         if(props.location.query && props.location.query.invitedUsers) {
             let string = String(props.location.query.invitedUsers);
             if(string !== "")
-                array = string.split(',');
+                arrayUsers = string.split(',');
+        }
+        if(props.location.query && props.location.query.invitedTeams) {
+            let string = String(props.location.query.invitedTeams);
+            if(string !== "")
+                arrayTeams = string.split(',');
         }
 
         this.state = {
             open: true,
             users: [],
             search: "",
-            selectedUsers: array || [],
+            selectedUsers: arrayUsers || [],
+            value: 0,
+            teams:[],
+            selectedTeams: arrayTeams || [],
         };
     }
 
@@ -65,8 +92,25 @@ class SelectUserScreen extends React.Component {
             });
     }
 
+    updateTeams(search) {
+        let url;
+        if(search == null || search === undefined || search === "")
+            url = HOST + "/team";
+        else
+            url = HOST + "/team/search/" + search;
+
+        axios.get(url)
+            .then((response) => {
+                this.setState({
+                    search: search,
+                    teams: response.data,
+                })
+            });
+    }
+
     searchChanged = (search) => {
         this.updateUsers(search);
+        this.updateTeams(search);
     };
 
     selectionChanged = (selectedUsers) => {
@@ -81,8 +125,17 @@ class SelectUserScreen extends React.Component {
                 "?invitedUsers=" + this.state.selectedUsers);
     };
 
+    // Methods for handling tabs
+    handleChange = (event, value) => {
+        this.setState({ value });
+    };
+
+    handleChangeIndex = index => {
+        this.setState({ value: index });
+    };
+
     render() {
-        const { classes } = this.props;
+        const { classes, theme} = this.props;
         let users = this.state.users;
 
         // Title for appbar
@@ -98,12 +151,40 @@ class SelectUserScreen extends React.Component {
                 title={textTitle}
                 onSearch={this.searchChanged}
             >
-                <UserList
-                    selectedUsers={this.state.selectedUsers}
-                    users={this.state.users}
-                    selectable={true}
-                    onSelectionChanged={this.selectionChanged}
-                />
+                <Tabs
+                    value={this.state.value}
+                    onChange={this.handleChange}
+                    indicatorColor="secondary"
+                    textColor="secondary"
+                    centered
+                    fullWidth
+                >
+                    <Tab className={classes.tab} label="ALL" />
+                    <Tab className={classes.tab} label="PEOPLE" />
+                    <Tab className={classes.tab} label="TEAMS" />
+                </Tabs>
+                <SwipeableViews
+                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                    index={this.state.value}
+                    onChangeIndex={this.handleChangeIndex}
+                >
+
+                    <TabContainer dir={theme.direction}>
+                        <TeamsList
+
+                        />
+                    </TabContainer>
+                    <TabContainer dir={theme.direction}>
+                        <UserList
+                            selectedUsers={this.state.selectedUsers}
+                            users={this.state.users}
+                            selectable={true}
+                            onSelectionChanged={this.selectionChanged}
+                        />
+                    </TabContainer>
+                    <TabContainer dir={theme.direction}></TabContainer>
+                </SwipeableViews>
+
                 <FloatingActionButton onClick={this.handleSend} icon="done"/>
             </Dialog>
         );
