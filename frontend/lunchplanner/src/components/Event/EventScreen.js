@@ -236,9 +236,8 @@ class EventScreen extends React.Component {
             }
         });
 
-        console.log("eventscreen");
-        console.log(selectedUsers);
-
+        //TODO anzahl kommentare
+        
         return (
             <div>
                 <Dialog
@@ -256,7 +255,7 @@ class EventScreen extends React.Component {
                             <Link to={{pathname:`/event/${eventId}/comments`}}>
                                 <div className={classes.headerComment}>
                                     <CommentsIcon className={classes.commentIcon} />
-                                    <p className={classes.commentText}>2 Comments</p>
+                                    <p className={classes.commentText}>Comments</p>
                                 </div>
                             </Link>
                         </div>
