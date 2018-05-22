@@ -26,7 +26,7 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.paper,
         //width: 1500,,
         position: 'relative',
-        height: 'calc(100% - 112px)',
+        height: 'calc(100% - 120px)',
         overflowY: 'auto',
     },
     fab: {
