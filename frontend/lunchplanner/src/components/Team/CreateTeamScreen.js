@@ -55,10 +55,13 @@ const styles = {
     },
     overButton: {
         height: 'calc(100% - 112px)',
-        overflowY: 'scroll',
+        overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
     },
+    error: {
+        color: 'red',
+    }
 };
 const buttonStyle = {
     float: 'right',

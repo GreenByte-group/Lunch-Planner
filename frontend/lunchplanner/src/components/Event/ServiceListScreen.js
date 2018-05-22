@@ -37,6 +37,9 @@ const styles = {
     },
     textFieldDescription: {
         marginTop: '46px',
+    },
+    error: {
+        color: 'red',
     }
 };
 
@@ -60,12 +63,13 @@ class ServiceListScreen extends React.Component {
                 if(response.status === 201) {
                     serviceListNeedReload();
                     getHistory().push("/event/" + this.state.eventId);
-                } else {
-                    this.setState({
-                        error: response.response.data,
-                    })
                 }
-            }) //TODO catch
+            })
+            .catch((error) => {
+                this.setState({
+                    error: error.message,
+                })
+            })
     };
 
     handleChange = (event) => {
@@ -82,7 +86,7 @@ class ServiceListScreen extends React.Component {
         return (
             <Dialog
                 title="Add Checklist..."
-                closeUrl={"/event/" + this.state.id}
+                closeUrl={"/event/" + this.state.eventId}
             >
                 <div className={classes.overButton}>
                     {

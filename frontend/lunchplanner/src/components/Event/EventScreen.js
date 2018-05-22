@@ -122,7 +122,7 @@ function Transition(props) {
         overButton: {
             height: 'calc(100% - 112px)',
             marginBottom: '56px',
-            overflowY: 'scroll',
+            overflowY: 'auto',
             display: 'flex',
             flexDirection: 'column',
         },
