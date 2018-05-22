@@ -25,7 +25,7 @@ const styles = {
         marginRight: 20,
     },
     appbar: {
-        position: 'fixed',
+        position: 'relative',
         boxShadow: 'none',
     }
 };

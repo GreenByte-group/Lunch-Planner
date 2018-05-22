@@ -29,8 +29,7 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.paper,
         //width: 1500,,
         position: 'relative',
-        marginTop: '56px',
-        marginBottom: '56px',
+        height: '100%',
     },
     fab: {
         position: 'absolute',
@@ -45,6 +44,10 @@ const styles = theme => ({
         fontWeight: '600',
         letterSpacing: '0.65px',
         fontSize: '13px',
+    },
+    swipeViews: {
+        height: 'calc(100% - 112px - 56px)',
+        overflowY: 'auto',
     },
 });
 
@@ -95,7 +98,7 @@ class SocialScreen extends React.Component {
         return (
             <div className={classes.root}>
                 <Appbar currentScreen="Social"/>
-                <AppBar position="static" color="default">
+                <AppBar position="relative" color="default">
                     <Tabs
                         value={this.state.value}
                         onChange={this.handleChange}
@@ -112,6 +115,7 @@ class SocialScreen extends React.Component {
                     axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                     index={this.state.value}
                     onChangeIndex={this.handleChangeIndex}
+                    className={classes.swipeViews}
                 >
 
                     <TabContainer dir={theme.direction}></TabContainer>
