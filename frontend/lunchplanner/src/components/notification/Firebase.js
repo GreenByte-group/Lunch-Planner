@@ -1,4 +1,6 @@
 import firebase from "firebase";
+import axios from 'axios';
+import {HOST} from "../../Config";
 
 const config = {
     apiKey: "AIzaSyDyuySWwkXgZDrLnO0gX9bmGpR7XAHnngE",
@@ -86,7 +88,14 @@ function getToken(response, error) {
 
 function sendTokenToServer(tokenToSend) {
     token = false;
-    //TODO send token to server
+
+    let url = HOST + "/user/fcm";
+    axios.post(url, tokenToSend)
+        .then((response) => {
+            console.log('Response: ', response);
+        }).catch((error) => {
+           console.log('Error: ', error)
+    })
 
     token = tokenToSend;
 }

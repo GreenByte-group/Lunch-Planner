@@ -137,6 +137,14 @@ public class UserLogic {
         }
     }
 
+    public void addFcmToken(String username, String fcmToken) throws HttpRequestException {
+        try {
+            userDao.setFcmForUser(username, fcmToken);
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
     /**
      * Send an invitation to a user (async)
      *
@@ -152,4 +160,5 @@ public class UserLogic {
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
+
 }
