@@ -10,7 +10,7 @@ import EventList from "./Event/EventList";
 
 function TabContainer({ children, dir }) {
     return (
-        <Typography component="div" dir={dir} style={{ padding: 0 }}>
+        <Typography component="div" dir={dir} style={{ padding: 0, height: '100%' }}>
             {children}
         </Typography>
     );
@@ -26,8 +26,8 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.paper,
         //width: 1500,,
         position: 'relative',
-        marginTop: '56px',
-        marginBottom: '56px',
+        height: 'calc(100% - 120px)',
+        overflowY: 'auto',
     },
     fab: {
         position: 'absolute',
@@ -43,6 +43,10 @@ const styles = theme => ({
         letterSpacing: '0.65px',
         fontSize: '13px',
     },
+    swipeViews: {
+        height: 'calc(100% - 48px)',
+        overflowY: 'auto',
+    }
 });
 
 class EventContainer extends React.Component {
@@ -63,7 +67,7 @@ class EventContainer extends React.Component {
 
         return (
             <div className={classes.root}>
-                <AppBar position="static" color="default">
+                <AppBar position="relative" color="default">
                     <Tabs
                         value={this.state.value}
                         onChange={this.handleChange}
@@ -81,6 +85,7 @@ class EventContainer extends React.Component {
                     axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                     index={this.state.value}
                     onChangeIndex={this.handleChangeIndex}
+                    className={classes.swipeViews}
                 >
 
                     <TabContainer dir={theme.direction}>

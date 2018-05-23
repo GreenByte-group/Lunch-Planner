@@ -70,7 +70,7 @@ class App extends React.Component {
             <OldMuiThemeProvider theme={oldTheme}>
                 <MuiThemeProvider theme={theme}>
                     <Router history={getHistory()}>
-                        <div>
+                        <div style={{height: '100%'}}>
                             <Route exact path="/login" component={FirstScreen} />
                             <Route exact path="/"
                                           render={ () => <Redirect to="/event" />}

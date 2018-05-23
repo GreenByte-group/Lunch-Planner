@@ -27,8 +27,7 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.paper,
         //width: 1500,,
         position: 'relative',
-        marginTop: '56px',
-        marginBottom: '56px',
+        height: '100%',
     },
     fab: {
         position: 'absolute',
@@ -65,7 +64,7 @@ class LocationScreen extends React.Component {
         return (
             <div className={classes.root}>
                 <Appbar currentScreen="Places"/>
-                <AppBar position="static" color="default">
+                <AppBar position="relative" color="default">
                     <Tabs
                         value={this.state.value}
                         onChange={this.handleChange}
