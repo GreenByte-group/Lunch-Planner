@@ -17,6 +17,7 @@ import Comments from "./components/Event/Comments";
 import { createBrowserHistory as createHistory } from "history";
 import {setHistory, getHistory} from "./utils/HistoryUtils";
 import CreateTeamScreen from "./components/Team/CreateTeamScreen";
+import {init} from './components/notification/Firebase'
 
 const oldTheme = getMuiTheme({
     palette: {
@@ -54,6 +55,14 @@ class App extends React.Component {
         super();
 
         setHistory(createHistory(props));
+
+        init(() => {
+            console.log('notificaton: success');
+        }, (error) => {
+            console.log('notificaton: error: ', error);
+        }, (message) => {
+            console.log('notificaton: message: ', message);
+        });
     }
 
     render() {
