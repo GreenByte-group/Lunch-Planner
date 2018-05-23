@@ -53,10 +53,10 @@ public class UserController {
      * @return error message or nothing
      */
     @RequestMapping(value = "/fcm", method = RequestMethod.POST)
-    public String setFcm(@RequestBody String fcmToken,
+    public String setFcm(@RequestBody FcmToken fcmToken,
                              HttpServletResponse response) {
         try {
-            userLogic.addFcmToken(SessionManager.getUserName(), fcmToken);
+            userLogic.addFcmToken(SessionManager.getUserName(), fcmToken.getFcmToken());
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());
@@ -131,4 +131,16 @@ public class UserController {
         this.userLogic = userLogic;
     }
 
+}
+
+class FcmToken {
+    private String fcmToken;
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 }

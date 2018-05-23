@@ -1,6 +1,7 @@
 import firebase from "firebase";
 import axios from 'axios';
 import {HOST} from "../../Config";
+import {setAuthenticationHeader} from "../authentication/Authentication";
 
 const config = {
     apiKey: "AIzaSyDyuySWwkXgZDrLnO0gX9bmGpR7XAHnngE",
@@ -25,6 +26,8 @@ let permissionGranted = false;
  * @param error with error description
  */
 export function init(success, error, onMessage) {
+    setAuthenticationHeader();
+
     // Initialize Firebase
     firebase.initializeApp(config);
 
@@ -90,7 +93,7 @@ function sendTokenToServer(tokenToSend) {
     token = false;
 
     let url = HOST + "/user/fcm";
-    axios.post(url, tokenToSend)
+    axios.post(url, {fcmToken: tokenToSend})
         .then((response) => {
             console.log('Response: ', response);
         }).catch((error) => {
