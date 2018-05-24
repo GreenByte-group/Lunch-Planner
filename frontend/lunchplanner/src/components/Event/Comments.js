@@ -10,7 +10,7 @@ const styles = {
     list: {
         padding: '0px',
         overflowY: 'auto',
-        height: 'calc(100% - 175px)',
+        height: '100%',
     },
     textField: {
         zIndex: '10003',

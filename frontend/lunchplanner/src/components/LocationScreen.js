@@ -28,6 +28,8 @@ const styles = theme => ({
         //width: 1500,,
         position: 'relative',
         height: '100%',
+        display: 'flex',
+        flexDirection: 'column'
     },
     fab: {
         position: 'absolute',

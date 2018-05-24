@@ -16,7 +16,7 @@ function Transition(props) {
 
 const styles = {
     overButton: {
-        height: 'calc(100% - 112px)',
+        height: '100%',
         marginBottom: '56px',
         overflowY: 'auto',
         display: 'flex',

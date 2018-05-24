@@ -47,7 +47,7 @@ const styles = {
         width: '100%',
     },
     textFieldName: {
-        width: 'calc(100% - 72px)',
+        width: '100%',
         float: 'right',
         padding: '0px',
         margin: '0px',
