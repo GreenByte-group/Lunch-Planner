@@ -3,6 +3,7 @@ package group.greenbyte.lunchplanner.event;
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import group.greenbyte.lunchplanner.team.TeamLogic;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,6 +24,7 @@ import java.util.List;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
+import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -45,6 +47,9 @@ public class EventLogicTest {
 
     @Autowired
     private UserLogic userLogic;
+
+    @Autowired
+    private TeamLogic teamLogic;
 
     private String userName;
     private String location = "Test";
@@ -669,5 +674,32 @@ public class EventLogicTest {
 
         eventLogic.getAllComments(username, eventId);
     }
+
+    // ------------------ INVITE TEAM -------------------
+
+    @Test (expected = HttpRequestException.class)
+    public void test1InviteTeamInvalidUsername() throws Exception {
+        String userName = createString(51);
+        String teamName = createString(20);
+        String description = createString(50);
+        String teamCreator = createUserIfNotExists(userLogic, createString(50));
+
+        int teamId = createTeamWithoutParent(teamLogic, teamCreator, teamName, description);
+
+        eventLogic.inviteTeam(userName, eventId, teamId);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test2InviteTeamEmptyUsername() throws Exception {
+        String userName = "";
+        String teamName = createString(20);
+        String description = createString(50);
+        String teamCreator = createUserIfNotExists(userLogic, createString(50));
+
+        int teamId = createTeamWithoutParent(teamLogic, teamCreator, teamName, description);
+
+        eventLogic.inviteTeam(userName, eventId, teamId);
+    }
+
 
 }

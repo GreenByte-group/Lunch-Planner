@@ -2,6 +2,7 @@ package group.greenbyte.lunchplanner.event;
 
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.database.Event;
+import group.greenbyte.lunchplanner.team.TeamLogic;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,6 +30,7 @@ import java.util.Date;
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
+import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -52,6 +54,9 @@ public class EventControllerTest {
 
     @Autowired
     private UserLogic userLogic;
+
+    @Autowired
+    private TeamLogic teamLogic;
 
     private final String userName = "asdfsd";
     private String location = "Test";
@@ -658,4 +663,36 @@ public class EventControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
 
     }
+
+    // ------------------ INVITE TEAM ------------------------
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1InviteTeam() throws Exception {
+       String teamName = createString(20);
+       String description = createString(50);
+       String teamCreator = createUserIfNotExists(userLogic, createString(50));
+       int teamId = createTeamWithoutParent(teamLogic, teamCreator, teamName, description);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/event/" + eventId + "/inviteTeam/" + teamId))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test2InviteTeamMaxUser() throws Exception {
+        String teamName = createString(20);
+        String description = createString(50);
+        String teamCreator = createUserIfNotExists(userLogic, createString(50));
+
+        int teamId = createTeamWithoutParent(teamLogic, teamCreator, teamName, description);
+
+        MvcResult result = mockMvc.perform(
+                MockMvcRequestBuilders.post("/event/" + eventId + "/inviteTeam/" + teamId))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
+                .andReturn();
+    }
+
 }
