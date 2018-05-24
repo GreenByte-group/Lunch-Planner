@@ -62,22 +62,26 @@ class NotificationListItem extends React.Component {
         if(newProps.icon && newProps.icon !== this.state.icon) {
             icon = newProps.icon;
         }
-        if(newProps.read && newProps.read !== this.state.read) {
+        if(newProps.read !== undefined && newProps.read !== this.state.read) {
             read = newProps.read;
         }
 
-        if(title || description || icon || read) {
+        if(title || description || icon || read !== undefined) {
+            if(read === undefined)
+                read = this.state.read;
+
             this.setState({
                 title: title || this.state.title,
                 description: description || this.state.description,
                 icon: icon || this.state.icon,
-                read: read || this.state.read,
+                read: read,
             })
         }
     }
 
     clickHandler = (event) => {
         console.log('Notification clicked: ', event);
+        //TODO notification click
     };
 
     render() {
