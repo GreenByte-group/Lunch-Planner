@@ -30,6 +30,8 @@ const styles = theme => ({
         //width: 1500,,
         position: 'relative',
         height: '100%',
+        display: 'flex',
+        flexDirection: 'column'
     },
     fab: {
         position: 'absolute',
@@ -46,7 +48,7 @@ const styles = theme => ({
         fontSize: '13px',
     },
     swipeViews: {
-        height: 'calc(100% - 112px - 56px)',
+        height: '100%',
         overflowY: 'auto',
     },
 });

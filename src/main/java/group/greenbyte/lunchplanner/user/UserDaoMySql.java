@@ -25,6 +25,7 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_MAIL = "e_mail";
     public static final String USER_PASSWORD = "password";
     public static final String USER_TOKEN = "token";
+    public static final String USER_FCM_TOKEN = "fcm_token";
 
     @Autowired
     public UserDaoMySql(JdbcTemplate jdbcTemplateObject) {
@@ -98,6 +99,17 @@ public class UserDaoMySql implements UserDao {
                 return  listOfUser;
             }
         }catch (Exception e){
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void setFcmForUser(String username, String fcmToken) throws DatabaseException {
+        String SQL = "UPDATE " + USER_TABLE + " SET " + USER_FCM_TOKEN + " = ? WHERE " + USER_NAME + " = ?";
+
+        try {
+            jdbcTemplate.update(SQL, fcmToken, username);
+        } catch (Exception e) {
             throw new DatabaseException(e);
         }
     }

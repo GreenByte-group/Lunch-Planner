@@ -17,6 +17,8 @@ import Comments from "./components/Event/Comments";
 import { createBrowserHistory as createHistory } from "history";
 import {setHistory, getHistory} from "./utils/HistoryUtils";
 import CreateTeamScreen from "./components/Team/CreateTeamScreen";
+import {init} from './components/notification/Firebase'
+import NotificationsScreen from "./components/notification/NotificationsScreen";
 
 const oldTheme = getMuiTheme({
     palette: {
@@ -54,6 +56,14 @@ class App extends React.Component {
         super();
 
         setHistory(createHistory(props));
+
+        init(() => {
+            console.log('notificaton: success');
+        }, (error) => {
+            console.log('notificaton: error: ', error);
+        }, (message) => {
+            console.log('notificaton: message: ', message);
+        });
     }
 
     render() {
@@ -72,6 +82,7 @@ class App extends React.Component {
                             <PrivateRoute path="/team/create" component={CreateTeamScreen}/>
                             <PrivateRoute path="/team/create/invite" component={SelectUserScreen} />
                             <PrivateRoute path="/location" component={LocationScreen} />
+                            <PrivateRoute path="/notifications" component={NotificationsScreen} />
                             <PrivateRoute path="/event/create" component={CreateEventScreen} />
                             <PrivateRoute path="/event/create/invite" component={SelectUserScreen} />
                             <PrivateRoute path="/event/:eventId(\d+)" component={EventScreen} />
