@@ -170,9 +170,6 @@ class SelectUserScreen extends React.Component {
                 >
 
                     <TabContainer dir={theme.direction}>
-                        <TeamsList
-
-                        />
                     </TabContainer>
                     <TabContainer dir={theme.direction}>
                         <UserList
@@ -182,7 +179,14 @@ class SelectUserScreen extends React.Component {
                             onSelectionChanged={this.selectionChanged}
                         />
                     </TabContainer>
-                    <TabContainer dir={theme.direction}></TabContainer>
+                    <TabContainer dir={theme.direction}>
+                        <TeamsList
+                            selectedTeams ={this.state.selectedTeams}
+                            teams={this.state.teams}
+                            selectable={true}
+                            onSelectionChanged={this.selectionChanged}
+                        />
+                    </TabContainer>
                 </SwipeableViews>
 
                 <FloatingActionButton onClick={this.handleSend} icon="done"/>

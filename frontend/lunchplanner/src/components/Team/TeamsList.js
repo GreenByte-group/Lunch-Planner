@@ -1,7 +1,7 @@
 import React from 'react';
 import {withStyles} from 'material-ui/styles';
 import {List} from "material-ui";
-import Team from "./Team";
+import TeamInvitation from "./TeamInvitation";
 
 const styles = {
     list: {
@@ -24,6 +24,7 @@ class TeamsList extends React.Component {
 
         console.log("const")
         console.log(props.selectedTeams);
+        console.log(this.state.teams);
     }
 
     componentWillReceiveProps(newProps) {
@@ -73,7 +74,7 @@ class TeamsList extends React.Component {
                 className={classes.list}
             >
                 {teams.map((listValue) => {
-                    return <Team selectable={this.state.selectable} selected={selectedTeams.includes(listValue.teamName)} name={listValue.teamName} onClick={this.clickHandler}/>;
+                    return <TeamInvitation selectable={this.state.selectable} selected={selectedTeams.includes(listValue.teamName)} teamname={listValue.teamName} onClick={this.clickHandler}/>;
                 })}
             </List>
         );
