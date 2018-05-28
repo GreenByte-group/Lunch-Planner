@@ -78,12 +78,13 @@ class TeamInvitation extends React.Component {
 
     constructor(props) {
         super();
-        let invitations = props.member;
+        let invitations = props.teamMember;
         let people = invitations.map(value => value.userName).join(', ');
         this.state = {
             selected: props.selected || false,
             teamname: props.teamname,
             teamId: props.teamId,
+            teamMember: props.teamMember,
             people: people,
             selectable: props.selectable || false,
         };
@@ -106,7 +107,7 @@ class TeamInvitation extends React.Component {
 
     clickHandler = () => {
         if(this.state.selectable) {
-            this.props.onClick(this.state.teamname, !this.state.selected);
+            this.props.onClick(this.state.teamname, this.state.teamMember, !this.state.selected);
 
             this.setState({
                 selected: !this.state.selected,
@@ -131,23 +132,23 @@ class TeamInvitation extends React.Component {
             <ListItem button className={listClasses} onClick={this.clickHandler}>
                 <div className={classes.content}>
                     <div className={classes.row}>
-                    {/*TODO picture*/
-                    people.map((person, index) =>{
-                        member = index + 1;
-                    return(
-                        <div className={classes.member}>
-                    {(index === people.length - 1)
-                        ?
-                        <Avatar className={classes.memberAvatar}><span
-                            className={classes.memberAvatarTextLast}>{person.charAt(0)}</span></Avatar>
-                        :
-                        <Avatar className={classes.memberAvatar}><span
-                            className={classes.memberAvatarText}>{person.charAt(0)}</span></Avatar>
-                    }
-                        </div>)
+                        {/*TODO picture*/
+                            people.map((person, index) =>{
+                                member = index + 1;
+                                return(
+                                    <div className={classes.member}>
+                                        {(index === people.length - 1)
+                                            ?
+                                            <Avatar className={classes.memberAvatar}><span
+                                                className={classes.memberAvatarTextLast}>{person.charAt(0)}</span></Avatar>
+                                            :
+                                            <Avatar className={classes.memberAvatar}><span
+                                                className={classes.memberAvatarText}>{person.charAt(0)}</span></Avatar>
+                                        }
+                                    </div>)
 
-                })
-                    }
+                            })
+                        }
                     </div>
                     <div className={classes.text}>
                         <span className={classes.teamname}>

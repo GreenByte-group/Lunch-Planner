@@ -42,11 +42,11 @@ class TeamInvitationList extends React.Component {
         }
     }
 
-    clickHandler = (teamname, selected) => {
+    clickHandler = (teamname, teamMember, selected) => {
         if(this.state.selectable) {
             let selectedTeams = this.state.selectedTeams;
             if (selected) {
-                selectedTeams.push(teamname);
+                selectedTeams.push({teamname, teamMember});
             } else {
                 let index = selectedTeams.indexOf(teamname);
                 selectedTeams.splice(index, 1);
@@ -57,6 +57,7 @@ class TeamInvitationList extends React.Component {
             });
 
             this.state.onSelectionChanged(selectedTeams);
+            console.log(selectedTeams);
         }
     };
 
@@ -73,9 +74,10 @@ class TeamInvitationList extends React.Component {
                     return <TeamInvitation
                         selectable={this.state.selectable}
                         selected={selectedTeams.includes(listValue.teamName)}
-                        teamname={listValue.teamName} onClick={this.clickHandler}
+                        teamname={listValue.teamName}
                         teamId={listValue.teamId}
-                        member={listValue.invitations} onClick={this.clickHandler}
+                        teamMember={listValue.invitations}
+                        onClick={this.clickHandler}
 
                     />;
                 })}

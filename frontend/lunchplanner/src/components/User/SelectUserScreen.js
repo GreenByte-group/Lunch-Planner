@@ -16,7 +16,7 @@ import TeamInvitationList from "../Team/TeamInvitationList";
 
 const styles = theme =>({
     root: {
-      position: 'fixed',
+        position: 'fixed',
         backgroundColor: theme.palette.background.paper,
     },
     appBar: {
@@ -124,34 +124,25 @@ class SelectUserScreen extends React.Component {
         this.setState({
             selectedTeams: selectedTeams,
         });
+        console.log(selectedTeams);
     };
 
     handleSend = () => {
-        console.log("handleSend");
-        this.handleInvitedTeams();
+        //this.handleInvitedTeams();
+        let teamnames = Array();
+        let teams = this.state.selectedTeams;
+        teams.map((listvalue) => {
+           teamnames.push(listvalue.teamname);
+        });
         if(this.props.location.query)
             getHistory().push(this.props.location.query.source +
-                "?invitedUsers=" + this.state.selectedUsers + "&invitedTeams=" + this.state.selectedTeams);
+                "?invitedUsers=" + this.state.selectedUsers + "&invitedTeams=" + teamnames);
     };
 
     // Methods for handling tabs
     handleChange = (event, value) => {
         this.setState({ value });
     };
-
-    handleInvitedTeams = () => {
-        if(this.state.selectedTeams != null && this.state.selectedTeams != 'undefined'){
-            let teams = this.state.selectedTeams;
-            console.log(teams);
-            {teams.map((listValue) => {
-                console.log("listValue" + listValue)
-                this.setState({
-                    selectedUsers: listValue.invitations.userName,
-                });
-            })}
-        }
-        console.log("invited Users" + this.state.invitedUsers);
-    }
 
     handleChangeIndex = index => {
         this.setState({ value: index });

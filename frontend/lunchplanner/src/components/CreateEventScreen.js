@@ -204,7 +204,7 @@ class CreateEventScreen extends React.Component {
         this.parseUrl();
         const { classes } = this.props;
         const error = this.state.error;
-        let invited = this.state.invitedUsers + ", " + this.state.invitedTeams;
+        let invited = this.state.invitedUsers + "," + this.state.invitedTeams;
         let buttonEnabled = false;
         if(this.state.location)
             buttonEnabled = true;
