@@ -2,6 +2,7 @@ package group.greenbyte.lunchplanner.event;
 
 import group.greenbyte.lunchplanner.event.database.*;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
+import org.hibernate.jdbc.Expectation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,6 +14,15 @@ import java.util.*;
 
 @Repository
 public class EventDaoMySql implements EventDao {
+
+
+    private static final String EVENT_BRINGSERVICE_TABLE = "bring_service";
+    private static final String EVENT_BRINGSERVICE_ID = "service_id";
+    private static final String EVENT_BRINGSERVICE_FOOD = "food";
+    private static final String EVENT_BRINGSERVICE_EVENT = "event_id";
+    private static final String EVENT_BRINGSERVICE_CREATER = "user_name";
+    private static final String EVENT_BRINGSERVICE_ACCEPTER = "accepter";
+    private static final String EVENT_BRINGSERVICE_DESCRIPTION = "description";
 
     private static final String EVENT_INVITATION_TABLE = "event_invitation";
     private static final String EVENT_INVITATION_ADMIN = "is_admin";
@@ -324,6 +334,59 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
+    public void putService(String creater, int eventId, String food, String description)throws DatabaseException{
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        simpleJdbcInsert.withTableName(EVENT_BRINGSERVICE_TABLE).usingGeneratedKeyColumns(EVENT_BRINGSERVICE_ID);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(EVENT_BRINGSERVICE_FOOD, food);
+        parameters.put(EVENT_BRINGSERVICE_EVENT, eventId);
+        parameters.put(EVENT_BRINGSERVICE_CREATER, creater);
+        parameters.put(EVENT_BRINGSERVICE_ACCEPTER, null);
+        parameters.put(EVENT_BRINGSERVICE_DESCRIPTION, description);
+
+        try{
+            simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+        }catch(Exception e){
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void updateBringservice(int eventId,String accepter, int serviceId) throws DatabaseException{
+            try {
+                String SQL = " UPDATE " + EVENT_BRINGSERVICE_TABLE +
+                        " SET " + EVENT_BRINGSERVICE_ACCEPTER + " = ? WHERE " + EVENT_BRINGSERVICE_ID + " = ? " +
+                        "AND " + EVENT_BRINGSERVICE_EVENT + " = ?";
+                jdbcTemplate.update(SQL, accepter, serviceId, eventId);
+            }catch(Exception e){
+                throw new DatabaseException(e);
+            }
+
+    }
+
+    @Override
+    public List<BringService> getService(int eventId) throws DatabaseException{
+        try{
+            String SQL = "SELECT * FROM " + EVENT_BRINGSERVICE_TABLE + " WHERE " +
+                    EVENT_BRINGSERVICE_EVENT + " = ? ";
+
+            List<BringServiceDatabase> serviceList = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(BringServiceDatabase.class),
+                    eventId);
+
+            List<BringService> serviceReturn = new ArrayList<>(serviceList.size());
+            for(BringServiceDatabase bringServiceDatabase : serviceList){
+                BringService bringService = bringServiceDatabase.getBringService();
+                serviceReturn.add(bringService);
+            }
+
+            return serviceReturn;
+        }catch(Exception e){
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
     public void putCommentForEvent(String userName, int eventId, String comment) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(EVENT_COMMENT_TABLE).usingGeneratedKeyColumns(EVENT_COMMENT_ID);
@@ -376,6 +439,8 @@ public class EventDaoMySql implements EventDao {
         }
     }
 
+
+
     private Event putUserInvited(String userName, int eventId, boolean admin) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(EVENT_INVITATION_TABLE);
@@ -400,4 +465,6 @@ public class EventDaoMySql implements EventDao {
         //eventsReturn.sort((e1, e2) -> e1.getStartDate().compareTo(e2.getStartDate()));
         events.sort(Comparator.comparing(Event::getStartDate));
     }
+
+
 }

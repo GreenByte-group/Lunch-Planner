@@ -1,22 +1,22 @@
 package group.greenbyte.lunchplanner.event;
 
+import group.greenbyte.lunchplanner.event.database.BringService;
 import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.SessionManager;
-import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-//import org.springframework.session.
+import sun.misc.Request;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
+
+//import org.springframework.session.
 
 @RestController
 @CrossOrigin
@@ -299,6 +299,68 @@ public class EventController {
         }
 
     }
+
+    /**
+     *
+     * @param eventId
+     * @param bringService
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/{eventId}/service", method = RequestMethod.PUT,
+                    consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String putService(@PathVariable("eventId") int eventId, @RequestBody BringServiceJson bringService, HttpServletResponse response){
+        try{
+            eventLogic.putService(eventId, bringService.getFood(), bringService.getDescription());
+            response.setStatus(HttpServletResponse.SC_CREATED);
+            return "";
+        }catch(HttpRequestException e){
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+    }
+
+    /**
+     * Get servicelist from event
+     *
+     * @param eventId of event with yervicelist
+     * @return servicelist of event with id
+     */
+    @RequestMapping(value = "/{eventId}/service", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getService(@PathVariable("eventId") int eventId) {
+
+        try{
+            List<BringService> serviceList = eventLogic.getService(eventId);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(serviceList);
+        }catch(HttpRequestException e){
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+
+    @RequestMapping(value = "/{eventId}/service/{serviceId}", method = RequestMethod.POST)
+    @ResponseBody
+    public String acceptBringservice(@PathVariable("eventId") int eventId,
+                                     @PathVariable("serviceId") int serviceId, HttpServletResponse response){
+        try{
+            eventLogic.updateBringservice(eventId,SessionManager.getUserName(),serviceId);
+            response.setStatus(HttpServletResponse.SC_OK);
+            return "";
+        }catch(HttpRequestException e){
+            response.setStatus(e.getStatusCode());
+            return e.getMessage();
+        }
+    }
+
+
 
     /**
      * Get all comments of an event
