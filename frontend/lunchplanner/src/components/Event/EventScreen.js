@@ -13,6 +13,7 @@ import Dialog from "../Dialog";
 import CommentsIcon from '@material-ui/icons/Message';
 import UserList from "../User/UserList";
 import {Button} from "material-ui";
+import ServiceList from "./ServiceList";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -119,9 +120,9 @@ function Transition(props) {
             marginRight: 'auto',
         },
         overButton: {
-            height: 'calc(100% - 112px)',
+            height: '100%',
             marginBottom: '56px',
-            overflowY: 'scroll',
+            overflowY: 'auto',
             display: 'flex',
             flexDirection: 'column',
         },
@@ -131,7 +132,7 @@ const buttonStyle = {
     display:"block",
     marginLeft:"auto",
     marginRight:"auto",
-}
+};
 
 class EventScreen extends React.Component {
 
@@ -235,9 +236,8 @@ class EventScreen extends React.Component {
             }
         });
 
-        console.log("eventscreen");
-        console.log(selectedUsers);
-
+        //TODO anzahl kommentare
+        
         return (
             <div>
                 <Dialog
@@ -255,7 +255,7 @@ class EventScreen extends React.Component {
                             <Link to={{pathname:`/event/${eventId}/comments`}}>
                                 <div className={classes.headerComment}>
                                     <CommentsIcon className={classes.commentIcon} />
-                                    <p className={classes.commentText}>2 Comments</p>
+                                    <p className={classes.commentText}>Comments</p>
                                 </div>
                             </Link>
                         </div>
@@ -263,7 +263,7 @@ class EventScreen extends React.Component {
                             <p className={classes.invitaionsHeader}>Invited People ({people.length})</p>
                             <UserList selectedUsers={selectedUsers} users={people} selectable={false} />
                         </div>
-
+                        <ServiceList eventId={eventId} />
                         <Link className={classes.serviceListLink} to={{pathname:`/event/${eventId}/service`}}>
                             <div className={classes.serviceList}>
                                 <ListIcon className={classes.serviceListIcon} />

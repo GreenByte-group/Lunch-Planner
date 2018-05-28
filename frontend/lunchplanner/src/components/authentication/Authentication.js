@@ -8,7 +8,7 @@ import AppBar from 'material-ui/AppBar';
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import axios from "axios";
-import {TOKEN, USERNAME} from "../../Config";
+import {HOST, TOKEN, USERNAME} from "../../Config";
 
 export function setAuthenticationHeader() {
     let token = localStorage.getItem(TOKEN);
@@ -62,7 +62,7 @@ class Authentication extends React.Component {
     };
     handleSubmit(event) {
         if(this.state.username && this.state.password && this.state.email) {
-            let url =  'http://localhost:8080/user';
+            let url =  HOST + '/user';
             axios.post(url, {userName: this.state.username, password: this.state.password, mail: this.state.email})
                 .then((response) => {
                     if(response.status === 201) {

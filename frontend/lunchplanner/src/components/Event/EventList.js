@@ -11,7 +11,8 @@ import FloatingActionButton from "../FloatingActionButton";
 const styles = {
     root: {
         height: '100%',
-        overflow: 'hidden',
+        overflowX: 'hidden',
+        overflowY: 'auto',
     },
     list: {
         padding: 0,
