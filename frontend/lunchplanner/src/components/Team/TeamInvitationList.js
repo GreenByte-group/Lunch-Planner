@@ -75,7 +75,7 @@ class TeamInvitationList extends React.Component {
                         selected={selectedTeams.includes(listValue.teamName)}
                         teamname={listValue.teamName} onClick={this.clickHandler}
                         teamId={listValue.teamId}
-                        member={listValue.invitations}
+                        member={listValue.invitations} onClick={this.clickHandler}
 
                     />;
                 })}

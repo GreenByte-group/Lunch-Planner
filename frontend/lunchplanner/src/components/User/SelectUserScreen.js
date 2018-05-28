@@ -127,6 +127,8 @@ class SelectUserScreen extends React.Component {
     };
 
     handleSend = () => {
+        console.log("handleSend");
+        this.handleInvitedTeams();
         if(this.props.location.query)
             getHistory().push(this.props.location.query.source +
                 "?invitedUsers=" + this.state.selectedUsers + "&invitedTeams=" + this.state.selectedTeams);
@@ -136,6 +138,20 @@ class SelectUserScreen extends React.Component {
     handleChange = (event, value) => {
         this.setState({ value });
     };
+
+    handleInvitedTeams = () => {
+        if(this.state.selectedTeams != null && this.state.selectedTeams != 'undefined'){
+            let teams = this.state.selectedTeams;
+            console.log(teams);
+            {teams.map((listValue) => {
+                console.log("listValue" + listValue)
+                this.setState({
+                    selectedUsers: listValue.invitations.userName,
+                });
+            })}
+        }
+        console.log("invited Users" + this.state.invitedUsers);
+    }
 
     handleChangeIndex = index => {
         this.setState({ value: index });

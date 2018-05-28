@@ -21,9 +21,6 @@ class UserList extends React.Component {
             selectable: props.selectable || false,
             onSelectionChanged: props.onSelectionChanged,
         };
-
-        console.log("const")
-        console.log(props.selectedUsers);
     }
 
     componentWillReceiveProps(newProps) {
