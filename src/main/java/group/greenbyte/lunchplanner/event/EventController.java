@@ -323,7 +323,7 @@ public class EventController {
     @ResponseBody
     public String acceptBringservice(@PathVariable("eventId") int eventId,
                                      @RequestBody BringServiceJson bringService,
-                                     @PathVariable("serviceId") int serviceId, HttpServletResponse response{
+                                     @PathVariable("serviceId") int serviceId, HttpServletResponse response){
         try{
             eventLogic.updateBringservice(eventId,SessionManager.getUserName(),serviceId);
             response.setStatus(HttpServletResponse.SC_OK);
