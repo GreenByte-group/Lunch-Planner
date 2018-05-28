@@ -346,11 +346,9 @@ public class EventController {
     }
 
 
-    @RequestMapping(value = " /{eventId}/service/{serviceId}", method = RequestMethod.POST,
-                    consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @RequestMapping(value = "/{eventId}/service/{serviceId}", method = RequestMethod.POST)
     @ResponseBody
     public String acceptBringservice(@PathVariable("eventId") int eventId,
-                                     @RequestBody BringServiceJson bringService,
                                      @PathVariable("serviceId") int serviceId, HttpServletResponse response){
         try{
             eventLogic.updateBringservice(eventId,SessionManager.getUserName(),serviceId);

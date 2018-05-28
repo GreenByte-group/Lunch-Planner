@@ -5,7 +5,7 @@ public class BringServiceDatabase {
     private int serviceId;
     private int event_Id;
     private String food;
-    private String creater;
+    private String userName;
     private String accepter;
     private String description;
 
@@ -14,7 +14,7 @@ public class BringServiceDatabase {
         bringService.setServiceId(this.serviceId);
         bringService.setFood(this.food);
         bringService.setEvent_ID(this.event_Id);
-        bringService.setCreaterName(this.creater);
+        bringService.setCreaterName(this.userName);
         bringService.setAccepter(this.accepter);
         bringService.setDescription(this.description);
 
@@ -30,10 +30,6 @@ public class BringServiceDatabase {
         this.event_Id = event_Id;
     }
 
-    public void setCreater(String creater) {
-        this.creater = creater;
-    }
-
     public void setAccepter(String accepter) {
         this.accepter = accepter;
     }
@@ -44,5 +40,9 @@ public class BringServiceDatabase {
 
     public void setFood(String food) {
         this.food = food;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

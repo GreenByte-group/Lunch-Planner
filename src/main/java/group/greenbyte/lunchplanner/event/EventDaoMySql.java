@@ -16,12 +16,12 @@ import java.util.*;
 public class EventDaoMySql implements EventDao {
 
 
-    private static final String EVENT_BRINGSERVICE_TABLE = "event_bringservice";
+    private static final String EVENT_BRINGSERVICE_TABLE = "bring_service";
     private static final String EVENT_BRINGSERVICE_ID = "service_id";
     private static final String EVENT_BRINGSERVICE_FOOD = "food";
     private static final String EVENT_BRINGSERVICE_EVENT = "event_id";
-    private static final String EVENT_BRINGSERVICE_CREATER = "creater_name";
-    private static final String EVENT_BRINGSERVICE_ACCEPTER = "accepter_name";
+    private static final String EVENT_BRINGSERVICE_CREATER = "user_name";
+    private static final String EVENT_BRINGSERVICE_ACCEPTER = "accepter";
     private static final String EVENT_BRINGSERVICE_DESCRIPTION = "description";
 
     private static final String EVENT_INVITATION_TABLE = "event_invitation";
@@ -355,8 +355,9 @@ public class EventDaoMySql implements EventDao {
     public void updateBringservice(int eventId,String accepter, int serviceId) throws DatabaseException{
             try {
                 String SQL = " UPDATE " + EVENT_BRINGSERVICE_TABLE +
-                        " SET " + EVENT_BRINGSERVICE_ACCEPTER + " = ? WHERE " + EVENT_BRINGSERVICE_ID + " = ? ";
-                jdbcTemplate.update(SQL, accepter, serviceId);
+                        " SET " + EVENT_BRINGSERVICE_ACCEPTER + " = ? WHERE " + EVENT_BRINGSERVICE_ID + " = ? " +
+                        "AND " + EVENT_BRINGSERVICE_EVENT + " = ?";
+                jdbcTemplate.update(SQL, accepter, serviceId, eventId);
             }catch(Exception e){
                 throw new DatabaseException(e);
             }
@@ -367,7 +368,7 @@ public class EventDaoMySql implements EventDao {
     public List<BringService> getService(int eventId) throws DatabaseException{
         try{
             String SQL = "SELECT * FROM " + EVENT_BRINGSERVICE_TABLE + " WHERE " +
-                    EVENT_BRINGSERVICE_ID + " = ? ";
+                    EVENT_BRINGSERVICE_EVENT + " = ? ";
 
             List<BringServiceDatabase> serviceList = jdbcTemplate.query(SQL,
                     new BeanPropertyRowMapper<>(BringServiceDatabase.class),
