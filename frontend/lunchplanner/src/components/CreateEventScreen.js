@@ -161,8 +161,7 @@ class CreateEventScreen extends React.Component {
 
     handleAccept = () => {
         let created = this.state.created;
-        console.log(this.state.invitedTeamMember);
-        let invitedUsers = this.state.invitedUsers +  this.state.invitedTeamMember;
+        let invitedUsers = this.state.invitedUsers + this.state.invitedTeamMember;
 
         createEvent(this.state.location, this.state.date, invitedUsers, this.state.visible,
             (response) => {
