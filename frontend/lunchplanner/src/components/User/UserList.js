@@ -70,7 +70,11 @@ class UserList extends React.Component {
                 className={classes.list}
             >
                 {users.map((listValue) => {
-                    return <User selectable={this.state.selectable} selected={selectedUsers.includes(listValue.userName)} username={listValue.userName} onClick={this.clickHandler}/>;
+                    return <User selectable={this.state.selectable}
+                                 selected={selectedUsers.includes(listValue.userName)}
+                                 username={listValue.userName}
+                                 onClick={this.clickHandler}
+                    />;
                 })}
             </List>
         );

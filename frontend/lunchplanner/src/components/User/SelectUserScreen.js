@@ -55,6 +55,8 @@ class SelectUserScreen extends React.Component {
             if(string !== "")
                 arrayUsers = string.split(',');
         }
+        console.log("props.location.query " + props.location.query);
+        console.log("props.location.query.invitedTeams " + String(props.location.query.invitedTeams));
         if(props.location.query && props.location.query.invitedTeams) {
             let string = String(props.location.query.invitedTeams);
             if(string !== "")
