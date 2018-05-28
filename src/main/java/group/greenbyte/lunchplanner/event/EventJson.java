@@ -13,17 +13,19 @@ public class EventJson implements Serializable {
 
     public EventJson() { }
 
-    public EventJson(String name, String description, String location, Date timeStart) {
+    public EventJson(String name, String description, String location, Date timeStart, boolean visible) {
         this.name = name;
         this.description = description;
         this.timeStart = timeStart;
         this.location = location;
+        this.visible = visible;
     }
 
     private String name;
     private String description;
     private Date timeStart;
     private String location;
+    private boolean visible;
 
     public String getName() {
         return name;
@@ -55,5 +57,13 @@ public class EventJson implements Serializable {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }
