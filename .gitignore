@@ -29,3 +29,5 @@ nbdist/
 
 out/
 frontend/lunchplanner/package-lock\.json
+
+src/main/resources/lunchplanner-private-fcm-config\.json
