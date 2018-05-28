@@ -82,7 +82,7 @@ class Event extends React.Component {
 
         if(newProps.invited !== undefined && newProps.invited !== null && newProps.selected !== this.state.invited) {
             this.setState ({
-                selected: newProps.invited,
+                invited: newProps.invited,
             });
         }
     }

@@ -29,16 +29,15 @@ class UserList extends React.Component {
 
         if(newProps.selectedUsers && newProps.selectedUsers !== this.state.selectedUsers) {
             selectedUsers = newProps.selectedUsers;
+            this.setState({
+                selectedUsers: selectedUsers,
+            });
         }
 
         if(newProps.users && newProps.users !== this.state.users) {
             users = newProps.users;
-        }
-
-        if(users) {
             this.setState({
-                users: users || this.state.users,
-                selectedUsers: selectedUsers || this.state.selectedUsers,
+                users: users,
             });
         }
     }

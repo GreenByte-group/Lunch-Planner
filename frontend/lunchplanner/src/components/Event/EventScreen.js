@@ -16,6 +16,7 @@ import {Button} from "material-ui";
 import ServiceList from "./ServiceList";
 import {getUsername} from "../authentication/Authentication";
 import InvitationButton from "./InvitationButton";
+import {eventListNeedReload} from "./EventList";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -197,21 +198,28 @@ class EventScreen extends React.Component {
             console.log(people);
         } else {
             console.log("Query does not exists");
-            let url = HOST + "/event/" + eventId;
-
-            axios.get(url)
-                .then((response) => {
-                    this.setState({
-                        eventId: response.data.eventId,
-                        name: response.data.eventName,
-                        description: response.data.eventDescription,
-                        location: response.data.location,
-                        people: response.data.invitations,
-                        date: response.data.startDate,
-                    })
-                });
+            this.loadEvent(eventId);
         }
     }
+
+    loadEvent = (eventId) => {
+        if(!eventId)
+            eventId = this.state.eventId;
+
+        let url = HOST + "/event/" + eventId;
+
+        axios.get(url)
+            .then((response) => {
+                this.setState({
+                    eventId: response.data.eventId,
+                    name: response.data.eventName,
+                    description: response.data.eventDescription,
+                    location: response.data.location,
+                    people: response.data.invitations,
+                    date: response.data.startDate,
+                })
+            });
+    };
 
     handleDecline = () => {
         this.sendAnswer('reject');
@@ -245,10 +253,10 @@ class EventScreen extends React.Component {
         let url = HOST + '/event/' + this.state.eventId + '/reply';
         axios.put(url, answer, config)
             .then((response) => {
-                console.log('Invitation response: ', response);
+                this.loadEvent();
+                eventListNeedReload();
             })
             .catch((error) => {
-                console.log('Invitation error: ', error);
             })
     };
 
