@@ -2,7 +2,7 @@ package group.greenbyte.lunchplanner.team;
 
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.team.database.Team;
-import group.greenbyte.lunchplanner.team.database.TeamInvitationDataForReturn;
+import group.greenbyte.lunchplanner.team.database.TeamMemberDataForReturn;
 
 import java.util.List;
 
@@ -109,7 +109,7 @@ public interface TeamDao {
      * @return
      * @throws DatabaseException
      */
-    List<TeamInvitationDataForReturn> getInvitations(int teamId) throws DatabaseException;
+    List<TeamMemberDataForReturn> getInvitations(int teamId) throws DatabaseException;
 
     /**
      *

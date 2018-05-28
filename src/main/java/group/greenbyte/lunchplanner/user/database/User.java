@@ -1,5 +1,6 @@
 package group.greenbyte.lunchplanner.user.database;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.EventInvitation;
 import group.greenbyte.lunchplanner.team.database.TeamMember;
@@ -24,11 +25,20 @@ public class User {
     @Column(nullable = false, length = MAX_MAIL_LENGTH)
     private String eMail;
 
+    @JsonIgnore
     @Column(nullable = false, length = MAX_PASSWORD_LENGTH)
     private String password;
 
+    @JsonIgnore
     @Column
     private String token;
+
+    @JsonIgnore
+    @Column
+    private String fcmToken;
+
+    @Column
+    private String profilePictureUrl;
 
     @OneToMany(mappedBy = "eventInvited", cascade = CascadeType.ALL)
     private Set<EventInvitation> eventsInvited;
@@ -84,5 +94,21 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
+
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
 }

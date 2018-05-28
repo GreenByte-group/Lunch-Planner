@@ -1,8 +1,16 @@
-body {
+body, html {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: "Work Sans", sans-serif;
+  height: 100%;
+  overflow: hidden;
+}
+#root {
+  height: 100%;
 }
 .navbar{
   background: #75a045;
+}
+.react-swipeable-view-container {
+  height: 100%;
 }

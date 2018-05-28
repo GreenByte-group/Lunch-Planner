@@ -29,8 +29,9 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.paper,
         //width: 1500,,
         position: 'relative',
-        marginTop: '56px',
-        marginBottom: '56px',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column'
     },
     fab: {
         position: 'absolute',
@@ -46,6 +47,10 @@ const styles = theme => ({
         letterSpacing: '0.65px',
         fontSize: '13px',
     },
+    swipeViews: {
+        height: '100%',
+        overflowY: 'auto',
+    },
 });
 
 class SocialScreen extends React.Component {
@@ -53,15 +58,36 @@ class SocialScreen extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            value: 0,
+            value: this.getTabValue(props),
         };
 
         setAuthenticationHeader();
     }
 
+    getTabValue(props) {
+        const params = new URLSearchParams(props.location.search);
+        let tab = params.get('tab');
+        if(tab != null && tab !== undefined) {
+            console.log('tab value: ' + tab);
+            return tab;
+        } else {
+            return 0;
+        }
+    }
+
+    parseUrl = (props) => {
+        const params = new URLSearchParams(props.location.search);
+        let tab = params.get('tab');
+        if(tab != null && tab !== undefined && tab !== this.state.value) {
+            console.log('tab value: ' + tab);
+            this.setState({
+                value: tab,
+            });
+        }
+    };
 
     handleChange = (event, value) => {
-        this.setState({ value });
+        this.setState({ value: value });
     };
 
     handleChangeIndex = index => {
@@ -74,7 +100,7 @@ class SocialScreen extends React.Component {
         return (
             <div className={classes.root}>
                 <Appbar currentScreen="Social"/>
-                <AppBar position="static" color="default">
+                <AppBar position="relative" color="default">
                     <Tabs
                         value={this.state.value}
                         onChange={this.handleChange}
@@ -91,6 +117,7 @@ class SocialScreen extends React.Component {
                     axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                     index={this.state.value}
                     onChangeIndex={this.handleChangeIndex}
+                    className={classes.swipeViews}
                 >
 
                     <TabContainer dir={theme.direction}></TabContainer>

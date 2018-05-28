@@ -38,11 +38,8 @@ public class Team {
     @OneToMany(mappedBy = "parentTeam")
     private Set<Team> childTeams = new HashSet<>();
 
-    @OneToMany(mappedBy = "userInvited")
-    private Set<TeamInvitation> usersInvited = new HashSet<>();
-
     @Transient
-    private Set<TeamInvitationDataForReturn> invitations = new HashSet<>();
+    private Set<TeamMemberDataForReturn> invitations = new HashSet<>();
 
     public Team() {
         isPublic = false;
@@ -88,14 +85,6 @@ public class Team {
         this.parentTeam = parentTeam;
     }
 
-    public Set<TeamInvitationDataForReturn> getInvitations() {
-        return invitations;
-    }
-
-    public void setInvitations(Set<TeamInvitationDataForReturn> invitations) {
-        this.invitations = invitations;
-    }
-
     @Override
     public String toString() {
         return String.valueOf(getTeamId());
@@ -113,5 +102,13 @@ public class Team {
 
     public int hashCode() {
         return getTeamId().hashCode();
+    }
+
+    public Set<TeamMemberDataForReturn> getInvitations() {
+        return invitations;
+    }
+
+    public void setInvitations(Set<TeamMemberDataForReturn> invitations) {
+        this.invitations = invitations;
     }
 }
