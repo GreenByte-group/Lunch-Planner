@@ -481,6 +481,7 @@ public class EventLogic {
 
     public void updateBringservice(int eventId, String accepter, int serviceId) throws HttpRequestException{
         try{
+            //TODO check ob schon jemand anderes eingetragen ist
             eventDao.updateBringservice(eventId,accepter,serviceId);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
