@@ -47,14 +47,14 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
-    public Event insertEvent(String userName, String eventName, String description, String location, Date timeStart) throws DatabaseException {
+    public Event insertEvent(String userName, String eventName, String description, String location, Date timeStart, boolean isPublic) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(EVENT_TABLE).usingGeneratedKeyColumns(EVENT_ID);
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(EVENT_NAME, eventName);
         parameters.put(EVENT_DESCRIPTION, description);
         parameters.put(EVENT_START_DATE, timeStart);
-        parameters.put(EVENT_IS_PUBLIC, false);
+        parameters.put(EVENT_IS_PUBLIC, isPublic);
         parameters.put(EVENT_LOCATION, location);
 
         try {

@@ -50,6 +50,12 @@ public class EventLogic {
         //TODO eventChanged
     }
 
+
+    int createEvent(String userName, String eventName, String eventDescription,
+                    String location, Date timeStart) throws HttpRequestException {
+        return createEvent(userName, eventName, eventDescription, location, timeStart, false);
+    }
+
     /**
      * Create an event. At least the eventName and a location or timeStart is needed
      *
@@ -63,7 +69,7 @@ public class EventLogic {
      * or an Database error happens
      */
     int createEvent(String userName, String eventName, String eventDescription,
-                    String location, Date timeStart) throws HttpRequestException{
+                    String location, Date timeStart, boolean visible) throws HttpRequestException{
 
         if(userName == null || userName.length()==0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is empty");
@@ -90,7 +96,7 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Location is too long, maximum length: " + Event.MAX_LOCATION_LENGTH);
 
         try {
-            return eventDao.insertEvent(userName, eventName, eventDescription, location, timeStart)
+            return eventDao.insertEvent(userName, eventName, eventDescription, location, timeStart, visible)
                     .getEventId();
         }catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());

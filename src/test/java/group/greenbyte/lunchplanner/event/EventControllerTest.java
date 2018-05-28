@@ -88,7 +88,7 @@ public class EventControllerTest {
     public void test1CreateEventNoDescription() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson(createString(50), "", location, new Date(timeStart));
+        EventJson event = new EventJson(createString(50), "", location, new Date(timeStart), false);
 
         String json = getJsonFromObject(event);
 
@@ -112,7 +112,7 @@ public class EventControllerTest {
     public void test2CreateEventNormalDescription() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson(createString(50), "Super Event", location, new Date(timeStart));
+        EventJson event = new EventJson(createString(50), "Super Event", location, new Date(timeStart), false);
 
         String json = getJsonFromObject(event);
 
@@ -136,7 +136,7 @@ public class EventControllerTest {
     public void test3CreateEventLongDescription() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson(createString(50), createString(1000), location, new Date(timeStart));
+        EventJson event = new EventJson(createString(50), createString(1000), location, new Date(timeStart), false);
 
         String json = getJsonFromObject(event);
 
@@ -160,7 +160,7 @@ public class EventControllerTest {
     public void test4CreateEventNoName() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson("", "", location, new Date(timeStart));
+        EventJson event = new EventJson("", "", location, new Date(timeStart), false);
 
         String json = getJsonFromObject(event);
 
@@ -174,7 +174,7 @@ public class EventControllerTest {
     public void test5CreateEventNameTooLong() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson(createString(51), "", location, new Date(timeStart));
+        EventJson event = new EventJson(createString(51), "", location, new Date(timeStart),false);
 
         String json = getJsonFromObject(event);
 
@@ -188,7 +188,7 @@ public class EventControllerTest {
     public void test6CreateEventDescriptionTooLong() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson("", "", location, new Date(timeStart));
+        EventJson event = new EventJson("", "", location, new Date(timeStart),false);
 
         String json = getJsonFromObject(event);
 
@@ -202,7 +202,7 @@ public class EventControllerTest {
     public void test7CreateEventTimeStartTooLow() throws Exception {
         long timeStart = System.currentTimeMillis() - 100000;
 
-        EventJson event = new EventJson("", "", location, new Date(timeStart));
+        EventJson event = new EventJson("", "", location, new Date(timeStart),false);
 
         String json = getJsonFromObject(event);
 
@@ -216,7 +216,7 @@ public class EventControllerTest {
     public void test7CreateEventLocationEmpty() throws Exception {
         long timeStart = System.currentTimeMillis() - 100000;
 
-        EventJson event = new EventJson("name", "des", " ", new Date(timeStart));
+        EventJson event = new EventJson("name", "des", " ", new Date(timeStart),false);
 
         String json = getJsonFromObject(event);
 
@@ -230,7 +230,7 @@ public class EventControllerTest {
     public void test7CreateEventLocationTooLong() throws Exception {
         long timeStart = System.currentTimeMillis() - 100000;
 
-        EventJson event = new EventJson("name", "des", createString(256), new Date(timeStart));
+        EventJson event = new EventJson("name", "des", createString(256), new Date(timeStart),false);
 
         String json = getJsonFromObject(event);
 
