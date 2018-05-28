@@ -27,7 +27,8 @@ public interface EventDao {
                       String eventName,
                       String description,
                       String location,
-                      Date timeStart) throws DatabaseException;
+                      Date timeStart,
+                      boolean isPublic) throws DatabaseException;
 
     /**
      * Gets the event with location but without usersInvited and teamsVisible

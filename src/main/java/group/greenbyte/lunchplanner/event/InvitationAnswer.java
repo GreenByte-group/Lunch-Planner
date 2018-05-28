@@ -17,9 +17,9 @@ public enum InvitationAnswer {
         switch (answer) {
             case "accept":
                 return InvitationAnswer.ACCEPT;
-            case "reject":
-                return InvitationAnswer.MAYBE;
             case "maybe":
+                return InvitationAnswer.MAYBE;
+            case "reject":
                 return InvitationAnswer.REJECT;
         }
 

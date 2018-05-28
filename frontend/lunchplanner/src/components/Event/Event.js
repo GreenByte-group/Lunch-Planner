@@ -72,6 +72,11 @@ const styles = {
         color: 'black',
         marginLeft: '72px',
     },
+    textSelected: {
+        width: 'auto',
+        color: '#75A045',
+        marginLeft: '72px',
+    },
     imageDiv: {
         width: '48px',
         height: '48px',
@@ -98,11 +103,23 @@ class Event extends React.Component {
         let date = moment(props.date);
 
         let invitations = props.people;
-        let people = invitations.map(value => value.userName).join(', ');
+        let people = "";
+
+        let first = true;
+        invitations.forEach(value => {
+            if(value.answer === 0)
+                if(first) {
+                    people += value.userName;
+                    first = false;
+                } else {
+                    people += ', ' + value.userName;
+                }
+        });
 
         this.state = {
             background: props.background,
             accepted: props.accepted || false,
+            invited: props.invited || false,
             id: props.id,
             name: props.name,
             description: props.description,
@@ -115,12 +132,46 @@ class Event extends React.Component {
         }
     }
 
+    componentWillReceiveProps(newProps) {
+        if(newProps.invited !== undefined || newProps.invited !== this.state.invited) {
+            this.setState({
+                invited: newProps.invited,
+            });
+        }
+
+        if(newProps.accepted !== undefined || newProps.accepted !== this.state.accepted) {
+            this.setState({
+                accepted: newProps.accepted,
+            });
+        }
+
+        if(newProps.people !== undefined || newProps.people !== this.state.people) {
+            let invitations = newProps.people;
+            let people = "";
+
+            let first = true;
+            invitations.forEach(value => {
+                if(value.answer === 0)
+                    if(first) {
+                        people += value.userName;
+                        first = false;
+                    } else {
+                        people += ', ' + value.userName;
+                    }
+            });
+            this.setState({
+                invitations: invitations,
+                people: people,
+            });
+        }
+    }
 
     render() {
         const {classes} = this.props;
 
         const background = this.state.background;
         let accepted= this.state.accepted;
+        let invited = this.state.invited;
 
         let name = this.state.name;
         let description = this.state.description;
@@ -133,6 +184,10 @@ class Event extends React.Component {
 
         people = people.split(',');
         people = people.map((value) => value.trim());
+
+        let classesText = classes.text;
+        if(accepted)
+            classesText = classes.textSelected;
 
         return (
             <Link className={classes.link} to={{pathname:`/event/${this.state.id}`, query:{
@@ -151,7 +206,7 @@ class Event extends React.Component {
                             <div className={classes.imageDiv}>
 
                             </div>
-                            <div className={classes.text}>
+                            <div className={classesText}>
                                 <p className={classes.title}>{name}</p>
                                 <p className={classes.time}>
                                     <Schedule viewBox="0 0 22 22" className={classes.icons}/> {time}
@@ -170,7 +225,7 @@ class Event extends React.Component {
                             </p>
                             {(accepted
                                     ? <AcceptedButton text="Accepted" />
-                                    : <InvitedButton text="Invited" />
+                                    : (invited) ? <InvitedButton text="Invited" /> : ''
                             )}
                         </div>
                     </Card>

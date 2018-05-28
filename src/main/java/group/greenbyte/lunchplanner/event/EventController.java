@@ -60,7 +60,7 @@ public class EventController {
 
         try {
             int eventId = eventLogic.createEvent(SessionManager.getUserName(), event.getName(), event.getDescription(),
-                    event.getLocation(), event.getTimeStart());
+                    event.getLocation(), event.getTimeStart(), event.isVisible());
 
             response.setStatus(HttpServletResponse.SC_CREATED);
             return String.valueOf(eventId);
@@ -213,12 +213,41 @@ public class EventController {
          }
     }
 
+    /**
+     * Invite a friend to an event
+     *
+     * @param userToInvite id of the user who is invited
+     * @param eventId id of event
+     * @param response response channel
+     */
     @RequestMapping(value = "/{userToInvite}/invite/event/{eventId}", method = RequestMethod.POST,
             produces = MediaType.TEXT_PLAIN_VALUE )
     @ResponseBody
     public String inviteFriend(@PathVariable("userToInvite") String userToInvite, @PathVariable ("eventId") int eventId, HttpServletResponse response){
         try {
             eventLogic.inviteFriend(SessionManager.getUserName(), userToInvite, eventId);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+
+        return "";
+    }
+
+    /**
+     * Invite a team to an event
+     *
+     * @param eventId id of event
+     * @param teamId id of the team that is invited
+     * @param response response channel
+     */
+    @RequestMapping(value = "/{eventId}/inviteTeam/{teamId}", method = RequestMethod.POST,
+            produces = MediaType.TEXT_PLAIN_VALUE )
+    @ResponseBody
+    public String inviteTeam(@PathVariable("eventId") int eventId, @PathVariable ("teamId") int teamId, HttpServletResponse response){
+        try {
+            eventLogic.inviteTeam(SessionManager.getUserName(), eventId, teamId);
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());
@@ -246,7 +275,6 @@ public class EventController {
             return e.getErrorMessage();
         }
         return "";
-
     }
 
     /**

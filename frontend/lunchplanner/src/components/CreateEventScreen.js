@@ -149,7 +149,7 @@ class CreateEventScreen extends React.Component {
     handleAccept = () => {
         let created = this.state.created;
 
-        createEvent(this.state.location, this.state.date, this.state.invitedUsers, this.state.visible,
+        createEvent(this.state.location, this.state.date, this.state.invitedUsers, !this.state.visible,
             (response) => {
                 if(response.status === 201) {
                     eventListNeedReload();

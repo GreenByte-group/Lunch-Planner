@@ -20,10 +20,8 @@ class UserList extends React.Component {
             users: props.users || [],
             selectable: props.selectable || false,
             onSelectionChanged: props.onSelectionChanged,
+            othersInvited: props.othersInvited || false,
         };
-
-        console.log("const")
-        console.log(props.selectedUsers);
     }
 
     componentWillReceiveProps(newProps) {
@@ -31,16 +29,15 @@ class UserList extends React.Component {
 
         if(newProps.selectedUsers && newProps.selectedUsers !== this.state.selectedUsers) {
             selectedUsers = newProps.selectedUsers;
+            this.setState({
+                selectedUsers: selectedUsers,
+            });
         }
 
         if(newProps.users && newProps.users !== this.state.users) {
             users = newProps.users;
-        }
-
-        if(users) {
             this.setState({
-                users: users || this.state.users,
-                selectedUsers: selectedUsers || this.state.selectedUsers,
+                users: users,
             });
         }
     }
@@ -67,13 +64,14 @@ class UserList extends React.Component {
         const { classes } = this.props;
         let users = this.state.users;
         let selectedUsers = this.state.selectedUsers;
+        let othersInvited = this.state.othersInvited;
 
         return (
             <List
                 className={classes.list}
             >
                 {users.map((listValue) => {
-                    return <User selectable={this.state.selectable} selected={selectedUsers.includes(listValue.userName)} username={listValue.userName} onClick={this.clickHandler}/>;
+                    return <User invited={othersInvited} selectable={this.state.selectable} selected={selectedUsers.includes(listValue.userName)} username={listValue.userName} onClick={this.clickHandler}/>;
                 })}
             </List>
         );
