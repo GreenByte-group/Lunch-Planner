@@ -17,6 +17,7 @@ import ServiceList from "./ServiceList";
 import {getUsername} from "../authentication/Authentication";
 import InvitationButton from "./InvitationButton";
 import {eventListNeedReload} from "./EventList";
+import {getHistory} from "../../utils/HistoryUtils";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -222,7 +223,9 @@ class EventScreen extends React.Component {
     };
 
     handleDecline = () => {
-        this.sendAnswer('reject');
+        this.sendAnswer('reject', () => {
+            getHistory().push("/event/");
+        });
     };
 
     handleAccept = () => {
@@ -243,7 +246,7 @@ class EventScreen extends React.Component {
         }
     };
 
-    sendAnswer = (answer) => {
+    sendAnswer = (answer, then) => {
         let config = {
             headers: {
                 'Content-Type': 'text/plain',
@@ -255,8 +258,9 @@ class EventScreen extends React.Component {
             .then((response) => {
                 this.loadEvent();
                 eventListNeedReload();
-            })
-            .catch((error) => {
+                console.log('then: ', then);
+                if(then)
+                    then();
             })
     };
 

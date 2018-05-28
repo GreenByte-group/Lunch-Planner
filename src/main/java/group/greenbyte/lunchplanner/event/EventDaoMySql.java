@@ -355,13 +355,24 @@ public class EventDaoMySql implements EventDao {
     }
 
     public void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException {
-        String SQL = "UPDATE " + EVENT_INVITATION_TABLE + " SET " + EVENT_INVITATION_REPLY + " = ? WHERE " + EVENT_INVITATION_EVENT + " = ? AND "
-                + EVENT_INVITATION_USER + " = ?";
+        if(answer != InvitationAnswer.REJECT) {
+            String SQL = "UPDATE " + EVENT_INVITATION_TABLE + " SET " + EVENT_INVITATION_REPLY + " = ? WHERE " + EVENT_INVITATION_EVENT + " = ? AND "
+                    + EVENT_INVITATION_USER + " = ?";
 
-        try {
-            jdbcTemplate.update(SQL, answer.getValue(), eventId, userName);
-        } catch (Exception e) {
-            throw new DatabaseException(e);
+            try {
+                jdbcTemplate.update(SQL, answer.getValue(), eventId, userName);
+            } catch (Exception e) {
+                throw new DatabaseException(e);
+            }
+        } else {
+            String SQL = "DELETE FROM " + EVENT_INVITATION_TABLE + " WHERE " + EVENT_INVITATION_EVENT + " = ? AND "
+                    + EVENT_INVITATION_USER + " = ?";
+
+            try {
+                jdbcTemplate.update(SQL, eventId, userName);
+            } catch (Exception e) {
+                throw new DatabaseException(e);
+            }
         }
     }
 
