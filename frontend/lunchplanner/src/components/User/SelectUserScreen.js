@@ -104,7 +104,6 @@ class SelectUserScreen extends React.Component {
 
         axios.get(url)
             .then((response) => {
-                console.log(response.data);
                 this.setState({
                     search: search,
                     teams: response.data,
@@ -126,11 +125,9 @@ class SelectUserScreen extends React.Component {
         this.setState({
             selectedTeams: selectedTeams,
         });
-        console.log(selectedTeams);
     };
 
     handleSend = () => {
-        //this.handleInvitedTeams();
         let teamnames = Array();
         let memberNames = Array();
         let teamMember;
@@ -138,7 +135,6 @@ class SelectUserScreen extends React.Component {
         teams.map((team) => {
            teamnames.push(team.teamname);
            teamMember = team.teamMember;
-           console.log(teamMember);
            teamMember.map((member) =>{
                 memberNames.push(member.userName);
            });
@@ -167,6 +163,20 @@ class SelectUserScreen extends React.Component {
         if(countSelected !== 0) {
             textTitle = countSelected + " selected";
         }
+        const teamlist = (
+            <TeamInvitationList
+            selectedTeams={this.state.selectedTeams}
+            teams={this.state.teams}
+            selectable={true}
+            onSelectionChanged={this.selectionTeamChanged}
+        />);
+        const userlist = (
+            <UserList
+            selectedUsers={this.state.selectedUsers}
+            users={this.state.users}
+            selectable={true}
+            onSelectionChanged={this.selectionUserChanged}
+        />);
 
         return (
             <Dialog
@@ -193,22 +203,14 @@ class SelectUserScreen extends React.Component {
                 >
 
                     <TabContainer dir={theme.direction}>
+                        {userlist}
+                        {teamlist}
                     </TabContainer>
                     <TabContainer dir={theme.direction}>
-                        <UserList
-                            selectedUsers={this.state.selectedUsers}
-                            users={this.state.users}
-                            selectable={true}
-                            onSelectionChanged={this.selectionUserChanged}
-                        />
+                        {userlist}
                     </TabContainer>
                     <TabContainer dir={theme.direction}>
-                        <TeamInvitationList
-                            selectedTeams={this.state.selectedTeams}
-                            teams={this.state.teams}
-                            selectable={true}
-                            onSelectionChanged={this.selectionTeamChanged}
-                        />
+                        {teamlist}
                     </TabContainer>
                 </SwipeableViews>
 

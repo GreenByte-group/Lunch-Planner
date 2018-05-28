@@ -92,7 +92,6 @@ class TeamInvitation extends React.Component {
 
     componentWillReceiveProps(newProps) {
         if(newProps.teamname && newProps.teamname !== this.state.teamname) {
-            console.log('teamname: ' + newProps.teamname);
             this.setState ({
                 teamname: newProps.teamname,
             });

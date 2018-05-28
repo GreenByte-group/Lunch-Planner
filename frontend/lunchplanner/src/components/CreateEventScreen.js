@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import Dialog from './Dialog';
-import IconButton from 'material-ui/IconButton';
 import Typography from 'material-ui/Typography';
 import Slide from 'material-ui/transitions/Slide';
 import TextField from "material-ui/es/TextField/TextField";
@@ -20,7 +19,7 @@ import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import "../assets/CreateEventScreen.css"
 import {Link} from "react-router-dom";
 import {Today, Schedule} from "@material-ui/icons";
-import {eventListNeedReload, needReload} from "./Event/EventList";
+import {eventListNeedReload} from "./Event/EventList";
 import moment from "moment";
 
 import {getHistory} from "../utils/HistoryUtils";

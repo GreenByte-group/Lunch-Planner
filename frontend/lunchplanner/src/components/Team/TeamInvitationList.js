@@ -57,7 +57,6 @@ class TeamInvitationList extends React.Component {
             });
 
             this.state.onSelectionChanged(selectedTeams);
-            console.log(selectedTeams);
         }
     };
 
@@ -75,7 +74,6 @@ class TeamInvitationList extends React.Component {
                         selectable={this.state.selectable}
                         selected={selectedTeams.includes(listValue.teamName)}
                         teamname={listValue.teamName}
-                        teamId={listValue.teamId}
                         teamMember={listValue.invitations}
                         onClick={this.clickHandler}
 
