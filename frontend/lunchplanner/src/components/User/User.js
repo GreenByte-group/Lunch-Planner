@@ -22,6 +22,13 @@ const styles = {
             backgroundColor: '#bacfa288 !important',
         }
     },
+    unselectable: {
+        backgroundColor: 'white !important',
+        '&:hover': {
+            backgroundColor: 'white !important',
+            cursor: 'default',
+        }
+    },
     text: {
         marginLeft: '24px',
         marginTop: '6px',
@@ -91,6 +98,8 @@ class Event extends React.Component {
         let listClasses = classes.listItem;
         if(selected && this.state.selectable)
             listClasses += " " + classes.selected;
+        else if(!this.state.selectable)
+            listClasses += " " + classes.unselectable;
 
         return (
             <ListItem button className={listClasses} onClick={this.clickHandler}>

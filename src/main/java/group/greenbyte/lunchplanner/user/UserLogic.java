@@ -1,13 +1,25 @@
 package group.greenbyte.lunchplanner.user;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.JwtService;
 import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Calendar;
@@ -137,6 +149,14 @@ public class UserLogic {
         }
     }
 
+    public void addFcmToken(String username, String fcmToken) throws HttpRequestException {
+        try {
+            userDao.setFcmForUser(username, fcmToken);
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
     /**
      * Send an invitation to a user (async)
      *
@@ -147,9 +167,48 @@ public class UserLogic {
         //ToDO send notfication to user
     }
 
+    public void sendNotification(String fcmToken, String title, String description, String linkToClick) throws FirebaseMessagingException {
+        if(!fcmInitialized) {
+            try {
+                initNotifications();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // See documentation on defining a message payload.
+        Message message = Message.builder()
+                .putData("title", title)
+                .putData("body", description)
+                .putData("click_action", linkToClick)
+                .setToken(fcmToken)
+                .build();
+
+        // Send a message to the device corresponding to the provided
+        // registration token.
+        String response = FirebaseMessaging.getInstance().send(message);
+        // Response is a message ID string.
+        System.out.println("Successfully sent message: " + response);
+
+    }
+
+    private boolean fcmInitialized = false;
+    private void initNotifications() throws IOException {
+        Resource resource = new ClassPathResource("lunchplanner-private-fcm-config.json");
+        InputStream serviceAccount = resource.getInputStream();
+
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .setDatabaseUrl("https://lunch-planner-ac676.firebaseio.com")
+                .build();
+
+        FirebaseApp.initializeApp(options);
+        fcmInitialized = true;
+    }
 
     @Autowired
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
+
 }

@@ -23,6 +23,7 @@ const styles = {
     },
     flex: {
         flex: 1,
+        textAlign: 'center',
     },
     closeIconAbsolute: {
         position: 'absolute',
@@ -31,6 +32,8 @@ const styles = {
     },
     closeIcon: {
         float: 'left',
+        marginLeft: '8px',
+        marginRight: '8px',
     },
     image: {
         height: '152px',

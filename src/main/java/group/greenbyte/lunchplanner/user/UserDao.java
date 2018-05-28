@@ -43,5 +43,11 @@ public interface UserDao {
      */
     List<User> searchUserByName(String searchword) throws DatabaseException;
 
-
+    /**
+     * //TODO write tests for this
+     * Sets the fcm token for a user
+     * @param userName
+     * @param fcmToken
+     */
+    void setFcmForUser(String userName, String fcmToken) throws DatabaseException;
 }

@@ -5,12 +5,17 @@ import SwipeableViews from 'react-swipeable-views';
 import AppBar from 'material-ui/AppBar';
 import Tabs, {Tab} from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
-import EventList from "./Event/EventList";
+import Appbar from "../Appbar";
+import Teamlist from "../Team/TeamList";
+import BottomNavigationBar from "../BottomNavigationBar";
+import {setAuthenticationHeader} from "../authentication/Authentication";
+import NotificationList from "./NotificationList";
+import NotificationSettings from "./NotificationSettings";
 
 
 function TabContainer({ children, dir }) {
     return (
-        <Typography component="div" dir={dir} style={{ padding: 0, height: '100%' }}>
+        <Typography component="div" dir={dir} style={{ padding: 0 }}>
             {children}
         </Typography>
     );
@@ -27,7 +32,8 @@ const styles = theme => ({
         //width: 1500,,
         position: 'relative',
         height: '100%',
-        overflowY: 'auto',
+        display: 'flex',
+        flexDirection: 'column'
     },
     fab: {
         position: 'absolute',
@@ -44,18 +50,49 @@ const styles = theme => ({
         fontSize: '13px',
     },
     swipeViews: {
-        height: 'calc(100% - 48px)',
+        height: '100%',
         overflowY: 'auto',
+    },
+    tabContainer: {
+        height: '100%',
     }
 });
 
-class EventContainer extends React.Component {
-    state = {
-        value: 0,
+class NotificationsScreen extends React.Component {
+
+    constructor(props) {
+        super();
+        this.state = {
+            value: this.getTabValue(props),
+        };
+
+        setAuthenticationHeader();
+    }
+
+    getTabValue(props) {
+        const params = new URLSearchParams(props.location.search);
+        let tab = params.get('tab');
+        if(tab != null && tab !== undefined) {
+            console.log('tab value: ' + tab);
+            return tab;
+        } else {
+            return 0;
+        }
+    }
+
+    parseUrl = (props) => {
+        const params = new URLSearchParams(props.location.search);
+        let tab = params.get('tab');
+        if(tab != null && tab !== undefined && tab !== this.state.value) {
+            console.log('tab value: ' + tab);
+            this.setState({
+                value: tab,
+            });
+        }
     };
 
     handleChange = (event, value) => {
-        this.setState({ value });
+        this.setState({ value: value });
     };
 
     handleChangeIndex = index => {
@@ -67,6 +104,7 @@ class EventContainer extends React.Component {
 
         return (
             <div className={classes.root}>
+                <Appbar currentScreen="Notifications"/>
                 <AppBar position="relative" color="default">
                     <Tabs
                         value={this.state.value}
@@ -76,9 +114,8 @@ class EventContainer extends React.Component {
                         centered
                         fullWidth
                     >
-                        <Tab className={classes.tab} label="PERSONAL" />
-                        <Tab className={classes.tab} label="FOLLOWING" />
-                        <Tab className={classes.tab} label="BY DATE" />
+                        <Tab className={classes.tab} label="HISTORY" />
+                        <Tab className={classes.tab} label="SETTINGS" />
                     </Tabs>
                 </AppBar>
                 <SwipeableViews
@@ -88,21 +125,22 @@ class EventContainer extends React.Component {
                     className={classes.swipeViews}
                 >
 
-                    <TabContainer dir={theme.direction}>
-                        <EventList/>
+                    <TabContainer dir={theme.direction} className={classes.tabContainer}>
+                        <NotificationList />
                     </TabContainer>
-                    <TabContainer dir={theme.direction}>Eventlist Following</TabContainer>
-                    <TabContainer dir={theme.direction}>Eventlist sort by date</TabContainer>
+                    <TabContainer dir={theme.direction}>
+                        <NotificationSettings />
+                    </TabContainer>
                 </SwipeableViews>
-
+                <BottomNavigationBar />
             </div>
         );
     }
 }
 
-EventContainer.propTypes = {
+NotificationsScreen.propTypes = {
     classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(EventContainer);
+export default withStyles(styles, { withTheme: true })(NotificationsScreen);

@@ -9,8 +9,8 @@ import Dialog from "../Dialog";
 const styles = {
     list: {
         padding: '0px',
-        overflowY: 'scroll',
-        height: 'calc(100% - 175px)',
+        overflowY: 'auto',
+        height: '100%',
     },
     textField: {
         zIndex: '10003',

@@ -1,128 +1,75 @@
 import React from 'react';
 import {withStyles} from "material-ui/styles/index";
-import List, { ListItem, ListItemSecondaryAction, ListItemText } from 'material-ui/List';
-import Checkbox from 'material-ui/Checkbox';
-import IconButton from 'material-ui/IconButton';
-import AddIcon from '@material-ui/icons/Add';
-import Button from "material-ui/es/Button/Button";
-import TextField from "material-ui/es/TextField/TextField";
-import Avatar from "material-ui/es/Avatar/Avatar";
+import List from 'material-ui/List';
+import ServiceListItem from "./ServiceListItem";
+import axios from "axios/index";
+import {HOST} from "../../Config";
 
 const styles = theme => ({
     root: {
         width: '100%',
-        //maxWidth: 360,
-        backgroundColor: theme.palette.background.paper,
-    },
-    button:{
-        color: "white",
-        position: "fixed",
-        bottom:0,
-        width: "100%"
-    },
-    textField: {
-        marginLeft: 20,
-        width: "90%",
+        backgroundColor: '#FAFAFA',
     },
 });
+
+export let serviceNeedReload = false;
+
+export function serviceListNeedReload() {
+    serviceNeedReload = true;
+}
 
 class ServiceList extends React.Component {
     constructor(props) {
         super();
 
         this.state = {
-            error: "",
-            checked: [0],
-            people:[
-                {userName: "Benjamin", short: "B", food: "Salad"},
-                {userName: "Gustav", short: "G", food: "Pizza"},
-                {userName: "Donald", short: "D", food: "Döner"},
-            ],
-            service: "service",
+            eventId: props.eventId,
+            items: [
+                // {food:'Döner', description:'Bitte ohne Zwiebeln', creator:'Martin', accepter:'Felix'},
+                // {food:'Döner2', description:'Bitte ohne Tomaten', creator:'Can'},
+                // {food:'Döner3', description:'Bitte ohne Rotkraut', creator:'Sergej', accepter:'Felix'},
+                // {food:'Döner4', description:'Bitte ohne Fleisch, WHAT???!!! Spaß', creator:'Martin'}
+                ],
         };
+
+        this.getServiceList(props.eventId);
     }
-
-    componentDidMount(){
-        //TODO: Load via Request all people who want to use the Service
-    }
-    handleToggle = value => () => {
-        const { checked } = this.state.checked;
-        const currentIndex = checked.indexOf(value);
-        const newChecked = [...checked];
-
-        if (currentIndex === -1) {
-            newChecked.push(value);
-        } else {
-            newChecked.splice(currentIndex, 1);
-        }
-
-        this.setState({
-            checked: newChecked,
-        });
+    getServiceList = (eventId) => {
+        let url = HOST + "/event/" + this.state.eventId + "/service";
+        axios.get(url)
+            .then((response) => {
+                this.setState({
+                    items: response.data,
+                })
+            })
     };
-    handleAdd = (e) => {
-        let array = this.state.people;
-        array.push({name: "MyName", short: "My", food: this.state.service});
-        this.setState({
-            people: array
-        });
-    }
-
-    handleChange = (event) => {
-        let target = event.target;
-        this.setState({
-            service: target.value,
-        });
-    }
 
     render(){
         const { classes } = this.props;
         let people = this.state.people;
+
+        if(serviceNeedReload) {
+            serviceNeedReload = !serviceNeedReload;
+            this.getServiceList(this.state.eventId);
+        }
+
         return (
-            <div className={classes.root}>
-                <List>
-                    <ListItem
-                        role={undefined}
-                        dense
-                        button
-                        className={classes.listItem}>
-                        <TextField
-                            id="service"
-                            label="Service"
-                            placeholder="What do you want?"
-                            multiline
-                            className={classes.textField}
-                            onChange={this.handleChange}
-                        />
-                        <ListItemSecondaryAction>
-                            <IconButton onClick={this.handleAdd}>
-                                <AddIcon />
-                            </IconButton>
-                        </ListItemSecondaryAction>
-                    </ListItem>
-                    {people.map(function(p) {
-                        return <ListItem
-                            key={p}
-                            role={undefined}
-                            dense
-                            button
-                            className={classes.listItem}
-                        >
-                            <Checkbox
-                                tabIndex={-1}
-                                disableRipple
+            <List className={classes.root}>
+                {
+                    this.state.items.map((listValue) => {
+                        return (
+                            <ServiceListItem
+                                eventId={this.state.eventId}
+                                serviceId={listValue.serviceId}
+                                food={listValue.food}
+                                description={listValue.description}
+                                creator={listValue.creator}
+                                accepter={listValue.accepter}
                             />
-                            <ListItemText primary={p.food}/>
-                            <ListItemSecondaryAction>
-                                <Avatar>{p.short}</Avatar>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                    })}
-                </List>
-                <Button variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
-                    Save
-                </Button>
-            </div>
+                        )
+                    })
+                }
+            </List>
         );
     }
 }

@@ -25,31 +25,43 @@ const styles = {
         marginRight: 20,
     },
     appbar: {
-        position: 'fixed',
+        position: 'relative',
         boxShadow: 'none',
     }
 };
 
-function ButtonAppBar(props) {
-    const { classes } = props;
-    let titel = props.currentScreen;
-    return (
-        <div className={classes.root}>
-            <AppBar className={classes.appbar}>
-                <Toolbar>
-                    <div className={classes.menuButton} color="inherit" aria-label="Menu">
-                        <LunchMenu open={false}/>
-                    </div>
-                    <Typography color="inherit" className={classes.flex}>
-                        {titel}
-                    </Typography>
-                    <div color = "inherit">
-                       <Search/>
-                    </div>
-                </Toolbar>
-            </AppBar>
-        </div>
-    );
+class ButtonAppBar extends React.Component {
+
+    constructor(props) {
+        super();
+
+        this.state = {
+            currentScreen: props.currentScreen,
+        };
+    }
+
+    render() {
+        const { classes } = this.props;
+        let titel = this.state.currentScreen;
+
+        return (
+            <div className={classes.root}>
+                <AppBar className={classes.appbar}>
+                    <Toolbar>
+                        <div className={classes.menuButton} color="inherit" aria-label="Menu">
+                            <LunchMenu open={false}/>
+                        </div>
+                        <Typography color="inherit" className={classes.flex}>
+                            {titel}
+                        </Typography>
+                        <div color="inherit">
+                            <Search/>
+                        </div>
+                    </Toolbar>
+                </AppBar>
+            </div>
+        )
+    }
 }
 
 export default withStyles(styles)(ButtonAppBar);

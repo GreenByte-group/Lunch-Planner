@@ -48,6 +48,8 @@ dependencies {
     testCompile('org.springframework.security:spring-security-test')
     //changes in frontend without restarting server
     compile("org.springframework.boot:spring-boot-devtools")
+    //google firebase cloud messaging
+    implementation 'com.google.firebase:firebase-admin:6.1.0'
 }
 
 
