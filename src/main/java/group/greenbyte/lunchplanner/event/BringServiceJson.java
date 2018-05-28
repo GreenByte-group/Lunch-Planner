@@ -6,6 +6,10 @@ public class BringServiceJson implements Serializable {
 
     private static final long serialVersionUID = 265186153151351686L;
 
+    public BringServiceJson() {
+
+    }
+
     public BringServiceJson(String food, String description){
         this.description = description;
         this.food = food;
@@ -13,12 +17,6 @@ public class BringServiceJson implements Serializable {
 
     private String food;
     private String description;
-
-
-
-
-
-
 
     public String getFood() {
         return food;
