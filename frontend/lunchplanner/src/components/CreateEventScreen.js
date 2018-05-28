@@ -131,7 +131,8 @@ class CreateEventScreen extends React.Component {
             visible: params.get('visible') || false,
             date: params.get('date') || defaultDate,
             invitedUsers: params.get('invitedUsers') || [],
-            invitedTeams: params.get('invitedUsers') || [],
+            invitedTeams: params.get('invitedTeams') || [],
+            invitedTeamMember: params.get('teamMember') || [],
             location: params.get('location') || "",
             error: "",
         };
@@ -141,7 +142,7 @@ class CreateEventScreen extends React.Component {
         const params = new URLSearchParams(this.props.location.search);
         let invitedUsers = params.get('invitedUsers');
         let invitedTeams = params.get('invitedTeams');
-        console.log(invitedTeams);
+        let teamMember = params.get('teamMember');
         if(invitedUsers != null && invitedUsers !== undefined && invitedUsers !== this.state.invitedUsers) {
             this.setState({
                 invitedUsers: params.get('invitedUsers'),
@@ -152,12 +153,19 @@ class CreateEventScreen extends React.Component {
                 invitedTeams: params.get('invitedTeams'),
             });
         }
+        if(teamMember != null && teamMember !== undefined && teamMember !== this.state.invitedTeamMember) {
+            this.setState({
+                invitedTeamMember: params.get('teamMember'),
+            });
+        }
     };
 
     handleAccept = () => {
         let created = this.state.created;
+        console.log(this.state.invitedTeamMember);
+        let invitedUsers = this.state.invitedUsers +  this.state.invitedTeamMember;
 
-        createEvent(this.state.location, this.state.date, this.state.invitedUsers, this.state.visible,
+        createEvent(this.state.location, this.state.date, invitedUsers, this.state.visible,
             (response) => {
                 if(response.status === 201) {
                     eventListNeedReload();

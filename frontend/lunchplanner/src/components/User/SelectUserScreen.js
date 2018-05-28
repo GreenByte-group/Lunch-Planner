@@ -55,8 +55,8 @@ class SelectUserScreen extends React.Component {
             if(string !== "")
                 arrayUsers = string.split(',');
         }
-        console.log("props.location.query " + props.location.query);
-        console.log("props.location.query.invitedTeams " + String(props.location.query.invitedTeams));
+        //console.log("props.location.query " + props.location.query);
+        //console.log("props.location.query.invitedTeams " + String(props.location.query.invitedTeams));
         if(props.location.query && props.location.query.invitedTeams) {
             let string = String(props.location.query.invitedTeams);
             if(string !== "")
@@ -132,13 +132,20 @@ class SelectUserScreen extends React.Component {
     handleSend = () => {
         //this.handleInvitedTeams();
         let teamnames = Array();
+        let memberNames = Array();
+        let teamMember;
         let teams = this.state.selectedTeams;
-        teams.map((listvalue) => {
-           teamnames.push(listvalue.teamname);
+        teams.map((team) => {
+           teamnames.push(team.teamname);
+           teamMember = team.teamMember;
+           console.log(teamMember);
+           teamMember.map((member) =>{
+                memberNames.push(member.userName);
+           });
         });
         if(this.props.location.query)
             getHistory().push(this.props.location.query.source +
-                "?invitedUsers=" + this.state.selectedUsers + "&invitedTeams=" + teamnames);
+                "?invitedUsers=" + this.state.selectedUsers + "&invitedTeams=" + teamnames + "&teamMember=" + memberNames);
     };
 
     // Methods for handling tabs
