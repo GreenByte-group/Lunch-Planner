@@ -179,8 +179,8 @@ public class UserLogic {
         // See documentation on defining a message payload.
         Message message = Message.builder()
                 .putData("title", title)
-                .putData("description", description)
-                .putData("linkToClick", linkToClick)
+                .putData("body", description)
+                .putData("click_action", linkToClick)
                 .setToken(fcmToken)
                 .build();
 

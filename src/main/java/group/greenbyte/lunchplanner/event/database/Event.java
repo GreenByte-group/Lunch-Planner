@@ -32,11 +32,14 @@ public class Event {
     @Column(length = MAX_LOCATION_LENGTH)
     private String location;
 
-    @OneToMany(mappedBy = "userInvited", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "userInvited")
     private Set<EventInvitation> usersInvited = new HashSet<>();
 
-    @OneToMany(mappedBy = "userComment", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "userComment")
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "creater")
+    private List<BringService> bringServices = new ArrayList<>();
 
     @Transient
     private Set<EventInvitationDataForReturn> invitations = new HashSet<>();
@@ -125,4 +128,11 @@ public class Event {
     }
 
 
+    public List<BringService> getBringServices() {
+        return bringServices;
+    }
+
+    public void setBringServices(List<BringService> bringServices) {
+        this.bringServices = bringServices;
+    }
 }

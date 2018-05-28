@@ -1,5 +1,6 @@
 import React from "react"
 import {Done} from "@material-ui/icons";
+import Today from "@material-ui/icons/DateRange"
 import {withStyles} from "material-ui";
 
 const styles = theme => ({
@@ -17,6 +18,18 @@ const styles = theme => ({
         display: 'block',
         float: 'right',
     },
+    buttonInvited: {
+        border: 'none',
+        borderRadius: '50%',
+        height: '32px',
+        width: '32px',
+        padding: '3px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        display: 'block',
+        float: 'right',
+        color: '#e2e2e2',
+    },
     text: {
         fontFamily: "Work Sans",
         fontSize: '11px',
@@ -30,9 +43,20 @@ const styles = theme => ({
 });
 
 class AcceptedButton extends React.Component {
+
+    constructor(props) {
+        super();
+
+        this.state = {
+            invited: props.invited || false,
+        }
+    }
+
     render() {
         const {classes} = this.props;
         const {text} = this.props;
+
+        const invited = this.state.invited;
 
         let styleButton = {};
         if(text)
@@ -44,7 +68,10 @@ class AcceptedButton extends React.Component {
                         ? <span className={classes.text} >{text}</span>
                         : ""
                 )}
-                <Done style={styleButton} color="primary" className={classes.button} />
+                {(invited)
+                    ? <Today style={styleButton} color="primary" className={classes.buttonInvited} />
+                    : <Done style={styleButton} color="primary" className={classes.button} />
+                }
             </div>
         )
     }

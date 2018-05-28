@@ -60,6 +60,7 @@ class Event extends React.Component {
 
         this.state = {
             selected: props.selected || false,
+            invited: props.invited || false,
             username: props.username,
             selectable: props.selectable || false,
         };
@@ -78,6 +79,12 @@ class Event extends React.Component {
                 selected: newProps.selected,
             });
         }
+
+        if(newProps.invited !== undefined && newProps.invited !== null && newProps.selected !== this.state.invited) {
+            this.setState ({
+                invited: newProps.invited,
+            });
+        }
     }
 
     clickHandler = () => {
@@ -93,6 +100,7 @@ class Event extends React.Component {
     render() {
         const {classes} = this.props;
         let selected= this.state.selected;
+        let invited = this.state.invited;
         let username = this.state.username;
 
         let listClasses = classes.listItem;
@@ -112,6 +120,10 @@ class Event extends React.Component {
                 </div>
                 {(selected
                         ? <AcceptedButton />
+                        : ""
+                )}
+                {(!selected && invited
+                        ? <AcceptedButton invited={true} />
                         : ""
                 )}
             </ListItem>

@@ -1,13 +1,17 @@
 package group.greenbyte.lunchplanner.event;
 
+import group.greenbyte.lunchplanner.event.database.BringService;
 import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import group.greenbyte.lunchplanner.team.TeamDao;
+import group.greenbyte.lunchplanner.team.TeamLogic;
+import group.greenbyte.lunchplanner.team.database.TeamMemberDataForReturn;
+import group.greenbyte.lunchplanner.security.SessionManager;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +23,8 @@ public class EventLogic {
 
     private EventDao eventDao;
     private UserLogic userLogic;
+    private TeamDao teamDao;
+    private TeamLogic teamLogic;
 
     /**
      * Checks if a user has privileges to change the event object
@@ -50,6 +56,12 @@ public class EventLogic {
         //TODO eventChanged
     }
 
+
+    int createEvent(String userName, String eventName, String eventDescription,
+                    String location, Date timeStart) throws HttpRequestException {
+        return createEvent(userName, eventName, eventDescription, location, timeStart, false);
+    }
+
     /**
      * Create an event. At least the eventName and a location or timeStart is needed
      *
@@ -63,7 +75,7 @@ public class EventLogic {
      * or an Database error happens
      */
     int createEvent(String userName, String eventName, String eventDescription,
-                    String location, Date timeStart) throws HttpRequestException{
+                    String location, Date timeStart, boolean visible) throws HttpRequestException{
 
         if(userName == null || userName.length()==0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is empty");
@@ -90,7 +102,7 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Location is too long, maximum length: " + Event.MAX_LOCATION_LENGTH);
 
         try {
-            return eventDao.insertEvent(userName, eventName, eventDescription, location, timeStart)
+            return eventDao.insertEvent(userName, eventName, eventDescription, location, timeStart, visible)
                     .getEventId();
         }catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
@@ -283,6 +295,38 @@ public class EventLogic {
     }
 
     /**
+     * Invite a team to an event
+     *
+     * @param userName id of the user who creates the event
+     * @param eventId id of event
+     * @param teamId id of team
+     * @throws HttpRequestException
+     */
+    public void inviteTeam(String userName, int eventId, int teamId) throws HttpRequestException{
+
+        if(!isValidName(userName))
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
+
+        try{
+            if(!hasAdminPrivileges(eventId, userName)) //TODO write test for next line
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You don't have write access to this event");
+
+            List<TeamMemberDataForReturn> members = teamDao.getInvitations(teamId);
+
+            for(TeamMemberDataForReturn member : members) {
+                //userName == member.getUserName() -> primary key exception
+                //users can not invite themselves to an event
+                if(!userName.equals(member.getUserName())){
+                    eventDao.putUserInviteToEvent(member.getUserName(), eventId);
+                    userLogic.sendInvitation(userName, member.getUserName());
+                }
+            }
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    /**
      * Invitation reply
      *
      * @param userName user that replies
@@ -413,6 +457,37 @@ public class EventLogic {
         }
     }
 
+
+
+    public void putService(int event_id, String food, String description) throws HttpRequestException{
+        try{
+            eventDao.putService(SessionManager.getUserName(),event_id,food,description);
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    public List<BringService> getService(int eventId) throws HttpRequestException{
+        try {
+//            if(eventId == null)
+//                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "eventId is null "+eventId);
+
+            List<BringService> serviceList = eventDao.getService(eventId);
+            return serviceList;
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    public void updateBringservice(int eventId, String accepter, int serviceId) throws HttpRequestException{
+        try{
+            //TODO check ob schon jemand anderes eingetragen ist
+            eventDao.updateBringservice(eventId,accepter,serviceId);
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
     @Autowired
     public void setEventDao(EventDao eventDao) {
         this.eventDao = eventDao;
@@ -421,5 +496,15 @@ public class EventLogic {
     @Autowired
     public void setUserLogic(UserLogic userLogic) {
         this.userLogic = userLogic;
+    }
+
+    @Autowired
+    public void setTeamDao(TeamDao teamDao) {
+        this.teamDao = teamDao;
+    }
+    
+    @Autowired
+    public void setTeamLogic(TeamLogic teamLogic) {
+        this.teamLogic = teamLogic;
     }
 }
