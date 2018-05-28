@@ -10,7 +10,7 @@ const styles = {
     },
 };
 
-class TeamsList extends React.Component {
+class TeamInvitationList extends React.Component {
 
     constructor(props) {
         super();
@@ -21,10 +21,6 @@ class TeamsList extends React.Component {
             selectable: props.selectable || false,
             onSelectionChanged: props.onSelectionChanged,
         };
-
-        console.log("const")
-        console.log(props.selectedTeams);
-        console.log("Teams" + this.state.teams);
     }
 
     componentWillReceiveProps(newProps) {
@@ -46,13 +42,13 @@ class TeamsList extends React.Component {
         }
     }
 
-    clickHandler = (teamId, selected) => {
+    clickHandler = (teamname, selected) => {
         if(this.state.selectable) {
             let selectedTeams = this.state.selectedTeams;
             if (selected) {
-                selectedTeams.push(teamId);
+                selectedTeams.push(teamname);
             } else {
-                let index = selectedTeams.indexOf(teamId);
+                let index = selectedTeams.indexOf(teamname);
                 selectedTeams.splice(index, 1);
             }
 
@@ -76,9 +72,9 @@ class TeamsList extends React.Component {
                 {teams.map((listValue) => {
                     return <TeamInvitation
                         selectable={this.state.selectable}
-                        selected={selectedTeams.includes(listValue.teamId)}
-                        teamname={listValue.teamName}
-                        teamId={listValue.teamId} onClick={this.clickHandler}
+                        selected={selectedTeams.includes(listValue.teamName)}
+                        teamname={listValue.teamName} onClick={this.clickHandler}
+                        teamId={listValue.teamId}
                         member={listValue.invitations}
 
                     />;
@@ -88,4 +84,4 @@ class TeamsList extends React.Component {
     }
 }
 
-export default withStyles(styles, { withTheme: true })(TeamsList);
+export default withStyles(styles, { withTheme: true })(TeamInvitationList);

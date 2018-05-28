@@ -106,7 +106,7 @@ class TeamInvitation extends React.Component {
 
     clickHandler = () => {
         if(this.state.selectable) {
-            this.props.onClick(this.state.teamId, !this.state.selected);
+            this.props.onClick(this.state.teamname, !this.state.selected);
 
             this.setState({
                 selected: !this.state.selected,

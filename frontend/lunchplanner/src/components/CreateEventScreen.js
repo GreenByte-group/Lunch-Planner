@@ -131,6 +131,7 @@ class CreateEventScreen extends React.Component {
             visible: params.get('visible') || false,
             date: params.get('date') || defaultDate,
             invitedUsers: params.get('invitedUsers') || [],
+            invitedTeams: params.get('invitedUsers') || [],
             location: params.get('location') || "",
             error: "",
         };
@@ -139,9 +140,16 @@ class CreateEventScreen extends React.Component {
     parseUrl = () => {
         const params = new URLSearchParams(this.props.location.search);
         let invitedUsers = params.get('invitedUsers');
+        let invitedTeams = params.get('invitedTeams');
+        console.log(invitedTeams);
         if(invitedUsers != null && invitedUsers !== undefined && invitedUsers !== this.state.invitedUsers) {
             this.setState({
                 invitedUsers: params.get('invitedUsers'),
+            });
+        }
+        if(invitedTeams != null && invitedTeams !== undefined && invitedTeams !== this.state.invitedTeams) {
+            this.setState({
+                invitedTeams: params.get('invitedTeams'),
             });
         }
     };
@@ -196,7 +204,7 @@ class CreateEventScreen extends React.Component {
         this.parseUrl();
         const { classes } = this.props;
         const error = this.state.error;
-
+        let invited = this.state.invitedUsers + ", " + this.state.invitedTeams;
         let buttonEnabled = false;
         if(this.state.location)
             buttonEnabled = true;
@@ -263,7 +271,7 @@ class CreateEventScreen extends React.Component {
                                         id="invitation"
                                         label="Participants"
                                         placeholder ="Invite People"
-                                        value={this.state.invitedUsers}
+                                        value={invited}
                                         fullWidth
                                         InputProps={{
                                             startAdornment: <InputAdornment position="start"><PeopleIcon/></InputAdornment>,

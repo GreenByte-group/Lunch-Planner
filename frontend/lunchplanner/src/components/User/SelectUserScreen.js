@@ -12,7 +12,7 @@ import Tab from "material-ui/es/Tabs/Tab";
 import Tabs from "material-ui/es/Tabs/Tabs";
 import SwipeableViews from 'react-swipeable-views';
 import Typography from 'material-ui/Typography';
-import TeamsList from "../Team/TeamsList";
+import TeamInvitationList from "../Team/TeamInvitationList";
 
 const styles = theme =>({
     root: {
@@ -115,16 +115,21 @@ class SelectUserScreen extends React.Component {
         this.updateTeams(search);
     };
 
-    selectionChanged = (selectedUsers) => {
+    selectionUserChanged = (selectedUsers) => {
         this.setState({
             selectedUsers: selectedUsers,
+        });
+    };
+    selectionTeamChanged = (selectedTeams) => {
+        this.setState({
+            selectedTeams: selectedTeams,
         });
     };
 
     handleSend = () => {
         if(this.props.location.query)
             getHistory().push(this.props.location.query.source +
-                "?invitedUsers=" + this.state.selectedUsers);
+                "?invitedUsers=" + this.state.selectedUsers + "&invitedTeams=" + this.state.selectedTeams);
     };
 
     // Methods for handling tabs
@@ -141,7 +146,7 @@ class SelectUserScreen extends React.Component {
         let users = this.state.users;
 
         // Title for appbar
-        let countSelected = this.state.selectedUsers.length;
+        let countSelected = this.state.selectedUsers.length + this.state.selectedTeams.length;
         let textTitle = "Select users";
         if(countSelected !== 0) {
             textTitle = countSelected + " selected";
@@ -178,15 +183,15 @@ class SelectUserScreen extends React.Component {
                             selectedUsers={this.state.selectedUsers}
                             users={this.state.users}
                             selectable={true}
-                            onSelectionChanged={this.selectionChanged}
+                            onSelectionChanged={this.selectionUserChanged}
                         />
                     </TabContainer>
                     <TabContainer dir={theme.direction}>
-                        <TeamsList
-                            selectedTeams={this.state.selectedUsers}
+                        <TeamInvitationList
+                            selectedTeams={this.state.selectedTeams}
                             teams={this.state.teams}
                             selectable={true}
-                            onSelectionChanged={this.selectionChanged}
+                            onSelectionChanged={this.selectionTeamChanged}
                         />
                     </TabContainer>
                 </SwipeableViews>
