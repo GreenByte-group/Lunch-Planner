@@ -1,9 +1,8 @@
 import React from "react"
-import moment from "moment"
 import ListItem from "material-ui/List/ListItem";
 import {withStyles} from "material-ui";
-import {Schedule, Today} from "@material-ui/icons";
 import AcceptedButton from "../Event/AcceptedButton";
+import Avatar from "material-ui/es/Avatar/Avatar";
 
 const styles = {
     listItem: {
@@ -43,17 +42,49 @@ const styles = {
         borderRadius: '50%',
         height: '32px',
         width: '32px',
-    }
+    },
+    member: {
+        height: '24px',
+        width: '24px',
+        fontFamily: "Work Sans",
+        fontSize: '13px',
+        lineHeight: '20px',
+        marginBottom: '0px',
+        color: '#A4A4A4',
+        marginLeft: '-12px',
+    },
+    memberAvatar: {
+        height: '24px',
+        width: '24px',
+        border: '1px solid white',
+    },
+    memberAvatarText: {
+        fontSize:'10px',
+        marginLeft: '-8px',
+    },
+    memberAvatarTextLast: {
+        marginLeft: '0px',
+        fontSize: '10px',
+    },
+    row: {
+        marginLeft: '12px',
+        float: 'left',
+        display: 'inline-flex',
+        justifyContent: 'center',
+    },
 };
 
 class TeamInvitation extends React.Component {
 
     constructor(props) {
         super();
-
+        let invitations = props.member;
+        let people = invitations.map(value => value.userName).join(', ');
         this.state = {
             selected: props.selected || false,
             teamname: props.teamname,
+            teamId: props.teamId,
+            people: people,
             selectable: props.selectable || false,
         };
     }
@@ -75,7 +106,7 @@ class TeamInvitation extends React.Component {
 
     clickHandler = () => {
         if(this.state.selectable) {
-            this.props.onClick(this.state.username, !this.state.selected);
+            this.props.onClick(this.state.teamId, !this.state.selected);
 
             this.setState({
                 selected: !this.state.selected,
@@ -91,14 +122,37 @@ class TeamInvitation extends React.Component {
         let listClasses = classes.listItem;
         if(selected && this.state.selectable)
             listClasses += " " + classes.selected;
+        let people = this.state.people;
+        people = people.split(',');
+        people = people.map((value) => value.trim());
+        let member = 0;
 
         return (
             <ListItem button className={listClasses} onClick={this.clickHandler}>
                 <div className={classes.content}>
-                    {/*TODO picture*/}
-                    <div className={classes.profilePicture}></div>
+                    <div className={classes.row}>
+                    {/*TODO picture*/
+                    people.map((person, index) =>{
+                        member = index + 1;
+                    return(
+                        <div className={classes.member}>
+                    {(index === people.length - 1)
+                        ?
+                        <Avatar className={classes.memberAvatar}><span
+                            className={classes.memberAvatarTextLast}>{person.charAt(0)}</span></Avatar>
+                        :
+                        <Avatar className={classes.memberAvatar}><span
+                            className={classes.memberAvatarText}>{person.charAt(0)}</span></Avatar>
+                    }
+                        </div>)
+
+                })
+                    }
+                    </div>
                     <div className={classes.text}>
-                        <span className={classes.teamname}>{teamname}</span>
+                        <span className={classes.teamname}>
+                            <p>{teamname} ({member})</p>
+                        </span>
                     </div>
                 </div>
                 {(selected

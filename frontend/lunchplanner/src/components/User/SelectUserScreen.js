@@ -74,6 +74,7 @@ class SelectUserScreen extends React.Component {
 
     componentDidMount() {
         this.updateUsers(this.props.search);
+        this.updateTeams(this.props.search);
     }
 
     updateUsers(search) {
@@ -101,6 +102,7 @@ class SelectUserScreen extends React.Component {
 
         axios.get(url)
             .then((response) => {
+                console.log(response.data);
                 this.setState({
                     search: search,
                     teams: response.data,
@@ -181,7 +183,7 @@ class SelectUserScreen extends React.Component {
                     </TabContainer>
                     <TabContainer dir={theme.direction}>
                         <TeamsList
-                            selectedTeams ={this.state.selectedTeams}
+                            selectedTeams={this.state.selectedUsers}
                             teams={this.state.teams}
                             selectable={true}
                             onSelectionChanged={this.selectionChanged}

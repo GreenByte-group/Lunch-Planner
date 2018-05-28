@@ -24,7 +24,7 @@ class TeamsList extends React.Component {
 
         console.log("const")
         console.log(props.selectedTeams);
-        console.log(this.state.teams);
+        console.log("Teams" + this.state.teams);
     }
 
     componentWillReceiveProps(newProps) {
@@ -46,13 +46,13 @@ class TeamsList extends React.Component {
         }
     }
 
-    clickHandler = (teamname, selected) => {
+    clickHandler = (teamId, selected) => {
         if(this.state.selectable) {
             let selectedTeams = this.state.selectedTeams;
             if (selected) {
-                selectedTeams.push(teamname);
+                selectedTeams.push(teamId);
             } else {
-                let index = selectedTeams.indexOf(teamname);
+                let index = selectedTeams.indexOf(teamId);
                 selectedTeams.splice(index, 1);
             }
 
@@ -74,7 +74,14 @@ class TeamsList extends React.Component {
                 className={classes.list}
             >
                 {teams.map((listValue) => {
-                    return <TeamInvitation selectable={this.state.selectable} selected={selectedTeams.includes(listValue.teamName)} teamname={listValue.teamName} onClick={this.clickHandler}/>;
+                    return <TeamInvitation
+                        selectable={this.state.selectable}
+                        selected={selectedTeams.includes(listValue.teamId)}
+                        teamname={listValue.teamName}
+                        teamId={listValue.teamId} onClick={this.clickHandler}
+                        member={listValue.invitations}
+
+                    />;
                 })}
             </List>
         );
