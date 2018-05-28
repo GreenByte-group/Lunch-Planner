@@ -4,6 +4,9 @@ import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import group.greenbyte.lunchplanner.team.TeamDao;
+import group.greenbyte.lunchplanner.team.TeamLogic;
+import group.greenbyte.lunchplanner.team.database.TeamMemberDataForReturn;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,8 @@ public class EventLogic {
 
     private EventDao eventDao;
     private UserLogic userLogic;
+    private TeamDao teamDao;
+    private TeamLogic teamLogic;
 
     /**
      * Checks if a user has privileges to change the event object
@@ -283,6 +288,38 @@ public class EventLogic {
     }
 
     /**
+     * Invite a team to an event
+     *
+     * @param userName id of the user who creates the event
+     * @param eventId id of event
+     * @param teamId id of team
+     * @throws HttpRequestException
+     */
+    public void inviteTeam(String userName, int eventId, int teamId) throws HttpRequestException{
+
+        if(!isValidName(userName))
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
+
+        try{
+            if(!hasAdminPrivileges(eventId, userName)) //TODO write test for next line
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You don't have write access to this event");
+
+            List<TeamMemberDataForReturn> members = teamDao.getInvitations(teamId);
+
+            for(TeamMemberDataForReturn member : members) {
+                //userName == member.getUserName() -> primary key exception
+                //users can not invite themselves to an event
+                if(!userName.equals(member.getUserName())){
+                    eventDao.putUserInviteToEvent(member.getUserName(), eventId);
+                    userLogic.sendInvitation(userName, member.getUserName());
+                }
+            }
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    /**
      * Invitation reply
      *
      * @param userName user that replies
@@ -421,5 +458,15 @@ public class EventLogic {
     @Autowired
     public void setUserLogic(UserLogic userLogic) {
         this.userLogic = userLogic;
+    }
+
+    @Autowired
+    public void setTeamDao(TeamDao teamDao) {
+        this.teamDao = teamDao;
+    }
+    
+    @Autowired
+    public void setTeamLogic(TeamLogic teamLogic) {
+        this.teamLogic = teamLogic;
     }
 }
