@@ -1,6 +1,7 @@
 package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import group.greenbyte.lunchplanner.security.SessionManager;
 import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,26 @@ public class UserController {
         try {
             userLogic.createUser(user.getUserName(), user.getPassword(), user.getMail());
             response.setStatus(HttpServletResponse.SC_CREATED);
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+
+        return "";
+    }
+
+    /**
+     * TODO write tests for this
+     * Set the fcm (firebase cloud messaging) token for push notifications
+     *
+     * @return error message or nothing
+     */
+    @RequestMapping(value = "/fcm", method = RequestMethod.POST)
+    public String setFcm(@RequestBody FcmToken fcmToken,
+                             HttpServletResponse response) {
+        try {
+            userLogic.addFcmToken(SessionManager.getUserName(), fcmToken.getFcmToken());
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());
             return e.getErrorMessage();
@@ -110,4 +131,16 @@ public class UserController {
         this.userLogic = userLogic;
     }
 
+}
+
+class FcmToken {
+    private String fcmToken;
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 }

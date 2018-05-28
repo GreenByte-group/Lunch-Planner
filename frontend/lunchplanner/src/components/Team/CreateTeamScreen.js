@@ -47,7 +47,7 @@ const styles = {
         width: '100%',
     },
     textFieldName: {
-        width: 'calc(100% - 72px)',
+        width: '100%',
         float: 'right',
         padding: '0px',
         margin: '0px',
@@ -55,10 +55,13 @@ const styles = {
     },
     overButton: {
         height: 'calc(100% - 112px)',
-        overflowY: 'scroll',
+        overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
     },
+    error: {
+        color: 'red',
+    }
 };
 const buttonStyle = {
     float: 'right',

@@ -14,9 +14,9 @@ class LunchPlanner extends React.Component {
 
     render() {
         return (
-            <div>
-                <Appbar currentScreen="Events"/>
-                <EventContainer />
+            <div style={{height: '100%', display: 'flex', flexDirection: 'column'}}>
+                <Appbar currentScreen = "Events" />
+                <EventContainer style={{height: '100%'}} />
                 <BottomNavigationBar />
             </div>
         )
