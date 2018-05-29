@@ -455,7 +455,7 @@ public class EventDaoMySql implements EventDao {
     @Override
     public Event getEventByShareToken(String token) throws DatabaseException {
         try {
-            String SQL = "SELECT * FROM " + EVENT_INVITATION_TABLE + " WHERE " +
+            String SQL = "SELECT * FROM " + EVENT_TABLE + " WHERE " +
                     EVENT_SHARETOKEN + " = ?";
 
             List<EventDatabase> events = jdbcTemplate.query(SQL,

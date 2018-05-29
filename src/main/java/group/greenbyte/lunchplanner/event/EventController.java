@@ -386,8 +386,24 @@ public class EventController {
         }
     }
 
+    @RequestMapping(value = "/{eventId}/token", method = RequestMethod.GET,
+            produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity getTokenForEvent(@PathVariable("eventId") int eventId) {
+        try {
+            String token = eventLogic.getShareToken(eventId);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(token);
+        } catch(HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
     // -------------------- UNAUTHORIZED ------------------------
-    @RequestMapping(value = "/token/{shareToken}")
+    @RequestMapping(value = "/token/{shareToken}", method = RequestMethod.GET)
     public ResponseEntity getEventByToken(@PathVariable("shareToken") String shareToken) {
         try {
             Event event = eventLogic.getEventByToken(shareToken);

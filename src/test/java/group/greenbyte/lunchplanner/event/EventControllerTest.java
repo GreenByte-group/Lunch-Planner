@@ -61,6 +61,7 @@ public class EventControllerTest {
     private final String userName = "asdfsd";
     private String location = "Test";
     private int eventId;
+    private String eventShareToken;
 
     private String eventName;
     private String eventDescription;
@@ -82,6 +83,8 @@ public class EventControllerTest {
         createUserIfNotExists(userLogic, userName);
         eventId = createEvent(eventLogic, userName, eventName, eventDescription, location,
                 new Date(eventTimeStart));
+
+        eventShareToken = eventLogic.getShareToken(eventId);
 
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
@@ -695,4 +698,21 @@ public class EventControllerTest {
                 .andReturn();
     }
 
+    @Test
+    @WithMockUser(username = userName)
+    public void getTokenForEvent() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/event/" + eventId + "/token"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE));
+    }
+
+    @Test
+    public void getEventByToken() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/event/token/" + eventShareToken))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.eventId").value(eventId));
+    }
 }

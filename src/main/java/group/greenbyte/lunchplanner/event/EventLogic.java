@@ -465,7 +465,7 @@ public class EventLogic {
 
             if(event == null)
                 throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event for token: " + token + " not found");
-            
+
             return event;
         } catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
