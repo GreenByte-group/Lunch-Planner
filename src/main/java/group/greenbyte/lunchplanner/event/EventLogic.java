@@ -1,6 +1,6 @@
 package group.greenbyte.lunchplanner.event;
 
-import com.google.api.Http;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import group.greenbyte.lunchplanner.event.database.BringService;
 import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
@@ -277,7 +277,7 @@ public class EventLogic {
      * @throws HttpRequestException when an unexpected error happens
      *
      */
-    public void inviteFriend(String username, String userToInvite, int eventId) throws HttpRequestException{
+    public void inviteFriend(String username, String userToInvite, int eventId) throws HttpRequestException, FirebaseMessagingException {
 
         if(!isValidName(username))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
@@ -293,7 +293,16 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
 
-        userLogic.sendInvitation(username, userToInvite);
+        User user = userLogic.getUser(userToInvite);
+        //set notification information
+        String title = "Event invitation";
+        String description = String.format("%s invited you to an event", username);
+        String linkToClick = "/event/" + eventId;
+
+        //TODO handle exception
+        //TODO check if user wants notifications
+        //send a notification to userToInvite
+        userLogic.sendNotification(user.getFcmToken(),title, description,linkToClick);
     }
 
     /**
@@ -304,7 +313,7 @@ public class EventLogic {
      * @param teamId id of team
      * @throws HttpRequestException
      */
-    public void inviteTeam(String userName, int eventId, int teamId) throws HttpRequestException{
+    public void inviteTeam(String userName, int eventId, int teamId) throws HttpRequestException, FirebaseMessagingException {
 
         if(!isValidName(userName))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
@@ -313,14 +322,26 @@ public class EventLogic {
             if(!hasAdminPrivileges(eventId, userName)) //TODO write test for next line
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You don't have write access to this event");
 
+            // get members to invite
             List<TeamMemberDataForReturn> members = teamDao.getInvitations(teamId);
+
+            // set notification information
+            String title = "Event invitation";
+            String description = String.format("%s invited you to an event", userName);
+            String linkToClick = "/event/" + eventId;
+
+            User user;
 
             for(TeamMemberDataForReturn member : members) {
                 //userName == member.getUserName() -> primary key exception
                 //users can not invite themselves to an event
                 if(!userName.equals(member.getUserName())){
                     eventDao.putUserInviteToEvent(member.getUserName(), eventId);
-                    userLogic.sendInvitation(userName, member.getUserName());
+
+                    //TODO handle exception
+                    //TODO check if user wants notifications
+                    user = userLogic.getUser(member.getUserName());
+                    userLogic.sendNotification(user.getFcmToken(),title, description,linkToClick);
                 }
             }
         }catch(DatabaseException e){

@@ -116,7 +116,7 @@ class CreateTeamScreen extends React.Component {
     };
 
     handleAccept = () => {
-        let invitedUsers = this.state.invitedUsers + this.state.invitedTeamMember;
+        let invitedUsers = this.state.invitedUsers + "," + this.state.invitedTeamMember;
 
         createTeam(this.state.name, this.state.description, invitedUsers, this.state.secret,
             (response) => {
