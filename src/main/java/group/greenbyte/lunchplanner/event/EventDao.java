@@ -139,13 +139,7 @@ public interface EventDao {
      */
     void putService(String creater, int eventId, String food, String description) throws DatabaseException;
 
-    /**
-     *
-     * @param userName
-     * @return
-     * @throws DatabaseException
-     */
-    List<Notifications> getNotifications(String userName) throws DatabaseException;
+
 
     /**
      *
