@@ -1,5 +1,6 @@
 package group.greenbyte.lunchplanner.event;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import group.greenbyte.lunchplanner.event.database.BringService;
 import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.xml.crypto.Data;
 import java.util.*;
 
 @Service
@@ -275,7 +277,7 @@ public class EventLogic {
      * @throws HttpRequestException when an unexpected error happens
      *
      */
-    public void inviteFriend(String username, String userToInvite, int eventId) throws HttpRequestException{
+    public void inviteFriend(String username, String userToInvite, int eventId) throws HttpRequestException, FirebaseMessagingException {
 
         if(!isValidName(username))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
@@ -291,7 +293,16 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
 
-        userLogic.sendInvitation(username, userToInvite);
+        User user = userLogic.getUser(userToInvite);
+        //set notification information
+        String title = "Event invitation";
+        String description = String.format("%s invited you to an event", username);
+        String linkToClick = "/event/" + eventId;
+
+        //TODO handle exception
+        //TODO check if user wants notifications
+        //send a notification to userToInvite
+        userLogic.sendNotification(user.getFcmToken(),title, description,linkToClick);
     }
 
     /**
@@ -302,7 +313,7 @@ public class EventLogic {
      * @param teamId id of team
      * @throws HttpRequestException
      */
-    public void inviteTeam(String userName, int eventId, int teamId) throws HttpRequestException{
+    public void inviteTeam(String userName, int eventId, int teamId) throws HttpRequestException, FirebaseMessagingException {
 
         if(!isValidName(userName))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
@@ -311,14 +322,26 @@ public class EventLogic {
             if(!hasAdminPrivileges(eventId, userName)) //TODO write test for next line
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You don't have write access to this event");
 
+            // get members to invite
             List<TeamMemberDataForReturn> members = teamDao.getInvitations(teamId);
+
+            // set notification information
+            String title = "Event invitation";
+            String description = String.format("%s invited you to an event", userName);
+            String linkToClick = "/event/" + eventId;
+
+            User user;
 
             for(TeamMemberDataForReturn member : members) {
                 //userName == member.getUserName() -> primary key exception
                 //users can not invite themselves to an event
                 if(!userName.equals(member.getUserName())){
                     eventDao.putUserInviteToEvent(member.getUserName(), eventId);
-                    userLogic.sendInvitation(userName, member.getUserName());
+
+                    //TODO handle exception
+                    //TODO check if user wants notifications
+                    user = userLogic.getUser(member.getUserName());
+                    userLogic.sendNotification(user.getFcmToken(),title, description,linkToClick);
                 }
             }
         }catch(DatabaseException e){
@@ -457,6 +480,42 @@ public class EventLogic {
         }
     }
 
+    public Event getEventByToken(String token) throws HttpRequestException {
+        try {
+            Event event = eventDao.getEventByShareToken(token);
+
+            if(event == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event for token: " + token + " not found");
+
+            return event;
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    private String generateShareToken() {
+        return UUID.randomUUID().toString();
+    }
+
+    public String getShareToken(int eventId) throws HttpRequestException {
+        try {
+            Event event = eventDao.getEvent(eventId);
+            if(event == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with id " + eventId + " not found");
+
+            String shareToken = event.getShareToken();
+            if(shareToken != null)
+                return shareToken;
+
+            shareToken = generateShareToken();
+
+            eventDao.addShareToken(eventId, shareToken);
+
+            return shareToken;
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
 
 
     public void putService(int event_id, String food, String description) throws HttpRequestException{

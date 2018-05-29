@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import javax.xml.crypto.Data;
 import java.util.*;
 
 @Repository
@@ -44,6 +45,7 @@ public class EventDaoMySql implements EventDao {
     private static final String EVENT_START_DATE = "start_date";
     private static final String EVENT_IS_PUBLIC = "is_public";
     private static final String EVENT_LOCATION = "location";
+    private static final String EVENT_SHARETOKEN = "share_token";
 
     private static final String EVENT_TEAM_TABLE = "event_team_visible";
     private static final String EVENT_TEAM_TEAM = "team_id";
@@ -439,6 +441,39 @@ public class EventDaoMySql implements EventDao {
         }
     }
 
+    @Override
+    public void addShareToken(int eventId, String shareToken) throws DatabaseException {
+        String SQL = "UPDATE " + EVENT_TABLE + " SET " + EVENT_SHARETOKEN + " = ? WHERE " + EVENT_ID + " = ?";
+
+        try {
+            jdbcTemplate.update(SQL, shareToken, eventId);
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public Event getEventByShareToken(String token) throws DatabaseException {
+        try {
+            String SQL = "SELECT * FROM " + EVENT_TABLE + " WHERE " +
+                    EVENT_SHARETOKEN + " = ?";
+
+            List<EventDatabase> events = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(EventDatabase.class),
+                    token);
+
+            if (events.size() == 0)
+                return null;
+            else {
+                Event event = events.get(0).getEvent();
+                event.setInvitations(new HashSet<>(getInvitations(event.getEventId())));
+
+                return event;
+            }
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
 
 
     private Event putUserInvited(String userName, int eventId, boolean admin) throws DatabaseException {

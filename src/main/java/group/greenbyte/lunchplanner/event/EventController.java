@@ -1,5 +1,6 @@
 package group.greenbyte.lunchplanner.event;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import group.greenbyte.lunchplanner.event.database.BringService;
 import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
@@ -223,7 +224,7 @@ public class EventController {
     @RequestMapping(value = "/{userToInvite}/invite/event/{eventId}", method = RequestMethod.POST,
             produces = MediaType.TEXT_PLAIN_VALUE )
     @ResponseBody
-    public String inviteFriend(@PathVariable("userToInvite") String userToInvite, @PathVariable ("eventId") int eventId, HttpServletResponse response){
+    public String inviteFriend(@PathVariable("userToInvite") String userToInvite, @PathVariable ("eventId") int eventId, HttpServletResponse response) throws FirebaseMessagingException {
         try {
             eventLogic.inviteFriend(SessionManager.getUserName(), userToInvite, eventId);
             response.setStatus(HttpServletResponse.SC_CREATED);
@@ -245,7 +246,7 @@ public class EventController {
     @RequestMapping(value = "/{eventId}/inviteTeam/{teamId}", method = RequestMethod.POST,
             produces = MediaType.TEXT_PLAIN_VALUE )
     @ResponseBody
-    public String inviteTeam(@PathVariable("eventId") int eventId, @PathVariable ("teamId") int teamId, HttpServletResponse response){
+    public String inviteTeam(@PathVariable("eventId") int eventId, @PathVariable ("teamId") int teamId, HttpServletResponse response) throws FirebaseMessagingException {
         try {
             eventLogic.inviteTeam(SessionManager.getUserName(), eventId, teamId);
             response.setStatus(HttpServletResponse.SC_CREATED);
@@ -379,6 +380,38 @@ public class EventController {
                     .status(HttpStatus.OK)
                     .body(allComments);
         } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    @RequestMapping(value = "/{eventId}/token", method = RequestMethod.GET,
+            produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity getTokenForEvent(@PathVariable("eventId") int eventId) {
+        try {
+            String token = eventLogic.getShareToken(eventId);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(token);
+        } catch(HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    // -------------------- UNAUTHORIZED ------------------------
+    @RequestMapping(value = "/token/{shareToken}", method = RequestMethod.GET)
+    public ResponseEntity getEventByToken(@PathVariable("shareToken") String shareToken) {
+        try {
+            Event event = eventLogic.getEventByToken(shareToken);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(event);
+        } catch(HttpRequestException e) {
             return ResponseEntity
                     .status(e.getStatusCode())
                     .body(e.getErrorMessage());
