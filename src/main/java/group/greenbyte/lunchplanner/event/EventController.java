@@ -1,5 +1,6 @@
 package group.greenbyte.lunchplanner.event;
 
+import com.google.api.Http;
 import group.greenbyte.lunchplanner.event.database.BringService;
 import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
@@ -379,6 +380,22 @@ public class EventController {
                     .status(HttpStatus.OK)
                     .body(allComments);
         } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    // -------------------- UNAUTHORIZED ------------------------
+    @RequestMapping(value = "/token/{shareToken}")
+    public ResponseEntity getEventByToken(@PathVariable("shareToken") String shareToken) {
+        try {
+            Event event = eventLogic.getEventByToken(shareToken);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(event);
+        } catch(HttpRequestException e) {
             return ResponseEntity
                     .status(e.getStatusCode())
                     .body(e.getErrorMessage());

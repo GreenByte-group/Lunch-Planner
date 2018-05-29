@@ -32,6 +32,9 @@ public class Event {
     @Column(length = MAX_LOCATION_LENGTH)
     private String location;
 
+    @Column
+    private String shareToken;
+
     @OneToMany(mappedBy = "userInvited")
     private Set<EventInvitation> usersInvited = new HashSet<>();
 
@@ -134,5 +137,13 @@ public class Event {
 
     public void setBringServices(List<BringService> bringServices) {
         this.bringServices = bringServices;
+    }
+
+    public String getShareToken() {
+        return shareToken;
+    }
+
+    public void setShareToken(String shareToken) {
+        this.shareToken = shareToken;
     }
 }
