@@ -91,7 +91,6 @@ class Team extends React.Component {
 
     componentWillReceiveProps(newProps) {
         if(newProps.name && newProps.name !== this.state.name) {
-            console.log('teamname: ' + newProps.name);
             this.setState ({
                 name: newProps.name,
             });

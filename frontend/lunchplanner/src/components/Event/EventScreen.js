@@ -3,7 +3,7 @@ import {withStyles} from "material-ui/styles/index";
 import React from 'react';
 import Slide from 'material-ui/transitions/Slide';
 import {Link} from "react-router-dom";
-import {Today, Schedule} from "@material-ui/icons/es/index";
+import {Today, Schedule, MyLocation, Add} from "@material-ui/icons/";
 import ServiceIcon from "@material-ui/icons/Toc"
 import ListIcon from "@material-ui/icons/Assignment"
 import {HOST} from "../../Config";
@@ -18,6 +18,9 @@ import {getUsername} from "../authentication/Authentication";
 import InvitationButton from "./InvitationButton";
 import {eventListNeedReload} from "./EventList";
 import {getHistory} from "../../utils/HistoryUtils";
+import TextFieldEditing from "../editing/TextFieldEditing";
+import {DatePicker, TimePicker} from "material-ui-old";
+import {changeEventLocation, changeEventTime, changeEventTitle, inviteMemberToEvent} from "./EventFunctions";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -44,7 +47,6 @@ function Transition(props) {
         },
         header: {
             backgroundColor: '#1EA185',
-            height: '100px',
             color: 'white',
             padding: '16px',
             fontFamily: 'Work Sans',
@@ -54,6 +56,7 @@ function Transition(props) {
         fontBig: {
             fontSize: '16px',
             margin: '0px',
+            color: 'white !important',
         },
         fontSmall: {
             fontSize: '13px',
@@ -65,6 +68,7 @@ function Transition(props) {
         },
         headerText: {
             float: 'left',
+            minWidth: '80%',
         },
         headerComment: {
             float: 'right',
@@ -133,6 +137,64 @@ function Transition(props) {
             display: 'flex',
             flexDirection: 'column',
         },
+        locationIcon: {
+            float: 'left',
+            marginRight: '5px',
+            width: '17px',
+        },
+
+        // TIME AND DATE
+        pickerWithIcon: {
+            width: '120px',
+            float: 'left',
+            marginTop: '10px'
+        },
+        datePicker: {
+            width: 'calc(100% - 25px) !important',
+            overflow: 'hidden',
+            float: 'left',
+        },
+        timePicker: {
+            width: 'calc(100% - 25px) !important',
+            overflow: 'hidden',
+            float: 'left',
+        },
+        pickerTextField: {
+            fontSize: '14px !important',
+            height: '35px !important',
+            width: 'auto',
+            lineHeight: '34px',
+            color: 'white !important',
+            marginTop: '-5px',
+        },
+        input: {
+            color: 'white',
+            fontSize: '14px',
+        },
+        iconsPicker: {
+            width: '20px',
+            height: 'auto',
+            float: 'left',
+            marginRight: '2px',
+        },
+
+        // ADD NEW PEOPLE
+        addNewPeopleRoot: {
+            height: '72px',
+            padding: '20px 16px',
+            backgroundColor: '#f3f3f3',
+            "&:hover": {
+                cursor: 'pointer',
+            },
+        },
+        newPeopleIcon: {
+            height: '32px',
+            float: 'left',
+        },
+        newPeopleText: {
+            marginTop: '6px',
+            marginLeft: '57px',
+        },
     };
 
 const buttonStyle = {
@@ -165,7 +227,6 @@ class EventScreen extends React.Component {
         eventId = this.props.match.params.eventId;
 
         if(this.props.location.query) {
-            console.log("Query exists");
             if (this.props.location.query.eventName) {
                 eventName = String(this.props.location.query.eventName);
             }
@@ -189,18 +250,84 @@ class EventScreen extends React.Component {
                 eventId: eventId,
                 name: eventName,
                 description: description,
-                date: date,
+                date: new Date(date),
                 people: people,
                 accepted: accepted,
                 location: location,
             })
-
-            console.log(people);
         } else {
-            console.log("Query does not exists");
             this.loadEvent(eventId);
         }
     }
+
+    parseUrl = () => {
+        const params = new URLSearchParams(this.props.location.search);
+        let invitedUsers = params.get('invitedUsers');
+        let invitedTeams = params.get('invitedTeams');
+        let teamMember = params.get('teamMember');
+
+        let usersToInvite = [];
+
+        if(invitedUsers) {
+            usersToInvite = usersToInvite.concat(invitedUsers.split(','));
+        }
+        if(teamMember) {
+            usersToInvite = usersToInvite.concat(teamMember.split(','));
+        }
+
+        if(usersToInvite.length !== 0) {
+            //remove doubles and already invited people
+            let usersToInviteUnique = usersToInvite.filter((item, pos) => {
+                return usersToInvite.indexOf(item) === pos && !this.state.people.some((person) => person.userName === item);
+            });
+
+            inviteMemberToEvent(this.state.eventId, usersToInviteUnique, (user) => {
+                this.setState({
+                    people: this.state.people.push(user),
+                })
+            })
+        }
+    };
+
+    reloadEventsOnSuccess = (response) => {
+        if(response.status === 204) {
+            eventListNeedReload();
+        }
+    };
+
+    onTitleChanged = (event) => {
+        this.setState({
+            name: event.target.value,
+        });
+
+        //TODO error func
+        changeEventTitle(this.state.eventId, event.target.value, this.reloadEventsOnSuccess);
+    };
+
+    onLocationChanged = (event) => {
+        this.setState({
+            location: event.target.value,
+        });
+
+        changeEventLocation(this.state.eventId, event.target.value, this.reloadEventsOnSuccess);
+    };
+
+    handleDate = (event, date) => {
+        let newDate = moment(date);
+        let dateBefore = moment(this.state.date);
+        newDate.hour(dateBefore.hour());
+        newDate.minute(dateBefore.minute());
+
+        this.setState({ date: newDate.toDate() });
+
+        changeEventTime(this.state.eventId, newDate.toDate(), this.reloadEventsOnSuccess);
+    };
+
+    handleTime = (event, date) => {
+        this.setState({ date: date });
+
+        changeEventTime(this.state.eventId, date, this.reloadEventsOnSuccess);
+    };
 
     loadEvent = (eventId) => {
         if(!eventId)
@@ -216,7 +343,7 @@ class EventScreen extends React.Component {
                     description: response.data.eventDescription,
                     location: response.data.location,
                     people: response.data.invitations,
-                    date: response.data.startDate,
+                    date: new Date(response.data.startDate),
                 })
             });
     };
@@ -257,7 +384,6 @@ class EventScreen extends React.Component {
             .then((response) => {
                 this.loadEvent();
                 eventListNeedReload();
-                console.log('then: ', then);
                 if(then)
                     then();
             })
@@ -272,6 +398,10 @@ class EventScreen extends React.Component {
         let location = this.state.location;
         let people = this.state.people;
         let eventId = this.state.eventId;
+
+        if(people.length !== 0) {
+            this.parseUrl();
+        }
 
         let momentDate = moment(date);
 
@@ -297,6 +427,8 @@ class EventScreen extends React.Component {
         let buttonText = "Join Event";
         let barTitle = name;
 
+        let iAmAdmin = false;
+
         people.forEach((listValue) => {
             if(listValue.userName === username) {
                 if(listValue.answer !== 0) {
@@ -305,6 +437,10 @@ class EventScreen extends React.Component {
                 } else {
                     accepted = true;
                     buttonText = "Leave Event";
+                }
+
+                if(listValue.admin) {
+                    iAmAdmin = true;
                 }
             }
 
@@ -329,8 +465,39 @@ class EventScreen extends React.Component {
                         <div className={classes.header}>
                             <div className={classes.headerText}>
                                 <p className={classes.fontSmall}>Created by {admin}</p>
-                                <p className={classes.fontBig}>{name}</p>
-                                <p className={classes.fontSmall}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
+                                <TextFieldEditing onChange={this.onTitleChanged} value={name} editable={iAmAdmin} className={classes.fontBig} />
+                                {
+                                    (iAmAdmin || name !== location)
+                                        ? <div><MyLocation className={classes.locationIcon} /> <TextFieldEditing onChange={this.onLocationChanged} value={location} editable={iAmAdmin} className={classes.fontBig} /></div>
+                                        : ''
+                                }
+                                {
+                                    (iAmAdmin)
+                                        ? <div>
+                                            <div className={classes.pickerWithIcon}>
+                                                <Today viewBox="-2 -4 26 26" className={classes.iconsPicker} />
+                                                <DatePicker
+                                                    className={classes.datePicker}
+                                                    onChange={this.handleDate}
+                                                    value={this.state.date}
+                                                    textFieldStyle={styles.pickerTextField}
+                                                    inputStyle={styles.input}
+                                                />
+                                            </div>
+                                            <div className={classes.pickerWithIcon}>
+                                                <Schedule viewBox="-2 -4 26 26" className={classes.iconsPicker}/>
+                                                <TimePicker
+                                                    className={classes.timePicker}
+                                                    onChange={this.handleTime}
+                                                    value={this.state.date}
+                                                    format="24hr"
+                                                    textFieldStyle={styles.pickerTextField}
+                                                    inputStyle={styles.input}
+                                                />
+                                            </div>
+                                        </div>
+                                        : <p className={classes.fontSmall}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
+                                }
                             </div>
                             {
                                 (invited)
@@ -345,6 +512,19 @@ class EventScreen extends React.Component {
                         </div>
                         <div className={classes.invitations}>
                             <p className={classes.invitaionsHeader}>Invited People ({people.length})</p>
+                            {
+                                (iAmAdmin)
+                                    ? <Link to={{pathname: "/event/create/invite",  query: {
+                                                    source: "/event/" + this.state.eventId,
+                                                    invitedUsers: people.map((value) => value.userName).join(','),
+                                                }}}>
+                                        <div className={classes.addNewPeopleRoot}>
+                                            <Add className={classes.newPeopleIcon} />
+                                            <p className={classes.newPeopleText}>Add more people...</p>
+                                        </div>
+                                    </Link>
+                                    : ''
+                            }
                             <UserList selectedUsers={selectedUsers} othersInvited={true} users={people} selectable={false} />
                         </div>
 

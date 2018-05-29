@@ -68,7 +68,6 @@ class Event extends React.Component {
 
     componentWillReceiveProps(newProps) {
         if(newProps.username && newProps.username !== this.state.username) {
-            console.log('username: ' + newProps.username);
             this.setState ({
                 username: newProps.username,
             });

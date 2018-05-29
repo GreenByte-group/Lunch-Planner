@@ -20,10 +20,8 @@ function inviteMember(teamId, member) {
     if(string !== "") {
         (string.split(',')).forEach((oneMember) => {
             let url = HOST + "/team/" + oneMember + "/invite/team/" + teamId;
-            console.log(url);
             axios.post(url)
                 .then((response) => {
-                    console.log(response);
                 })
         });
     }

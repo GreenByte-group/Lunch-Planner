@@ -82,8 +82,6 @@ class Comments extends React.Component {
     };
 
     textFieldChanged = (event) => {
-        console.log("Comment eingegeben");
-
         this.setState({
             newComment: event.target.value,
         })

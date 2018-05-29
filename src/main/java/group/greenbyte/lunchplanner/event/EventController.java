@@ -223,7 +223,6 @@ public class EventController {
      */
     @RequestMapping(value = "/{userToInvite}/invite/event/{eventId}", method = RequestMethod.POST,
             produces = MediaType.TEXT_PLAIN_VALUE )
-    @ResponseBody
     public String inviteFriend(@PathVariable("userToInvite") String userToInvite, @PathVariable ("eventId") int eventId, HttpServletResponse response) throws FirebaseMessagingException {
         try {
             eventLogic.inviteFriend(SessionManager.getUserName(), userToInvite, eventId);

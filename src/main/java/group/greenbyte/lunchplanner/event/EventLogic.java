@@ -277,7 +277,7 @@ public class EventLogic {
      * @throws HttpRequestException when an unexpected error happens
      *
      */
-    public void inviteFriend(String username, String userToInvite, int eventId) throws HttpRequestException, FirebaseMessagingException {
+    public void inviteFriend(String username, String userToInvite, int eventId) throws HttpRequestException {
 
         if(!isValidName(username))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
@@ -302,7 +302,11 @@ public class EventLogic {
         //TODO handle exception
         //TODO check if user wants notifications
         //send a notification to userToInvite
-        userLogic.sendNotification(user.getFcmToken(),title, description,linkToClick);
+        try {
+            userLogic.sendNotification(user.getFcmToken(),title, description,linkToClick);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -313,7 +317,7 @@ public class EventLogic {
      * @param teamId id of team
      * @throws HttpRequestException
      */
-    public void inviteTeam(String userName, int eventId, int teamId) throws HttpRequestException, FirebaseMessagingException {
+    public void inviteTeam(String userName, int eventId, int teamId) throws HttpRequestException {
 
         if(!isValidName(userName))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
@@ -346,6 +350,8 @@ public class EventLogic {
             }
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
