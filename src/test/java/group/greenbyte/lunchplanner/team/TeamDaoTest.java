@@ -3,9 +3,12 @@ package group.greenbyte.lunchplanner.team;
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.EventLogic;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import group.greenbyte.lunchplanner.location.LocationLogic;
-import group.greenbyte.lunchplanner.location.database.Coordinate;
+
+
+import group.greenbyte.lunchplanner.team.database.Team;
+
 import group.greenbyte.lunchplanner.user.UserLogic;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,18 +17,21 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
-import static group.greenbyte.lunchplanner.location.Utils.createLocation;
 import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
+import static group.greenbyte.lunchplanner.team.Utils.setTeamPublic;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
-import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = AppConfig.class)
 @ActiveProfiles("application-test.properties")
+@Transactional
 public class TeamDaoTest {
 
     @Autowired
@@ -40,20 +46,24 @@ public class TeamDaoTest {
     @Autowired
     private UserLogic userLogic;
 
-    @Autowired
-    private LocationLogic locationLogic;
-
     private String userName;
-    private int locationId;
     private int eventId;
     private int parent;
+
+    private String teamName;
+    private String description;
+    private int teamId;
 
     @Before
     public void setUp() throws Exception {
         userName = createUserIfNotExists(userLogic, "dummy");
-        locationId = createLocation(locationLogic, userName, "Test location", "test description");
-        eventId = createEvent(eventLogic, userName, locationId);
+        eventId = createEvent(eventLogic, userName, "Test location");
         parent = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
+
+        description = createString(50);
+        teamName = createString(20);
+
+        teamId = createTeamWithoutParent(teamLogic, userName, teamName, description);
     }
 
     @Test
@@ -148,7 +158,40 @@ public class TeamDaoTest {
         teamDao.addUserToTeam(parent, userToInviteName);
     }
 
+    // ------------------ GET TEAM ------------------------
 
+    @Test
+    public void test1GetTeam() throws Exception {
+        Team team = teamDao.getTeam(teamId);
+        Assert.assertEquals(teamName, team.getTeamName());
+        Assert.assertEquals(description, team.getDescription());
+        Assert.assertEquals((int) teamId, (int) team.getTeamId());
 
+    }
+
+    @Test
+    public void test2GetTeam() throws Exception {
+        Assert.assertNull(teamDao.getTeam(teamId + 1000));
+    }
+
+    // ------------------ SEARCH TEAM ------------------------
+
+    @Test
+    public void test1FindPublicTeams() throws Exception {
+        String searchWord = createString(50);
+        List<Team> teams = teamDao.findPublicTeams(searchWord);
+        Assert.assertEquals(0, teams.size());
+
+    }
+
+    @Test
+    public void test2SearchPublicTeams() throws Exception {
+        String newTeamName = createString(50);
+        int publicTeamId = createTeamWithoutParent(teamLogic, userName, newTeamName, description);
+        setTeamPublic(teamDao, publicTeamId);
+        String searchWord = newTeamName;
+        List<Team> events = teamDao.findPublicTeams(searchWord);
+        Assert.assertEquals(1, events.size());
+    }
 
 }

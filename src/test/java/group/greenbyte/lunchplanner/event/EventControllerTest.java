@@ -2,7 +2,7 @@ package group.greenbyte.lunchplanner.event;
 
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.database.Event;
-import group.greenbyte.lunchplanner.location.LocationLogic;
+import group.greenbyte.lunchplanner.team.TeamLogic;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,9 +18,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Date;
@@ -28,7 +30,7 @@ import java.util.Date;
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
-import static group.greenbyte.lunchplanner.location.Utils.createLocation;
+import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -36,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration (classes = AppConfig.class)
 @WebAppConfiguration
 @ActiveProfiles("application-test.properties")
+@Transactional
 public class EventControllerTest {
 
     private MockMvc mockMvc;
@@ -53,11 +56,12 @@ public class EventControllerTest {
     private UserLogic userLogic;
 
     @Autowired
-    private LocationLogic locationLogic;
+    private TeamLogic teamLogic;
 
     private final String userName = "asdfsd";
-    private int locationId;
+    private String location = "Test";
     private int eventId;
+    private String eventShareToken;
 
     private String eventName;
     private String eventDescription;
@@ -77,9 +81,10 @@ public class EventControllerTest {
         eventTimeEnd = 1000 * (eventTimeEnd / 1000);
 
         createUserIfNotExists(userLogic, userName);
-        locationId = createLocation(locationLogic, userName, "Test location", "test description");
-        eventId = createEvent(eventLogic, userName, eventName, eventDescription, locationId,
-                new Date(eventTimeStart), new Date(eventTimeEnd));
+        eventId = createEvent(eventLogic, userName, eventName, eventDescription, location,
+                new Date(eventTimeStart));
+
+        eventShareToken = eventLogic.getShareToken(eventId);
 
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
@@ -91,7 +96,7 @@ public class EventControllerTest {
     public void test1CreateEventNoDescription() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson(createString(50), "", 1, new Date(timeStart), new Date(timeStart + 1000));
+        EventJson event = new EventJson(createString(50), "", location, new Date(timeStart), false);
 
         String json = getJsonFromObject(event);
 
@@ -115,7 +120,7 @@ public class EventControllerTest {
     public void test2CreateEventNormalDescription() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson(createString(50), "Super Event", 1, new Date(timeStart), new Date(timeStart + 1000));
+        EventJson event = new EventJson(createString(50), "Super Event", location, new Date(timeStart), false);
 
         String json = getJsonFromObject(event);
 
@@ -139,7 +144,7 @@ public class EventControllerTest {
     public void test3CreateEventLongDescription() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson(createString(50), createString(1000), 1, new Date(timeStart), new Date(timeStart + 1000));
+        EventJson event = new EventJson(createString(50), createString(1000), location, new Date(timeStart), false);
 
         String json = getJsonFromObject(event);
 
@@ -163,7 +168,7 @@ public class EventControllerTest {
     public void test4CreateEventNoName() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson("", "", 1, new Date(timeStart), new Date(timeStart + 1000));
+        EventJson event = new EventJson("", "", location, new Date(timeStart), false);
 
         String json = getJsonFromObject(event);
 
@@ -177,7 +182,7 @@ public class EventControllerTest {
     public void test5CreateEventNameTooLong() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson(createString(51), "", 1, new Date(timeStart), new Date(timeStart + 1000));
+        EventJson event = new EventJson(createString(51), "", location, new Date(timeStart),false);
 
         String json = getJsonFromObject(event);
 
@@ -191,7 +196,7 @@ public class EventControllerTest {
     public void test6CreateEventDescriptionTooLong() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson("", "", 1, new Date(timeStart), new Date(timeStart + 1000));
+        EventJson event = new EventJson("", "", location, new Date(timeStart),false);
 
         String json = getJsonFromObject(event);
 
@@ -204,9 +209,8 @@ public class EventControllerTest {
     @WithMockUser(username = userName)
     public void test7CreateEventTimeStartTooLow() throws Exception {
         long timeStart = System.currentTimeMillis() - 100000;
-        long timeEnd = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson("", "", 1, new Date(timeStart), new Date(timeEnd));
+        EventJson event = new EventJson("", "", location, new Date(timeStart),false);
 
         String json = getJsonFromObject(event);
 
@@ -217,11 +221,10 @@ public class EventControllerTest {
 
     @Test
     @WithMockUser(username = userName)
-    public void test8CreateEventTimeStartAfterTimeEnd() throws Exception {
-        long timeStart = System.currentTimeMillis() + 100000;
-        long timeEnd = System.currentTimeMillis() + 1000;
+    public void test7CreateEventLocationEmpty() throws Exception {
+        long timeStart = System.currentTimeMillis() - 100000;
 
-        EventJson event = new EventJson("", "", 1, new Date(timeStart), new Date(timeEnd));
+        EventJson event = new EventJson("name", "des", " ", new Date(timeStart),false);
 
         String json = getJsonFromObject(event);
 
@@ -230,13 +233,26 @@ public class EventControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
+    @Test
+    @WithMockUser(username = userName)
+    public void test7CreateEventLocationTooLong() throws Exception {
+        long timeStart = System.currentTimeMillis() - 100000;
+
+        EventJson event = new EventJson("name", "des", createString(256), new Date(timeStart),false);
+
+        String json = getJsonFromObject(event);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/event").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
 
     // ------------------ GET ALL ------------------------
 
     @Test
     @WithMockUser(username = userName)
     public void test1GetAllEvents() throws Exception {
-        createEvent(eventLogic, userName, locationId);
+        createEvent(eventLogic, userName, location);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/event"))
@@ -255,7 +271,6 @@ public class EventControllerTest {
     }
 
     // ------------------ INVITE FRIEND ------------------------
-
 
     @Test
     @WithMockUser(username = userName)
@@ -295,15 +310,15 @@ public class EventControllerTest {
 
     }
 
-    @Test (expected = AssertionError.class)
-    @WithMockUser(username = userName)
-    public void test4InviteFriendEmptyName() throws Exception {
+    @Test
+    @WithMockUser(username = "other User")
+    public void test4InviteFriendNoPermission() throws Exception {
 
         String userName = createUserIfNotExists(userLogic, createString(1));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/event/" + userName + "/invite/event/" + eventId))
-                        .andExpect(MockMvcResultMatchers.status().isNotFound())
+                        .andExpect(MockMvcResultMatchers.status().isForbidden())
                         .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE));
     }
 
@@ -385,34 +400,34 @@ public class EventControllerTest {
     @Test
     @WithMockUser(username = userName)
     public void test1updateEventLocation() throws Exception{
-        int newLocationId = createLocation(locationLogic, userName, "updated event", "updated description");
+        String newLocation = "new";
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/event/" + eventId + "/location").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(newLocationId)))
+                MockMvcRequestBuilders.put("/event/" + eventId + "/location").contentType(MediaType.TEXT_PLAIN_VALUE).content(newLocation))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         Event event = eventDao.getEvent(eventId);
-        if(event.getLocation().getLocationId() != newLocationId)
+        if(!event.getLocation().equals(newLocation))
             Assert.fail("Location was not updated");
     }
 
     @Test
     @WithMockUser(username = userName)
-    public void test2updateEventLocationNoInt() throws Exception{
-        int newLocationId = createLocation(locationLogic, userName, "updated event", "updated description");
+    public void test3updateEventLocationNoValidLocation() throws Exception{
+        String newLocation = " ";
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/event/" + eventId + "/location").contentType(MediaType.TEXT_PLAIN_VALUE).content("string"))
+                MockMvcRequestBuilders.put("/event/" + eventId + "/location").contentType(MediaType.TEXT_PLAIN_VALUE).content(newLocation))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
     @WithMockUser(username = userName)
-    public void test3updateEventLocationNoValidLocationId() throws Exception{
-        int newLocationId = createLocation(locationLogic, userName, "updated event", "updated description");
+    public void test3updateEventLocationTooLongLocation() throws Exception{
+        String newLocation = createString(256);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/event/" + eventId + "/location").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(100000)))
+                MockMvcRequestBuilders.put("/event/" + eventId + "/location").contentType(MediaType.TEXT_PLAIN_VALUE).content(newLocation))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
@@ -447,67 +462,6 @@ public class EventControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
-    @Test
-    @WithMockUser(username = userName)
-    public void test3updateEventStartTimeTooLate() throws Exception{
-        long startTime = System.currentTimeMillis() + 1000000000L;
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.put("/event/" + eventId + "/timestart").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(startTime)))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
-
-    @Test
-    @WithMockUser(username = userName)
-    public void test4updateEventStartTimeNoLongAsParameter() throws Exception{
-        long startTime = System.currentTimeMillis() + 1000000000L;
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.put("/event/" + eventId + "/timestart").contentType(MediaType.TEXT_PLAIN_VALUE).content("string"))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
-
-    // ------------------ UPDATE EVENT TIMEEND -------------------------
-    @Test
-    @WithMockUser(username = userName)
-    public void test1updateEventEndTime() throws Exception{
-        long endTime = System.currentTimeMillis() + 1000000;
-
-        /*
-        In der Datenbank werden keine Millisekunden gespeichert. Zum Vergleichen der Zeit müssen also
-        die Millisekunden ignoriert werden.
-         */
-        endTime = 1000 * (endTime / 1000);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.put("/event/" + eventId + "/timeend").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(endTime)))
-                .andExpect(MockMvcResultMatchers.status().isNoContent());
-
-        Event event = eventDao.getEvent(eventId);
-        if(event.getEndDate().getTime() != endTime)
-            Assert.fail("Time end was not updated");
-    }
-
-    @Test
-    @WithMockUser(username = userName)
-    public void test2updateEventEndTimeTooEarly() throws Exception{
-        long endTime = System.currentTimeMillis() - 10000;
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.put("/event/" + eventId + "/timeend").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(endTime)))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
-
-    @Test
-    @WithMockUser(username = userName)
-    public void test3updateEventEndTimeNoLongAsParameter() throws Exception{
-        long endTime = System.currentTimeMillis() - 10000;
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.put("/event/" + eventId + "/timeend").contentType(MediaType.TEXT_PLAIN_VALUE).content("string"))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
-
     // -------------------- GET EVENT ---------------------
 
     @Test
@@ -519,9 +473,8 @@ public class EventControllerTest {
                 .andExpect(jsonPath("$.eventId").value(eventId))
                 .andExpect(jsonPath("$.eventName").value(eventName))
                 .andExpect(jsonPath("$.eventDescription").value(eventDescription))
-                .andExpect(jsonPath("$.location.locationId").value(locationId))
-                .andExpect(jsonPath("$.startDate").value(eventTimeStart))
-                .andExpect(jsonPath("$.endDate").value(eventTimeEnd));
+                .andExpect(jsonPath("$.location").value(location))
+                .andExpect(jsonPath("$.startDate").value(eventTimeStart));
     }
 
     @Test
@@ -552,9 +505,8 @@ public class EventControllerTest {
                 .andExpect(jsonPath("$[0].eventId").value(eventId))
                 .andExpect(jsonPath("$[0].eventName").value(eventName))
                 .andExpect(jsonPath("$[0].eventDescription").value(eventDescription))
-                .andExpect(jsonPath("$[0].location.locationId").value(locationId))
-                .andExpect(jsonPath("$[0].startDate").value(eventTimeStart))
-                .andExpect(jsonPath("$[0].endDate").value(eventTimeEnd));;
+                .andExpect(jsonPath("$[0].location").value(location))
+                .andExpect(jsonPath("$[0].startDate").value(eventTimeStart));
     }
 
     @Test
@@ -597,6 +549,14 @@ public class EventControllerTest {
 
     @Test
     @WithMockUser(username = userName)
+    public void test2ReplyMaybe() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/reply").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(InvitationAnswer.MAYBE)))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
     public void test3ReplyInvalidAnswer() throws Exception {
         String answer = "keine lust";
         mockMvc.perform(
@@ -611,7 +571,148 @@ public class EventControllerTest {
                 MockMvcRequestBuilders.put("/event/" + eventId + 100 + "/reply").contentType(MediaType.TEXT_PLAIN_VALUE).content(String.valueOf(InvitationAnswer.ACCEPT)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
+    // ------------------ CREATE COMMENT -------------------------
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1CreateComment() throws Exception {
+        String comment = createString(1);
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/comment").contentType(MediaType.TEXT_PLAIN_VALUE).content(comment))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
+
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test2CreateCommentMaxComment() throws Exception {
+        String comment = createString(100);
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/comment").contentType(MediaType.TEXT_PLAIN_VALUE).content(comment))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
+
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1CreateCommentTooLong() throws Exception {
+        String comment = createString(101);
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/comment").contentType(MediaType.TEXT_PLAIN_VALUE).content(comment))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1CreateCommentNoComment() throws Exception {
+        String comment = "";
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/comment").contentType(MediaType.TEXT_PLAIN_VALUE).content(comment))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+    }
+
+    @Test
+    @WithMockUser(username = "otherUser")
+    public void test1CreateCommentNoPrivileges() throws Exception {
+        String comment = "test";
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/comment").contentType(MediaType.TEXT_PLAIN_VALUE).content(comment))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1CreateCommentEventNotExists() throws Exception {
+        String comment = "test";
+        int eventId = 10000;
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/comment").contentType(MediaType.TEXT_PLAIN_VALUE).content(comment))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+    }
 
 
+    // ------------------ GET ALL COMMENTS -------------------------
 
+    @Test
+    @WithMockUser(username = userName)
+    public void test1GetAllComments() throws Exception {
+
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get("/event/" + eventId + "/getComments"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1GetAllCommentsEventNotExists() throws Exception {
+        eventId = 10000;
+
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get("/event/" + eventId + "/getComments"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+    }
+
+    @Test
+    @WithMockUser(username = "otherUser")
+    public void test1GetAllCommentsNoPermission() throws Exception {
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get("/event/" + eventId + "/getComments"))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+
+    }
+
+    // ------------------ INVITE TEAM ------------------------
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1InviteTeam() throws Exception {
+       String teamName = createString(20);
+       String description = createString(50);
+       String teamCreator = createUserIfNotExists(userLogic, createString(50));
+       int teamId = createTeamWithoutParent(teamLogic, teamCreator, teamName, description);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/event/" + eventId + "/inviteTeam/" + teamId))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test2InviteTeamMaxUser() throws Exception {
+        String teamName = createString(20);
+        String description = createString(50);
+        String teamCreator = createUserIfNotExists(userLogic, createString(50));
+
+        int teamId = createTeamWithoutParent(teamLogic, teamCreator, teamName, description);
+
+        MvcResult result = mockMvc.perform(
+                MockMvcRequestBuilders.post("/event/" + eventId + "/inviteTeam/" + teamId))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
+                .andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void getTokenForEvent() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/event/" + eventId + "/token"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE));
+    }
+
+    @Test
+    public void getEventByToken() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/event/token/" + eventShareToken))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.eventId").value(eventId));
+    }
 }

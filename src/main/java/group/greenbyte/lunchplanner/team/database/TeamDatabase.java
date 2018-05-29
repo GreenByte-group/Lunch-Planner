@@ -15,7 +15,7 @@ public class TeamDatabase {
 
     private String description;
 
-    private int parentTeam = -1;
+    private Integer parentTeam ;
 
     /**
      * @return team with all data from the entity and no relations
@@ -62,11 +62,11 @@ public class TeamDatabase {
         this.description = description;
     }
 
-    public int getParentTeam() {
+    public Integer getParentTeam() {
         return parentTeam;
     }
 
-    public void setParentTeam(int parentTeam) {
+    public void setParentTeam(Integer parentTeam) {
         this.parentTeam = parentTeam;
     }
 

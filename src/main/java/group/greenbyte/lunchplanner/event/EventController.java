@@ -1,5 +1,8 @@
 package group.greenbyte.lunchplanner.event;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
+import group.greenbyte.lunchplanner.event.database.BringService;
+import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.SessionManager;
@@ -57,7 +60,7 @@ public class EventController {
 
         try {
             int eventId = eventLogic.createEvent(SessionManager.getUserName(), event.getName(), event.getDescription(),
-                    event.getLocationId(), event.getTimeStart(), event.getTimeEnd());
+                    event.getLocation(), event.getTimeStart(), event.isVisible());
 
             response.setStatus(HttpServletResponse.SC_CREATED);
             return String.valueOf(eventId);
@@ -102,16 +105,13 @@ public class EventController {
     @ResponseBody
     public String updateEventLocation(@RequestBody String location, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
         try {
-            eventLogic.updateEventLocation(SessionManager.getUserName(),eventId,Integer.valueOf(location));
+            eventLogic.updateEventLocation(SessionManager.getUserName(),eventId,location);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
             return "";
         }catch(HttpRequestException e){
             response.setStatus(e.getStatusCode());
             return e.getErrorMessage();
-        }catch(NumberFormatException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return "not a number";
         }
     }
 
@@ -154,33 +154,6 @@ public class EventController {
         }catch(HttpRequestException e){
             response.setStatus(e.getStatusCode());
             return e.getErrorMessage();
-        }catch(NumberFormatException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return "not a number";
-        }
-    }
-
-    /**
-     *
-     * @param newTimeEnd new Date to update in Event
-     * @param eventId id of the updated event
-     * @param response response channel
-     */
-    @RequestMapping(value = "{eventId}/timeend", method = RequestMethod.PUT,
-            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-    @ResponseBody
-    public String updateEventTimEnd(@RequestBody String newTimeEnd, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
-        try {
-            eventLogic.updateEventTimeEnd(SessionManager.getUserName(),eventId, new Date(Long.valueOf(newTimeEnd)));
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-
-            return "";
-        }catch(HttpRequestException e){
-            response.setStatus(e.getStatusCode());
-            return e.getErrorMessage();
-        }catch(NumberFormatException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return "not a number";
         }
     }
 
@@ -196,10 +169,6 @@ public class EventController {
 
         try {
             List<Event> allSearchingEvents = eventLogic.getAllEvents(SessionManager.getUserName());
-
-            for(Event event : allSearchingEvents) {
-                event.getLocation().setEvents(null);
-            }
 
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -244,10 +213,17 @@ public class EventController {
          }
     }
 
+    /**
+     * Invite a friend to an event
+     *
+     * @param userToInvite id of the user who is invited
+     * @param eventId id of event
+     * @param response response channel
+     */
     @RequestMapping(value = "/{userToInvite}/invite/event/{eventId}", method = RequestMethod.POST,
             produces = MediaType.TEXT_PLAIN_VALUE )
     @ResponseBody
-    public String inviteFriend(@PathVariable("userToInvite") String userToInvite, @PathVariable ("eventId") int eventId, HttpServletResponse response){
+    public String inviteFriend(@PathVariable("userToInvite") String userToInvite, @PathVariable ("eventId") int eventId, HttpServletResponse response) throws FirebaseMessagingException {
         try {
             eventLogic.inviteFriend(SessionManager.getUserName(), userToInvite, eventId);
             response.setStatus(HttpServletResponse.SC_CREATED);
@@ -260,6 +236,29 @@ public class EventController {
     }
 
     /**
+     * Invite a team to an event
+     *
+     * @param eventId id of event
+     * @param teamId id of the team that is invited
+     * @param response response channel
+     */
+    @RequestMapping(value = "/{eventId}/inviteTeam/{teamId}", method = RequestMethod.POST,
+            produces = MediaType.TEXT_PLAIN_VALUE )
+    @ResponseBody
+    public String inviteTeam(@PathVariable("eventId") int eventId, @PathVariable ("teamId") int teamId, HttpServletResponse response) throws FirebaseMessagingException {
+        try {
+            eventLogic.inviteTeam(SessionManager.getUserName(), eventId, teamId);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+
+        return "";
+    }
+
+    /**
+     * ToDo
      *
      * @param eventId id of the event
      * @param answer answer of the user
@@ -277,9 +276,156 @@ public class EventController {
             return e.getErrorMessage();
         }
         return "";
+    }
+
+    /**
+     * create a comment for an event
+     *
+     * @param eventId event which bring service is dependent on
+     * @param comment String of message
+     * @param response response channel
+     * @return empty String
+     */
+    @RequestMapping(value = "/{eventId}/comment", method = RequestMethod.PUT,
+            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String createComment(@PathVariable("eventId") int eventId, @RequestBody String comment, HttpServletResponse response){
+        try{
+            eventLogic.newComment(SessionManager.getUserName(), comment, eventId);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+
+            return "";
+        }catch(HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
 
     }
 
+    /**
+     * Create bring service for an event
+     *
+     * @param eventId event which bring service is dependent on
+     * @param bringService JSON includes food, description
+     * @param response response channel
+     * @return empty String
+     */
+    @RequestMapping(value = "/{eventId}/service", method = RequestMethod.PUT,
+                    consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String putService(@PathVariable("eventId") int eventId, @RequestBody BringServiceJson bringService, HttpServletResponse response){
+        try{
+            eventLogic.putService(eventId, bringService.getFood(), bringService.getDescription());
+            response.setStatus(HttpServletResponse.SC_CREATED);
+            return "";
+        }catch(HttpRequestException e){
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+    }
+
+    /**
+     * Get servicelist from event
+     *
+     * @param eventId of event with servicelist
+     * @return servicelist of event with id
+     */
+    @RequestMapping(value = "/{eventId}/service", method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getService(@PathVariable("eventId") int eventId) {
+
+        try{
+            List<BringService> serviceList = eventLogic.getService(eventId);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(serviceList);
+        }catch(HttpRequestException e){
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    /**
+     * Accept to bring a item of the bring service
+     *
+     * @param eventId of event with servicelist
+     * @param serviceId of serviceList in bringServiceDatabase
+     * @param response response channel
+     * @return empty String
+     */
+    @RequestMapping(value = "/{eventId}/service/{serviceId}", method = RequestMethod.POST)
+    @ResponseBody
+    public String acceptBringservice(@PathVariable("eventId") int eventId,
+                                     @PathVariable("serviceId") int serviceId, HttpServletResponse response){
+        try{
+            eventLogic.updateBringservice(eventId,SessionManager.getUserName(),serviceId);
+            response.setStatus(HttpServletResponse.SC_OK);
+            return "";
+        }catch(HttpRequestException e){
+            response.setStatus(e.getStatusCode());
+            return e.getMessage();
+        }
+    }
+
+
+
+    /**
+     * Get all comments of an event
+     *
+     * @return a list of all comments
+     */
+    @RequestMapping(value = "/{eventId}/getComments", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getAllComments(@PathVariable("eventId") int eventId) {
+
+        try {
+            List<Comment> allComments = eventLogic.getAllComments(SessionManager.getUserName(), eventId);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(allComments);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    @RequestMapping(value = "/{eventId}/token", method = RequestMethod.GET,
+            produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity getTokenForEvent(@PathVariable("eventId") int eventId) {
+        try {
+            String token = eventLogic.getShareToken(eventId);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(token);
+        } catch(HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    // -------------------- UNAUTHORIZED ------------------------
+    @RequestMapping(value = "/token/{shareToken}", method = RequestMethod.GET)
+    public ResponseEntity getEventByToken(@PathVariable("shareToken") String shareToken) {
+        try {
+            Event event = eventLogic.getEventByToken(shareToken);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(event);
+        } catch(HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
 
     @Autowired
     public void setEventLogic(EventLogic eventLogic) {

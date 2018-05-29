@@ -19,17 +19,20 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration (classes = AppConfig.class)
 @WebAppConfiguration
 @ActiveProfiles("application-test.properties")
+@Transactional
 public class TeamControllerTest {
 
     private MockMvc mockMvc;
@@ -48,15 +51,20 @@ public class TeamControllerTest {
 
     private final String userName = "banane";
     private int locationId;
-    private int eventId;
+
+
     private int teamId;
+    private String description;
+    private String teamName;
 
     @Before
     public void setUp() throws Exception {
+        teamName = createString(20);
+        description = createString(50);
 
         createUserIfNotExists(userLogic, userName);
 
-        teamId = createTeamWithoutParent(teamLogic, userName, createString(50), createString(50));
+        teamId = createTeamWithoutParent(teamLogic, userName, teamName, description);
 
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
         //mockMvc = MockMvcBuilders.standaloneSetup(eventController).build();
@@ -223,4 +231,90 @@ public class TeamControllerTest {
 
     }
 
+    // ------------------ GET TEAM -------------------------
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1GetTeamValid() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/team/" + teamId))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.teamId").value(teamId))
+                .andExpect(jsonPath("$.teamName").value(teamName))
+                .andExpect(jsonPath("$.description").value(description));
+
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test2GetTeamInValid() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/team/" + teamId + 100))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "otherUser")
+    public void test3GetTeamInvalidUser() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/team/" + teamId))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    // ------------------ GET ALL TEAMS -------------------------
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1GetAllTeams() throws Exception {
+        createTeamWithoutParent(teamLogic, userName, teamName, description);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/team"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test2SearchTeamsForUserSearchwordToBig() throws Exception {
+        String searchword = createString(51);
+        String json = getJsonFromObject(searchword);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/team").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    // ------------------ SEARCH TEAM -------------------------
+    @Test
+    @WithMockUser(username = userName)
+    public void test1SearchTeams() throws Exception {
+        String searchWord = teamName;
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/team/search/" + searchWord))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$[0].teamId").value(teamId))
+                .andExpect(jsonPath("$[0].teamName").value(teamName))
+                .andExpect(jsonPath("$[0].description").value(description));
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1SearchTeamsTooLongSearchWord() throws Exception {
+        String searchWord = createString(51);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/team/search/" + searchWord))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1SearchTeamsNoSearchWord() throws Exception {
+        String searchWord = "";
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/team/search/" + searchWord))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
 }

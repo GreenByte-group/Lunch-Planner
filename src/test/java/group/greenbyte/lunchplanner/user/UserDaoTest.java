@@ -9,6 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 
@@ -16,6 +17,7 @@ import static group.greenbyte.lunchplanner.Utils.createString;
 @WebAppConfiguration
 @ContextConfiguration(classes = AppConfig.class)
 @ActiveProfiles("application-test.properties")
+@Transactional
 public class UserDaoTest {
 
     @Autowired

@@ -1,6 +1,7 @@
 package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
+import group.greenbyte.lunchplanner.user.database.Notifications;
 import group.greenbyte.lunchplanner.user.database.User;
 
 import java.util.List;
@@ -43,5 +44,31 @@ public interface UserDao {
      */
     List<User> searchUserByName(String searchword) throws DatabaseException;
 
+    /**
+     * //TODO write tests for this
+     * Sets the fcm token for a user
+     * @param userName
+     * @param fcmToken
+     */
+    void setFcmForUser(String userName, String fcmToken) throws DatabaseException;
 
+    /**
+     *
+     * @param userName
+     * @return
+     * @throws DatabaseException
+     */
+    List<Notifications> getNotifications(String userName) throws DatabaseException;
+
+    /**
+     *
+     * @param receiver
+     * @param title
+     * @param description
+     * @param builder
+     * @param linkToClick
+     * @param picturePath
+     */
+    void  saveNotificationIntoDatabase(String receiver, String title, String description
+                                        ,String builder, String linkToClick, String picturePath) throws DatabaseException;
 }

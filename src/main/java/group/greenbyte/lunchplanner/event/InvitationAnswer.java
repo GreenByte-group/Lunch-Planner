@@ -17,10 +17,10 @@ public enum InvitationAnswer {
         switch (answer) {
             case "accept":
                 return InvitationAnswer.ACCEPT;
-            case "reject":
-                return InvitationAnswer.MAYBE;
             case "maybe":
-                return InvitationAnswer.REJECT; //TODO write test for maybe
+                return InvitationAnswer.MAYBE;
+            case "reject":
+                return InvitationAnswer.REJECT;
         }
 
         return null;
@@ -34,7 +34,7 @@ public enum InvitationAnswer {
             case 1:
                 return "reject";
             case 2:
-                return "maybe"; //TODO write test for maybe
+                return "maybe";
         }
 
         return "unknown"; //TODO can this be tested

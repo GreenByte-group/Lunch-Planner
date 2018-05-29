@@ -1,27 +1,40 @@
-// App.js
 import React from "react";
-import MyLogin from "./components/authentication/Login"
-import MyRegistration from "./components/authentication/Registration"
-import FirstScreen from "./components/authentication/Authentication"
+import FirstScreen, {setAuthenticationHeader} from "./components/authentication/Authentication"
 import LunchPlanner from "./components/LunchPlanner"
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import { Router, Route, Redirect } from "react-router-dom";
 import {isAuthenticated} from "./components/authentication/LoginFunctions"
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+import { MuiThemeProvider } from 'material-ui/styles';
+import { MuiThemeProvider as OldMuiThemeProvider } from 'material-ui-old/styles'
+import { createMuiTheme } from 'material-ui/styles'
+import CreateEventScreen from "./components/CreateEventScreen";
+import SelectUserScreen from "./components/User/SelectUserScreen";
+import EventScreen from "./components/Event/EventScreen";
+import ServiceListScreen from "./components/Event/ServiceListScreen";
+import {getMuiTheme} from "material-ui-old/styles/index";
+import SocialScreen from "./components/SocialScreen";
+import LocationScreen from "./components/LocationScreen";
+import Comments from "./components/Event/Comments";
+import { createBrowserHistory as createHistory } from "history";
+import {setHistory, getHistory} from "./utils/HistoryUtils";
+import CreateTeamScreen from "./components/Team/CreateTeamScreen";
+import {init} from './components/notification/Firebase'
+import NotificationsScreen from "./components/notification/NotificationsScreen";
+import TeamScreen from "./components/Team/TeamScreen";
 
-/*
-TODO:
-- Logik Registration und MyRegistration verbinden
-- Logik Login und MyLogin verbinden
-- Login/Register Button unten fixieren, Schrift weiß
-- Events Button rechte Seite
-- Events Login/Register nicht anzeigen
- */
-
+const oldTheme = getMuiTheme({
+    palette: {
+        primary1Color: '#75a045',
+        accent1Color: '#f29b26',
+    },
+});
 
 const theme = createMuiTheme({
     palette: {
         primary: {main: "#75a045"},
         secondary: {main: '#f29b26'},
+    },
+    typography: {
+        fontFamily: "Work Sans",
     },
 
 });
@@ -40,16 +53,47 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 
 class App extends React.Component {
 
+    constructor(props) {
+        super();
+
+        setHistory(createHistory(props));
+
+        init(() => {
+            console.log('notificaton: success');
+        }, (error) => {
+            console.log('notificaton: error: ', error);
+        }, (message) => {
+            console.log('notificaton: message: ', message);
+        });
+    }
+
     render() {
         return (
-            <MuiThemeProvider theme={theme}>
-                <Router>
-                    <div>
-                        <PrivateRoute exact path="/" component={LunchPlanner} />
-                        <Route path="/login" component={FirstScreen} />
-                    </div>
-                </Router>
-            </MuiThemeProvider>
+            <OldMuiThemeProvider theme={oldTheme}>
+                <MuiThemeProvider theme={theme}>
+                    <Router history={getHistory()}>
+                        <div style={{height: '100%'}}>
+                            <Route exact path="/login" component={FirstScreen} />
+                            <Route exact path="/"
+                                          render={ () => <Redirect to="/event" />}
+                            />
+
+                            <PrivateRoute path="/event" component={LunchPlanner} />
+                            <PrivateRoute path="/social" component={SocialScreen} />
+                            <PrivateRoute path="/team/create" component={CreateTeamScreen}/>
+                            <PrivateRoute path="/team/create/invite" component={SelectUserScreen} />
+                            <PrivateRoute path="/team/:teamId(\d+)" component={TeamScreen} />
+                            <PrivateRoute path="/location" component={LocationScreen} />
+                            <PrivateRoute path="/notifications" component={NotificationsScreen} />
+                            <PrivateRoute path="/event/create" component={CreateEventScreen} />
+                            <PrivateRoute path="/event/create/invite" component={SelectUserScreen} />
+                            <PrivateRoute path="/event/:eventId(\d+)" component={EventScreen} />
+                            <PrivateRoute path="/event/:eventId(\d+)/comments" component={Comments} />
+                            <PrivateRoute path="/event/:eventId(\d+)/service" component={ServiceListScreen} />
+                        </div>
+                    </Router>
+                </MuiThemeProvider>
+            </OldMuiThemeProvider>
         );
     }
 }

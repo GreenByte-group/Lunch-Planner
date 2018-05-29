@@ -3,7 +3,7 @@ package group.greenbyte.lunchplanner.event;
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
-import group.greenbyte.lunchplanner.location.LocationLogic;
+import group.greenbyte.lunchplanner.team.TeamLogic;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,22 +16,22 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
-import static group.greenbyte.lunchplanner.location.Utils.createLocation;
+import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
 @WebAppConfiguration
 @ActiveProfiles("application-test.properties")
+@Transactional
 public class EventLogicTest {
 
     private MockMvc mockMvc;
@@ -49,10 +49,10 @@ public class EventLogicTest {
     private UserLogic userLogic;
 
     @Autowired
-    private LocationLogic locationLogic;
+    private TeamLogic teamLogic;
 
     private String userName;
-    private int locationId;
+    private String location = "Test";
     private int eventId;
 
     private String eventName;
@@ -72,9 +72,8 @@ public class EventLogicTest {
         eventTimeEnd = 1000 * (eventTimeEnd / 1000);
 
         userName = createUserIfNotExists(userLogic, "dummy");
-        locationId = createLocation(locationLogic, userName, "Test location", "test description");
-        eventId = createEvent(eventLogic, userName, eventName, eventDescription, locationId,
-                new Date(eventTimeStart), new Date(eventTimeEnd));
+        eventId = createEvent(eventLogic, userName, eventName, eventDescription, location,
+                new Date(eventTimeStart));
 
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
@@ -85,12 +84,10 @@ public class EventLogicTest {
     public void test1createEventNoDescription() throws Exception{
         String eventName = createString(50);
         String description = "";
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
-        long timeEnd = timeStart + 10000;
 
-        int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date(timeEnd));
+        int result = eventLogic.createEvent(userName, eventName, description, location,
+                new Date(timeStart));
 
     }
 
@@ -98,12 +95,10 @@ public class EventLogicTest {
     public void test2createEventLongDescription() throws Exception {
         String eventName = createString(50);
         String description = createString(1000);
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
-        long timeEnd = timeStart + 10000;
 
-        int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date(timeEnd));
+        int result = eventLogic.createEvent(userName, eventName, description, location,
+                new Date(timeStart));
     }
 
     @Test(expected = HttpRequestException.class)
@@ -111,12 +106,10 @@ public class EventLogicTest {
         String userName = "";
         String eventName = createString(50);
         String description = "";
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
-        long timeEnd = timeStart + 10000;
 
-        int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date(timeEnd));
+        int result = eventLogic.createEvent(userName, eventName, description, location,
+                new Date(timeStart));
     }
 
     @Test(expected = HttpRequestException.class)
@@ -124,72 +117,72 @@ public class EventLogicTest {
         String userName = createString(51);
         String eventName = createString(50);
         String description = "";
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
-        long timeEnd = timeStart + 10000;
 
-        int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date(timeEnd));
+        int result = eventLogic.createEvent(userName, eventName, description, location,
+                new Date(timeStart));
     }
 
     @Test(expected = HttpRequestException.class)
     public void test5createEventEmptyEventName() throws Exception {
         String eventName = "";
         String description = "";
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
-        long timeEnd = timeStart + 10000;
 
-        int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date(timeEnd));
+        int result = eventLogic.createEvent(userName, eventName, description, location,
+                new Date(timeStart));
     }
 
     @Test(expected = HttpRequestException.class)
     public void test6createEventTooLongEventName() throws Exception {
         String eventName = createString(51);
         String description = "";
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
-        long timeEnd = timeStart + 10000;
 
-        int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date(timeEnd));
+        int result = eventLogic.createEvent(userName, eventName, description, location,
+                new Date(timeStart));
     }
 
     @Test(expected = HttpRequestException.class)
     public void test7createEventTooLongDescription() throws Exception {
         String eventName = createString(50);
         String description = createString(1001);
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
-        long timeEnd = timeStart + 10000;
 
-        int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date(timeEnd));
+        int result = eventLogic.createEvent(userName, eventName, description, location,
+                new Date(timeStart));
     }
 
     @Test(expected = HttpRequestException.class)
     public void test8createEventTimeStartTooEarly() throws Exception {
         String eventName = createString(50);
         String description = "";
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() - 10000;
-        long timeEnd = timeStart + 10000;
 
-        int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date(timeEnd));
+        int result = eventLogic.createEvent(userName, eventName, description, location,
+                new Date(timeStart));
     }
 
     @Test(expected = HttpRequestException.class)
-    public void test4createEventTimeStartAfterTimeEnd() throws Exception {
+    public void test8createEventLocationEmpty() throws Exception {
         String eventName = createString(50);
         String description = "";
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
-        long timeEnd = timeStart - 10000;
+        String location = " ";
 
-        int result = eventLogic.createEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date(timeEnd));
+        int result = eventLogic.createEvent(userName, eventName, description, location,
+                new Date(timeStart));
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test8createEventLocationTooLong() throws Exception {
+        String eventName = createString(50);
+        String description = "";
+        long timeStart = System.currentTimeMillis() + 10000;
+        String location = createString(256);
+
+        int result = eventLogic.createEvent(userName, eventName, description, location,
+                new Date(timeStart));
     }
 
     // ------------------ GET ONE EVENT -------------------
@@ -199,9 +192,7 @@ public class EventLogicTest {
         Assert.assertEquals(eventName, event.getEventName());
         Assert.assertEquals(eventDescription, event.getEventDescription());
         Assert.assertEquals((int) eventId, (int) event.getEventId());
-        Assert.assertEquals(locationId, event.getLocation().getLocationId());
         Assert.assertEquals(new Date(eventTimeStart), event.getStartDate());
-        Assert.assertEquals(new Date(eventTimeEnd), event.getEndDate());
     }
 
 
@@ -317,34 +308,40 @@ public class EventLogicTest {
     // Event location
     @Test
     public void updateEventLocation() throws Exception {
-        int newLocationId = createLocation(locationLogic, userName, "updated event", "updated description");
+        String newLocation = "new Location";
 
-        eventLogic.updateEventLocation(userName, eventId, newLocationId);
+        eventLogic.updateEventLocation(userName, eventId, newLocation);
 
         Event event = eventDao.getEvent(eventId);
-        if(event.getLocation().getLocationId() != newLocationId)
+        if(!event.getLocation().equals(newLocation))
             Assert.fail("Location was not updated");
     }
 
     @Test(expected = HttpRequestException.class)
     public void updateEventLocationNoPermission() throws Exception {
         String userName = createUserIfNotExists(userLogic, createString(20));
-        int newLocationId = createLocation(locationLogic, userName, "updated event", "updated description");
+        String newLocation = "new Location";
 
-        eventLogic.updateEventLocation(userName, eventId, newLocationId);
+        eventLogic.updateEventLocation(userName, eventId, newLocation);
     }
 
     @Test(expected = HttpRequestException.class)
     public void updateEventLocationOnNotExistingEvent() throws Exception {
-        int newLocationId = createLocation(locationLogic, userName, "updated event", "updated description");
+        String newLocation = "new Location";
 
-        eventLogic.updateEventLocation(userName, 10000, newLocationId);
+        eventLogic.updateEventLocation(userName, 10000, newLocation);
     }
 
     @Test(expected = HttpRequestException.class)
     public void updateEventLocationWithNonExistingLocation() throws Exception {
-        int newLocationId = 10000;
-        eventLogic.updateEventLocation(userName, eventId, newLocationId);
+        String newLocation = " ";
+        eventLogic.updateEventLocation(userName, eventId, newLocation);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void updateEventLocationWithTooLongLocation() throws Exception {
+        String newLocation = createString(256);
+        eventLogic.updateEventLocation(userName, eventId, newLocation);
     }
 
     // Event Start time
@@ -381,57 +378,10 @@ public class EventLogicTest {
     }
 
     @Test(expected = HttpRequestException.class)
-    public void updateEventStartTimeTooLate() throws Exception {
-        long startTime = System.currentTimeMillis() + 10000000;
-
-        eventLogic.updateEventTimeStart(userName, eventId, new Date(startTime));
-    }
-
-    @Test(expected = HttpRequestException.class)
     public void updateEventStartTimeOnNonExistingEvent() throws Exception {
         long startTime = System.currentTimeMillis() + 1000;
 
         eventLogic.updateEventTimeStart(userName, 100000, new Date(startTime));
-    }
-
-    // Event end time
-    @Test
-    public void updateEventEndTime() throws Exception {
-        long endTime = System.currentTimeMillis() + 10000;
-
-        /*
-        In der Datenbank werden keine Millisekunden gespeichert. Zum Vergleichen der Zeit müssen also
-        die Millisekunden ignoriert werden.
-         */
-        endTime = 1000 * (endTime / 1000);
-
-        eventLogic.updateEventTimeEnd(userName, eventId, new Date(endTime));
-
-        Event event = eventDao.getEvent(eventId);
-        if(event.getEndDate().getTime() != endTime)
-            Assert.fail("Time end was not updated");
-    }
-
-    @Test(expected = HttpRequestException.class)
-    public void updateEventEndTimeNoPermission() throws Exception {
-        String userName = createUserIfNotExists(userLogic, createString(20));
-        long endTime = System.currentTimeMillis() + 10000;
-
-        eventLogic.updateEventTimeEnd(userName, eventId, new Date(endTime));
-    }
-
-    @Test(expected = HttpRequestException.class)
-    public void updateEventEndTimeTooEarly() throws Exception {
-        long endTime = System.currentTimeMillis() - 1000;
-
-        eventLogic.updateEventTimeEnd(userName, eventId, new Date(endTime));
-    }
-
-    @Test(expected = HttpRequestException.class)
-    public void updateEventEndTimeOnNonExistingEvent() throws Exception {
-        long endTime = System.currentTimeMillis() + 1000000;
-
-        eventLogic.updateEventTimeEnd(userName, 100000, new Date(endTime));
     }
 
     // ------------------------- INVITE FRIEND ------------------------------
@@ -524,7 +474,7 @@ public class EventLogicTest {
     @Test
     public void test1ReplyAccept() throws Exception {
         String userName = createUserIfNotExists(userLogic, createString(1));
-        int eventId = createEvent(eventLogic, userName, locationId);
+        int eventId = createEvent(eventLogic, userName, location);
 
         eventLogic.reply(userName, eventId, InvitationAnswer.ACCEPT);
     }
@@ -532,7 +482,7 @@ public class EventLogicTest {
     @Test
     public void test2ReplyRejectMaxUsername() throws Exception {
         String userName = createUserIfNotExists(userLogic, createString(50));
-        int eventId = createEvent(eventLogic, userName, locationId);
+        int eventId = createEvent(eventLogic, userName, location);
 
         eventLogic.reply(userName, eventId, InvitationAnswer.REJECT);
     }
@@ -555,7 +505,7 @@ public class EventLogicTest {
     @Test (expected = HttpRequestException.class)
     public void test5ReplyAnswerNull() throws Exception {
         String userName = createUserIfNotExists(userLogic, createString(50));
-        int eventId = createEvent(eventLogic, userName, locationId);
+        int eventId = createEvent(eventLogic, userName, location);
 
         eventLogic.reply(userName, eventId, null);
     }
@@ -563,7 +513,7 @@ public class EventLogicTest {
     @Test (expected = HttpRequestException.class)
     public void test5ReplyEventNotExists() throws Exception {
         String userName = createUserIfNotExists(userLogic, createString(50));
-        int eventId = createEvent(eventLogic, userName, locationId);
+        int eventId = createEvent(eventLogic, userName, location);
 
         eventLogic.reply(userName, eventId + 100, null);
     }
@@ -627,6 +577,128 @@ public class EventLogicTest {
 
         eventLogic.searchEventsForUser(username,searchword);
 
+    }
+
+    // ------------------ NEW COMMENT -------------------
+
+    @Test
+    public void test1NewComment() throws Exception {
+        String username = createUserIfNotExists(userLogic, createString(1));
+        String comment = createString(1);
+
+        int eventId = createEvent(eventLogic, username, eventName, eventDescription, location,
+                new Date(eventTimeStart));
+
+
+        eventLogic.newComment(username, comment, eventId);
+    }
+
+    @Test
+    public void test2NewCommentMaxLength() throws Exception {
+        String username = createUserIfNotExists(userLogic, createString(50));
+        String comment = createString(100);
+
+        int eventId = createEvent(eventLogic, username, eventName, eventDescription, location,
+                new Date(eventTimeStart));
+
+
+        eventLogic.newComment(username, comment, eventId);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test3NewCommentNoUserName() throws Exception {
+        String username = "";
+        String comment = createString(100);
+
+        eventLogic.newComment(username, comment, eventId);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test4NewCommentUserNameTooLong() throws Exception {
+        String username = createString(51);
+        String comment = createString(100);
+
+        eventLogic.newComment(username, comment, eventId);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test5NewCommentCommentTooLong() throws Exception {
+        String username = createString(50);
+        String comment = createString(101);
+
+        eventLogic.newComment(username, comment, eventId);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test1NewCommentNoComment() throws Exception {
+        String username = createString(50);
+        String comment = "";
+
+        eventLogic.newComment(username, comment, eventId);
+    }
+
+    // ------------------ GET ALL COMMENTS -------------------
+
+    @Test
+    public void test1GetAllCommentsMinUser() throws Exception {
+        String username = createUserIfNotExists(userLogic, createString(1));
+
+        int eventId = createEvent(eventLogic, username, eventName, eventDescription, location,
+                new Date(eventTimeStart));
+
+
+        eventLogic.getAllComments(username, eventId);
+    }
+
+    @Test
+    public void test2GetAllCommentsMaxUser() throws Exception {
+        String username = createUserIfNotExists(userLogic, createString(50));
+
+        int eventId = createEvent(eventLogic, username, eventName, eventDescription, location,
+                new Date(eventTimeStart));
+
+
+        eventLogic.getAllComments(username, eventId);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test3GetAllCommentsUserTooLong() throws Exception {
+        String username = createUserIfNotExists(userLogic, createString(51));
+
+        eventLogic.getAllComments(username, eventId);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test3GetAllCommentsUserEmpty() throws Exception {
+        String username = createUserIfNotExists(userLogic, createString(0));
+
+        eventLogic.getAllComments(username, eventId);
+    }
+
+    // ------------------ INVITE TEAM -------------------
+
+    @Test (expected = HttpRequestException.class)
+    public void test1InviteTeamInvalidUsername() throws Exception {
+        String userName = createString(51);
+        String teamName = createString(20);
+        String description = createString(50);
+        String teamCreator = createUserIfNotExists(userLogic, createString(50));
+
+        int teamId = createTeamWithoutParent(teamLogic, teamCreator, teamName, description);
+
+        eventLogic.inviteTeam(userName, eventId, teamId);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test2InviteTeamEmptyUsername() throws Exception {
+        String userName = "";
+        String teamName = createString(20);
+        String description = createString(50);
+        String teamCreator = createUserIfNotExists(userLogic, createString(50));
+
+        int teamId = createTeamWithoutParent(teamLogic, teamCreator, teamName, description);
+
+        eventLogic.inviteTeam(userName, eventId, teamId);
     }
 
 

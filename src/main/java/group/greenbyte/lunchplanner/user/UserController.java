@@ -1,6 +1,8 @@
 package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import group.greenbyte.lunchplanner.security.SessionManager;
+import group.greenbyte.lunchplanner.user.database.Notifications;
 import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,17 +48,35 @@ public class UserController {
     }
 
     /**
+     * TODO write tests for this
+     * Set the fcm (firebase cloud messaging) token for push notifications
+     *
+     * @return error message or nothing
+     */
+    @RequestMapping(value = "/fcm", method = RequestMethod.POST)
+    public String setFcm(@RequestBody FcmToken fcmToken,
+                             HttpServletResponse response) {
+        try {
+            userLogic.addFcmToken(SessionManager.getUserName(), fcmToken.getFcmToken());
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+
+        return "";
+    }
+
+    /**
      *
      * @param toSearch searchword for Database to search for User/s
-     * @param response HttpRequestExeption
      * @return a List of User/s which is showing async in forntend. If Exception or
      * list is empty, null is returning back
      */
     @RequestMapping(value = "/search/{searchWord}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity searchUser(@PathVariable("searchword") String toSearch,
-                                 HttpServletResponse response) {
+    public ResponseEntity searchUser(@PathVariable("searchWord") String toSearch) {
 
         try {
             List<User> toReturn =  userLogic.searchUserByName(toSearch);
@@ -69,6 +89,50 @@ public class UserController {
                     .body(e.getErrorMessage());
         }
 
+    }
+
+    //TODO write tests for this function
+    /**
+     *
+     * @return a List of all users
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getAllUser() {
+
+        try {
+            List<User> toReturn =  userLogic.searchUserByName("");
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(toReturn);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+
+    }
+
+    /**
+     *
+     * @return a List of all notifications
+     */
+
+    @RequestMapping(value ="/notifications", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getNotifications() {
+        try {
+            List<Notifications> toReturn =  userLogic.getNotifications(SessionManager.getUserName());
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(toReturn);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
     }
 
 
@@ -90,4 +154,16 @@ public class UserController {
         this.userLogic = userLogic;
     }
 
+}
+
+class FcmToken {
+    private String fcmToken;
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 }

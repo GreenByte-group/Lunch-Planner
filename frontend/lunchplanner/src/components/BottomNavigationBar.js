@@ -5,9 +5,18 @@ import BottomNavigation, { BottomNavigationAction } from 'material-ui/BottomNavi
 import PlaceIcon from '@material-ui/icons/Place';
 import EventIcon from '@material-ui/icons/LocalDining';
 import SocialIcon from '@material-ui/icons/Group';
-import withTheme from "material-ui/es/styles/withTheme";
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
-import red from "material-ui/colors/red";
+import {Link} from "react-router-dom";
+import IconButton from "material-ui/es/IconButton/IconButton";
+import Button from "material-ui/es/Button/Button";
+
+const styles = {
+    root: {
+        boxShadow: '0 -2px 4px 0 rgba(51,51,51,0.1), 0 2px 4px 0 rgba(0,0,0,0.5)',
+        position: 'relative',
+        bottom: 0,
+        width: '100%',
+    }
+};
 
 class BottomNavigationBar extends React.Component {
     state = {
@@ -24,13 +33,20 @@ class BottomNavigationBar extends React.Component {
 
         return (
                 <BottomNavigation
+                    className={classes.root}
                     value={value}
                     onChange={this.handleChange}
                     showLabels
                 >
-                    <BottomNavigationAction label="Places" icon={<PlaceIcon />} />
-                    <BottomNavigationAction label="Events" icon={<EventIcon />} />
-                    <BottomNavigationAction label="Social" icon={<SocialIcon />} />
+                    <Link to="/location">
+                        <BottomNavigationAction showLabel={true} label="Places" icon={<PlaceIcon />} />
+                    </Link>
+                    <Link to="/event">
+                        <BottomNavigationAction showLabel={true} label="Events" icon={<EventIcon />} />
+                    </Link>
+                        <Link to="/social">
+                        <BottomNavigationAction showLabel={true} label="Social" icon={<SocialIcon />}/>
+                    </Link>
                 </BottomNavigation>
         );
     }
@@ -41,4 +57,4 @@ BottomNavigationBar.propTypes = {
 };
 
 //export default withTheme(MuiThemeProvider) (BottomNavigationBar);
-export default BottomNavigationBar;
+export default withStyles(styles)(BottomNavigationBar);

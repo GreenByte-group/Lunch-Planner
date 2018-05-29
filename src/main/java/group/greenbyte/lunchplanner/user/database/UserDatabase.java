@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class UserDatabase {
 
+
     private String userName;
 
     private String eMail;
@@ -13,12 +14,15 @@ public class UserDatabase {
     @JsonIgnore
     private String token;
 
+    private String fcmToken;
+
     public User getUser() {
         User user = new User();
         user.setUserName(userName);
         user.setPassword(password);
         user.seteMail(eMail);
         user.setToken(token);
+        user.setFcmToken(fcmToken);
 
         return user;
     }
@@ -49,5 +53,13 @@ public class UserDatabase {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }

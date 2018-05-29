@@ -1,9 +1,8 @@
 package group.greenbyte.lunchplanner.event;
 
-import group.greenbyte.lunchplanner.event.database.Event;
-import group.greenbyte.lunchplanner.event.database.EventDatabase;
+import group.greenbyte.lunchplanner.event.database.*;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import group.greenbyte.lunchplanner.location.LocationDao;
+import org.hibernate.jdbc.Expectation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,13 +10,20 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
+import javax.xml.crypto.Data;
 import java.util.*;
 
 @Repository
 public class EventDaoMySql implements EventDao {
 
-    private LocationDao locationDao;
+
+    private static final String EVENT_BRINGSERVICE_TABLE = "bring_service";
+    private static final String EVENT_BRINGSERVICE_ID = "service_id";
+    private static final String EVENT_BRINGSERVICE_FOOD = "food";
+    private static final String EVENT_BRINGSERVICE_EVENT = "event_id";
+    private static final String EVENT_BRINGSERVICE_CREATER = "user_name";
+    private static final String EVENT_BRINGSERVICE_ACCEPTER = "accepter";
+    private static final String EVENT_BRINGSERVICE_DESCRIPTION = "description";
 
     private static final String EVENT_INVITATION_TABLE = "event_invitation";
     private static final String EVENT_INVITATION_ADMIN = "is_admin";
@@ -25,14 +31,21 @@ public class EventDaoMySql implements EventDao {
     private static final String EVENT_INVITATION_USER = "user_name";
     private static final String EVENT_INVITATION_EVENT = "event_id";
 
+    private static final String EVENT_COMMENT_TABLE = "comment";
+    private static final String EVENT_COMMENT_USER = "user_name";
+    private static final String EVENT_COMMENT_DATE = "date";
+    private static final String EVENT_COMMENT_EVENT = "event_id";
+    private static final String EVENT_COMMENT_ID = "comment_id";
+    private static final String EVENT_COMMENT_TEXT = "comment_text";
+
     private static final String EVENT_TABLE = "event";
     private static final String EVENT_ID = "event_id";
     private static final String EVENT_NAME = "event_name";
     private static final String EVENT_DESCRIPTION = "event_description";
     private static final String EVENT_START_DATE = "start_date";
-    private static final String EVENT_END_DATE = "end_date";
     private static final String EVENT_IS_PUBLIC = "is_public";
-    private static final String EVENT_LOCATION = "location_id";
+    private static final String EVENT_LOCATION = "location";
+    private static final String EVENT_SHARETOKEN = "share_token";
 
     private static final String EVENT_TEAM_TABLE = "event_team_visible";
     private static final String EVENT_TEAM_TEAM = "team_id";
@@ -41,23 +54,21 @@ public class EventDaoMySql implements EventDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public EventDaoMySql(JdbcTemplate jdbcTemplateObject,
-                         LocationDao locationDao) {
+    public EventDaoMySql(JdbcTemplate jdbcTemplateObject) {
         this.jdbcTemplate = jdbcTemplateObject;
-        this.locationDao = locationDao;
     }
 
     @Override
-    public Event insertEvent(String userName, String eventName, String description, int locationId, Date timeStart, Date timeEnd) throws DatabaseException {
+    public Event insertEvent(String userName, String eventName, String description, String location, Date timeStart, boolean isPublic) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(EVENT_TABLE).usingGeneratedKeyColumns(EVENT_ID);
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(EVENT_NAME, eventName);
         parameters.put(EVENT_DESCRIPTION, description);
-        parameters.put(EVENT_LOCATION, locationId);
         parameters.put(EVENT_START_DATE, timeStart);
-        parameters.put(EVENT_END_DATE, timeEnd);
-        parameters.put(EVENT_IS_PUBLIC, false);
+        parameters.put(EVENT_IS_PUBLIC, isPublic);
+        parameters.put(EVENT_LOCATION, location);
+
         try {
             Number key = simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
@@ -80,7 +91,7 @@ public class EventDaoMySql implements EventDao {
                 return null;
             else {
                 Event event = events.get(0).getEvent();
-                event.setLocation(locationDao.getLocation(events.get(0).getLocationId()));
+                event.setInvitations(new HashSet<>(getInvitations(eventId)));
 
                 return event;
             }
@@ -116,11 +127,11 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
-    public Event updateEventLocation(int eventId, int locationId) throws DatabaseException {
+    public Event updateEventLocation(int eventId, String location) throws DatabaseException {
         String SQL = "UPDATE " + EVENT_TABLE + " SET " + EVENT_LOCATION + " = ? WHERE " + EVENT_ID + " = ?";
 
         try {
-            jdbcTemplate.update(SQL, locationId, eventId);
+            jdbcTemplate.update(SQL, location, eventId);
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
@@ -134,19 +145,6 @@ public class EventDaoMySql implements EventDao {
 
         try {
             jdbcTemplate.update(SQL, timeStart, eventId);
-        } catch (Exception e) {
-            throw new DatabaseException(e);
-        }
-
-        return getEvent(eventId);
-    }
-
-    @Override
-    public Event updateEventTimeEnd(int eventId, Date timeEnd) throws DatabaseException {
-        String SQL = "UPDATE " + EVENT_TABLE + " SET " + EVENT_END_DATE + " = ? WHERE " + EVENT_ID + " = ?";
-
-        try {
-            jdbcTemplate.update(SQL, timeEnd, eventId);
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
@@ -187,10 +185,12 @@ public class EventDaoMySql implements EventDao {
             List<Event> eventsReturn = new ArrayList<>(events.size());
             for(EventDatabase eventDatabase: events) {
                 Event event = eventDatabase.getEvent();
-                event.setLocation(locationDao.getLocation(eventDatabase.getLocationId()));
+
+                event.setInvitations(new HashSet<>(getInvitations(event.getEventId())));
 
                 eventsReturn.add(event);
             }
+            sortByDate(eventsReturn);
 
             return eventsReturn;
         } catch (Exception e) {
@@ -215,8 +215,11 @@ public class EventDaoMySql implements EventDao {
             List<Event> events = new ArrayList<>();
 
             for(Integer id : eventIds) {
-                events.add(getEvent(id));
+                Event event = getEvent(id);
+
+                events.add(event);
             }
+            sortByDate(events);
 
             return events;
         } catch(Exception e) {
@@ -241,10 +244,12 @@ public class EventDaoMySql implements EventDao {
             List<Event> eventsReturn = new ArrayList<>(events.size());
             for(EventDatabase eventDatabase: events) {
                 Event event = eventDatabase.getEvent();
-                event.setLocation(locationDao.getLocation(eventDatabase.getLocationId()));
+
+                event.setInvitations(new HashSet<>(getInvitations(event.getEventId())));
 
                 eventsReturn.add(event);
             }
+            sortByDate(eventsReturn);
 
             return eventsReturn;
         } catch (Exception e) {
@@ -306,17 +311,170 @@ public class EventDaoMySql implements EventDao {
             throw new DatabaseException(e);
         }
     }
-      
-    public void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException {
-        String SQL = "UPDATE " + EVENT_INVITATION_TABLE + " SET " + EVENT_INVITATION_REPLY + " = ? WHERE " + EVENT_INVITATION_EVENT + " = ? AND "
-                + EVENT_INVITATION_USER + " = ?";
 
+    @Override
+    public List<Comment> getAllComments(int eventId) throws DatabaseException {
         try {
-            jdbcTemplate.update(SQL, answer.getValue(), eventId, userName);
+            String SQL = "SELECT * FROM " + EVENT_COMMENT_TABLE + " WHERE " +
+                    EVENT_COMMENT_EVENT + " = ?";
+
+            List<CommentDatabase> comments = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(CommentDatabase.class),
+                    eventId);
+
+            List<Comment> commentsReturn = new ArrayList<>(comments.size());
+            for(CommentDatabase commentDatabase : comments){
+                Comment comment = commentDatabase.getComment();
+
+                commentsReturn.add(comment);
+            }
+
+        return commentsReturn;
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
     }
+
+    @Override
+    public void putService(String creater, int eventId, String food, String description)throws DatabaseException{
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        simpleJdbcInsert.withTableName(EVENT_BRINGSERVICE_TABLE).usingGeneratedKeyColumns(EVENT_BRINGSERVICE_ID);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(EVENT_BRINGSERVICE_FOOD, food);
+        parameters.put(EVENT_BRINGSERVICE_EVENT, eventId);
+        parameters.put(EVENT_BRINGSERVICE_CREATER, creater);
+        parameters.put(EVENT_BRINGSERVICE_ACCEPTER, null);
+        parameters.put(EVENT_BRINGSERVICE_DESCRIPTION, description);
+
+        try{
+            simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+        }catch(Exception e){
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void updateBringservice(int eventId,String accepter, int serviceId) throws DatabaseException{
+            try {
+                String SQL = " UPDATE " + EVENT_BRINGSERVICE_TABLE +
+                        " SET " + EVENT_BRINGSERVICE_ACCEPTER + " = ? WHERE " + EVENT_BRINGSERVICE_ID + " = ? " +
+                        "AND " + EVENT_BRINGSERVICE_EVENT + " = ?";
+                jdbcTemplate.update(SQL, accepter, serviceId, eventId);
+            }catch(Exception e){
+                throw new DatabaseException(e);
+            }
+
+    }
+
+    @Override
+    public List<BringService> getService(int eventId) throws DatabaseException{
+        try{
+            String SQL = "SELECT * FROM " + EVENT_BRINGSERVICE_TABLE + " WHERE " +
+                    EVENT_BRINGSERVICE_EVENT + " = ? ";
+
+            List<BringServiceDatabase> serviceList = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(BringServiceDatabase.class),
+                    eventId);
+
+            List<BringService> serviceReturn = new ArrayList<>(serviceList.size());
+            for(BringServiceDatabase bringServiceDatabase : serviceList){
+                BringService bringService = bringServiceDatabase.getBringService();
+                serviceReturn.add(bringService);
+            }
+
+            return serviceReturn;
+        }catch(Exception e){
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void putCommentForEvent(String userName, int eventId, String comment) throws DatabaseException {
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        simpleJdbcInsert.withTableName(EVENT_COMMENT_TABLE).usingGeneratedKeyColumns(EVENT_COMMENT_ID);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(EVENT_COMMENT_USER, userName);
+        parameters.put(EVENT_COMMENT_EVENT, eventId);
+        parameters.put(EVENT_COMMENT_DATE, new Date());
+        parameters.put(EVENT_COMMENT_TEXT, comment);
+
+        try{
+            simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public List<EventInvitationDataForReturn> getInvitations(int eventId) throws DatabaseException {
+        try {
+            String SQL = "SELECT * FROM " + EVENT_INVITATION_TABLE + " WHERE " +
+                    EVENT_INVITATION_EVENT + " = ?";
+
+            return jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(EventInvitationDataForReturn.class),
+                    eventId);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    public void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException {
+        if(answer != InvitationAnswer.REJECT) {
+            String SQL = "UPDATE " + EVENT_INVITATION_TABLE + " SET " + EVENT_INVITATION_REPLY + " = ? WHERE " + EVENT_INVITATION_EVENT + " = ? AND "
+                    + EVENT_INVITATION_USER + " = ?";
+
+            try {
+                jdbcTemplate.update(SQL, answer.getValue(), eventId, userName);
+            } catch (Exception e) {
+                throw new DatabaseException(e);
+            }
+        } else {
+            String SQL = "DELETE FROM " + EVENT_INVITATION_TABLE + " WHERE " + EVENT_INVITATION_EVENT + " = ? AND "
+                    + EVENT_INVITATION_USER + " = ?";
+
+            try {
+                jdbcTemplate.update(SQL, eventId, userName);
+            } catch (Exception e) {
+                throw new DatabaseException(e);
+            }
+        }
+    }
+
+    @Override
+    public void addShareToken(int eventId, String shareToken) throws DatabaseException {
+        String SQL = "UPDATE " + EVENT_TABLE + " SET " + EVENT_SHARETOKEN + " = ? WHERE " + EVENT_ID + " = ?";
+
+        try {
+            jdbcTemplate.update(SQL, shareToken, eventId);
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public Event getEventByShareToken(String token) throws DatabaseException {
+        try {
+            String SQL = "SELECT * FROM " + EVENT_TABLE + " WHERE " +
+                    EVENT_SHARETOKEN + " = ?";
+
+            List<EventDatabase> events = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(EventDatabase.class),
+                    token);
+
+            if (events.size() == 0)
+                return null;
+            else {
+                Event event = events.get(0).getEvent();
+                event.setInvitations(new HashSet<>(getInvitations(event.getEventId())));
+
+                return event;
+            }
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
 
     private Event putUserInvited(String userName, int eventId, boolean admin) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
@@ -337,4 +495,11 @@ public class EventDaoMySql implements EventDao {
             throw new DatabaseException(e);
         }
     }
+
+    private void sortByDate(List<Event> events){
+        //eventsReturn.sort((e1, e2) -> e1.getStartDate().compareTo(e2.getStartDate()));
+        events.sort(Comparator.comparing(Event::getStartDate));
+    }
+
+
 }

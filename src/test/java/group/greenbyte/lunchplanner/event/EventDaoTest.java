@@ -3,23 +3,18 @@ package group.greenbyte.lunchplanner.event;
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import group.greenbyte.lunchplanner.location.LocationLogic;
 import group.greenbyte.lunchplanner.team.TeamLogic;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -27,7 +22,6 @@ import java.util.List;
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
 import static group.greenbyte.lunchplanner.event.Utils.setEventPublic;
-import static group.greenbyte.lunchplanner.location.Utils.createLocation;
 import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 
@@ -35,6 +29,7 @@ import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 @WebAppConfiguration
 @ContextConfiguration(classes = AppConfig.class)
 @ActiveProfiles("application-test.properties")
+@Transactional
 public class EventDaoTest {
 
     @Autowired
@@ -49,12 +44,11 @@ public class EventDaoTest {
     @Autowired
     private UserLogic userLogic;
 
-    @Autowired
-    private LocationLogic locationLogic;
-
     private String userName;
-    private int locationId;
+    private String location = "Location";
     private int eventId;
+
+    private int teamId;
 
     private String eventName;
     private String eventDescription;
@@ -73,9 +67,10 @@ public class EventDaoTest {
         eventTimeEnd = 1000 * (eventTimeEnd / 1000);
 
         userName = createUserIfNotExists(userLogic, "dummy");
-        locationId = createLocation(locationLogic, userName, "Test location", "test description");
-        eventId = createEvent(eventLogic, userName, eventName, eventDescription, locationId,
-                new Date(eventTimeStart), new Date(eventTimeEnd));
+        eventId = createEvent(eventLogic, userName, eventName, eventDescription, location,
+                new Date(eventTimeStart));
+
+        teamId = createTeamWithoutParent(teamLogic, userName, "name", "description");
     }
 
     // ------------------------- CREATE EVENT ------------------------------
@@ -91,15 +86,14 @@ public class EventDaoTest {
         timeStart = 1000 * (timeStart / 1000);
         timeEnd = 1000 * (timeEnd / 1000);
 
-        Event result = eventDao.insertEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date(timeEnd));
+        Event result = eventDao.insertEvent(userName, eventName, description, location,
+                new Date(timeStart), false);
 
         if(!(
                 result.getEventName().equals(eventName) &&
                 result.getEventDescription().equals(description) &&
-                result.getLocation().getLocationId() == locationId &&
-                result.getStartDate().getTime() == timeStart) &&
-                result.getEndDate().getTime() == timeEnd) {
+                result.getLocation().equals(location) &&
+                result.getStartDate().getTime() == timeStart) ) {
             Assert.fail("Event has not the right data");
         }
     }
@@ -110,12 +104,10 @@ public class EventDaoTest {
         String eventName = createString(50);
         String description = "";
 
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
-        long timeEnd = timeStart + 10000;
 
-        Event result = eventDao.insertEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date(timeEnd));
+        Event result = eventDao.insertEvent(userName, eventName, description, location,
+                new Date(timeStart), false);
     }
 
     @Test(expected = DatabaseException.class)
@@ -123,12 +115,10 @@ public class EventDaoTest {
         String userName = createString(50);
         String eventName = createString(51);
         String description = "";
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
-        long timeEnd = timeStart + 10000;
 
-        Event result = eventDao.insertEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date(timeEnd));
+        Event result = eventDao.insertEvent(userName, eventName, description, location,
+                new Date(timeStart), false);
     }
 
     @Test(expected = DatabaseException.class)
@@ -136,12 +126,11 @@ public class EventDaoTest {
         String userName = createString(50);
         String eventName = createString(50);
         String description = createString(1001);
-        int locationId = 1;
         long timeStart = System.currentTimeMillis() + 10000;
         long timeEnd = timeStart + 10000;
 
-        Event result = eventDao.insertEvent(userName, eventName, description, locationId,
-                new Date(timeStart), new Date(timeEnd));
+        Event result = eventDao.insertEvent(userName, eventName, description, location,
+                new Date(timeStart), false);
     }
 
     // ---------------- UPDATE EVENT ----------------------
@@ -187,14 +176,19 @@ public class EventDaoTest {
     // Event location
     @Test
     public void updateEventLocation() throws Exception {
-        int newLocationId = createLocation(locationLogic, userName, "updated location", "update");
+        String newLocation = "new Location";
 
-        eventDao.updateEventLocation(eventId, newLocationId);
+        eventDao.updateEventLocation(eventId, newLocation);
 
         Event event = eventDao.getEvent(eventId);
 
-        if(event.getLocation().getLocationId() != newLocationId)
+        if(!event.getLocation().equals(newLocation))
             Assert.fail("Location was not updated");
+    }
+
+    @Test(expected = DatabaseException.class)
+    public void updateEventLocationNotVaildLocation() throws Exception {
+        eventDao.updateEventLocation(eventId, createString(256));
     }
 
     // Event start time
@@ -213,24 +207,6 @@ public class EventDaoTest {
         Event event = eventDao.getEvent(eventId);
         if(event.getStartDate().getTime() != timeStart)
             Assert.fail("Time start was not updated");
-    }
-
-    // Event end time
-    @Test
-    public void updateEventEndTime() throws Exception {
-        long timeEnd = System.currentTimeMillis() + 10000;
-
-        /*
-        In der Datenbank werden keine Millisekunden gespeichert. Zum Vergleichen der Zeit müssen also
-        die Millisekunden ignoriert werden.
-         */
-        timeEnd = 1000 * (timeEnd / 1000);
-
-        eventDao.updateEventTimeEnd(eventId, new Date(timeEnd));
-
-        Event event = eventDao.getEvent(eventId);
-        if(event.getEndDate().getTime() != timeEnd)
-            Assert.fail("Time end was not updated");
     }
 
     // ------------------------- PUT USER INVITE TO EVENT ------------------------------
@@ -270,9 +246,8 @@ public class EventDaoTest {
         Assert.assertEquals(eventName, event.getEventName());
         Assert.assertEquals(eventDescription, event.getEventDescription());
         Assert.assertEquals((int) eventId, (int) event.getEventId());
-        Assert.assertEquals(locationId, event.getLocation().getLocationId());
+        Assert.assertEquals(location, event.getLocation());
         Assert.assertEquals(new Date(eventTimeStart), event.getStartDate());
-        Assert.assertEquals(new Date(eventTimeEnd), event.getEndDate());
     }
 
     @Test
@@ -293,7 +268,7 @@ public class EventDaoTest {
     @Test
     public void test2SearchPublicEvents() throws Exception {
         String newEventName = createString(50);
-        int publicEventId = createEvent(eventLogic, userName, newEventName, eventDescription, locationId, new Date(eventTimeStart), new Date(eventTimeEnd));
+        int publicEventId = createEvent(eventLogic, userName, newEventName, eventDescription, location, new Date(eventTimeStart));
         setEventPublic(eventDao, publicEventId);
         String searchWord = newEventName;
         List<Event> events = eventDao.findPublicEvents(searchWord);
@@ -306,7 +281,7 @@ public class EventDaoTest {
         int teamId = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
 
         String newEventName = createString(50);
-        int newEventId = createEvent(eventLogic, userName, newEventName, createString(50), locationId, new Date(eventTimeStart) , new Date(eventTimeEnd));
+        int newEventId = createEvent(eventLogic, userName, newEventName, createString(50), location, new Date(eventTimeStart));
         eventDao.addTeamToEvent(newEventId, teamId);
 
         List<Event> events = eventDao.findEventsForTeam(teamId, newEventName);
@@ -319,8 +294,8 @@ public class EventDaoTest {
         int teamId2 = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
 
         String newEventName = createString(50);
-        int newEventId = createEvent(eventLogic, userName, newEventName, createString(50), locationId, new Date(eventTimeStart) , new Date(eventTimeEnd));
-        int newEventId2 = createEvent(eventLogic, userName, newEventName, createString(50), locationId, new Date(eventTimeStart) , new Date(eventTimeEnd));
+        int newEventId = createEvent(eventLogic, userName, newEventName, createString(50), location, new Date(eventTimeStart));
+        int newEventId2 = createEvent(eventLogic, userName, newEventName, createString(50), location, new Date(eventTimeStart));
         eventDao.addTeamToEvent(newEventId, teamId);
         eventDao.addTeamToEvent(newEventId2, teamId2);
 
@@ -354,6 +329,17 @@ public class EventDaoTest {
 
         eventDao.replyInvitation(userName, eventId, null);
 
+    }
+
+    // -------------------- Add Team to Event --------------------------
+    @Test(expected = DatabaseException.class)
+    public void test1AddTeamNotExistingTeam() throws Exception {
+        eventDao.addTeamToEvent(eventId, 10000);
+    }
+
+    @Test(expected = DatabaseException.class)
+    public void test1AddTeamNotExistingEvent() throws Exception {
+        eventDao.addTeamToEvent(10000, teamId);
     }
 
 }

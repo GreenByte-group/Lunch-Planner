@@ -10,6 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
 
@@ -21,6 +22,7 @@ import static org.junit.Assert.*;
 @ContextConfiguration(classes = AppConfig.class)
 @WebAppConfiguration
 @ActiveProfiles("application-test.properties")
+@Transactional
 public class UserLogicTest {
 
     @Autowired
@@ -111,29 +113,6 @@ public class UserLogicTest {
         userLogic.createUser(userName, password, mail);
         userLogic.searchUserByName(userName);
     }
-
-    @Test (expected = HttpRequestException.class)
-    public void test2searchwordToLong() throws Exception{
-        String userName = createString(50);
-        String mail = "gueltige@mail.de";
-        String password = createString(50);
-        String searchword = userName+"a";
-
-        userLogic.createUser(userName, password, mail);
-        userLogic.searchUserByName(searchword);
-    }
-
-    @Test (expected = HttpRequestException.class)
-    public void test3searchwordIsNull() throws Exception{
-        String userName = createString(50);
-        String mail = "gueltige@mail.de";
-        String password = createString(50);
-        String searchword = null;
-
-        userLogic.createUser(userName, password, mail);
-        userLogic.searchUserByName(searchword);
-    }
-
 
     // ------------------------ JWT ------------------------
     @Test

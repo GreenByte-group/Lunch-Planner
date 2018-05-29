@@ -1,12 +1,14 @@
 package group.greenbyte.lunchplanner.event;
 
+import group.greenbyte.lunchplanner.event.database.BringService;
+import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
+import group.greenbyte.lunchplanner.event.database.EventInvitationDataForReturn;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import group.greenbyte.lunchplanner.team.database.Team;
+import group.greenbyte.lunchplanner.user.database.Notifications;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 
 public interface EventDao {
@@ -17,9 +19,7 @@ public interface EventDao {
      * @param userName id of the user who creates the events
      * @param eventName name of the event
      * @param description description of the event
-     * @param locationId id of the location
      * @param timeStart time when the event starts
-     * @param timeEnd time when the events ends
      * @return the inserted Event
      *
      * @throws DatabaseException when an unexpected error happens
@@ -27,9 +27,9 @@ public interface EventDao {
     Event insertEvent(String userName,
                       String eventName,
                       String description,
-                      int locationId,
+                      String location,
                       Date timeStart,
-                      Date timeEnd) throws DatabaseException;
+                      boolean isPublic) throws DatabaseException;
 
     /**
      * Gets the event with location but without usersInvited and teamsVisible
@@ -59,18 +59,17 @@ public interface EventDao {
      * @throws DatabaseException when an unexpected error happens
      */
     Event updateEventDescription(int eventId,
-                                 String description
-                                 ) throws DatabaseException;
+                                 String description) throws DatabaseException;
 
     /**
      *
      * @param eventId id of the event
-     * @param locationId id of the location
+     * @param location Name, Adress or google place api id key
      * @return the updated event
      * @throws DatabaseException when an unexpected error happens
      */
     Event updateEventLocation(int eventId,
-                              int locationId) throws DatabaseException;
+                              String location) throws DatabaseException;
 
     /**
      *
@@ -81,16 +80,6 @@ public interface EventDao {
      */
     Event updateEventTimeStart(int eventId,
                                Date timeStart) throws DatabaseException;
-
-    /**
-     *
-     * @param eventId id of the event
-     * @param timeEnd time when the events ends
-     * @return the updated event
-     * @throws DatabaseException when an unexpected error happens
-     */
-    Event updateEventTimeEnd(int  eventId,
-                             Date timeEnd) throws DatabaseException;
 
     /**
      * For now only for test purpose
@@ -140,6 +129,34 @@ public interface EventDao {
      */
     List<Event> findEventsUserInvited(String userName, String searchword) throws DatabaseException;
 
+    /**
+     *
+     * @param creater name of the service creater (i know its creator, but IDGAF)
+     * @param eventId id of the event
+     * @param food name of the food to bring with
+     * @param description description of special wishes
+     * @throws DatabaseException when an error happens
+     */
+    void putService(String creater, int eventId, String food, String description) throws DatabaseException;
+
+
+
+    /**
+     *
+     * @param eventId id of the event
+     * @return servicelist of event
+     * @throws DatabaseException when an error happens with statuscode and message
+     */
+    List<BringService> getService(int eventId) throws DatabaseException;
+
+    /**
+     *
+     * @param eventId
+     * @param creater
+     * @param serviceId
+     */
+    void updateBringservice(int eventId, String accepter, int serviceId) throws DatabaseException;
+
     void putUserInviteToEventAsAdmin (String userToInviteName, int eventId) throws DatabaseException;
 
     /**
@@ -170,6 +187,37 @@ public interface EventDao {
      * @throws DatabaseException
      */
     boolean userHasPrivileges(String userName, int eventId) throws DatabaseException;
-  
+
+    /**
+     *
+     * @param eventId
+     * @return
+     * @throws DatabaseException
+     */
+    List<Comment> getAllComments(int eventId) throws DatabaseException;
+
+    void putCommentForEvent(String userName, int eventId, String comment) throws DatabaseException;
+
+    //TODO test
+    List<EventInvitationDataForReturn> getInvitations(int eventId) throws DatabaseException;
+
     void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException;
+
+    /**
+     * Add a token to the event to access it
+     * //TODO write tests
+     *
+     * @param eventId
+     * @param shareToken
+     */
+    void addShareToken(int eventId, String shareToken) throws DatabaseException;
+
+    /**
+     * Get team by share token
+     * TODO write tests
+     *
+     * @param token
+     * @return event
+     */
+    Event getEventByShareToken(String token) throws DatabaseException;
 }

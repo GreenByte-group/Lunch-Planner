@@ -1,11 +1,14 @@
 package group.greenbyte.lunchplanner.user.database;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.EventInvitation;
-import group.greenbyte.lunchplanner.location.database.LocationAdmin;
 import group.greenbyte.lunchplanner.team.database.TeamMember;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -22,11 +25,20 @@ public class User {
     @Column(nullable = false, length = MAX_MAIL_LENGTH)
     private String eMail;
 
+    @JsonIgnore
     @Column(nullable = false, length = MAX_PASSWORD_LENGTH)
     private String password;
 
+    @JsonIgnore
     @Column
     private String token;
+
+    @JsonIgnore
+    @Column
+    private String fcmToken;
+
+    @Column
+    private String profilePictureUrl;
 
     @OneToMany(mappedBy = "eventInvited", cascade = CascadeType.ALL)
     private Set<EventInvitation> eventsInvited;
@@ -34,8 +46,11 @@ public class User {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private Set<TeamMember> teamsMember = new HashSet<>();
 
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<LocationAdmin> locationAdmin = new HashSet<>();
+    @OneToMany(mappedBy = "eventComment", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany (mappedBy = "receiver")
+    private List<Notifications> notification = new ArrayList<>();
 
     public String getUserName() {
         return userName;
@@ -82,5 +97,29 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
+
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
+    }
+
+    public List<Notifications> getNotification() {
+        return notification;
+    }
+
+    public void setNotification(List<Notifications> notification) {
+        this.notification = notification;
     }
 }

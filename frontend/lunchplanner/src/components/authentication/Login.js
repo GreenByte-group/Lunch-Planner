@@ -1,14 +1,11 @@
 import React from "react";
 import {doLogin} from "./LoginFunctions";
-import {Link, Redirect} from "react-router-dom";
-import classNames from 'classnames';
+import {Redirect} from "react-router-dom";
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import IconButton from 'material-ui/IconButton';
 import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
-import { FormControl, FormHelperText } from 'material-ui/Form';
-import TextField from 'material-ui/TextField';
-import MenuItem from 'material-ui/Menu/MenuItem';
+import { FormControl, } from 'material-ui/Form';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Button from 'material-ui/Button';

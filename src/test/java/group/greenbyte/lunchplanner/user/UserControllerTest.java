@@ -2,34 +2,36 @@ package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.EventLogic;
-import group.greenbyte.lunchplanner.location.LocationLogic;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
-import static group.greenbyte.lunchplanner.location.Utils.createLocation;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
 @WebAppConfiguration
 @ActiveProfiles("application-test.properties")
+@Transactional
 public class UserControllerTest {
 
     private MockMvc mockMvc;
@@ -43,18 +45,13 @@ public class UserControllerTest {
     @Autowired
     private UserLogic userLogic;
 
-    @Autowired
-    private LocationLogic locationLogic;
-
     private final String userName = "banane";
-    private int locationId;
     private int eventId;
 
     @Before
     public void setUp() throws Exception {
         createUserIfNotExists(userLogic, userName);
-        locationId = createLocation(locationLogic, userName, "Test location", "test description");
-        eventId = createEvent(eventLogic, userName, locationId);
+        eventId = createEvent(eventLogic, userName, "Test location");
 
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
         //mockMvc = MockMvcBuilders.standaloneSetup(eventController).build();
@@ -175,55 +172,29 @@ public class UserControllerTest {
     // ------------------------- SEARCH USER ------------------------------
 
     @Test
+    @WithMockUser(username = userName)
     public void test1ValidParam() throws Exception {
-
-        String userName = createString(50);
-        String mail = "mail@mail.de";
-        String password = createString(50);
-
-        UserJson userJson = new UserJson(userName, password, mail);
-        String json = getJsonFromObject(userJson);
-
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/user/search")
-                        .param("username", userName)
-                        .param("password", password))
-                .andExpect(MockMvcResultMatchers.status().isAccepted());
-
-
-
+                get("/user/search/" + userName))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$[0].userName").value(userName));
     }
 
     @Test
-    public void test2SearchwordToLong() throws Exception {
-
-        String name = createString(50);
-        String mail = "mail@mail.de";
-        String password = createString(51);
-
-        UserJson userJson = new UserJson(name, password, mail);
-        String json = getJsonFromObject(userJson);
-
-
-        mockMvc.perform(
-                post("/user/search").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
+    @WithMockUser(username = userName)
     public void test3SearchwordIsNull() throws Exception {
-
-        String name = createString(50);
-        String mail = "mail@mail.de";
-        String password = null;
-
-        UserJson userJson = new UserJson(name, password, mail);
-        String json = getJsonFromObject(userJson);
-
-
         mockMvc.perform(
-                post("/user/search").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isBadRequest());
+                get("/user/search/"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test3SearchResultIsNoting() throws Exception {
+        mockMvc.perform(
+                get("/user/search/" + createString(10)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0]").doesNotExist());
     }
 
 
