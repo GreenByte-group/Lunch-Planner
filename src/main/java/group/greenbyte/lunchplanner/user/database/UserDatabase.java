@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class UserDatabase {
 
+
     private String userName;
 
     private String eMail;

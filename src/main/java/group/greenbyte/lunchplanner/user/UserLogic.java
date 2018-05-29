@@ -9,6 +9,8 @@ import com.google.firebase.messaging.Message;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.JwtService;
+import group.greenbyte.lunchplanner.security.SessionManager;
+import group.greenbyte.lunchplanner.user.database.Notifications;
 import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -16,8 +18,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
@@ -167,12 +167,14 @@ public class UserLogic {
         //ToDO send notfication to user
     }
 
-    public void sendNotification(String fcmToken, String title, String description, String linkToClick) throws FirebaseMessagingException {
+    public void sendNotification(String fcmToken, String receiver, String title, String description, String linkToClick, String picturePath) throws FirebaseMessagingException,HttpRequestException {
         if(!fcmInitialized) {
             try {
                 initNotifications();
-            } catch (IOException e) {
-                e.printStackTrace();
+                userDao.saveNotificationIntoDatabase(receiver,title,description,SessionManager.getUserName(),linkToClick, picturePath);
+
+            } catch (DatabaseException|IOException e) {
+                throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
             }
         }
 
@@ -181,14 +183,42 @@ public class UserLogic {
                 .putData("title", title)
                 .putData("body", description)
                 .putData("click_action", linkToClick)
+                .putData("picture", picturePath)
                 .setToken(fcmToken)
                 .build();
+
+
 
         // Send a message to the device corresponding to the provided
         // registration token.
         String response = FirebaseMessaging.getInstance().send(message);
         // Response is a message ID string.
         System.out.println("Successfully sent message: " + response);
+
+    }
+
+    //TODO write tests for this function
+    /**
+     * Get all notifications for user
+     *
+     * @param userName receiver of the notifications
+     * @return
+     * @throws HttpRequestException
+     */
+    public List<Notifications> getNotifications(String userName) throws HttpRequestException{
+        if(userName == null || userName.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
+
+        if(userName.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
+
+        try {
+            return userDao.getNotifications(userName);
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
+
 
     }
 

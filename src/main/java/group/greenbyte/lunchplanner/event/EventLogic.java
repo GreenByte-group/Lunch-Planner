@@ -293,6 +293,7 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
 
+
         User user = userLogic.getUser(userToInvite);
         //set notification information
         String title = "Event invitation";
