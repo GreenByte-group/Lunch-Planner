@@ -16,6 +16,8 @@ public class EventDatabase {
 
     private String location;
 
+    private String shareToken;
+
     /**
      *
      * @return event object without location and other relation objects
@@ -28,6 +30,7 @@ public class EventDatabase {
         event.setPublic(isPublic);
         event.setEventId(eventId);
         event.setLocation(location);
+        event.setShareToken(shareToken);
 
         return event;
     }
@@ -54,5 +57,9 @@ public class EventDatabase {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public void setShareToken(String shareToken) {
+        this.shareToken = shareToken;
     }
 }

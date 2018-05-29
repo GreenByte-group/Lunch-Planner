@@ -19,6 +19,7 @@ import {setHistory, getHistory} from "./utils/HistoryUtils";
 import CreateTeamScreen from "./components/Team/CreateTeamScreen";
 import {init} from './components/notification/Firebase'
 import NotificationsScreen from "./components/notification/NotificationsScreen";
+import TeamScreen from "./components/Team/TeamScreen";
 
 const oldTheme = getMuiTheme({
     palette: {
@@ -81,6 +82,7 @@ class App extends React.Component {
                             <PrivateRoute path="/social" component={SocialScreen} />
                             <PrivateRoute path="/team/create" component={CreateTeamScreen}/>
                             <PrivateRoute path="/team/create/invite" component={SelectUserScreen} />
+                            <PrivateRoute path="/team/:teamId(\d+)" component={TeamScreen} />
                             <PrivateRoute path="/location" component={LocationScreen} />
                             <PrivateRoute path="/notifications" component={NotificationsScreen} />
                             <PrivateRoute path="/event/create" component={CreateEventScreen} />

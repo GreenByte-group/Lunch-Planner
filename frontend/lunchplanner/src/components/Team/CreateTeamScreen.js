@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import Dialog from '../Dialog';
-import IconButton from 'material-ui/IconButton';
 import Slide from 'material-ui/transitions/Slide';
 import TextField from "material-ui/es/TextField/TextField";
 import AddIcon from '@material-ui/icons/Add';
@@ -82,30 +81,44 @@ class CreateTeamScreen extends React.Component {
 
         const params = new URLSearchParams(props.location.search);
 
-        let defaultDate = moment().add(30, 'm').toDate();
-
         this.state = {
             open: true,
-            // location: params.get('location') || "",
             error: "",
             name: "",
             description: "",
             secret: false,
+            invitedUsers: params.get('invitedUsers') || [],
+            invitedTeams: params.get('invitedTeams') || [],
+            invitedTeamMember: params.get('teamMember') || [],
         };
     }
 
     parseUrl = () => {
         const params = new URLSearchParams(this.props.location.search);
         let invitedUsers = params.get('invitedUsers');
+        let invitedTeams = params.get('invitedTeams');
+        let teamMember = params.get('teamMember');
         if(invitedUsers != null && invitedUsers !== undefined && invitedUsers !== this.state.invitedUsers) {
             this.setState({
                 invitedUsers: params.get('invitedUsers'),
             });
         }
+        if(invitedTeams != null && invitedTeams !== undefined && invitedTeams !== this.state.invitedTeams) {
+            this.setState({
+                invitedTeams: params.get('invitedTeams'),
+            });
+        }
+        if(teamMember != null && teamMember !== undefined && teamMember !== this.state.invitedTeamMember) {
+            this.setState({
+                invitedTeamMember: params.get('teamMember'),
+            });
+        }
     };
 
     handleAccept = () => {
-        createTeam(this.state.name, this.state.description, this.state.invitedUsers, this.state.secret,
+        let invitedUsers = this.state.invitedUsers + "," + this.state.invitedTeamMember;
+
+        createTeam(this.state.name, this.state.description, invitedUsers, this.state.secret,
             (response) => {
                 if(response.status === 201) {
                     eventListNeedReload();
@@ -136,8 +149,10 @@ class CreateTeamScreen extends React.Component {
         const { classes } = this.props;
         const error = this.state.error;
 
+        let invited = this.state.invitedUsers + "," + this.state.invitedTeams;
+
         let buttonEnabled = false;
-        if(this.state.name && this.state.invitedUsers)
+        if(this.state.name && (this.state.invitedUsers || this.state.invitedTeams))
             buttonEnabled = true;
 
         let switchEnabled = false;
@@ -199,7 +214,7 @@ class CreateTeamScreen extends React.Component {
                                 id="invitation"
                                 label="Team members"
                                 placeholder ="Invite People"
-                                value={this.state.invitedUsers}
+                                value={invited}
                                 fullWidth
                                 InputProps={{
                                     startAdornment: <InputAdornment position="start"><PeopleIcon/></InputAdornment>,

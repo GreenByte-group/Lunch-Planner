@@ -318,7 +318,6 @@ class EventScreen extends React.Component {
         });
 
         //TODO anzahl kommentare
-
         return (
             <div>
                 <Dialog
@@ -348,6 +347,7 @@ class EventScreen extends React.Component {
                             <p className={classes.invitaionsHeader}>Invited People ({people.length})</p>
                             <UserList selectedUsers={selectedUsers} othersInvited={true} users={people} selectable={false} />
                         </div>
+
                         {
                             (invited)
                                 ? ''

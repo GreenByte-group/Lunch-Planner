@@ -202,4 +202,22 @@ public interface EventDao {
     List<EventInvitationDataForReturn> getInvitations(int eventId) throws DatabaseException;
 
     void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException;
+
+    /**
+     * Add a token to the event to access it
+     * //TODO write tests
+     *
+     * @param eventId
+     * @param shareToken
+     */
+    void addShareToken(int eventId, String shareToken) throws DatabaseException;
+
+    /**
+     * Get team by share token
+     * TODO write tests
+     *
+     * @param token
+     * @return event
+     */
+    Event getEventByShareToken(String token) throws DatabaseException;
 }
