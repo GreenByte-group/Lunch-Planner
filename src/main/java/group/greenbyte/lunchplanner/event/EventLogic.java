@@ -1,6 +1,5 @@
 package group.greenbyte.lunchplanner.event;
 
-
 import com.google.firebase.messaging.FirebaseMessagingException;
 import group.greenbyte.lunchplanner.event.database.BringService;
 import group.greenbyte.lunchplanner.event.database.Comment;
@@ -17,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.xml.crypto.Data;
 import java.util.*;
 
 @Service
@@ -480,6 +480,42 @@ public class EventLogic {
         }
     }
 
+    public Event getEventByToken(String token) throws HttpRequestException {
+        try {
+            Event event = eventDao.getEventByShareToken(token);
+
+            if(event == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event for token: " + token + " not found");
+
+            return event;
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    private String generateShareToken() {
+        return UUID.randomUUID().toString();
+    }
+
+    public String getShareToken(int eventId) throws HttpRequestException {
+        try {
+            Event event = eventDao.getEvent(eventId);
+            if(event == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with id " + eventId + " not found");
+
+            String shareToken = event.getShareToken();
+            if(shareToken != null)
+                return shareToken;
+
+            shareToken = generateShareToken();
+
+            eventDao.addShareToken(eventId, shareToken);
+
+            return shareToken;
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
 
 
     public void putService(int event_id, String food, String description) throws HttpRequestException{

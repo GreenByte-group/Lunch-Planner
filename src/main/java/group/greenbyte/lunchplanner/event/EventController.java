@@ -1,6 +1,5 @@
 package group.greenbyte.lunchplanner.event;
 
-
 import com.google.firebase.messaging.FirebaseMessagingException;
 import group.greenbyte.lunchplanner.event.database.BringService;
 import group.greenbyte.lunchplanner.event.database.Comment;
@@ -381,6 +380,38 @@ public class EventController {
                     .status(HttpStatus.OK)
                     .body(allComments);
         } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    @RequestMapping(value = "/{eventId}/token", method = RequestMethod.GET,
+            produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity getTokenForEvent(@PathVariable("eventId") int eventId) {
+        try {
+            String token = eventLogic.getShareToken(eventId);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(token);
+        } catch(HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    // -------------------- UNAUTHORIZED ------------------------
+    @RequestMapping(value = "/token/{shareToken}", method = RequestMethod.GET)
+    public ResponseEntity getEventByToken(@PathVariable("shareToken") String shareToken) {
+        try {
+            Event event = eventLogic.getEventByToken(shareToken);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(event);
+        } catch(HttpRequestException e) {
             return ResponseEntity
                     .status(e.getStatusCode())
                     .body(e.getErrorMessage());
