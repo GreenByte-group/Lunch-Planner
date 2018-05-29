@@ -50,4 +50,16 @@ public interface UserDao {
      * @param fcmToken
      */
     void setFcmForUser(String userName, String fcmToken) throws DatabaseException;
+
+    /**
+     *
+     * @param receiver
+     * @param title
+     * @param description
+     * @param builder
+     * @param linkToClick
+     * @param picturePath
+     */
+    void  saveNotificationIntoDatabase(String receiver, String title, String description
+                                        ,String builder, String linkToClick, String picturePath) throws DatabaseException;
 }

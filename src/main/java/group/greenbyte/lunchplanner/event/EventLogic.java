@@ -292,6 +292,7 @@ public class EventLogic {
         }
 
         userLogic.sendInvitation(username, userToInvite);
+
     }
 
     /**

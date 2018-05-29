@@ -3,6 +3,7 @@ package group.greenbyte.lunchplanner.user;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.user.database.User;
 import group.greenbyte.lunchplanner.user.database.UserDatabase;
+import org.hibernate.dialect.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -27,6 +28,15 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_TOKEN = "token";
     public static final String USER_FCM_TOKEN = "fcm_token";
 
+    public static final String USER_NOTIFICATION_TABLE = "notifications";
+    public static final String USER_NOTIFICATION_ID = "notificationsId";
+    public static final String USER_NOTIFICATION_TITEL = "titel";
+    public static final String USER_NOTIFICATION_MESSAGE = "message";
+    public static final String USER_NOTIFICATION_RECEIVER = "receiver";
+    public static final String USER_NOTIFICATION_BUILDER = "builder";
+    public static final String USER_NOTIFICATION_LINK = "link";
+    public static final String USER_NOTIFICATION_PICTURE = "picture";
+
     @Autowired
     public UserDaoMySql(JdbcTemplate jdbcTemplateObject) {
         this.jdbcTemplate = jdbcTemplateObject;
@@ -50,6 +60,30 @@ public class UserDaoMySql implements UserDao {
             throw new DatabaseException(e);
         }
     }
+
+    @Override
+    public void saveNotificationIntoDatabase(String receiver, String title, String description
+            ,String builder, String linkToClick, String picturePath) throws DatabaseException{
+
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        simpleJdbcInsert.withTableName(USER_NOTIFICATION_TABLE).usingGeneratedKeyColumns(USER_NOTIFICATION_ID);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(USER_NOTIFICATION_BUILDER,builder);
+        parameters.put(USER_NOTIFICATION_TITEL,title);
+        parameters.put(USER_NOTIFICATION_MESSAGE,description);
+        parameters.put(USER_NOTIFICATION_RECEIVER,receiver);
+        parameters.put(USER_NOTIFICATION_LINK,linkToClick);
+        parameters.put(USER_NOTIFICATION_PICTURE,picturePath);
+
+        try {
+            simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+
+
 
     @Override
     public void createUser(String userName, String password, String mail) throws DatabaseException {

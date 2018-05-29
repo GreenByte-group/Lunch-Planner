@@ -9,6 +9,7 @@ import com.google.firebase.messaging.Message;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.JwtService;
+import group.greenbyte.lunchplanner.security.SessionManager;
 import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -16,8 +17,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
@@ -167,12 +166,14 @@ public class UserLogic {
         //ToDO send notfication to user
     }
 
-    public void sendNotification(String fcmToken, String title, String description, String linkToClick) throws FirebaseMessagingException {
+    public void sendNotification(String fcmToken, String receiver, String title, String description, String linkToClick, String picturePath) throws FirebaseMessagingException,HttpRequestException {
         if(!fcmInitialized) {
             try {
                 initNotifications();
-            } catch (IOException e) {
-                e.printStackTrace();
+                userDao.saveNotificationIntoDatabase(receiver,title,description,SessionManager.getUserName(),linkToClick, picturePath);
+
+            } catch (DatabaseException|IOException e) {
+                throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
             }
         }
 
@@ -181,8 +182,11 @@ public class UserLogic {
                 .putData("title", title)
                 .putData("body", description)
                 .putData("click_action", linkToClick)
+                .putData("picture", picturePath)
                 .setToken(fcmToken)
                 .build();
+
+
 
         // Send a message to the device corresponding to the provided
         // registration token.

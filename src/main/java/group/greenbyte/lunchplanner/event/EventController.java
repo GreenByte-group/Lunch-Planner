@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sun.misc.Request;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
@@ -258,6 +257,7 @@ public class EventController {
     }
 
     /**
+     * ToDo
      *
      * @param eventId id of the event
      * @param answer answer of the user
@@ -278,11 +278,12 @@ public class EventController {
     }
 
     /**
+     * create a comment for an event
      *
-     * @param eventId
-     * @param comment
-     * @param response
-     * @return
+     * @param eventId event which bring service is dependent on
+     * @param comment String of message
+     * @param response response channel
+     * @return empty String
      */
     @RequestMapping(value = "/{eventId}/comment", method = RequestMethod.PUT,
             consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
@@ -301,11 +302,12 @@ public class EventController {
     }
 
     /**
+     * Create bring service for an event
      *
-     * @param eventId
-     * @param bringService
-     * @param response
-     * @return
+     * @param eventId event which bring service is dependent on
+     * @param bringService JSON includes food, description
+     * @param response response channel
+     * @return empty String
      */
     @RequestMapping(value = "/{eventId}/service", method = RequestMethod.PUT,
                     consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
@@ -324,7 +326,7 @@ public class EventController {
     /**
      * Get servicelist from event
      *
-     * @param eventId of event with yervicelist
+     * @param eventId of event with servicelist
      * @return servicelist of event with id
      */
     @RequestMapping(value = "/{eventId}/service", method = RequestMethod.GET,
@@ -345,7 +347,14 @@ public class EventController {
         }
     }
 
-
+    /**
+     * Accept to bring a item of the bring service
+     *
+     * @param eventId of event with servicelist
+     * @param serviceId of serviceList in bringServiceDatabase
+     * @param response response channel
+     * @return empty String
+     */
     @RequestMapping(value = "/{eventId}/service/{serviceId}", method = RequestMethod.POST)
     @ResponseBody
     public String acceptBringservice(@PathVariable("eventId") int eventId,

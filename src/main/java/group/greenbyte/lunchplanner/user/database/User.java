@@ -49,6 +49,9 @@ public class User {
     @OneToMany(mappedBy = "eventComment", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany (mappedBy = "receiver")
+    private List<Notifications> notification = new ArrayList<>();
+
     public String getUserName() {
         return userName;
     }
@@ -110,5 +113,13 @@ public class User {
 
     public void setProfilePictureUrl(String profilePictureUrl) {
         this.profilePictureUrl = profilePictureUrl;
+    }
+
+    public List<Notifications> getNotification() {
+        return notification;
+    }
+
+    public void setNotification(List<Notifications> notification) {
+        this.notification = notification;
     }
 }
