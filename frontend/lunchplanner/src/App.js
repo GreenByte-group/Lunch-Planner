@@ -11,6 +11,7 @@ import SelectUserScreen from "./components/User/SelectUserScreen";
 import {getMuiTheme} from "material-ui-old/styles/index";
 import SimpleMap from "./components/GoogleMap/SimpleMap";
 import GoogleMapsContainer from "./components/GoogleMap/GoogleMapsContainer";
+import LazyMap from "./components/GoogleMap/LazyMap";
 
 const oldTheme = getMuiTheme({
     palette: {

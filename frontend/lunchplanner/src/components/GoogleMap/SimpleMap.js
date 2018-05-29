@@ -80,10 +80,13 @@ class SimpleMap extends React.Component {
                         defaultZoom={this.props.zoom}>
 
                             <Marker
+                                title={'ANNA'}
+                                name={'CAN'}
                                 onclick = {this.onMarkerClick}
                                 lat={ 49.578839  }
                                 lng={ 8.675512 }
-                                text={'sdhsod'}/>
+                                text={'AAAAA'}/>
+
 
                         </GoogleMapReact>
 
