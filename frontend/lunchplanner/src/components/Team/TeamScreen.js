@@ -193,31 +193,19 @@ class TeamScreen extends React.Component {
             });
     };
 
-    handleDecline = () => {
-        this.sendAnswer('reject', () => {
-            getHistory().push("/social/");
+    handleLeave = () => {
+        getHistory().push("/social?tab=1");
+        let people = this.state.people;
+        let index = people.indexOf(getUsername());
+        people.splice(index, 1);
+        console.log("people", people);
+        this.setState({
+           people: people,
         });
+        this.sendAnswer('reject');
     };
 
-    handleAccept = () => {
-        let username = getUsername();
-        let invitationAccepted = false;
-        this.state.people.forEach((value) => {
-            if(value.userName === username) {
-                if(value.answer === 0) {
-                    invitationAccepted = true;
-                }
-            }
-        });
-
-        if(invitationAccepted) {
-            this.handleDecline();
-        } else {
-            this.sendAnswer('accept');
-        }
-    };
-
-    sendAnswer = (answer, then) => {
+    sendAnswer = (answer) => {
         let config = {
             headers: {
                 'Content-Type': 'text/plain',
@@ -229,9 +217,6 @@ class TeamScreen extends React.Component {
             .then((response) => {
                 this.loadTeam();
                 //eventListNeedReload();
-                console.log('then: ', then);
-                if(then)
-                    then();
             })
     };
 
@@ -241,7 +226,6 @@ class TeamScreen extends React.Component {
         let name = this.state.name;
         let description = this.state.description;
         let people = this.state.people;
-        let eventId = this.state.teamId;
 
         let admin = "";
         let selectedUsers = [];
@@ -255,14 +239,21 @@ class TeamScreen extends React.Component {
                 return 0;
             }
         });
-        
-        let buttonText = "Leave Team";
-        let barTitle = name;
+
+        let buttonText = "Join Team";
+        let username = getUsername();
+
+        people.forEach((listValue) => {
+            if(listValue.userName === username) {
+                buttonText = "Leave Team";
+            }
+        });
+
 
         return (
             <div>
                 <Dialog
-                    title={barTitle}
+                    title={name}
                     closeUrl="/social?tab=1"
                 >
                     <div className={classes.overButton}>
@@ -291,9 +282,12 @@ class TeamScreen extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <Button variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
-                        {buttonText}
-                        </Button>
+                    <Button variant="raised"
+                    color="secondary"
+                    onClick={this.handleLeave}
+                    className={classes.button}>
+                    {buttonText}
+                </Button>
                 </Dialog>
             </div>
         );
