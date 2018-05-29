@@ -10,6 +10,7 @@ import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.JwtService;
 import group.greenbyte.lunchplanner.security.SessionManager;
+import group.greenbyte.lunchplanner.user.database.Notifications;
 import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -193,6 +194,31 @@ public class UserLogic {
         String response = FirebaseMessaging.getInstance().send(message);
         // Response is a message ID string.
         System.out.println("Successfully sent message: " + response);
+
+    }
+
+    //TODO write tests for this function
+    /**
+     * Get all notifications for user
+     *
+     * @param userName receiver of the notifications
+     * @return
+     * @throws HttpRequestException
+     */
+    public List<Notifications> getNotifications(String userName) throws HttpRequestException{
+        if(userName == null || userName.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
+
+        if(userName.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
+
+        try {
+            return userDao.getNotifications(userName);
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
+
 
     }
 
