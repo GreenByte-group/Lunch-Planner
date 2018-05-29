@@ -95,6 +95,8 @@ public class TeamDaoMySql implements TeamDao {
                 if(teams.get(0).getParentTeam() != null)
                     team.setParentTeam(getTeam(teams.get(0).getParentTeam()));
 
+                team.setInvitations(new HashSet<>(getInvitations(team.getTeamId())));
+
                 return team;
             }
         } catch (Exception e) {
