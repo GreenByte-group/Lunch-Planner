@@ -133,19 +133,47 @@ class Event extends React.Component {
     }
 
     componentWillReceiveProps(newProps) {
-        if(newProps.invited !== undefined || newProps.invited !== this.state.invited) {
+        if(newProps.name !== undefined && newProps.name !== this.state.name) {
+            this.setState({
+                name: newProps.name,
+            });
+        }
+
+        if(newProps.description !== undefined && newProps.description !== this.state.description) {
+            this.setState({
+                description: newProps.description,
+            });
+        }
+
+        if(newProps.location !== undefined && newProps.location !== this.state.location) {
+            this.setState({
+                location: newProps.location,
+            });
+        }
+
+        if(newProps.date !== undefined && newProps.date !== this.state.date) {
+            let date = moment(newProps.date);
+
+            this.setState({
+                date: date,
+                monthDay: date.format('DD MMM'),
+                time: date.format('HH:mm'),
+            });
+        }
+
+        if(newProps.invited !== undefined && newProps.invited !== this.state.invited) {
             this.setState({
                 invited: newProps.invited,
             });
         }
 
-        if(newProps.accepted !== undefined || newProps.accepted !== this.state.accepted) {
+        if(newProps.accepted !== undefined && newProps.accepted !== this.state.accepted) {
             this.setState({
                 accepted: newProps.accepted,
             });
         }
 
-        if(newProps.people !== undefined || newProps.people !== this.state.people) {
+        if(newProps.people !== undefined && newProps.people !== this.state.people) {
             let invitations = newProps.people;
             let people = "";
 
@@ -189,6 +217,10 @@ class Event extends React.Component {
         if(accepted)
             classesText = classes.textSelected;
 
+        let eventName = name;
+        if(name !== location)
+            eventName += " @ " + location;
+
         return (
             <Link className={classes.link} to={{pathname:`/event/${this.state.id}`, query:{
                     eventName: name,
@@ -207,7 +239,7 @@ class Event extends React.Component {
 
                             </div>
                             <div className={classesText}>
-                                <p className={classes.title}>{name}</p>
+                                <p className={classes.title}>{eventName}</p>
                                 <p className={classes.time}>
                                     <Schedule viewBox="0 0 22 22" className={classes.icons}/> {time}
                                 </p>

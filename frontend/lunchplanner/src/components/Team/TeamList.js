@@ -41,7 +41,6 @@ class TeamList extends React.Component {
 
         axios.get(url)
             .then((response) => {
-                console.log(response.data);
                 this.setState({
                     teams: response.data,
                 })

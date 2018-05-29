@@ -80,13 +80,10 @@ class Dialog extends React.Component {
 
     onClose = () => {
         if(this.state.onClose) {
-            console.log("close function");
             this.state.onClose();
         } else if(this.state.closeUrl) {
-            console.log("closeurl");
            getHistory().push(this.state.closeUrl);
         } else {
-            console.log("close go back");
             getHistory().goBack();
         }
     };
@@ -108,8 +105,6 @@ class Dialog extends React.Component {
         if(this.state.imageUrl) {
             classesCloseButton = classes.closeIconAbsolute;
         }
-
-        console.log("Search: " + search);
 
         //TODO zeige text auch wenn ein Bild angezeigt wird
 

@@ -23,12 +23,12 @@ function inviteMember(eventId, member) {
     let string = String(member);
     if(string !== "") {
         (string.split(',')).forEach((oneMember) => {
-            let url = HOST + "/event/" + oneMember + "/invite/event/" + eventId;
-            console.log(url);
-            axios.post(url)
-                .then((response) => {
-                    console.log(response);
-                })
+            if(oneMember) {
+                let url = HOST + "/event/" + oneMember + "/invite/event/" + eventId;
+                axios.post(url)
+                    .then((response) => {
+                    })
+            }
         });
     }
 }

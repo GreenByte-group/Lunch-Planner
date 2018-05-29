@@ -39,17 +39,14 @@ export function init(success, error, onMessage) {
     // Callback fired if Instance ID token is updated.
     messaging.onTokenRefresh(() => {
         messaging.getToken().then((refreshedToken) => {
-            console.log('Token refreshed.');
             // Send Instance ID token to app server.
             sendTokenToServer(refreshedToken);
         }).catch((err) => {
-            console.log('Unable to retrieve refreshed token ', err);
         });
     });
 
     requestPermission(() => {
         messaging.onMessage((payload) => {
-            console.log('Message received. ', payload);
             onMessage(payload);
         });
         success();
@@ -58,11 +55,9 @@ export function init(success, error, onMessage) {
 
 function requestPermission(response, error) {
     messaging.requestPermission().then(() => {
-        console.log('Notification permission granted.');
         permissionGranted = true;
         getToken(response, error);
     }).catch((err) => {
-        console.log('Unable to get permission to notify.', err);
         permissionGranted = false;
         error('Permission denied');
     });
@@ -74,16 +69,13 @@ function getToken(response, error) {
     messaging.getToken().then((currentToken) => {
         if (currentToken) {
             sendTokenToServer(currentToken);
-            console.log('Token: ', currentToken);
             response(currentToken);
         } else {
-            console.log('No Instance ID token available. Request permission to generate one.');
             token = false;
             permissionGranted = false;
             error('Permission denied');
         }
     }).catch((err) => {
-        console.log('An error occurred while retrieving token. ', err);
         token = false;
         error('Could not retrieve token from fcm');
     });
@@ -95,9 +87,7 @@ function sendTokenToServer(tokenToSend) {
     let url = HOST + "/user/fcm";
     axios.post(url, {fcmToken: tokenToSend})
         .then((response) => {
-            console.log('Response: ', response);
         }).catch((error) => {
-           console.log('Error: ', error)
     })
 
     token = tokenToSend;

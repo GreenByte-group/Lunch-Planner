@@ -80,7 +80,6 @@ class NotificationListItem extends React.Component {
     }
 
     clickHandler = (event) => {
-        console.log('Notification clicked: ', event);
         //TODO notification click
     };
 

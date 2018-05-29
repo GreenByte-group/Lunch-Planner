@@ -109,6 +109,7 @@ class EventList extends React.Component {
                                       key={'Event' + listValue.eventId}
                                       id={listValue.eventId}
                                       description={listValue.eventDescription}
+                                      location={listValue.location}
                                       date={listValue.startDate}
                                       background={background}
                                       accepted={accepted}
