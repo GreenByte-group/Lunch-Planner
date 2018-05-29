@@ -7,6 +7,7 @@ import List from "material-ui/List";
 import {withStyles} from "material-ui/styles/index";
 import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
+import {getUsername} from "../authentication/Authentication";
 
 const styles = {
     root: {
@@ -44,10 +45,13 @@ class EventList extends React.Component {
         });
 
         this.loadEvents(this.props.search);
+    }
 
-        // this.setState({
-        //     events: [{eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}, {eventName: 'event'}]
-        // })
+    componentWillReceiveProps(newProps) {
+        if(needReload) {
+            needReload = !needReload;
+            this.loadEvents();
+        }
     }
 
     loadEvents(search) {
@@ -89,13 +93,26 @@ class EventList extends React.Component {
                             background = darkerBackground;
                         showLightBackground = !showLightBackground;
 
+                        let accepted = false;
+                        let invited = false;
+                        let username = getUsername();
+                        listValue.invitations.forEach((value) => {
+                            if(value.userName === username) {
+                                invited = true;
+                                if(value.answer === 0) {
+                                    accepted = true;
+                                }
+                            }
+                        });
+
                         return <Event name={listValue.eventName}
                                       key={'Event' + listValue.eventId}
                                       id={listValue.eventId}
                                       description={listValue.eventDescription}
                                       date={listValue.startDate}
                                       background={background}
-                                      accepted={true}
+                                      accepted={accepted}
+                                      invited={invited}
                                       people={listValue.invitations}
                                       location={listValue.location}
                         />;

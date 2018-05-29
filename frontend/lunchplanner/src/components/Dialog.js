@@ -111,6 +111,8 @@ class Dialog extends React.Component {
 
         console.log("Search: " + search);
 
+        //TODO zeige text auch wenn ein Bild angezeigt wird
+
         return (
                 <DialogMaterial
                     style={{zIndex: this.state.zIndex}}
