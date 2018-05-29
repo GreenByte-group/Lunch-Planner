@@ -209,6 +209,19 @@ public class TeamLogic {
         return teamdao.hasViewPrivileges(teamId, userName);
     }
 
+    public void leave(String userName,int teamId) throws HttpRequestException{
+        if(!isValidName(userName))
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + User.MAX_USERNAME_LENGTH + ", minimum length 1");
+        try {
+            if(teamdao.getTeam(teamId) == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + teamId + ", was not found");
+
+            teamdao.leave(userName, teamId);
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
     private boolean isValidName(String name){
         return name.length() <= User.MAX_USERNAME_LENGTH && name.length() > 0;
     }

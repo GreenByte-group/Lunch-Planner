@@ -210,6 +210,18 @@ public class TeamDaoMySql implements TeamDao {
         }
     }
 
+    @Override
+    public void leave(String username, int teamId) throws DatabaseException {
+        String SQL = "DELETE FROM " + TEAM_MEMBER_TABLE + " WHERE " + TEAM_MEMBER_USER + " = ? AND "
+                + TEAM_MEMBER_TEAM + " = ?";
+
+        try {
+            jdbcTemplate.update(SQL, username, teamId);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
 
     private Team putUserInvited(String userName, int teamId, boolean admin) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);

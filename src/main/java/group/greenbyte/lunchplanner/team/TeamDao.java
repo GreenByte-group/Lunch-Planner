@@ -127,4 +127,12 @@ public interface TeamDao {
      * @throws DatabaseException
      */
     void updateTeamIsPublic(int teamId, boolean isPublic) throws DatabaseException;
+
+    /**
+     * Leave a team
+     * @param username of the teammember who will leave
+     * @param teamId the team the user will leave
+     * @throws DatabaseException
+     */
+    public void leave(String username, int teamId)throws DatabaseException;
 }
