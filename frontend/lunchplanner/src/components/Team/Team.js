@@ -84,8 +84,34 @@ class Team extends React.Component {
             id: props.id,
             people: people,
             current: true,
+            selected: props.selected || false,
+            selectable: props.selectable || false,
         }
     }
+
+    componentWillReceiveProps(newProps) {
+        if(newProps.name && newProps.name !== this.state.name) {
+            console.log('teamname: ' + newProps.name);
+            this.setState ({
+                name: newProps.name,
+            });
+        }
+
+        if(newProps.selected !== undefined && newProps.selected !== null && newProps.selected !== this.state.selected) {
+            this.setState ({
+                selected: newProps.selected,
+            });
+        }
+    }
+    clickHandler = () => {
+        if(this.state.selectable) {
+            this.props.onClick(this.state.name, !this.state.selected);
+
+            this.setState({
+                selected: !this.state.selected,
+            });
+        }
+    };
 
 
     render() {
@@ -93,6 +119,9 @@ class Team extends React.Component {
 
         const background = this.state.background;
         let accepted= this.state.accepted;
+
+        let selected= this.state.selected;
+        let username = this.state.username;
 
         let name = this.state.name;
         let member = this.state.member;

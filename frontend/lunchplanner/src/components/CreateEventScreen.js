@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import Dialog from './Dialog';
-import IconButton from 'material-ui/IconButton';
 import Typography from 'material-ui/Typography';
 import Slide from 'material-ui/transitions/Slide';
 import TextField from "material-ui/es/TextField/TextField";
@@ -20,7 +19,7 @@ import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import "../assets/CreateEventScreen.css"
 import {Link} from "react-router-dom";
 import {Today, Schedule} from "@material-ui/icons";
-import {eventListNeedReload, needReload} from "./Event/EventList";
+import {eventListNeedReload} from "./Event/EventList";
 import moment from "moment";
 
 import {getHistory} from "../utils/HistoryUtils";
@@ -131,6 +130,8 @@ class CreateEventScreen extends React.Component {
             visible: params.get('visible') || false,
             date: params.get('date') || defaultDate,
             invitedUsers: params.get('invitedUsers') || [],
+            invitedTeams: params.get('invitedTeams') || [],
+            invitedTeamMember: params.get('teamMember') || [],
             location: params.get('location') || "",
             error: "",
         };
@@ -139,17 +140,30 @@ class CreateEventScreen extends React.Component {
     parseUrl = () => {
         const params = new URLSearchParams(this.props.location.search);
         let invitedUsers = params.get('invitedUsers');
+        let invitedTeams = params.get('invitedTeams');
+        let teamMember = params.get('teamMember');
         if(invitedUsers != null && invitedUsers !== undefined && invitedUsers !== this.state.invitedUsers) {
             this.setState({
                 invitedUsers: params.get('invitedUsers'),
+            });
+        }
+        if(invitedTeams != null && invitedTeams !== undefined && invitedTeams !== this.state.invitedTeams) {
+            this.setState({
+                invitedTeams: params.get('invitedTeams'),
+            });
+        }
+        if(teamMember != null && teamMember !== undefined && teamMember !== this.state.invitedTeamMember) {
+            this.setState({
+                invitedTeamMember: params.get('teamMember'),
             });
         }
     };
 
     handleAccept = () => {
         let created = this.state.created;
+        let invitedUsers = this.state.invitedUsers + this.state.invitedTeamMember;
 
-        createEvent(this.state.location, this.state.date, this.state.invitedUsers, !this.state.visible,
+        createEvent(this.state.location, this.state.date, invitedUsers, this.state.visible,
             (response) => {
                 if(response.status === 201) {
                     eventListNeedReload();
@@ -196,7 +210,7 @@ class CreateEventScreen extends React.Component {
         this.parseUrl();
         const { classes } = this.props;
         const error = this.state.error;
-
+        let invited = this.state.invitedUsers + "," + this.state.invitedTeams;
         let buttonEnabled = false;
         if(this.state.location)
             buttonEnabled = true;
@@ -263,7 +277,7 @@ class CreateEventScreen extends React.Component {
                                         id="invitation"
                                         label="Participants"
                                         placeholder ="Invite People"
-                                        value={this.state.invitedUsers}
+                                        value={invited}
                                         fullWidth
                                         InputProps={{
                                             startAdornment: <InputAdornment position="start"><PeopleIcon/></InputAdornment>,
