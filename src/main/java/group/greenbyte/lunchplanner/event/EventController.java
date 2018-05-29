@@ -1,5 +1,7 @@
 package group.greenbyte.lunchplanner.event;
 
+
+import com.google.firebase.messaging.FirebaseMessagingException;
 import group.greenbyte.lunchplanner.event.database.BringService;
 import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
@@ -223,7 +225,7 @@ public class EventController {
     @RequestMapping(value = "/{userToInvite}/invite/event/{eventId}", method = RequestMethod.POST,
             produces = MediaType.TEXT_PLAIN_VALUE )
     @ResponseBody
-    public String inviteFriend(@PathVariable("userToInvite") String userToInvite, @PathVariable ("eventId") int eventId, HttpServletResponse response){
+    public String inviteFriend(@PathVariable("userToInvite") String userToInvite, @PathVariable ("eventId") int eventId, HttpServletResponse response) throws FirebaseMessagingException {
         try {
             eventLogic.inviteFriend(SessionManager.getUserName(), userToInvite, eventId);
             response.setStatus(HttpServletResponse.SC_CREATED);
@@ -245,7 +247,7 @@ public class EventController {
     @RequestMapping(value = "/{eventId}/inviteTeam/{teamId}", method = RequestMethod.POST,
             produces = MediaType.TEXT_PLAIN_VALUE )
     @ResponseBody
-    public String inviteTeam(@PathVariable("eventId") int eventId, @PathVariable ("teamId") int teamId, HttpServletResponse response){
+    public String inviteTeam(@PathVariable("eventId") int eventId, @PathVariable ("teamId") int teamId, HttpServletResponse response) throws FirebaseMessagingException {
         try {
             eventLogic.inviteTeam(SessionManager.getUserName(), eventId, teamId);
             response.setStatus(HttpServletResponse.SC_CREATED);
