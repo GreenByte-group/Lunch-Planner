@@ -5,6 +5,7 @@ import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.event.database.EventInvitationDataForReturn;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
+import group.greenbyte.lunchplanner.user.database.Notifications;
 
 import java.util.Date;
 import java.util.List;
@@ -137,6 +138,14 @@ public interface EventDao {
      * @throws DatabaseException when an error happens
      */
     void putService(String creater, int eventId, String food, String description) throws DatabaseException;
+
+    /**
+     *
+     * @param userName
+     * @return
+     * @throws DatabaseException
+     */
+    List<Notifications> getNotifications(String userName) throws DatabaseException;
 
     /**
      *

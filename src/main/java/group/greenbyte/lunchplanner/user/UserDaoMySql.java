@@ -1,6 +1,8 @@
 package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
+import group.greenbyte.lunchplanner.user.database.NotificationDatabase;
+import group.greenbyte.lunchplanner.user.database.Notifications;
 import group.greenbyte.lunchplanner.user.database.User;
 import group.greenbyte.lunchplanner.user.database.UserDatabase;
 import org.hibernate.dialect.Database;
@@ -60,6 +62,42 @@ public class UserDaoMySql implements UserDao {
             throw new DatabaseException(e);
         }
     }
+
+    @Override
+    public List<Notifications> getNotifications(String userName) throws DatabaseException{
+        String SQL = " SELECT * FROM " + USER_NOTIFICATION_TABLE + " WHERE " + USER_NOTIFICATION_BUILDER + " = ?";
+
+//        List<BringServiceDatabase> serviceList = jdbcTemplate.query(SQL,
+//                new BeanPropertyRowMapper<>(BringServiceDatabase.class),
+//                eventId);
+//
+//        List<BringService> serviceReturn = new ArrayList<>(serviceList.size());
+//        for(BringServiceDatabase bringServiceDatabase : serviceList){
+//            BringService bringService = bringServiceDatabase.getBringService();
+//            serviceReturn.add(bringService);
+//        }
+//
+//        return serviceReturn;
+//    }catch(Exception e){
+//        throw new DatabaseException(e);
+//    }
+//
+        try{
+        List<NotificationDatabase> notificationList = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(NotificationDatabase.class),
+                userName);
+
+        List<Notifications> notificationReturn = new ArrayList<>(notificationList.size());
+        for (NotificationDatabase noti : notificationList) {
+            Notifications noti2 = noti.getNotification();
+            notificationReturn.add(noti2);
+        }
+        return notificationReturn;
+        }catch(Exception e){
+            throw new DatabaseException(e);
+        }
+    }
+
+
 
     @Override
     public void saveNotificationIntoDatabase(String receiver, String title, String description
