@@ -98,6 +98,7 @@ class TeamInvitation extends React.Component {
         }
 
         if(newProps.selected !== undefined && newProps.selected !== null && newProps.selected !== this.state.selected) {
+            console.log('newprops selected: ' + this.state.teamname, newProps);
             this.setState ({
                 selected: newProps.selected,
             });

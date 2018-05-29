@@ -65,6 +65,8 @@ class TeamInvitationList extends React.Component {
         let teams = this.state.teams;
         let selectedTeams = this.state.selectedTeams;
 
+        console.log('selected teams: ', selectedTeams);
+
         return (
             <List
                 className={classes.list}
@@ -72,7 +74,7 @@ class TeamInvitationList extends React.Component {
                 {teams.map((listValue) => {
                     return <TeamInvitation
                         selectable={this.state.selectable}
-                        selected={selectedTeams.includes(listValue.teamName)}
+                        selected={selectedTeams.some((value) => value.teamname === listValue.teamName)}
                         teamname={listValue.teamName}
                         teamMember={listValue.invitations}
                         onClick={this.clickHandler}
