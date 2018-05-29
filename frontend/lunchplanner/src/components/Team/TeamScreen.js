@@ -12,6 +12,7 @@ import InvitationButton from "../Event/InvitationButton";
 import {getHistory} from "../../utils/HistoryUtils"
 import SecretIcon from "@material-ui/icons/es/Https";
 import Divider from "material-ui/es/Divider/Divider";
+import UserList from "../User/UserList";
 
 
 function Transition(props) {
@@ -110,8 +111,16 @@ const styles = {
         width: '100%',
     },
     member:{
-
-    }
+        marginLeft: '16px',
+        marginTop: '10px',
+    },
+    overButton: {
+        height: '100%',
+        marginBottom: '56px',
+        overflowY: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
+    },
 };
 
 const buttonStyle = {
@@ -246,67 +255,45 @@ class TeamScreen extends React.Component {
                 return 0;
             }
         });
-
-        let username = getUsername();
-        let invited = false;
-        let accepted = false;
-        let buttonText = "Join Event";
+        
+        let buttonText = "Leave Team";
         let barTitle = name;
-
-        people.forEach((listValue) => {
-            if(listValue.userName === username) {
-                if(listValue.answer !== 0) {
-                    invited = true;
-                    barTitle = "Invitation...";
-                } else {
-                    accepted = true;
-                    buttonText = "Leave Event";
-                }
-            }
-
-            if(listValue.answer === 0) {
-                selectedUsers.push(listValue.userName);
-            }
-
-            if(listValue.admin) {
-                admin = listValue.userName;
-            }
-        });
 
         return (
             <div>
                 <Dialog
                     title={barTitle}
-                    closeUrl="/social"
+                    closeUrl="/social?tab=1"
                 >
-                    <div className={classes.content}>
-                        <div className={classes.information}>
-                            <div className={classes.picture}/>
-                            <div className={classes.teamName}>
-                                <p className={classes.fontSmall}>Team Name</p>
-                                <p className={classes.fontBig}>{name}</p>
+                    <div className={classes.overButton}>
+                        <div className={classes.content}>
+                            <div className={classes.information}>
+                                <div className={classes.picture}/>
+                                <div className={classes.teamName}>
+                                    <p className={classes.fontSmall}>Team Name</p>
+                                    <p className={classes.fontBig}>{name}</p>
+                                </div>
+                                <div className={classes.description}>
+                                    <p className={classes.fontSmall}>Description</p>
+                                    <p>{description}</p>
+                                </div>
+                                <div className={classes.secretTeam}>
+                                    <SecretIcon/>
+                                    <p className={classes.secretTeamText}>Secret team. Only you can see the activity of this team.</p>
+                                </div>
                             </div>
-                            <div className={classes.description}>
-                                <p className={classes.fontSmall}>Description</p>
-                                <p>{description}</p>
-                            </div>
-                            <div className={classes.secretTeam}>
-                                <SecretIcon/>
-                                <p className={classes.secretTeamText}>Secret team. Only you can see the activity of this team.</p>
+                            <Divider className={classes.divider}/>
+                            <div className={classes.member}>
+                                <p className={classes.fontBig}> Team Member ({people.length})</p>
+                                <UserList
+                                    users={people}
+                                />
                             </div>
                         </div>
                     </div>
-                    <Divider className={classes.divider}/>
-                    <div className={classes.member}>
-                        <p className={classes.fontBig}> Team Member ({people.length})</p>
-                    </div>
-                    {
-                        (invited)
-                            ? <InvitationButton decline={this.handleDecline} join={this.handleAccept} class={classes.buttonInvitation} />
-                            : <Button variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
-                                {buttonText}
-                            </Button>
-                    }
+                    <Button variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
+                        {buttonText}
+                        </Button>
                 </Dialog>
             </div>
         );
