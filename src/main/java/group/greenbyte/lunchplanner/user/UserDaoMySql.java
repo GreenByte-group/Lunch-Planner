@@ -13,10 +13,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class UserDaoMySql implements UserDao {
@@ -38,6 +35,7 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_NOTIFICATION_BUILDER = "builder";
     public static final String USER_NOTIFICATION_LINK = "link";
     public static final String USER_NOTIFICATION_PICTURE = "picture";
+    public static final String USER_NOTIFICATION_DATE = "date";
 
     @Autowired
     public UserDaoMySql(JdbcTemplate jdbcTemplateObject) {
@@ -101,7 +99,7 @@ public class UserDaoMySql implements UserDao {
 
     @Override
     public void saveNotificationIntoDatabase(String receiver, String title, String description
-            ,String builder, String linkToClick, String picturePath) throws DatabaseException{
+            , String builder, String linkToClick, String picturePath) throws DatabaseException{
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(USER_NOTIFICATION_TABLE).usingGeneratedKeyColumns(USER_NOTIFICATION_ID);
@@ -112,6 +110,8 @@ public class UserDaoMySql implements UserDao {
         parameters.put(USER_NOTIFICATION_RECEIVER,receiver);
         parameters.put(USER_NOTIFICATION_LINK,linkToClick);
         parameters.put(USER_NOTIFICATION_PICTURE,picturePath);
+        parameters.put(USER_NOTIFICATION_DATE,new Date());
+
 
         try {
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));

@@ -1,6 +1,7 @@
 package group.greenbyte.lunchplanner.user.database;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 public class Notifications {
@@ -13,6 +14,7 @@ public class Notifications {
     @JoinColumn(name="userName")
     private User receiver;
 
+    private Date date;
     private String titel;
     private String message;
     private String builder;
@@ -83,5 +85,13 @@ public class Notifications {
 
     public void setNotificationId(Integer notificationId) {
         this.notificationId = notificationId;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

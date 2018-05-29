@@ -1,8 +1,11 @@
 package group.greenbyte.lunchplanner.user.database;
 
+import java.util.Date;
+
 public class NotificationDatabase {
 
     private int notificationId;
+    private Date date;
     private String titel;
     private String message;
     private String receiver;
@@ -19,6 +22,7 @@ public class NotificationDatabase {
         notification.setPicture(this.picture);
         notification.setReceiverName(this.receiver);
         notification.setNotificationId(this.notificationId);
+        notification.setDate(this.date);
 
         return notification;
     }
@@ -53,5 +57,9 @@ public class NotificationDatabase {
 
     public void setTitel(String titel) {
         this.titel = titel;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }
