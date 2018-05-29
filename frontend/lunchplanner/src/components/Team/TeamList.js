@@ -7,6 +7,7 @@ import List from "material-ui/List";
 import {withStyles} from "material-ui/styles/index";
 import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
+import {setAuthenticationHeader} from "../authentication/Authentication";
 
 const styles = {
     root: {
@@ -27,6 +28,7 @@ export function teamListNeedReload() {
 class TeamList extends React.Component {
 
     constructor(props) {
+        setAuthenticationHeader();
         super(props);
         this.state = {
             teams: [],

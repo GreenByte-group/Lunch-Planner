@@ -133,7 +133,7 @@ class TeamScreen extends React.Component {
 
     constructor(props) {
         super();
-
+        setAuthenticationHeader();
         this.state = {
             teamId: 0,
             open: true,
@@ -142,7 +142,7 @@ class TeamScreen extends React.Component {
             description: "",
             people:[],
         };
-        setAuthenticationHeader();
+
     }
 
     componentDidMount() {
@@ -212,7 +212,6 @@ class TeamScreen extends React.Component {
         let url = HOST + '/team/' + this.state.teamId + '/leave';
         axios.delete(url)
             .then(() => {
-                this.loadTeam();
                 teamListNeedReload();
             })
     };
