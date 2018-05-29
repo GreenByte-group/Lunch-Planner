@@ -1,6 +1,8 @@
 package group.greenbyte.lunchplanner.event;
 
+
 import com.google.firebase.messaging.FirebaseMessagingException;
+import group.greenbyte.lunchplanner.event.database.BringService;
 import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
@@ -8,10 +10,10 @@ import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.team.TeamDao;
 import group.greenbyte.lunchplanner.team.TeamLogic;
 import group.greenbyte.lunchplanner.team.database.TeamMemberDataForReturn;
+import group.greenbyte.lunchplanner.security.SessionManager;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +58,12 @@ public class EventLogic {
         //TODO eventChanged
     }
 
+
+    int createEvent(String userName, String eventName, String eventDescription,
+                    String location, Date timeStart) throws HttpRequestException {
+        return createEvent(userName, eventName, eventDescription, location, timeStart, false);
+    }
+
     /**
      * Create an event. At least the eventName and a location or timeStart is needed
      *
@@ -69,7 +77,7 @@ public class EventLogic {
      * or an Database error happens
      */
     int createEvent(String userName, String eventName, String eventDescription,
-                    String location, Date timeStart) throws HttpRequestException{
+                    String location, Date timeStart, boolean visible) throws HttpRequestException{
 
         if(userName == null || userName.length()==0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is empty");
@@ -96,7 +104,7 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Location is too long, maximum length: " + Event.MAX_LOCATION_LENGTH);
 
         try {
-            return eventDao.insertEvent(userName, eventName, eventDescription, location, timeStart)
+            return eventDao.insertEvent(userName, eventName, eventDescription, location, timeStart, visible)
                     .getEventId();
         }catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
@@ -467,6 +475,37 @@ public class EventLogic {
 
             return comments;
 
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+
+
+    public void putService(int event_id, String food, String description) throws HttpRequestException{
+        try{
+            eventDao.putService(SessionManager.getUserName(),event_id,food,description);
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    public List<BringService> getService(int eventId) throws HttpRequestException{
+        try {
+//            if(eventId == null)
+//                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "eventId is null "+eventId);
+
+            List<BringService> serviceList = eventDao.getService(eventId);
+            return serviceList;
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    public void updateBringservice(int eventId, String accepter, int serviceId) throws HttpRequestException{
+        try{
+            //TODO check ob schon jemand anderes eingetragen ist
+            eventDao.updateBringservice(eventId,accepter,serviceId);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }

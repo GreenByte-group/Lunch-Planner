@@ -34,8 +34,21 @@ class ServiceList extends React.Component {
 
         this.getServiceList(props.eventId);
     }
+
+    componentWillReceiveProps(newProps) {
+        if(newProps.eventId !== null && newProps.eventId !== undefined && newProps.eventId !== this.state.eventId) {
+            this.setState({
+                eventId: newProps.eventId,
+            });
+            this.getServiceList(newProps.eventId);
+        }
+    }
+
     getServiceList = (eventId) => {
-        let url = HOST + "/event/" + this.state.eventId + "/service";
+        if(!eventId)
+            eventId = this.state.eventId;
+
+        let url = HOST + "/event/" + eventId + "/service";
         axios.get(url)
             .then((response) => {
                 this.setState({
@@ -63,7 +76,7 @@ class ServiceList extends React.Component {
                                 serviceId={listValue.serviceId}
                                 food={listValue.food}
                                 description={listValue.description}
-                                creator={listValue.creator}
+                                creator={listValue.createrName}
                                 accepter={listValue.accepter}
                             />
                         )

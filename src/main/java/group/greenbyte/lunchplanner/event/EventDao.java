@@ -1,5 +1,6 @@
 package group.greenbyte.lunchplanner.event;
 
+import group.greenbyte.lunchplanner.event.database.BringService;
 import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.event.database.EventInvitationDataForReturn;
@@ -26,7 +27,8 @@ public interface EventDao {
                       String eventName,
                       String description,
                       String location,
-                      Date timeStart) throws DatabaseException;
+                      Date timeStart,
+                      boolean isPublic) throws DatabaseException;
 
     /**
      * Gets the event with location but without usersInvited and teamsVisible
@@ -125,6 +127,32 @@ public interface EventDao {
      * @throws DatabaseException when an error happens
      */
     List<Event> findEventsUserInvited(String userName, String searchword) throws DatabaseException;
+
+    /**
+     *
+     * @param creater name of the service creater (i know its creator, but IDGAF)
+     * @param eventId id of the event
+     * @param food name of the food to bring with
+     * @param description description of special wishes
+     * @throws DatabaseException when an error happens
+     */
+    void putService(String creater, int eventId, String food, String description) throws DatabaseException;
+
+    /**
+     *
+     * @param eventId id of the event
+     * @return servicelist of event
+     * @throws DatabaseException when an error happens with statuscode and message
+     */
+    List<BringService> getService(int eventId) throws DatabaseException;
+
+    /**
+     *
+     * @param eventId
+     * @param creater
+     * @param serviceId
+     */
+    void updateBringservice(int eventId, String accepter, int serviceId) throws DatabaseException;
 
     void putUserInviteToEventAsAdmin (String userToInviteName, int eventId) throws DatabaseException;
 

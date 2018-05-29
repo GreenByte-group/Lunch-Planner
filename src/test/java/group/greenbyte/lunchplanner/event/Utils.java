@@ -22,7 +22,7 @@ public class Utils {
         long timeEnd = timeStart + 10000;
         String location = "Test";
 
-        EventJson event = new EventJson(createString(50), "", location, new Date(timeStart));
+        EventJson event = new EventJson(createString(50), "", location, new Date(timeStart), false);
 
         String json = getJsonFromObject(event);
 

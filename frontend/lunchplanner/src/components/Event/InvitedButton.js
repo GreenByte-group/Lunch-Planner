@@ -7,7 +7,8 @@ const styles = theme => ({
         float: 'right',
     },
     button: {
-        border: '2px solid',
+        color: '#A4A4A4',
+        border: 'none',
         borderRadius: '50%',
         height: '32px',
         width: '32px',
@@ -22,7 +23,7 @@ const styles = theme => ({
         fontSize: '11px',
         fontWeight: '500',
         lineHeight: '16px',
-        color: theme.palette.primary.main,
+        color: '#A4A4A4',
         marginLeft: 'auto',
         marginRight: '11px',
         float: 'left',

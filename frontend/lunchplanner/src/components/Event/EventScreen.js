@@ -14,6 +14,10 @@ import CommentsIcon from '@material-ui/icons/Message';
 import UserList from "../User/UserList";
 import {Button} from "material-ui";
 import ServiceList from "./ServiceList";
+import {getUsername} from "../authentication/Authentication";
+import InvitationButton from "./InvitationButton";
+import {eventListNeedReload} from "./EventList";
+import {getHistory} from "../../utils/HistoryUtils";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -98,9 +102,12 @@ function Transition(props) {
             height: '56px',
             zIndex: '10000',
         },
+        buttonInvitation: {
+            position: "fixed",
+            zIndex: '10000',
+        },
         serviceListLink: {
             minHeight: '171px',
-            height: '100%',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
@@ -148,7 +155,7 @@ class EventScreen extends React.Component {
             date: "",
             description: "",
             people:[],
-            accepted: true,
+            accepted: false,
         };
     }
 
@@ -191,22 +198,70 @@ class EventScreen extends React.Component {
             console.log(people);
         } else {
             console.log("Query does not exists");
-            let url = HOST + "/event/" + eventId;
-
-            axios.get(url)
-                .then((response) => {
-                    this.setState({
-                        eventId: response.data.eventId,
-                        name: response.data.eventName,
-                        description: response.data.eventDescription,
-                        location: response.data.location,
-                        people: response.data.invitations,
-                        date: response.data.startDate,
-                    })
-                });
+            this.loadEvent(eventId);
         }
     }
 
+    loadEvent = (eventId) => {
+        if(!eventId)
+            eventId = this.state.eventId;
+
+        let url = HOST + "/event/" + eventId;
+
+        axios.get(url)
+            .then((response) => {
+                this.setState({
+                    eventId: response.data.eventId,
+                    name: response.data.eventName,
+                    description: response.data.eventDescription,
+                    location: response.data.location,
+                    people: response.data.invitations,
+                    date: response.data.startDate,
+                })
+            });
+    };
+
+    handleDecline = () => {
+        this.sendAnswer('reject', () => {
+            getHistory().push("/event/");
+        });
+    };
+
+    handleAccept = () => {
+        let username = getUsername();
+        let invitationAccepted = false;
+        this.state.people.forEach((value) => {
+            if(value.userName === username) {
+                if(value.answer === 0) {
+                    invitationAccepted = true;
+                }
+            }
+        });
+
+        if(invitationAccepted) {
+            this.handleDecline();
+        } else {
+            this.sendAnswer('accept');
+        }
+    };
+
+    sendAnswer = (answer, then) => {
+        let config = {
+            headers: {
+                'Content-Type': 'text/plain',
+            }
+        };
+
+        let url = HOST + '/event/' + this.state.eventId + '/reply';
+        axios.put(url, answer, config)
+            .then((response) => {
+                this.loadEvent();
+                eventListNeedReload();
+                console.log('then: ', then);
+                if(then)
+                    then();
+            })
+    };
 
     render() {
         const { classes } = this.props;
@@ -225,8 +280,34 @@ class EventScreen extends React.Component {
 
         let admin = "";
         let selectedUsers = [];
+
+        people.sort((a, b) => {
+            if(a.answer === 0 && b.answer !== 0) {
+                return -1;
+            } else if(a.answer !== 0 && b.answer === 0) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+
+        let username = getUsername();
+        let invited = false;
+        let accepted = false;
+        let buttonText = "Join Event";
+        let barTitle = name;
+
         people.forEach((listValue) => {
-            console.log(listValue);
+            if(listValue.userName === username) {
+                if(listValue.answer !== 0) {
+                    invited = true;
+                    barTitle = "Invitation...";
+                } else {
+                    accepted = true;
+                    buttonText = "Leave Event";
+                }
+            }
+
             if(listValue.answer === 0) {
                 selectedUsers.push(listValue.userName);
             }
@@ -237,11 +318,10 @@ class EventScreen extends React.Component {
         });
 
         //TODO anzahl kommentare
-        
         return (
             <div>
                 <Dialog
-                    title={name}
+                    title={barTitle}
                     closeUrl="/event"
                     imageUrl="https://greenbyte.group/assets/images/logo.png"
                 >
@@ -252,28 +332,43 @@ class EventScreen extends React.Component {
                                 <p className={classes.fontBig}>{name}</p>
                                 <p className={classes.fontSmall}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
                             </div>
-                            <Link to={{pathname:`/event/${eventId}/comments`}}>
-                                <div className={classes.headerComment}>
-                                    <CommentsIcon className={classes.commentIcon} />
-                                    <p className={classes.commentText}>Comments</p>
-                                </div>
-                            </Link>
+                            {
+                                (invited)
+                                    ? ''
+                                    :   <Link to={{pathname:`/event/${eventId}/comments`}}>
+                                            <div className={classes.headerComment}>
+                                            <CommentsIcon className={classes.commentIcon} />
+                                                <p className={classes.commentText}>Comments</p>
+                                            </div>
+                                        </Link>
+                            }
                         </div>
                         <div className={classes.invitations}>
                             <p className={classes.invitaionsHeader}>Invited People ({people.length})</p>
-                            <UserList selectedUsers={selectedUsers} users={people} selectable={false} />
+                            <UserList selectedUsers={selectedUsers} othersInvited={true} users={people} selectable={false} />
                         </div>
-                        <ServiceList eventId={eventId} />
-                        <Link className={classes.serviceListLink} to={{pathname:`/event/${eventId}/service`}}>
-                            <div className={classes.serviceList}>
-                                <ListIcon className={classes.serviceListIcon} />
-                                <p>Add a task</p>
-                            </div>
-                        </Link>
+
+                        {
+                            (invited)
+                                ? ''
+                                : <div>
+                                    <ServiceList eventId={eventId} />
+                                    <Link className={classes.serviceListLink} to={{pathname:`/event/${eventId}/service`}}>
+                                        <div className={classes.serviceList}>
+                                            <ListIcon className={classes.serviceListIcon} />
+                                            <p>Add a task</p>
+                                        </div>
+                                    </Link>
+                                </div>
+                        }
                     </div>
-                    <Button variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
-                        Join Event
-                    </Button>
+                    {
+                        (invited)
+                            ? <InvitationButton decline={this.handleDecline} join={this.handleAccept} class={classes.buttonInvitation} />
+                            : <Button variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
+                                {buttonText}
+                            </Button>
+                    }
                 </Dialog>
             </div>
         );

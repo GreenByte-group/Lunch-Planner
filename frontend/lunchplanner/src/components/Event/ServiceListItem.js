@@ -70,20 +70,22 @@ class ServiceListItem extends React.Component {
     }
 
     acceptedClicked = () => {
-        this.setState({
-            accepter: getUsername(),
-        });
+        if(!this.state.accepter) {
+            this.setState({
+                accepter: getUsername(),
+            });
 
-        let url = HOST + "/event/" + this.state.eventId + "/service/" + this.state.serviceId;
-        axios.post(url)
-            .then((response) => {
-                if(response.status !== 204) {
-                    this.setState({
-                        error: response.response.data,
-                        accepter: null,
-                    })
-                }
-            })
+            let url = HOST + "/event/" + this.state.eventId + "/service/" + this.state.serviceId;
+            axios.post(url)
+                .then((response) => {
+                    if (response.status !== 204) {
+                        this.setState({
+                            error: response.response.data,
+                            accepter: null,
+                        })
+                    }
+                })
+        }
     };
 
     render() {
