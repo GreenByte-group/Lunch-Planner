@@ -9,9 +9,9 @@ import { createMuiTheme } from 'material-ui/styles'
 import CreateEventScreen from "./components/CreateEventScreen";
 import SelectUserScreen from "./components/User/SelectUserScreen";
 import {getMuiTheme} from "material-ui-old/styles/index";
+
+// import Manp from "./components/GoogleMap/Map";
 import SimpleMap from "./components/GoogleMap/SimpleMap";
-import GoogleMapsContainer from "./components/GoogleMap/GoogleMapsContainer";
-import LazyMap from "./components/GoogleMap/LazyMap";
 
 const oldTheme = getMuiTheme({
     palette: {
@@ -41,6 +41,8 @@ export const PrivateRoute = ({ component: Component, ...rest }) => (
 );
 
 class App extends React.Component {
+
+
 
     render() {
         return (

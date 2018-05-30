@@ -1,13 +1,8 @@
 import React from 'react'
 import GoogleMapReact from 'google-map-react';
-import Dialog from 'material-ui/Dialog';
-import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
+import Dialog from ''
 
-
-
-
-const AnyReactComponent = ({ text }) => <div>{text}</div>;
-
+const SimpleMap = ({ text }) => <div>{text}</div>;
 
 
 class SimpleMap extends React.Component {
@@ -25,35 +20,35 @@ class SimpleMap extends React.Component {
     }
 
 
-    state = {
-        showingInfoWindow: false,
-        activeMarker: {},
-        selectedPlace: {},
-    };
-
-    handleOpenModal () {
-        this.setState({ showModal: true });
-    }
-
-    handleCloseModal () {
-        this.setState({ showModal: false });
-    }
-
-    onMarkerClick (props, marker, e) {
-        this.setState({
-            selectedPlace: props,
-            activeMarker: marker,
-            showingInfoWindow: true
-        });}
-
-    onMapClicked = (props) => {
-        if (this.state.showingInfoWindow) {
-            this.setState({
-                showingInfoWindow: false,
-                activeMarker: null
-            })
-        }
-    };
+    // state = {
+    //     showingInfoWindow: false,
+    //     activeMarker: {},
+    //     selectedPlace: {},
+    // };
+    //
+    // handleOpenModal () {
+    //     this.setState({ showModal: true });
+    // }
+    //
+    // handleCloseModal () {
+    //     this.setState({ showModal: false });
+    // }
+    //
+    // onMarkerClick (props, marker, e) {
+    //     this.setState({
+    //         selectedPlace: props,
+    //         activeMarker: marker,
+    //         showingInfoWindow: true
+    //     });}
+    //
+    // onMapClicked = (props) => {
+    //     if (this.state.showingInfoWindow) {
+    //         this.setState({
+    //             showingInfoWindow: false,
+    //             activeMarker: null
+    //         })
+    //     }
+    // };
 
 
     static defaultProps = {
@@ -65,31 +60,22 @@ class SimpleMap extends React.Component {
     };
 
     render() {
-
-
         return (
             <div>
                 <Dialog fullScreen
                     open={this.state.open}>
-                    <div style={{ height: '50%', width: '70%' }}>
-
-
+                    <div style={{ height: '80%', width: '80%' }}>
                         <GoogleMapReact
-                        bootstrapURLKeys={{ key: "AIzaSyBxwL_2v8uEcq3ItG-gNI21NnSWgekJGNs" }}
-                        defaultCenter={this.props.center}
-                        defaultZoom={this.props.zoom}>
+                            bootstrapURLKeys={{ key: "AIzaSyBxwL_2v8uEcq3ItG-gNI21NnSWgekJGNs" }}
+                            defaultCenter={this.props.center}
+                            defaultZoom={this.props.zoom}>
 
-                            <Marker
-                                title={'ANNA'}
-                                name={'CAN'}
-                                onclick = {this.onMarkerClick}
-                                lat={ 49.578839  }
-                                lng={ 8.675512 }
-                                text={'AAAAA'}/>
-
-
-                        </GoogleMapReact>
-
+                            <SimpleMap
+                                lat={49.4677562}
+                                len={8.506636}
+                                text={'HS MANNHEIM'}
+                            />
+                         </GoogleMapReact>
                     </div>
                 </Dialog>
             </div>
