@@ -44,7 +44,7 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_NOTIFICATIONOPTIONS_OPTION2_DATE = "date";
     public static final String USER_NOTIFICATIONOPTIONS_OPTION3 = "blocked_timeInterval";
     public static final String USER_NOTIFICATIONOPTIONS_OPTION3_START = "start";
-    public static final String USER_NOTIFICATIONOPTIONS_OPTION3_END = "notificationOptions";
+    public static final String USER_NOTIFICATIONOPTIONS_OPTION3_END = "end";
 
 
 

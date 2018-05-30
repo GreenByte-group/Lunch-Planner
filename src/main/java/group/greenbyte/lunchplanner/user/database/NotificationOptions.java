@@ -34,8 +34,8 @@ public class NotificationOptions {
             return false;
         }
 
-        if (isSameDay()) {
-            return false;
+        if (option2BlockedToday) {
+            return isSameDay();
         }
 
         if (option3TimeInterval) {
