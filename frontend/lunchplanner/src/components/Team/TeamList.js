@@ -6,6 +6,7 @@ import List from "material-ui/List";
 import {withStyles} from "material-ui/styles/index";
 import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
+import {getTeams} from "./TeamFunctions";
 
 const styles = {
     root: {

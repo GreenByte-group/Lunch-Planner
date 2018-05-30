@@ -11,7 +11,7 @@ import {getHistory} from "../../utils/HistoryUtils"
 import SecretIcon from "@material-ui/icons/es/Https";
 import Divider from "material-ui/es/Divider/Divider";
 import UserList from "../User/UserList";
-import {getTeam} from "./TeamFunctions";
+import {getTeam, replyToTeam} from "./TeamFunctions";
 
 
 function Transition(props) {
