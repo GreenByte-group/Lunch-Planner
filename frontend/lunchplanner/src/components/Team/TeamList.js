@@ -8,11 +8,13 @@ import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
 import {getTeams} from "./TeamFunctions";
 
+
 export let needReload = false;
 
 export function teamListNeedReload() {
     needReload = true;
 }
+
 
 const styles = {
     root: {

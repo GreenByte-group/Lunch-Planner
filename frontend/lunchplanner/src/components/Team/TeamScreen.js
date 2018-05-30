@@ -183,8 +183,8 @@ class TeamScreen extends React.Component {
                 name: response.data.teamName,
                 description: response.data.description,
                 people: response.data.invitations,
+
             });
-            console.log("invitations", this.state.people);
         })
     };
 
