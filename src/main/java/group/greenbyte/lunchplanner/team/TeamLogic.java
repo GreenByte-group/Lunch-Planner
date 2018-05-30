@@ -83,10 +83,6 @@ public class TeamLogic {
         return teamdao.hasViewPrivileges(teamId, userName);
     }
 
-    private boolean hasRootPrivileges(String userName, int teamId) throws DatabaseException {
-        return teamdao.hasAdminPrivileges(teamId, userName);
-    }
-
     /**
      * Invite user to a team
      *
@@ -106,7 +102,7 @@ public class TeamLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username of invited user is not valid, maximun length" + User.MAX_USERNAME_LENGTH + ", minimum length 1");
 
         try{
-            if(!hasRootPrivileges(username, teamId))
+            if(!hasAdminPrivileges(teamId, username))
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have write access to this team");
 
             teamdao.addUserToTeam(teamId, userToInvite);
@@ -188,6 +184,50 @@ public class TeamLogic {
     }
 
     /**
+     * Update the name of a team
+     *
+     * @param userName who wants to change the name
+     * @param teamId team to change
+     * @param name name to change
+     */
+    public void updateName(String userName, int teamId, String name) throws HttpRequestException {
+        try {
+            if(name == null || name.length() > Team.MAX_TEAMNAME_LENGHT || name.length() == 0)
+                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is too long or empty ");
+
+            if(!hasAdminPrivileges(teamId, userName)) {
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "User: " + userName + " is no admin of this team");
+            }
+
+            teamdao.updateName(teamId, name);
+        } catch (DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    /**
+     * Update the description of a team
+     *
+     * @param userName who wants to change the description
+     * @param teamId team to change
+     * @param description description to change
+     */
+    public void updateDescription(String userName, int teamId, String description) throws HttpRequestException {
+        try {
+            if(description == null || description.length() > Team.MAX_DESCRIPTION_LENGHT || description.length() == 0)
+                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Description is too long or empty ");
+
+            if(!hasAdminPrivileges(teamId, userName)) {
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "User: " + userName + " is no admin of this team");
+            }
+
+            teamdao.updateDescription(teamId, description);
+        } catch (DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    /**
      * Checks if a user has privileges to change the team object
      *
      * @param teamId id of the team to check
@@ -224,4 +264,5 @@ public class TeamLogic {
     public void setUserLogic(UserLogic userLogic) {
         this.userLogic = userLogic;
     }
+
 }
