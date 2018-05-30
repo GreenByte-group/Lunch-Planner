@@ -9,14 +9,6 @@ import FloatingActionButton from "../FloatingActionButton";
 import {setAuthenticationHeader} from "../authentication/Authentication";
 import {getTeams} from "./TeamFunctions";
 
-
-export let needReload = false;
-
-export function teamListNeedReload() {
-    needReload = true;
-}
-
-
 const styles = {
     root: {
         height: '100%',

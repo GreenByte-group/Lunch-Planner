@@ -5,8 +5,6 @@ import Slide from 'material-ui/transitions/Slide';
 import Dialog from "../Dialog";
 import {Button} from "material-ui";
 import {getUsername, setAuthenticationHeader} from "../authentication/Authentication";
-import InvitationButton from "../Event/InvitationButton";
-import {teamListNeedReload} from "./TeamList";
 import {getHistory} from "../../utils/HistoryUtils"
 import SecretIcon from "@material-ui/icons/es/Https";
 import Divider from "material-ui/es/Divider/Divider";
@@ -14,6 +12,8 @@ import UserList from "../User/UserList";
 import {getTeam, replyToTeam, changeTeamDescription,changeTeamName} from "./TeamFunctions";
 import {teamListNeedReload} from "./TeamList";
 import TextFieldEditing from "../editing/TextFieldEditing";
+import axios from "axios";
+import {HOST} from "../../Config";
 
 
 function Transition(props) {
