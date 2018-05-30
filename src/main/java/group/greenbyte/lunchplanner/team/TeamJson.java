@@ -12,6 +12,12 @@ public class TeamJson implements Serializable {
 
     }
 
+    public TeamJson(int parent, String teamName, String description){
+        this.parent = parent;
+        this.teamName = teamName;
+        this.description = description;
+    }
+
     public TeamJson(int parent, String teamName, String description, boolean visible){
         this.parent = parent;
         this.teamName = teamName;

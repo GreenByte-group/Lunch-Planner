@@ -48,7 +48,6 @@ public class UserController {
     }
 
     /**
-     * TODO write tests for this
      * Set the fcm (firebase cloud messaging) token for push notifications
      *
      * @return error message or nothing

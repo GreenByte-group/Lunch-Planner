@@ -3,7 +3,7 @@ package group.greenbyte.lunchplanner.event.database;
 public class BringServiceDatabase {
 
     private int serviceId;
-    private int event_Id;
+    private int eventId;
     private String food;
     private String userName;
     private String accepter;
@@ -13,8 +13,8 @@ public class BringServiceDatabase {
         BringService bringService = new BringService();
         bringService.setServiceId(this.serviceId);
         bringService.setFood(this.food);
-        bringService.setEvent_ID(this.event_Id);
-        bringService.setCreaterName(this.userName);
+        bringService.setEventId(this.eventId);
+        bringService.setCreatorName(this.userName);
         bringService.setAccepter(this.accepter);
         bringService.setDescription(this.description);
 
@@ -26,8 +26,8 @@ public class BringServiceDatabase {
         this.serviceId = serviceId;
     }
 
-    public void setEvent_Id(int event_Id) {
-        this.event_Id = event_Id;
+    public void setEventId(int eventId) {
+        this.eventId = eventId;
     }
 
     public void setAccepter(String accepter) {
