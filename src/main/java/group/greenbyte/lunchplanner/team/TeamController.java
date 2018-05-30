@@ -41,6 +41,24 @@ public class TeamController {
     }
 
     /**
+     *
+     * @param teamId id of the event
+     */
+    @RequestMapping(value = "/{teamId}/leave", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String leave(@PathVariable("teamId") int teamId, HttpServletResponse response){
+        try {
+            teamlogic.leave(SessionManager.getUserName(), teamId);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+
+        } catch(HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+        return "";
+    }
+
+    /**
      * Get all teams that are visible for the user who created this request
      *
      * @return a list of all teams
