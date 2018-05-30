@@ -1,6 +1,12 @@
 import axios from "axios";
 import {HOST} from "../../Config";
 
+let config = {
+    headers: {
+        'Content-Type': 'text/plain',
+    }
+};
+
 export function getTeams(search, responseFunc) {
     let url;
     if(search)
@@ -46,13 +52,26 @@ export function inviteMember(teamId, member) {
 }
 
 export function replyToTeam(teamId, answer, responseFunc) {
-    let config = {
-        headers: {
-            'Content-Type': 'text/plain',
-        }
-    };
-
     let url = HOST + '/team/' + teamId + '/reply';
     axios.put(url, answer, config)
         .then(responseFunc);
+}
+
+export function changeTeamName(teamId, teamName, responseFunc, errorFunc){
+    let url = HOST + '/team/' + teamId + '/teamName';
+    axios.put(url, teamName, config)
+        .then(responseFunc)
+        .catch(errorFunc);
+}
+
+export function changeTeamDescription(teamId, teamDescription, responseFunc, errorFunc){
+    let url = HOST + '/team/' + teamId + '/description';
+    axios.put(url, teamDescription, config)
+        .then(responseFunc)
+        .catch(errorFunc);
+}
+
+//TODO
+export function changeProfilePicture(teamID, profilePicture, responseFunc, errorFunc){
+
 }
