@@ -13,7 +13,7 @@ import ServiceListScreen from "./components/Event/ServiceListScreen";
 import {getMuiTheme} from "material-ui-old/styles/index";
 import SocialScreen from "./components/SocialScreen";
 import LocationScreen from "./components/LocationScreen";
-import Comments from "./components/Event/Comments";
+import Comments from "./components/Event/Comments/Comments";
 import { createBrowserHistory as createHistory } from "history";
 import {setHistory, getHistory} from "./utils/HistoryUtils";
 import CreateTeamScreen from "./components/Team/CreateTeamScreen";
