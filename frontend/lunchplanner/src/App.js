@@ -6,7 +6,7 @@ import {isAuthenticated} from "./components/authentication/LoginFunctions"
 import { MuiThemeProvider } from 'material-ui/styles';
 import { MuiThemeProvider as OldMuiThemeProvider } from 'material-ui-old/styles'
 import { createMuiTheme } from 'material-ui/styles'
-import CreateEventScreen from "./components/CreateEventScreen";
+import CreateEventScreen from "./components/Event/CreateEventScreen";
 import SelectUserScreen from "./components/User/SelectUserScreen";
 import EventScreen from "./components/Event/EventScreen";
 import ServiceListScreen from "./components/Event/ServiceList/ServiceListScreen";

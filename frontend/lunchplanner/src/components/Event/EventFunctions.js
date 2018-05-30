@@ -1,5 +1,6 @@
 import axios from "axios";
 import {HOST} from "../../Config";
+import moment from "moment/moment";
 
 export function getEvents(search, responseFunc) {
     let url = HOST + "/event";
@@ -66,6 +67,22 @@ export function changeEventTime(eventId, time, responseFunc, errorFunc) {
     axios.put(url, time.valueOf(), config)
         .then(responseFunc)
         .catch(errorFunc)
+}
+
+export function createEvent(location, date, member, visible, responseFunc, errorFunc) {
+    //TODO send visibility and description
+    let momentDate = moment(date);
+
+    let timeEnd = date.getTime();
+    let url =  HOST + '/event';
+    axios.post(url, {name: location, description: "", location : location, timeStart: date, visible: visible})
+        .then((response) => {
+            if(response.status === 201) {
+                inviteMemberToEvent(response.data, member);
+            }
+            responseFunc(response);
+        })
+        .catch(errorFunc);
 }
 
 export function inviteMemberToEvent(eventId, member, responseFunc, errorFunc) {
