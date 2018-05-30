@@ -4,7 +4,9 @@ import React from 'react';
 import Slide from 'material-ui/transitions/Slide';
 import Dialog from "../Dialog";
 import {Button} from "material-ui";
-import {getUsername} from "../authentication/Authentication";
+import {getUsername, setAuthenticationHeader} from "../authentication/Authentication";
+import InvitationButton from "../Event/InvitationButton";
+import {teamListNeedReload} from "./TeamList";
 import {getHistory} from "../../utils/HistoryUtils"
 import SecretIcon from "@material-ui/icons/es/Https";
 import Divider from "material-ui/es/Divider/Divider";
@@ -131,7 +133,7 @@ class TeamScreen extends React.Component {
 
     constructor(props) {
         super();
-
+        setAuthenticationHeader();
         this.state = {
             teamId: 0,
             open: true,
@@ -140,6 +142,7 @@ class TeamScreen extends React.Component {
             description: "",
             people:[],
         };
+
     }
 
     componentDidMount() {
@@ -196,14 +199,15 @@ class TeamScreen extends React.Component {
         this.setState({
            people: people,
         });
-        this.sendAnswer('reject');
+        this.sendAnswer();
     };
 
-    sendAnswer = (answer) => {
-        replyToTeam(this.state.teamId, answer,
-            (response) => {
-                this.loadTeam();
-                //eventListNeedReload();
+    sendAnswer = () => {
+        console.log("leave");
+        let url = HOST + '/team/' + this.state.teamId + '/leave';
+        axios.delete(url)
+            .then(() => {
+                teamListNeedReload();
             })
     };
 
