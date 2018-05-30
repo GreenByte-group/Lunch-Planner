@@ -58,7 +58,7 @@ export function replyToTeam(teamId, answer, responseFunc) {
 }
 
 export function changeTeamName(teamId, teamName, responseFunc, errorFunc){
-    let url = HOST + '/team/' + teamId + '/teamName';
+    let url = HOST + '/team/' + teamId + '/name';
     axios.put(url, teamName, config)
         .then(responseFunc)
         .catch(errorFunc);

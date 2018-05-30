@@ -222,7 +222,7 @@ class TeamScreen extends React.Component {
         });
 
         //TODO error func
-        changeTeamName(this.state.teamId, event.target.value, this.reloadTeamsOnSuccess);
+        changeTeamDescription(this.state.teamId, event.target.value, this.reloadTeamsOnSuccess);
     };
 
     reloadTeamsOnSuccess = (response) => {
