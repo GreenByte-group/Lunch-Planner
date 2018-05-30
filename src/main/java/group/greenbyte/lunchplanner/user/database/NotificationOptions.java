@@ -8,7 +8,10 @@ import java.util.Date;
 public class NotificationOptions {
 
     @Id
-    @OneToOne
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userName")
     private User user;
 
@@ -18,7 +21,6 @@ public class NotificationOptions {
     //Option 2: block all notifications for today
     private boolean option2BlockedToday;
     private Date blockedToday;
-
 
     //Option 3: block all notifications in a specific time interval
     private boolean option3TimeInterval;

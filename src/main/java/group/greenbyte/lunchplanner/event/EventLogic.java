@@ -6,17 +6,16 @@ import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import group.greenbyte.lunchplanner.security.SessionManager;
 import group.greenbyte.lunchplanner.team.TeamDao;
 import group.greenbyte.lunchplanner.team.TeamLogic;
 import group.greenbyte.lunchplanner.team.database.TeamMemberDataForReturn;
-import group.greenbyte.lunchplanner.security.SessionManager;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.xml.crypto.Data;
 import java.util.*;
 
 @Service
@@ -303,7 +302,7 @@ public class EventLogic {
         //TODO handle exception
         //TODO check if user wants notifications
         //send a notification to userToInvite
-        userLogic.sendNotification(user.getFcmToken(),title, description,linkToClick);
+        userLogic.sendNotification(user.getFcmToken(), userToInvite, title, description,linkToClick, "");
     }
 
     /**
@@ -342,7 +341,7 @@ public class EventLogic {
                     //TODO handle exception
                     //TODO check if user wants notifications
                     user = userLogic.getUser(member.getUserName());
-                    userLogic.sendNotification(user.getFcmToken(),title, description,linkToClick);
+                    userLogic.sendNotification(user.getFcmToken(),member.getUserName(),title, description,linkToClick, "");
                 }
             }
         }catch(DatabaseException e){
