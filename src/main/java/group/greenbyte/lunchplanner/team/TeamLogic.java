@@ -192,13 +192,16 @@ public class TeamLogic {
      */
     public void updateName(String userName, int teamId, String name) throws HttpRequestException {
         try {
+            if(name == null || name.length() > Team.MAX_TEAMNAME_LENGHT || name.length() == 0)
+                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is too long or empty ");
+
             if(!hasAdminPrivileges(teamId, userName)) {
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "User: " + userName + " is no admin of this team");
             }
 
             teamdao.updateName(teamId, name);
         } catch (DatabaseException e) {
-            e.printStackTrace();
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
     }
 
@@ -211,13 +214,16 @@ public class TeamLogic {
      */
     public void updateDescription(String userName, int teamId, String description) throws HttpRequestException {
         try {
+            if(description == null || description.length() > Team.MAX_DESCRIPTION_LENGHT || description.length() == 0)
+                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Description is too long or empty ");
+
             if(!hasAdminPrivileges(teamId, userName)) {
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "User: " + userName + " is no admin of this team");
             }
 
             teamdao.updateDescription(teamId, description);
         } catch (DatabaseException e) {
-            e.printStackTrace();
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
     }
 
