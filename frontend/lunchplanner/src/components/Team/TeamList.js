@@ -1,5 +1,4 @@
 import React from "react"
-import axios from "axios"
 
 import {HOST} from "../../Config"
 import Team from "./Team";
@@ -33,18 +32,12 @@ class TeamList extends React.Component {
             search: this.props.search,
         });
 
-        let url;
-        if(this.props.search)
-            url = HOST + "/team/search/" + this.props.search;
-        else
-            url = HOST + "/team";
-
-        axios.get(url)
-            .then((response) => {
+        getTeams(this.props.search,
+            (response) => {
                 this.setState({
                     teams: response.data,
                 })
-            })
+            });
     }
 
     render() {

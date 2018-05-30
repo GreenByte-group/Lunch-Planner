@@ -2,8 +2,6 @@ import PropTypes from "prop-types";
 import {withStyles} from "material-ui/styles/index";
 import React from 'react';
 import Slide from 'material-ui/transitions/Slide';
-import {HOST} from "../../Config";
-import axios from "axios/index";
 import Dialog from "../Dialog";
 import {Button} from "material-ui";
 import {getUsername} from "../authentication/Authentication";
@@ -13,6 +11,7 @@ import {getHistory} from "../../utils/HistoryUtils"
 import SecretIcon from "@material-ui/icons/es/Https";
 import Divider from "material-ui/es/Divider/Divider";
 import UserList from "../User/UserList";
+import {getTeam} from "./TeamFunctions";
 
 
 function Transition(props) {
@@ -179,18 +178,14 @@ class TeamScreen extends React.Component {
         if(!teamId)
             teamId = this.state.teamId;
 
-        let url = HOST + "/team/" + teamId;
-
-        axios.get(url)
-            .then((response) => {
-                console.log(response.data);
-                this.setState({
-                    teamId: response.data.teamId,
-                    name: response.data.teamName,
-                    description: response.data.description,
-                    people: response.data.invitations,
-                })
-            });
+        getTeam(teamId, (response) => {
+            this.setState({
+                teamId: response.data.teamId,
+                name: response.data.teamName,
+                description: response.data.description,
+                people: response.data.invitations,
+            })
+        })
     };
 
     handleLeave = () => {
@@ -198,7 +193,6 @@ class TeamScreen extends React.Component {
         let people = this.state.people;
         let index = people.indexOf(getUsername());
         people.splice(index, 1);
-        console.log("people", people);
         this.setState({
            people: people,
         });
@@ -206,15 +200,8 @@ class TeamScreen extends React.Component {
     };
 
     sendAnswer = (answer) => {
-        let config = {
-            headers: {
-                'Content-Type': 'text/plain',
-            }
-        };
-
-        let url = HOST + '/team/' + this.state.teamId + '/reply';
-        axios.put(url, answer, config)
-            .then((response) => {
+        replyToTeam(this.state.teamId, answer,
+            (response) => {
                 this.loadTeam();
                 //eventListNeedReload();
             })
