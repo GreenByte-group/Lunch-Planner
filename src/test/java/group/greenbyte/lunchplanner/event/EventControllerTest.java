@@ -1,6 +1,7 @@
 package group.greenbyte.lunchplanner.event;
 
 import group.greenbyte.lunchplanner.AppConfig;
+import group.greenbyte.lunchplanner.event.database.BringService;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.team.TeamLogic;
 import group.greenbyte.lunchplanner.user.UserLogic;
@@ -26,12 +27,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Date;
+import java.util.List;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
 import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -715,4 +719,162 @@ public class EventControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.eventId").value(eventId));
     }
+
+    // ------------------ SERVICE --------------------------
+    @Test
+    @WithMockUser(username = userName)
+    public void test1PutService() throws Exception {
+        String food = createString(BringService.MAX_NAME_LENGTH);
+        String description = createString(BringService.MAX_DESCRIPTION_LENGTH);
+
+        BringServiceJson bringServiceJson = new BringServiceJson(food, description);
+        String json = getJsonFromObject(bringServiceJson);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/service").contentType(MediaType.APPLICATION_JSON)
+                    .content(json))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE));
+
+        boolean serviceFound = false;
+        List<BringService> bringServices = eventLogic.getService(userName, eventId);
+        for(BringService service : bringServices) {
+            if(service.getFood().equals(food)
+                    && service.getDescription().equals(description)
+                && service.getCreatorName().equals(userName)
+                && service.getEventId().equals(eventId)) {
+                serviceFound = true;
+            }
+        }
+
+        assertTrue(serviceFound);
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test2PutServiceTooLongName() throws Exception {
+        String food = createString(BringService.MAX_NAME_LENGTH + 1);
+        String description = createString(BringService.MAX_DESCRIPTION_LENGTH);
+
+        BringServiceJson bringServiceJson = new BringServiceJson(food, description);
+        String json = getJsonFromObject(bringServiceJson);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/service").contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test3PutServiceTooLongDescription() throws Exception {
+        String food = createString(BringService.MAX_NAME_LENGTH);
+        String description = createString(BringService.MAX_DESCRIPTION_LENGTH + 1);
+
+        BringServiceJson bringServiceJson = new BringServiceJson(food, description);
+        String json = getJsonFromObject(bringServiceJson);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/service").contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username = "otherUser")
+    public void test4PutServiceNoPermission() throws Exception {
+        String food = createString(BringService.MAX_NAME_LENGTH);
+        String description = createString(BringService.MAX_DESCRIPTION_LENGTH);
+
+        BringServiceJson bringServiceJson = new BringServiceJson(food, description);
+        String json = getJsonFromObject(bringServiceJson);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/event/" + eventId + "/service").contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1GetServices() throws Exception {
+        int eventId = createEvent(eventLogic, userName, "location");
+        String food = createString(BringService.MAX_NAME_LENGTH);
+        String description = createString(BringService.MAX_DESCRIPTION_LENGTH);
+
+        eventLogic.putService(userName, eventId, food, description);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/event/" + eventId + "/service"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$[0].eventId").value(eventId))
+                .andExpect(jsonPath("$[0].food").value(food))
+                .andExpect(jsonPath("$[0].description").value(description))
+                .andExpect(jsonPath("$[0].creatorName").value(userName));
+    }
+
+    @Test
+    @WithMockUser(username = "otherUser")
+    public void test2GetServicesNoPermission() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/event/" + eventId + "/service"))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test3GetServicesEventNotExists() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/event/" + eventId + 10000 + "/service"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1SetAcceptorServices() throws Exception {
+        int eventId = createEvent(eventLogic, userName, "location");
+        String otherUser = createUserIfNotExists(userLogic, "user2");
+
+        eventLogic.inviteFriend(userName, otherUser, eventId);
+
+        String food = createString(BringService.MAX_NAME_LENGTH);
+        String description = createString(BringService.MAX_DESCRIPTION_LENGTH);
+
+        eventLogic.putService(otherUser, eventId, food, description);
+        List<BringService> bringServices = eventLogic.getService(userName, eventId);
+
+        String url = "/event/" + eventId + "/service/" + bringServices.get(0).getServiceId();
+        mockMvc.perform(
+                MockMvcRequestBuilders.post(url))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        bringServices = eventLogic.getService(userName, eventId);
+        assertEquals(userName, bringServices.get(0).getAccepter());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test2SetAcceptorServicesAlreadyAccepted() throws Exception {
+        int eventId = createEvent(eventLogic, userName, "location");
+        String otherUser = createUserIfNotExists(userLogic, "user2");
+
+        eventLogic.inviteFriend(userName, otherUser, eventId);
+
+        String food = createString(BringService.MAX_NAME_LENGTH);
+        String description = createString(BringService.MAX_DESCRIPTION_LENGTH);
+
+        eventLogic.putService(otherUser, eventId, food, description);
+        List<BringService> bringServices = eventLogic.getService(userName, eventId);
+
+        String url = "/event/" + eventId + "/service/" + bringServices.get(0).getServiceId();
+        mockMvc.perform(
+                MockMvcRequestBuilders.post(url))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post(url))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
 }

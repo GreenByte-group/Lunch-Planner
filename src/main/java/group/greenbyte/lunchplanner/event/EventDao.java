@@ -151,8 +151,16 @@ public interface EventDao {
 
     /**
      *
+     * @param serviceId
+     * @return
+     * @throws DatabaseException
+     */
+    BringService getOneService(int serviceId) throws DatabaseException;
+
+    /**
+     *
      * @param eventId
-     * @param creater
+     * @param accepter
      * @param serviceId
      */
     void updateBringservice(int eventId, String accepter, int serviceId) throws DatabaseException;
