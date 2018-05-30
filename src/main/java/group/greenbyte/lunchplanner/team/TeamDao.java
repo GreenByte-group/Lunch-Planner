@@ -127,4 +127,20 @@ public interface TeamDao {
      * @throws DatabaseException
      */
     void updateTeamIsPublic(int teamId, boolean isPublic) throws DatabaseException;
+
+    /**
+     * Updates the name of a team
+     *
+     * @param teamId of the event to change
+     * @param name new name of the event
+     */
+    void updateName(int teamId, String name) throws DatabaseException;
+
+    /**
+     * Updates the description of a team
+     *
+     * @param teamId of the event to change
+     * @param description new description of the team
+     */
+    void updateDescription(int teamId, String description) throws DatabaseException;
 }

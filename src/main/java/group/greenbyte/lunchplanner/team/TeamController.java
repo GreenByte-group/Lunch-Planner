@@ -146,7 +146,43 @@ public class TeamController {
         return "";
     }
 
-    //TODO create team wihtout parent
+    /**
+     * Update the name for a team
+     *
+     * @return nothing or an error message
+     */
+    @RequestMapping(value = "/{teamId}/name", method = RequestMethod.PUT,
+            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    public String updateName(@PathVariable("teamId") int teamId, @RequestBody String name, HttpServletResponse response) {
+        try {
+            teamlogic.updateName(SessionManager.getUserName(), teamId, name);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch(HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+
+        return "";
+    }
+
+    /**
+     * Update the name for a team
+     *
+     * @return nothing or an error message
+     */
+    @RequestMapping(value = "/{teamId}/description", method = RequestMethod.PUT,
+            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    public String updateDescription(@PathVariable("teamId") int teamId, @RequestBody String description, HttpServletResponse response) {
+        try {
+            teamlogic.updateDescription(SessionManager.getUserName(), teamId, description);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch(HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+
+        return "";
+    }
 
     @Autowired
     public void setTeamLogic(TeamLogic teamlogic) {

@@ -5,13 +5,13 @@ import Slide from 'material-ui/transitions/Slide';
 import Dialog from "../Dialog";
 import {Button} from "material-ui";
 import {getUsername} from "../authentication/Authentication";
-import InvitationButton from "../Event/InvitationButton";
-//import {eventListNeedReload} from "../components/Event/EventList";
 import {getHistory} from "../../utils/HistoryUtils"
 import SecretIcon from "@material-ui/icons/es/Https";
 import Divider from "material-ui/es/Divider/Divider";
 import UserList from "../User/UserList";
-import {getTeam, replyToTeam} from "./TeamFunctions";
+import {getTeam, replyToTeam, changeTeamDescription,changeTeamName} from "./TeamFunctions";
+import {teamListNeedReload} from "./TeamList";
+import TextFieldEditing from "../editing/TextFieldEditing";
 
 
 function Transition(props) {
@@ -95,23 +95,28 @@ const styles = {
         marginLeft: '100px',
     },
     description: {
-        marginTop: '50px',
+        marginTop: '15px',
+        fontSize: '16px',
+        width: '80%',
+        position: 'fixed',
     },
     secretTeam:{
         marginTop: '20px',
+        marginLeft: '20px',
         color: '#1EA185',
     },
     secretTeamText:{
         marginLeft: '40px',
-        marginTop: '-30px'
+        marginTop: '-30px',
+        width: '50%',
     },
     divider:{
-        marginTop: '50px',
         width: '100%',
+        position: 'fixed',
     },
     member:{
         marginLeft: '16px',
-        marginTop: '10px',
+        marginTop: '20px',
     },
     overButton: {
         height: '100%',
@@ -122,12 +127,6 @@ const styles = {
     },
 };
 
-const buttonStyle = {
-    display:"block",
-    marginLeft:"auto",
-    marginRight:"auto",
-};
-
 class TeamScreen extends React.Component {
 
     constructor(props) {
@@ -136,7 +135,7 @@ class TeamScreen extends React.Component {
         this.state = {
             teamId: 0,
             open: true,
-            isAdmin: false,
+            isAdmin: props.isAdmin,
             name:"",
             description: "",
             people:[],
@@ -184,7 +183,8 @@ class TeamScreen extends React.Component {
                 name: response.data.teamName,
                 description: response.data.description,
                 people: response.data.invitations,
-            })
+
+            });
         })
     };
 
@@ -207,14 +207,46 @@ class TeamScreen extends React.Component {
             })
     };
 
+    onTitleChanged = (event) => {
+        this.setState({
+            name: event.target.value,
+        });
+
+        //TODO error func
+        changeTeamName(this.state.teamId, event.target.value, this.reloadTeamsOnSuccess);
+    };
+
+    onDescriptionChanged = (event) => {
+        this.setState({
+            description: event.target.value,
+        });
+
+        //TODO error func
+        changeTeamDescription(this.state.teamId, event.target.value, this.reloadTeamsOnSuccess);
+    };
+
+    reloadTeamsOnSuccess = (response) => {
+        if(response.status === 204) {
+            teamListNeedReload();
+        }
+    };
+
     render() {
         const { classes } = this.props;
         const error = this.state.error;
         let name = this.state.name;
         let description = this.state.description;
         let people = this.state.people;
+        let iAmAdmin = false;
+        let userName = getUsername();
+        people.forEach((listValue) => {
+            if(listValue.userName === userName) {
+                if(listValue.admin) {
+                    iAmAdmin = true;
+                }
+            }
+        });
 
-        let admin = "";
         let selectedUsers = [];
 
         people.sort((a, b) => {
@@ -249,18 +281,19 @@ class TeamScreen extends React.Component {
                                 <div className={classes.picture}/>
                                 <div className={classes.teamName}>
                                     <p className={classes.fontSmall}>Team Name</p>
-                                    <p className={classes.fontBig}>{name}</p>
+                                    <TextFieldEditing onChange={this.onTitleChanged} value={name} editable={iAmAdmin} className={classes.fontBig} />
                                 </div>
                                 <div className={classes.description}>
                                     <p className={classes.fontSmall}>Description</p>
-                                    <p>{description}</p>
-                                </div>
-                                <div className={classes.secretTeam}>
-                                    <SecretIcon/>
-                                    <p className={classes.secretTeamText}>Secret team. Only you can see the activity of this team.</p>
+                                    <TextFieldEditing rowsMax="3" onChange={this.onDescriptionChanged} value={description} editable={iAmAdmin} className={classes.description}  multiline/>
                                 </div>
                             </div>
+                            <div className={classes.secretTeam}>
+                                <SecretIcon/>
+                                <p className={classes.secretTeamText}>Secret team. Only you can see the activity of this team.</p>
+                            </div>
                             <Divider className={classes.divider}/>
+
                             <div className={classes.member}>
                                 <p className={classes.fontBig}> Team Member ({people.length})</p>
                                 <UserList
