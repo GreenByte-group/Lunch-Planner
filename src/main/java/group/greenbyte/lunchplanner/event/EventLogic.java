@@ -304,7 +304,8 @@ public class EventLogic {
         //TODO check if user wants notifications
         //send a notification to userToInvite
         try {
-            userLogic.sendNotification(user.getFcmToken(),title, description,linkToClick);
+            //TODO picture path
+            userLogic.sendNotification(user.getFcmToken(), user.getUserName(),title, description,linkToClick, "");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -345,8 +346,9 @@ public class EventLogic {
 
                     //TODO handle exception
                     //TODO check if user wants notifications
+                    //TODO picture path
                     user = userLogic.getUser(member.getUserName());
-                    userLogic.sendNotification(user.getFcmToken(),title, description,linkToClick);
+                    userLogic.sendNotification(user.getFcmToken(), user.getUserName(), title, description,linkToClick, "");
                 }
             }
         }catch(DatabaseException e){
