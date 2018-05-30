@@ -6,21 +6,25 @@ import {Link} from "react-router-dom";
 import {Today, Schedule, MyLocation, Add} from "@material-ui/icons/";
 import ServiceIcon from "@material-ui/icons/Toc"
 import ListIcon from "@material-ui/icons/Assignment"
-import {HOST} from "../../Config";
-import axios from "axios/index";
 import moment from "moment";
 import Dialog from "../Dialog";
 import CommentsIcon from '@material-ui/icons/Message';
 import UserList from "../User/UserList";
 import {Button} from "material-ui";
-import ServiceList from "./ServiceList";
+import ServiceList from "./ServiceList/ServiceList";
 import {getUsername} from "../authentication/Authentication";
 import InvitationButton from "./InvitationButton";
 import {eventListNeedReload} from "./EventList";
 import {getHistory} from "../../utils/HistoryUtils";
 import TextFieldEditing from "../editing/TextFieldEditing";
 import {DatePicker, TimePicker} from "material-ui-old";
-import {changeEventLocation, changeEventTime, changeEventTitle, inviteMemberToEvent} from "./EventFunctions";
+import {
+    changeEventLocation,
+    changeEventTime,
+    changeEventTitle, getEvent,
+    inviteMemberToEvent,
+    replyToEvent
+} from "./EventFunctions";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -333,19 +337,16 @@ class EventScreen extends React.Component {
         if(!eventId)
             eventId = this.state.eventId;
 
-        let url = HOST + "/event/" + eventId;
-
-        axios.get(url)
-            .then((response) => {
-                this.setState({
-                    eventId: response.data.eventId,
-                    name: response.data.eventName,
-                    description: response.data.eventDescription,
-                    location: response.data.location,
-                    people: response.data.invitations,
-                    date: new Date(response.data.startDate),
-                })
-            });
+        getEvent(eventId, (response) => {
+            this.setState({
+                eventId: response.data.eventId,
+                name: response.data.eventName,
+                description: response.data.eventDescription,
+                location: response.data.location,
+                people: response.data.invitations,
+                date: new Date(response.data.startDate),
+            })
+        })
     };
 
     handleDecline = () => {
@@ -373,20 +374,12 @@ class EventScreen extends React.Component {
     };
 
     sendAnswer = (answer, then) => {
-        let config = {
-            headers: {
-                'Content-Type': 'text/plain',
-            }
-        };
-
-        let url = HOST + '/event/' + this.state.eventId + '/reply';
-        axios.put(url, answer, config)
-            .then((response) => {
-                this.loadEvent();
-                eventListNeedReload();
-                if(then)
-                    then();
-            })
+        replyToEvent(this.state.eventId, answer, (response) => {
+            this.loadEvent();
+            eventListNeedReload();
+            if(then)
+                then();
+        });
     };
 
     render() {

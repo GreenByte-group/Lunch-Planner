@@ -9,7 +9,7 @@ import { createMuiTheme } from 'material-ui/styles'
 import CreateEventScreen from "./components/CreateEventScreen";
 import SelectUserScreen from "./components/User/SelectUserScreen";
 import EventScreen from "./components/Event/EventScreen";
-import ServiceListScreen from "./components/Event/ServiceListScreen";
+import ServiceListScreen from "./components/Event/ServiceList/ServiceListScreen";
 import {getMuiTheme} from "material-ui-old/styles/index";
 import SocialScreen from "./components/SocialScreen";
 import LocationScreen from "./components/LocationScreen";
