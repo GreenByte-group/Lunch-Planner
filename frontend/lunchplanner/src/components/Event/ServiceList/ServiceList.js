@@ -2,8 +2,7 @@ import React from 'react';
 import {withStyles} from "material-ui/styles/index";
 import List from 'material-ui/List';
 import ServiceListItem from "./ServiceListItem";
-import axios from "axios/index";
-import {HOST} from "../../Config";
+import {getServices} from "./ServiceFunctions";
 
 const styles = theme => ({
     root: {
@@ -48,13 +47,11 @@ class ServiceList extends React.Component {
         if(!eventId)
             eventId = this.state.eventId;
 
-        let url = HOST + "/event/" + eventId + "/service";
-        axios.get(url)
-            .then((response) => {
-                this.setState({
-                    items: response.data,
-                })
+        getServices(eventId, (response) => {
+            this.setState({
+                items: response.data,
             })
+        });
     };
 
     render(){

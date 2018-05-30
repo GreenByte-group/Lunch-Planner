@@ -12,15 +12,17 @@ public class TeamJson implements Serializable {
 
     }
 
-    public TeamJson(int parent, String teamName, String description){
+    public TeamJson(int parent, String teamName, String description, boolean visible){
         this.parent = parent;
         this.teamName = teamName;
         this.description = description;
+        this.visible = visible;
     }
 
     private Integer parent;
     private String teamName;
     private String description;
+    private boolean visible;
 
     public Integer getParent() {
         return parent;
@@ -44,5 +46,9 @@ public class TeamJson implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isVisible() {
+        return visible;
     }
 }

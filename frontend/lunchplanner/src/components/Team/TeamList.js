@@ -1,5 +1,4 @@
 import React from "react"
-import axios from "axios"
 
 import {HOST} from "../../Config"
 import Team from "./Team";
@@ -7,6 +6,7 @@ import List from "material-ui/List";
 import {withStyles} from "material-ui/styles/index";
 import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
+import {getTeams} from "./TeamFunctions";
 
 const styles = {
     root: {
@@ -33,18 +33,12 @@ class TeamList extends React.Component {
             search: this.props.search,
         });
 
-        let url;
-        if(this.props.search)
-            url = HOST + "/team/search/" + this.props.search;
-        else
-            url = HOST + "/team";
-
-        axios.get(url)
-            .then((response) => {
+        getTeams(this.props.search,
+            (response) => {
                 this.setState({
                     teams: response.data,
                 })
-            })
+            });
     }
 
     render() {
