@@ -173,8 +173,10 @@ class CreateEventScreen extends React.Component {
                 }
             },
             (error) => {
-                if(error)
+                if(error && error.response)
                     this.setState({error: error.response.data});
+                else
+                    console.log(error);
             });
     };
 

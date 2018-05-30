@@ -70,7 +70,7 @@ export function changeEventTime(eventId, time, responseFunc, errorFunc) {
 }
 
 export function createEvent(location, date, member, visible, responseFunc, errorFunc) {
-    //TODO send visibility and description
+    //TODO description
     let momentDate = moment(date);
 
     let timeEnd = date.getTime();
@@ -86,6 +86,8 @@ export function createEvent(location, date, member, visible, responseFunc, error
 }
 
 export function inviteMemberToEvent(eventId, member, responseFunc, errorFunc) {
+    if(member && member instanceof Array)
+
     member.forEach((oneMember) => {
         let url = HOST + "/event/" + oneMember + "/invite/event/" + eventId;
         axios.post(url)
