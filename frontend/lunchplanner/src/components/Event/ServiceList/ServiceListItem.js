@@ -1,13 +1,9 @@
 import React from "react";
-import axios from "axios/index";
 import {withStyles} from "material-ui/styles/index";
-import Slide from 'material-ui/transitions/Slide';
-import ServiceList from "./ServiceList";
-import Dialog from "../Dialog";
-import {Button, Card, CardContent, ListItem, TextField} from "material-ui";
+import {Card, CardContent, ListItem} from "material-ui";
 import Done from "@material-ui/icons/es/Done";
-import {getUsername} from "../authentication/Authentication";
-import {HOST} from "../../Config";
+import {getUsername} from "../../authentication/Authentication";
+import {acceptService} from "./ServiceFunctions";
 
 const styles = {
     listItem: {
@@ -71,20 +67,14 @@ class ServiceListItem extends React.Component {
 
     acceptedClicked = () => {
         if(!this.state.accepter) {
-            this.setState({
-                accepter: getUsername(),
+            acceptService(this.state.eventId, this.state.serviceId, (response) => {
+                if (response.status !== 204) {
+                    this.setState({
+                        error: response.response.data,
+                        accepter: getUsername(),
+                    })
+                }
             });
-
-            let url = HOST + "/event/" + this.state.eventId + "/service/" + this.state.serviceId;
-            axios.post(url)
-                .then((response) => {
-                    if (response.status !== 204) {
-                        this.setState({
-                            error: response.response.data,
-                            accepter: null,
-                        })
-                    }
-                })
         }
     };
 

@@ -6,14 +6,14 @@ import {isAuthenticated} from "./components/authentication/LoginFunctions"
 import { MuiThemeProvider } from 'material-ui/styles';
 import { MuiThemeProvider as OldMuiThemeProvider } from 'material-ui-old/styles'
 import { createMuiTheme } from 'material-ui/styles'
-import CreateEventScreen from "./components/CreateEventScreen";
+import CreateEventScreen from "./components/Event/CreateEventScreen";
 import SelectUserScreen from "./components/User/SelectUserScreen";
 import EventScreen from "./components/Event/EventScreen";
-import ServiceListScreen from "./components/Event/ServiceListScreen";
+import ServiceListScreen from "./components/Event/ServiceList/ServiceListScreen";
 import {getMuiTheme} from "material-ui-old/styles/index";
 import SocialScreen from "./components/SocialScreen";
 import LocationScreen from "./components/LocationScreen";
-import Comments from "./components/Event/Comments";
+import Comments from "./components/Event/Comments/Comments";
 import { createBrowserHistory as createHistory } from "history";
 import {setHistory, getHistory} from "./utils/HistoryUtils";
 import CreateTeamScreen from "./components/Team/CreateTeamScreen";

@@ -217,6 +217,28 @@ public class TeamDaoMySql implements TeamDao {
 
         try {
             jdbcTemplate.update(SQL, username, teamId);
+           } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+   
+  @Override
+    public void updateName(int teamId, String name) throws DatabaseException {
+        String SQL = "UPDATE " + TEAM_TABLE + " SET " + TEAM_NAME + " = ? WHERE " + TEAM_ID + " = ?";
+
+        try {
+            jdbcTemplate.update(SQL, name, teamId);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void updateDescription(int teamId, String description) throws DatabaseException {
+        String SQL = "UPDATE " + TEAM_TABLE + " SET " + TEAM_DESCRIPTION + " = ? WHERE " + TEAM_ID + " = ?";
+
+        try {
+            jdbcTemplate.update(SQL, description, teamId);
         } catch (Exception e) {
             throw new DatabaseException(e);
         }

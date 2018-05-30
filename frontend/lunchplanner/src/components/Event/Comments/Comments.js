@@ -1,10 +1,10 @@
 import React from "react";
 import {List, ListItem, TextField, withStyles} from "material-ui";
-import {HOST} from "../../Config";
-import axios from "axios/index";
-import {getUsername, setAuthenticationHeader} from "../authentication/Authentication";
+import {HOST} from "../../../Config";
+import {getUsername, setAuthenticationHeader} from "../../authentication/Authentication";
 import Comment from "./Comment";
-import Dialog from "../Dialog";
+import Dialog from "../../Dialog";
+import {loadComments, sendComment} from "./CommentFunctions";
 
 const styles = {
     list: {
@@ -58,21 +58,11 @@ class Comments extends React.Component {
         if(eventId == null || eventId === undefined)
             eventId = this.state.eventId;
 
-        let url = HOST + "/event/" + eventId + "/getComments";
-
-        axios.get(url)
-            .then((response) => {
-                this.setState({
-                    comments: response.data,
-                })
+        loadComments(eventId, (response) => {
+            this.setState({
+                comments: response.data,
             })
-
-        // this.setState({
-        //     comments: [{userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
-        //         {userName: "Felix", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
-        //         {userName: "Can", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
-        //         {userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"}]
-        // })
+        });
     }
 
     keyPress = (e) => {
@@ -82,8 +72,6 @@ class Comments extends React.Component {
     };
 
     textFieldChanged = (event) => {
-        console.log("Comment eingegeben");
-
         this.setState({
             newComment: event.target.value,
         })
@@ -91,18 +79,10 @@ class Comments extends React.Component {
 
     onSubmit = () => {
 
-      let url = HOST + "/event/" + this.state.eventId + "/comment";
-
-      let config = {
-          headers: {
-              'Content-Type': 'text/plain',
-          }
-      };
-
-      axios.put(url, this.state.newComment, config)
-          .then((response) => {
-              this.loadComments();
-          });
+        sendComment(this.state.eventId, this.state.newComment,
+            (response) => {
+                this.loadComments();
+        });
     };
 
     render() {

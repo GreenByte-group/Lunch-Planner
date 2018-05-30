@@ -1,6 +1,5 @@
 package group.greenbyte.lunchplanner.event;
 
-import com.google.firebase.messaging.FirebaseMessagingException;
 import group.greenbyte.lunchplanner.event.database.BringService;
 import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.xml.crypto.Data;
 import java.util.*;
 
 @Service
@@ -277,7 +275,7 @@ public class EventLogic {
      * @throws HttpRequestException when an unexpected error happens
      *
      */
-    public void inviteFriend(String username, String userToInvite, int eventId) throws HttpRequestException, FirebaseMessagingException {
+    public void inviteFriend(String username, String userToInvite, int eventId) throws HttpRequestException {
 
         if(!isValidName(username))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
@@ -293,6 +291,7 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
 
+
         User user = userLogic.getUser(userToInvite);
         //set notification information
         String title = "Event invitation";
@@ -302,7 +301,12 @@ public class EventLogic {
         //TODO handle exception
         //TODO check if user wants notifications
         //send a notification to userToInvite
-        userLogic.sendNotification(user.getFcmToken(),title, description,linkToClick);
+        try {
+            //TODO picture path
+            userLogic.sendNotification(user.getFcmToken(), user.getUserName(),title, description,linkToClick, "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -313,7 +317,7 @@ public class EventLogic {
      * @param teamId id of team
      * @throws HttpRequestException
      */
-    public void inviteTeam(String userName, int eventId, int teamId) throws HttpRequestException, FirebaseMessagingException {
+    public void inviteTeam(String userName, int eventId, int teamId) throws HttpRequestException {
 
         if(!isValidName(userName))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
@@ -340,12 +344,15 @@ public class EventLogic {
 
                     //TODO handle exception
                     //TODO check if user wants notifications
+                    //TODO picture path
                     user = userLogic.getUser(member.getUserName());
-                    userLogic.sendNotification(user.getFcmToken(),title, description,linkToClick);
+                    userLogic.sendNotification(user.getFcmToken(), user.getUserName(), title, description,linkToClick, "");
                 }
             }
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -518,21 +525,31 @@ public class EventLogic {
     }
 
 
-    public void putService(int event_id, String food, String description) throws HttpRequestException{
+    public void putService(String userName, int event_id, String food, String description) throws HttpRequestException{
         try{
+            if(food.length() > BringService.MAX_NAME_LENGTH || food.length() == 0)
+                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Name is too long or empty");
+            if(description.length() > BringService.MAX_DESCRIPTION_LENGTH || description.length() == 0)
+                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Description is too long or empty");
+
+            if(!hasUserPrivileges(event_id, userName))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You don't have acces to this event");
+
             eventDao.putService(SessionManager.getUserName(),event_id,food,description);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
     }
 
-    public List<BringService> getService(int eventId) throws HttpRequestException{
+    public List<BringService> getService(String userName, int eventId) throws HttpRequestException{
         try {
-//            if(eventId == null)
-//                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "eventId is null "+eventId);
+            if(eventDao.getEvent(eventId) == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with id  "+eventId + " not found.");
 
-            List<BringService> serviceList = eventDao.getService(eventId);
-            return serviceList;
+            if(!hasUserPrivileges(eventId, userName))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "Your don't have permission to see this event");
+
+            return eventDao.getService(eventId);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
@@ -540,7 +557,11 @@ public class EventLogic {
 
     public void updateBringservice(int eventId, String accepter, int serviceId) throws HttpRequestException{
         try{
-            //TODO check ob schon jemand anderes eingetragen ist
+            BringService bringService = eventDao.getOneService(serviceId);
+
+            if(bringService.getAccepter() != null)
+                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), bringService.getAccepter() + " already accepted this task");
+
             eventDao.updateBringservice(eventId,accepter,serviceId);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());

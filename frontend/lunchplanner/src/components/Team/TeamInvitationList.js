@@ -65,8 +65,6 @@ class TeamInvitationList extends React.Component {
         let teams = this.state.teams;
         let selectedTeams = this.state.selectedTeams;
 
-        console.log('selected teams: ', selectedTeams);
-
         return (
             <List
                 className={classes.list}

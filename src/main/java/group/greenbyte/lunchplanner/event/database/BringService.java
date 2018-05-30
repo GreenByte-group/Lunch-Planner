@@ -1,5 +1,6 @@
 package group.greenbyte.lunchplanner.event.database;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import group.greenbyte.lunchplanner.user.database.User;
 
 import javax.persistence.*;
@@ -9,6 +10,9 @@ import java.io.Serializable;
 @Entity
 public class BringService implements Serializable {
 
+    static final public int MAX_NAME_LENGTH = 50;
+    static final public int MAX_DESCRIPTION_LENGTH = 1000;
+
     public BringService(){
 
     }
@@ -17,25 +21,28 @@ public class BringService implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer serviceId;
 
+    @Column(length = MAX_NAME_LENGTH)
     private String food;
 
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "event_Id")
-    private Event event_Id;
+    @JoinColumn(name = "eventId")
+    private Event event;
 
     @Transient
-    private Integer event_ID;
+    private Integer eventId;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "userName")
-    private User creater;
+    private User creator;
 
     @Transient
-    private String createrName;
-
+    private String creatorName;
 
     private String accepter;
 
+    @Column(length = MAX_DESCRIPTION_LENGTH)
     private String description;
 
 
@@ -51,12 +58,12 @@ public class BringService implements Serializable {
     }
 
 
-    public String getCreaterName() {
-        return createrName;
+    public String getCreatorName() {
+        return creatorName;
     }
 
-    public void setCreaterName(String createrName) {
-        this.createrName = createrName;
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
     }
 
     public String getAccepter() {
@@ -68,12 +75,12 @@ public class BringService implements Serializable {
     }
 
 
-    public Integer getEvent_ID() {
-        return event_ID;
+    public Integer getEventId() {
+        return eventId;
     }
 
-    public void setEvent_ID(Integer event_ID) {
-        this.event_ID = event_ID;
+    public void setEventId(Integer eventId) {
+        this.eventId = eventId;
     }
 
     public String getDescription() {

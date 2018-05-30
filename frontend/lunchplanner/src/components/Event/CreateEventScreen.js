@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
-import Dialog from './Dialog';
+import Dialog from '../Dialog';
 import Typography from 'material-ui/Typography';
 import Slide from 'material-ui/transitions/Slide';
 import TextField from "material-ui/es/TextField/TextField";
@@ -11,19 +11,19 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Switch from 'material-ui/Switch';
 import AddIcon from '@material-ui/icons/Add';
 import {FormGroup, FormControlLabel,} from 'material-ui/Form';
-import {createEvent} from "./CreateEventFunctions";
 import {DatePicker, TimePicker} from 'material-ui-old';
 import PeopleIcon from '@material-ui/icons/People'
 
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
-import "../assets/CreateEventScreen.css"
+import "../../assets/CreateEventScreen.css"
 import {Link} from "react-router-dom";
 import {Today, Schedule} from "@material-ui/icons";
-import {eventListNeedReload} from "./Event/EventList";
+import {eventListNeedReload} from "./EventList";
 import moment from "moment";
 
-import {getHistory} from "../utils/HistoryUtils";
+import {getHistory} from "../../utils/HistoryUtils";
 import {InputAdornment} from "material-ui";
+import {createEvent} from "./EventFunctions";
 
 const styles = {
     appBar: {
@@ -173,8 +173,10 @@ class CreateEventScreen extends React.Component {
                 }
             },
             (error) => {
-                if(error)
+                if(error && error.response)
                     this.setState({error: error.response.data});
+                else
+                    console.log(error);
             });
     };
 

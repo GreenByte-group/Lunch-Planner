@@ -5,7 +5,6 @@ import {Link} from "react-router-dom";
 import IconButton from "material-ui/es/IconButton/IconButton";
 import TeamIcon from  "@material-ui/icons/Create";
 import Avatar from "material-ui/es/Avatar/Avatar";
-import Chip from "material-ui/es/Chip/Chip";
 
 const styles = {
     listItem: {
@@ -91,7 +90,6 @@ class Team extends React.Component {
 
     componentWillReceiveProps(newProps) {
         if(newProps.name && newProps.name !== this.state.name) {
-            console.log('teamname: ' + newProps.name);
             this.setState ({
                 name: newProps.name,
             });

@@ -27,9 +27,7 @@ class Login extends React.Component {
     }
 
     handleSubmit(event) {
-        console.log("Submit");
         doLogin(this.state.username, this.state.password, message => {
-            console.log(message);
 
             if(message.type === "LOGIN_EMPTY") {
                 this.setState({

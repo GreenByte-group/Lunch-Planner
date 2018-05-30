@@ -68,7 +68,6 @@ class SocialScreen extends React.Component {
         const params = new URLSearchParams(props.location.search);
         let tab = params.get('tab');
         if(tab != null && tab !== undefined) {
-            console.log('tab value: ' + tab);
             return tab;
         } else {
             return 0;
@@ -79,7 +78,6 @@ class SocialScreen extends React.Component {
         const params = new URLSearchParams(props.location.search);
         let tab = params.get('tab');
         if(tab != null && tab !== undefined && tab !== this.state.value) {
-            console.log('tab value: ' + tab);
             this.setState({
                 value: tab,
             });

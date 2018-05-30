@@ -9,13 +9,11 @@ import AddIcon from '@material-ui/icons/Add';
 import PeopleIcon from '@material-ui/icons/People'
 
 import {Link} from "react-router-dom";
-import moment from "moment";
 
 import {getHistory} from "../../utils/HistoryUtils";
 import {FormControlLabel, FormHelperText, InputAdornment, Switch} from "material-ui";
 import {eventListNeedReload} from "../Event/EventList";
-import {createEvent} from "../CreateEventFunctions";
-import {createTeam} from "./CreateTeamFunctions";
+import {createTeam} from "./TeamFunctions";
 import {setAuthenticationHeader} from "../authentication/Authentication";
 
 const styles = {

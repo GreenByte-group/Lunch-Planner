@@ -1,5 +1,4 @@
 import React from "react"
-import axios from "axios"
 
 import {HOST} from "../../Config"
 import Team from "./Team";
@@ -8,6 +7,15 @@ import {withStyles} from "material-ui/styles/index";
 import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
 import {setAuthenticationHeader} from "../authentication/Authentication";
+import {getTeams} from "./TeamFunctions";
+
+
+export let needReload = false;
+
+export function teamListNeedReload() {
+    needReload = true;
+}
+
 
 const styles = {
     root: {
@@ -41,19 +49,12 @@ class TeamList extends React.Component {
             search: this.props.search,
         });
 
-        let url;
-        if(this.props.search)
-            url = HOST + "/team/search/" + this.props.search;
-        else
-            url = HOST + "/team";
-
-        axios.get(url)
-            .then((response) => {
-                console.log(response.data);
+        getTeams(this.props.search,
+            (response) => {
                 this.setState({
                     teams: response.data,
                 })
-            })
+            });
     }
 
     render() {
