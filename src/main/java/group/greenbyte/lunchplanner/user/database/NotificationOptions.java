@@ -16,7 +16,7 @@ public class NotificationOptions {
     private boolean blockedPermanently;
 
     //Option 2: block all notifications for today
-    private boolean option2;
+    private boolean option2BlockedToday;
     private Date blockedToday;
 
 
@@ -79,12 +79,12 @@ public class NotificationOptions {
         return this.blockedPermanently;
     }
 
-    public boolean isOption2() {
-        return option2;
+    public boolean isOption2BlockedToday() {
+        return option2BlockedToday;
     }
 
-    public void setOption2(boolean option2) {
-        this.option2 = option2;
+    public void setOption2(boolean option2BlockedToday) {
+        this.option2BlockedToday = option2BlockedToday;
     }
 
     public void setBlockedToday(Date blockedToday) {

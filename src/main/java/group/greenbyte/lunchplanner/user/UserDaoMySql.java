@@ -37,6 +37,17 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_NOTIFICATION_PICTURE = "picture";
     public static final String USER_NOTIFICATION_DATE = "date";
 
+    public static final String USER_NOTIFICATIONOPTIONS_TABLE = "notificationOptions";
+    public static final String USER_NOTIFICATIONOPTIONS_ID = "user_name";
+    public static final String USER_NOTIFICATIONOPTIONS_OPTION1 = "blocked_permanently";
+    public static final String USER_NOTIFICATIONOPTIONS_OPTION2 = "blocked_today";
+    public static final String USER_NOTIFICATIONOPTIONS_OPTION2_DATE = "date";
+    public static final String USER_NOTIFICATIONOPTIONS_OPTION3 = "blocked_timeInterval";
+    public static final String USER_NOTIFICATIONOPTIONS_OPTION3_START = "start";
+    public static final String USER_NOTIFICATIONOPTIONS_OPTION3_END = "notificationOptions";
+
+
+
     @Autowired
     public UserDaoMySql(JdbcTemplate jdbcTemplateObject) {
         this.jdbcTemplate = jdbcTemplateObject;
