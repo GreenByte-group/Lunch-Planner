@@ -86,6 +86,7 @@ export function createEvent(location, date, member, visible, responseFunc, error
 }
 
 export function inviteMemberToEvent(eventId, member, responseFunc, errorFunc) {
+    console.log("member: ", member);
     if(member && member instanceof Array)
 
     member.forEach((oneMember) => {
