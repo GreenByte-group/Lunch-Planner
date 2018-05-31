@@ -14,6 +14,7 @@ import {teamListNeedReload} from "./TeamList";
 import TextFieldEditing from "../editing/TextFieldEditing";
 import Link from "react-router-dom/es/Link";
 import Add from "@material-ui/icons/es/Add";
+import {inviteMemberToTeam} from "./TeamFunctions";
 
 
 function Transition(props) {
@@ -197,6 +198,38 @@ class TeamScreen extends React.Component {
         }
     }
 
+    parseUrl = () => {
+        const params = new URLSearchParams(this.props.location.search);
+        let invitedUsers = params.get('invitedUsers');
+        let invitedTeams = params.get('invitedTeams');
+        let teamMember = params.get('teamMember');
+
+        let usersToInvite = [];
+
+        if(invitedUsers) {
+            usersToInvite = usersToInvite.concat(invitedUsers.split(','));
+        }
+        if(teamMember) {
+            usersToInvite = usersToInvite.concat(teamMember.split(','));
+        }
+
+        if(usersToInvite.length !== 0) {
+            //remove doubles and already invited people
+            console.log("this.state.people", this.state.people)
+            let usersToInviteUnique = usersToInvite.filter((item, pos) => {
+                return usersToInvite.indexOf(item) === pos && !this.state.people.some((person) => person.userName === item);
+            });
+
+            inviteMemberToTeam(this.state.teamId, usersToInviteUnique, (user) => {
+                let allUsers = this.state.people;
+                allUsers.push({userName: user, admin: false});
+                this.setState({
+                    people: allUsers,
+                });
+            })
+        }
+    };
+
     loadTeam = (teamId) => {
         if(!teamId)
             teamId = this.state.teamId;
@@ -263,15 +296,10 @@ class TeamScreen extends React.Component {
         let people = this.state.people;
         let iAmAdmin = false;
         let userName = getUsername();
-        people.forEach((listValue) => {
-            if(listValue.userName === userName) {
-                if(listValue.admin) {
-                    iAmAdmin = true;
-                }
-            }
-        });
 
-        let selectedUsers = [];
+        if(people.length !== 0) {
+            this.parseUrl();
+        }
 
         people.sort((a, b) => {
             if(a.answer === 0 && b.answer !== 0) {
@@ -283,6 +311,15 @@ class TeamScreen extends React.Component {
             }
         });
 
+        people.forEach((listValue) => {
+            if(listValue.userName === userName) {
+                if(listValue.admin) {
+                    iAmAdmin = true;
+                }
+            }
+        });
+
+        let selectedUsers = [];
         let buttonText = "Join Team";
         let username = getUsername();
 
@@ -291,7 +328,6 @@ class TeamScreen extends React.Component {
                 buttonText = "Leave Team";
             }
         });
-
 
         return (
             <div>

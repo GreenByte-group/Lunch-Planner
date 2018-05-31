@@ -286,9 +286,11 @@ class EventScreen extends React.Component {
             });
 
             inviteMemberToEvent(this.state.eventId, usersToInviteUnique, (user) => {
+                let allUsers = this.state.people;
+                allUsers.push({userName: user, admin: false});
                 this.setState({
-                    people: this.state.people.push(user),
-                })
+                    people: allUsers,
+                });
             })
         }
     };
