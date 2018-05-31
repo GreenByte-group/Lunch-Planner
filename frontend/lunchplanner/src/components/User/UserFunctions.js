@@ -11,3 +11,9 @@ export function getUsers(search, responseFunc) {
     axios.get(url)
         .then(responseFunc);
 }
+
+export function inviteExtern(eventId, responseFunc) {
+    let url = HOST + eventId +  "/token";
+    axios.get(url)
+        .then(responseFunc);
+}

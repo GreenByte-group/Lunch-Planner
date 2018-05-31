@@ -27,12 +27,6 @@ const styles = {
     },
 };
 
-export let needReload = false;
-
-export function teamListNeedReload() {
-    needReload = true;
-}
-
 class TeamList extends React.Component {
 
     constructor(props) {
