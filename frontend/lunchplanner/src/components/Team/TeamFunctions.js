@@ -75,3 +75,14 @@ export function changeTeamDescription(teamId, teamDescription, responseFunc, err
 export function changeProfilePicture(teamID, profilePicture, responseFunc, errorFunc){
 
 }
+
+export function inviteMemberToTeam(teamId, member, responseFunc, errorFunc) {
+    member.forEach((oneMember) => {
+        let url = HOST + "/team/" + oneMember + "/invite/team/" + teamId;
+        axios.post(url)
+            .then((response) => {
+                if(response.status === 201)
+                    responseFunc(oneMember)
+            })
+    });
+}
