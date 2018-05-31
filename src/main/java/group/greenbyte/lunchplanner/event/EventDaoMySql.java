@@ -2,7 +2,6 @@ package group.greenbyte.lunchplanner.event;
 
 import group.greenbyte.lunchplanner.event.database.*;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import org.hibernate.jdbc.Expectation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,7 +9,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import javax.xml.crypto.Data;
 import java.util.*;
 
 @Repository
@@ -21,7 +19,7 @@ public class EventDaoMySql implements EventDao {
     private static final String EVENT_BRINGSERVICE_ID = "service_id";
     private static final String EVENT_BRINGSERVICE_FOOD = "food";
     private static final String EVENT_BRINGSERVICE_EVENT = "event_id";
-    private static final String EVENT_BRINGSERVICE_CREATER = "user_name";
+    private static final String EVENT_BRINGSERVICE_CREATOR = "user_name";
     private static final String EVENT_BRINGSERVICE_ACCEPTER = "accepter";
     private static final String EVENT_BRINGSERVICE_DESCRIPTION = "description";
 
@@ -342,7 +340,7 @@ public class EventDaoMySql implements EventDao {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(EVENT_BRINGSERVICE_FOOD, food);
         parameters.put(EVENT_BRINGSERVICE_EVENT, eventId);
-        parameters.put(EVENT_BRINGSERVICE_CREATER, creater);
+        parameters.put(EVENT_BRINGSERVICE_CREATOR, creater);
         parameters.put(EVENT_BRINGSERVICE_ACCEPTER, null);
         parameters.put(EVENT_BRINGSERVICE_DESCRIPTION, description);
 
@@ -383,6 +381,22 @@ public class EventDaoMySql implements EventDao {
             }
 
             return serviceReturn;
+        }catch(Exception e){
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public BringService getOneService(int serviceId) throws DatabaseException {
+        try{
+            String SQL = "SELECT * FROM " + EVENT_BRINGSERVICE_TABLE + " WHERE " +
+                    EVENT_BRINGSERVICE_ID + " = ? ";
+
+            List<BringServiceDatabase> serviceList = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(BringServiceDatabase.class),
+                    serviceId);
+
+            return serviceList.get(0).getBringService();
         }catch(Exception e){
             throw new DatabaseException(e);
         }

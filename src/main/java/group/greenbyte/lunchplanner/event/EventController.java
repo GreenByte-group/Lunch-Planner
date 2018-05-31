@@ -311,10 +311,9 @@ public class EventController {
      */
     @RequestMapping(value = "/{eventId}/service", method = RequestMethod.PUT,
                     consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-    @ResponseBody
     public String putService(@PathVariable("eventId") int eventId, @RequestBody BringServiceJson bringService, HttpServletResponse response){
         try{
-            eventLogic.putService(eventId, bringService.getFood(), bringService.getDescription());
+            eventLogic.putService(SessionManager.getUserName(), eventId, bringService.getFood(), bringService.getDescription());
             response.setStatus(HttpServletResponse.SC_CREATED);
             return "";
         }catch(HttpRequestException e){
@@ -333,9 +332,9 @@ public class EventController {
                     produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity getService(@PathVariable("eventId") int eventId) {
-
         try{
-            List<BringService> serviceList = eventLogic.getService(eventId);
+            //TODO permission
+            List<BringService> serviceList = eventLogic.getService(SessionManager.getUserName(), eventId);
 
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -361,7 +360,7 @@ public class EventController {
                                      @PathVariable("serviceId") int serviceId, HttpServletResponse response){
         try{
             eventLogic.updateBringservice(eventId,SessionManager.getUserName(),serviceId);
-            response.setStatus(HttpServletResponse.SC_OK);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
             return "";
         }catch(HttpRequestException e){
             response.setStatus(e.getStatusCode());

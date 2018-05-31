@@ -4,7 +4,7 @@ import React from 'react';
 import Slide from 'material-ui/transitions/Slide';
 import Dialog from "../Dialog";
 import {Button} from "material-ui";
-import {getUsername} from "../authentication/Authentication";
+import {getUsername, setAuthenticationHeader} from "../authentication/Authentication";
 import {getHistory} from "../../utils/HistoryUtils"
 import SecretIcon from "@material-ui/icons/es/Https";
 import Divider from "material-ui/es/Divider/Divider";
@@ -12,6 +12,9 @@ import UserList from "../User/UserList";
 import {getTeam, replyToTeam, changeTeamDescription,changeTeamName} from "./TeamFunctions";
 import {teamListNeedReload} from "./TeamList";
 import TextFieldEditing from "../editing/TextFieldEditing";
+import axios from "axios";
+import {HOST} from "../../Config";
+
 import Link from "react-router-dom/es/Link";
 import Add from "@material-ui/icons/es/Add";
 
@@ -156,7 +159,7 @@ class TeamScreen extends React.Component {
 
     constructor(props) {
         super();
-
+        setAuthenticationHeader();
         this.state = {
             teamId: 0,
             open: true,
@@ -164,6 +167,7 @@ class TeamScreen extends React.Component {
             description: "",
             people:[],
         };
+
     }
 
     componentDidMount() {
@@ -220,14 +224,15 @@ class TeamScreen extends React.Component {
         this.setState({
            people: people,
         });
-        this.sendAnswer('reject');
+        this.sendAnswer();
     };
 
-    sendAnswer = (answer) => {
-        replyToTeam(this.state.teamId, answer,
-            (response) => {
-                this.loadTeam();
-                //eventListNeedReload();
+    sendAnswer = () => {
+        console.log("leave");
+        let url = HOST + '/team/' + this.state.teamId + '/leave';
+        axios.delete(url)
+            .then(() => {
+                teamListNeedReload();
             })
     };
 

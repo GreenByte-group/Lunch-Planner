@@ -73,7 +73,7 @@ class ServiceList extends React.Component {
                                 serviceId={listValue.serviceId}
                                 food={listValue.food}
                                 description={listValue.description}
-                                creator={listValue.createrName}
+                                creator={listValue.creatorName}
                                 accepter={listValue.accepter}
                             />
                         )

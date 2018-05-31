@@ -22,6 +22,7 @@ import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -195,6 +196,19 @@ public class UserControllerTest {
                 get("/user/search/" + createString(10)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0]").doesNotExist());
+    }
+
+    // ------------------ FCM TOKEN -----------------------
+    @Test
+    @WithMockUser(username = userName)
+    public void test1setFcmToken() throws Exception {
+        String fcmToken = "fcmToken";
+        mockMvc.perform(
+                post("/user/fcm").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fcmToken\":\"" + fcmToken + "\"}"))
+                .andExpect(status().isNoContent());
+
+        assertEquals(fcmToken, userLogic.getUser(userName).getFcmToken());
     }
 
 

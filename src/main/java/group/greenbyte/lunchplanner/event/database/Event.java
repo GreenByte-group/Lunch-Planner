@@ -41,7 +41,7 @@ public class Event {
     @OneToMany(mappedBy = "userComment")
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "creater")
+    @OneToMany(mappedBy = "creator")
     private List<BringService> bringServices = new ArrayList<>();
 
     @Transient

@@ -161,9 +161,22 @@ class CreateEventScreen extends React.Component {
 
     handleAccept = () => {
         let created = this.state.created;
-        let invitedUsers = this.state.invitedUsers + "," + this.state.invitedTeamMember;
 
-        createEvent(this.state.location, this.state.date, invitedUsers, this.state.visible,
+        let invitedUsers = "";
+        if(this.state.invitedUsers)
+            invitedUsers += this.state.invitedUsers;
+
+        if(this.state.invitedTeamMember) {
+            if(invitedUsers)
+                invitedUsers += ",";
+            invitedUsers += this.state.invitedTeamMember;
+        }
+
+        let invitedUsersArray = [];
+        if(invitedUsers)
+            invitedUsersArray = invitedUsers.split(",")
+
+        createEvent(this.state.location, this.state.date, invitedUsersArray, this.state.visible,
             (response) => {
                 if(response.status === 201) {
                     eventListNeedReload();
@@ -173,8 +186,10 @@ class CreateEventScreen extends React.Component {
                 }
             },
             (error) => {
-                if(error)
+                if(error && error.response)
                     this.setState({error: error.response.data});
+                else
+                    console.log(error);
             });
     };
 
