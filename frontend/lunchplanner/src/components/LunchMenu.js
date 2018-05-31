@@ -19,6 +19,7 @@ import Menu from "material-ui/es/Menu/Menu";
 import MenuItem from "material-ui/es/Menu/MenuItem";
 import FormControlLabel from "material-ui/es/Form/FormControlLabel";
 import Switch from "material-ui/es/Switch/Switch";
+import {getUsername} from "./authentication/Authentication";
 
 const styles = {
     list: {
@@ -31,7 +32,10 @@ const styles = {
         backgroundColor: "darkGrey",
     },
     avatar:{
-        marginLeft: 15,
+        marginTop: 24,
+        marginLeft: 24,
+        width: 64,
+        height: 64,
         marginBottom: 15,
 
     },
@@ -39,6 +43,11 @@ const styles = {
         marginRight: 20,
         color: "#1EA185",
     },
+    avatarText:{
+        marginLeft: -10,
+        marginBottom: -5,
+    }
+
 };
 class LunchMenu extends React.Component {
 
@@ -74,8 +83,9 @@ class LunchMenu extends React.Component {
     }
 
     render() {
-
         const { classes } = this.props;
+
+        let name = getUsername();
         return (
 
             <div ref={node => { this.node = node; }}>
@@ -92,8 +102,8 @@ class LunchMenu extends React.Component {
                         >
                             <div className={classes.list}>
                                 <List className={classes.profile}>
-                                    <Avatar alt="Max Mustermann" className={classes.avatar} >MM</Avatar>
-                                    <p>Max Mustermann ● max.mustermann@gmail.com</p>
+                                    <Avatar alt={name} className={classes.avatar} >{name.charAt(0)}</Avatar>
+                                    <p className={classes.avatarText}>{name} ● max.mustermann@gmail.com</p>
                                 </List>
                                 <Divider />
                                 <List className ={classes.menu}>
