@@ -15,6 +15,9 @@ import TextFieldEditing from "../editing/TextFieldEditing";
 import axios from "axios";
 import {HOST} from "../../Config";
 
+import Link from "react-router-dom/es/Link";
+import Add from "@material-ui/icons/es/Add";
+
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -97,10 +100,10 @@ const styles = {
         marginLeft: '100px',
     },
     description: {
+        paddingTop: '10px',
         marginTop: '15px',
         fontSize: '16px',
-        width: '80%',
-        position: 'fixed',
+        width: '300px',
     },
     secretTeam:{
         marginTop: '20px',
@@ -114,11 +117,17 @@ const styles = {
     },
     divider:{
         width: '100%',
-        position: 'fixed',
     },
-    member:{
+    invitations: {
+        marginLeft: '0px',
+        marginTop: '8px',
+    },
+    invitaionsHeader: {
         marginLeft: '16px',
-        marginTop: '20px',
+        marginBottom: '0px',
+        fontSize: '16px',
+        fontWeight: '500',
+        lineHeight: '24px',
     },
     overButton: {
         height: '100%',
@@ -126,6 +135,23 @@ const styles = {
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
+    },
+    // ADD NEW PEOPLE
+    addNewPeopleRoot: {
+        height: '72px',
+        padding: '20px 16px',
+        backgroundColor: '#f3f3f3',
+        "&:hover": {
+            cursor: 'pointer',
+        },
+    },
+    newPeopleIcon: {
+        height: '32px',
+        float: 'left',
+    },
+    newPeopleText: {
+        marginTop: '6px',
+        marginLeft: '57px',
     },
 };
 
@@ -137,7 +163,6 @@ class TeamScreen extends React.Component {
         this.state = {
             teamId: 0,
             open: true,
-            isAdmin: props.isAdmin,
             name:"",
             description: "",
             people:[],
@@ -296,11 +321,27 @@ class TeamScreen extends React.Component {
                                 <SecretIcon/>
                                 <p className={classes.secretTeamText}>Secret team. Only you can see the activity of this team.</p>
                             </div>
-                            <Divider className={classes.divider}/>
+                            <Divider className={classes.divider} />
 
-                            <div className={classes.member}>
-                                <p className={classes.fontBig}> Team Member ({people.length})</p>
+                            <div className={classes.invitations}>
+                                <p className={classes.invitaionsHeader}> Team Member ({people.length})</p>
+                                {
+                                    (iAmAdmin)
+                                        ? <Link to={{pathname: "/team/create/invite",  query: {
+                                                source: "/team/" + this.state.teamId,
+                                                invitedUsers: people.map((value) => value.userName).join(','),
+                                            }}}>
+                                            <div className={classes.addNewPeopleRoot}>
+                                                <Add className={classes.newPeopleIcon} />
+                                                <p className={classes.newPeopleText}>Add more people...</p>
+                                            </div>
+                                        </Link>
+                                        : ''
+                                }
                                 <UserList
+                                    selectedUsers={selectedUsers}
+                                    othersInvited={true}
+                                    selectable={false}
                                     users={people}
                                 />
                             </div>

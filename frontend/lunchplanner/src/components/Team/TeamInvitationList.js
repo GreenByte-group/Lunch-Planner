@@ -20,6 +20,7 @@ class TeamInvitationList extends React.Component {
             teams: props.teams || [],
             selectable: props.selectable || false,
             onSelectionChanged: props.onSelectionChanged,
+            othersInvited: props.othersInvited || false,
         };
     }
 
@@ -64,6 +65,7 @@ class TeamInvitationList extends React.Component {
         const { classes } = this.props;
         let teams = this.state.teams;
         let selectedTeams = this.state.selectedTeams;
+        let othersInvited = this.state.othersInvited;
 
         return (
             <List
