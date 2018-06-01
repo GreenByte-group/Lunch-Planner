@@ -31,6 +31,20 @@ public interface EventDao {
                       Date timeStart,
                       boolean isPublic) throws DatabaseException;
 
+    void deleteInvitationsForEvent(int eventId) throws DatabaseException;
+
+    void deleteBringServiceForEvent(int eventId) throws DatabaseException;
+
+    void deleteCommentsForEvent(int eventId) throws DatabaseException;
+
+    /**
+     * Delete one event from the database
+     *
+     * @param eventId id of the event
+     * @throws DatabaseException
+     */
+    void deleteEvent(int eventId) throws DatabaseException;
+
     /**
      * Gets the event with location but without usersInvited and teamsVisible
      *
@@ -39,6 +53,8 @@ public interface EventDao {
      * @throws DatabaseException when an unexpected error happens
      */
     Event getEvent(int eventId) throws DatabaseException;
+
+    List<Event> getAllEvents() throws DatabaseException;
 
     /**
      *
