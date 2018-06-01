@@ -11,3 +11,9 @@ export function getUsers(search, responseFunc) {
     axios.get(url)
         .then(responseFunc);
 }
+
+export function getUser(username, responseFunc) {
+    let url = HOST + "/user/" + username;
+    axios.get(url)
+        .then(responseFunc);
+}
