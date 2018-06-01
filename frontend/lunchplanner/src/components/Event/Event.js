@@ -123,6 +123,7 @@ class Event extends React.Component {
             invitations: invitations,
             people: people,
             location: props.location,
+            token: props.token,
         }
     }
 
@@ -166,6 +167,11 @@ class Event extends React.Component {
                 accepted: newProps.accepted,
             });
         }
+        if(newProps.token !== undefined && newProps.token !== this.state.token) {
+            this.setState({
+                token: newProps.token,
+            });
+        }
 
         if(newProps.people !== undefined && newProps.people !== this.state.people) {
             let invitations = newProps.people;
@@ -203,6 +209,7 @@ class Event extends React.Component {
         let people = this.state.people;
         let invitations = this.state.invitations;
         let location = this.state.location;
+        let token = this.state.token;
 
         people = people.split(',');
         people = people.map((value) => value.trim());
@@ -222,7 +229,8 @@ class Event extends React.Component {
                     date: date,
                     people: invitations,
                     accepted: accepted,
-                    location:location
+                    location:location,
+                    token: token,
                 }}}>
 
                 <ListItem style={{backgroundColor: background}} button className={classes.listItem}>

@@ -25,7 +25,6 @@ import {
     replyToEvent
 } from "./EventFunctions";
 import ShareIcon from "@material-ui/icons/Share"
-import InviteExtern from "../User/InviteExtern";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -234,14 +233,16 @@ class EventScreen extends React.Component {
             people:[],
             accepted: false,
             isShared : false,
+            token: null,
         };
     }
 
     componentDidMount() {
-        let eventName, description, date, people, accepted, location, eventId;
-        let token = this.props.match.params.securityToken;
+        let eventName, description, date, people, accepted, location, eventId, token;
+
+        token = this.props.match.params.securityToken;
+
         getEventExtern(token, (response) => {
-            console.log(response);
             this.setState({
                 eventId: response.data.eventId,
                 name: response.data.eventName,
@@ -249,6 +250,8 @@ class EventScreen extends React.Component {
                 date: new Date(response.data.startDate),
                 description: response.data.eventDescription,
                 people: response.data.invitations,
+                token:response.data.shareToken,
+                isShared: true,
             });
         });
 
@@ -272,6 +275,9 @@ class EventScreen extends React.Component {
             if (this.props.location.query.location) {
                 location = String(this.props.location.query.location);
             }
+            if (this.props.location.query.token) {
+                token = String(this.props.location.query.token);
+            }
 
             this.setState({
                 eventId: eventId,
@@ -281,7 +287,13 @@ class EventScreen extends React.Component {
                 people: people,
                 accepted: accepted,
                 location: location,
-            })
+                token: token,
+            });
+            if(this.state.token !== null){
+                this.setState({
+                    isShared: true,
+                });
+            }
         } else {
             this.loadEvent(eventId);
         }
@@ -371,8 +383,14 @@ class EventScreen extends React.Component {
                 location: response.data.location,
                 people: response.data.invitations,
                 date: new Date(response.data.startDate),
+                token: response.data.shareToken,
             })
         })
+        if(this.state.token !== null){
+            this.setState({
+                isShared: true,
+            });
+        }
     };
 
     handleDecline = () => {
@@ -418,6 +436,7 @@ class EventScreen extends React.Component {
         let location = this.state.location;
         let people = this.state.people;
         let eventId = this.state.eventId;
+        let isShared = this.state.isShared;
 
         if(people.length !== 0) {
             this.parseUrl();
@@ -529,7 +548,7 @@ class EventScreen extends React.Component {
                                             </div>
                                         </Link>
                             }
-                            {(iAmAdmin)
+                            {(iAmAdmin || isShared)
                                 ?
                                 <Link to={{pathname:`/event/${eventId}/share`, query: {
                                         source: "/event/" + this.state.eventId}}}>

@@ -109,6 +109,7 @@ class EventList extends React.Component {
                                       invited={invited}
                                       people={listValue.invitations}
                                       location={listValue.location}
+                                      token={listValue.shareToken}
                         />;
                     })}
                 </List>
