@@ -6,7 +6,6 @@ import { shallow, mount, render } from 'enzyme';
 import * as enzyme from "enzyme";
 
 test('Event with dummy data', () => {
-    // Render a checkbox with label in the document
     const event = renderer.create(
         <MemoryRouter>
             <Event background='#FFFFFF'
