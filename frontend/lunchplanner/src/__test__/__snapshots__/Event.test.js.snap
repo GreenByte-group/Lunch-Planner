@@ -1,117 +1,109 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Event with dummy data 1`] = `
-ShallowWrapper {
-  "length": 1,
-  Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <WithStyles(Event)
-    background="#FFFFFF"
-    date={2018-12-17T02:24:00.000Z}
-    description="description"
-    id={1}
-    location="location"
-    name="event"
-    people={
-        Array [
-            Object {
-              "admin": true,
-              "answer": 0,
-              "userName": "name",
-            },
-          ]
+<a
+  className="Event-link-2"
+  href="/event/1"
+  onClick={[Function]}
+>
+  <div
+    className="MuiButtonBase-root-24 MuiListItem-root-14 MuiListItem-default-17 MuiListItem-gutters-21 MuiListItem-button-22 Event-listItem-3"
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    onKeyUp={[Function]}
+    onMouseDown={[Function]}
+    onMouseLeave={[Function]}
+    onMouseUp={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    role="button"
+    style={
+      Object {
+        "backgroundColor": "#FFFFFF",
+      }
     }
-/>,
-  Symbol(enzyme.__renderer__): Object {
-    "batchedUpdates": [Function],
-    "getNode": [Function],
-    "render": [Function],
-    "simulateEvent": [Function],
-    "unmount": [Function],
-  },
-  Symbol(enzyme.__node__): Object {
-    "instance": null,
-    "key": undefined,
-    "nodeType": "class",
-    "props": Object {
-      "background": "#FFFFFF",
-      "classes": Object {
-        "card": "Event-card-1",
-        "cardContent": "Event-cardContent-12",
-        "date": "Event-date-5",
-        "footer": "Event-footer-13",
-        "icons": "Event-icons-8",
-        "imageDiv": "Event-imageDiv-11",
-        "link": "Event-link-2",
-        "listItem": "Event-listItem-3",
-        "text": "Event-text-9",
-        "textSelected": "Event-textSelected-10",
-        "time": "Event-time-6",
-        "title": "Event-title-4",
-        "users": "Event-users-7",
-      },
-      "date": 2018-12-17T02:24:00.000Z,
-      "description": "description",
-      "id": 1,
-      "location": "location",
-      "name": "event",
-      "people": Array [
-        Object {
-          "admin": true,
-          "answer": 0,
-          "userName": "name",
-        },
-      ],
-    },
-    "ref": null,
-    "rendered": null,
-    "type": [Function],
-  },
-  Symbol(enzyme.__nodes__): Array [
-    Object {
-      "instance": null,
-      "key": undefined,
-      "nodeType": "class",
-      "props": Object {
-        "background": "#FFFFFF",
-        "classes": Object {
-          "card": "Event-card-1",
-          "cardContent": "Event-cardContent-12",
-          "date": "Event-date-5",
-          "footer": "Event-footer-13",
-          "icons": "Event-icons-8",
-          "imageDiv": "Event-imageDiv-11",
-          "link": "Event-link-2",
-          "listItem": "Event-listItem-3",
-          "text": "Event-text-9",
-          "textSelected": "Event-textSelected-10",
-          "time": "Event-time-6",
-          "title": "Event-title-4",
-          "users": "Event-users-7",
-        },
-        "date": 2018-12-17T02:24:00.000Z,
-        "description": "description",
-        "id": 1,
-        "location": "location",
-        "name": "event",
-        "people": Array [
+    tabIndex="0"
+  >
+    <div
+      className="MuiPaper-root-28 MuiPaper-elevation2-32 MuiPaper-rounded-29 MuiCard-root-27 Event-card-1"
+    >
+      <div
+        className="MuiCardContent-root-55 Event-cardContent-12"
+      >
+        <div
+          className="Event-imageDiv-11"
+        />
+        <div
+          className="Event-text-9"
+        >
+          <p
+            className="Event-title-4"
+          >
+            event @ location
+          </p>
+          <p
+            className="Event-time-6"
+          >
+            <svg
+              aria-hidden="true"
+              className="MuiSvgIcon-root-56 Event-icons-8"
+              color={undefined}
+              focusable="false"
+              viewBox="0 0 22 22"
+            >
+              <g>
+                <path
+                  d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"
+                />
+              </g>
+            </svg>
+             
+            03:24
+          </p>
+          <div
+            className="Event-users-7"
+          >
+            name
+          </div>
+        </div>
+      </div>
+      <hr
+        style={
           Object {
-            "admin": true,
-            "answer": 0,
-            "userName": "name",
-          },
-        ],
-      },
-      "ref": null,
-      "rendered": null,
-      "type": [Function],
-    },
-  ],
-  Symbol(enzyme.__options__): Object {
-    "adapter": ReactSixteenAdapter {
-      "options": Object {
-        "enableComponentDidUpdateOnSetState": true,
-      },
-    },
-  },
-}
+            "marginBottom": "11px",
+          }
+        }
+      />
+      <div
+        className="Event-footer-13"
+      >
+        <p
+          className="Event-date-5"
+        >
+          <svg
+            aria-hidden="true"
+            className="MuiSvgIcon-root-56 Event-icons-8"
+            color={undefined}
+            focusable="false"
+            viewBox="-5 -5 27 27"
+          >
+            <g>
+              <path
+                d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+              />
+            </g>
+          </svg>
+           
+          17 Dec
+        </p>
+        
+      </div>
+    </div>
+    <span
+      className="MuiTouchRipple-root-62"
+    />
+  </div>
+</a>
 `;
