@@ -20,6 +20,7 @@ import CreateTeamScreen from "./components/Team/CreateTeamScreen";
 import {init} from './components/notification/Firebase'
 import NotificationsScreen from "./components/notification/NotificationsScreen";
 import TeamScreen from "./components/Team/TeamScreen";
+import InviteExtern from "./components/User/InviteExtern";
 
 const oldTheme = getMuiTheme({
     palette: {
@@ -89,6 +90,7 @@ class App extends React.Component {
                             <PrivateRoute path="/event/create/invite" component={SelectUserScreen} />
                             <PrivateRoute path="/event/:eventId(\d+)" component={EventScreen} />
                             <PrivateRoute path="/event/:eventId(\d+)/comments" component={Comments} />
+                            <PrivateRoute path="/event/:eventId(\d+)/share" component={InviteExtern} />
                             <PrivateRoute path="/event/:eventId(\d+)/service" component={ServiceListScreen} />
                         </div>
                     </Router>

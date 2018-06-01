@@ -25,6 +25,8 @@ import {
     inviteMemberToEvent,
     replyToEvent
 } from "./EventFunctions";
+import ShareIcon from "@material-ui/icons/Share"
+import InviteExtern from "../User/InviteExtern";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -86,6 +88,21 @@ function Transition(props) {
             marginLeft: 'auto',
         },
         commentText: {
+            fontSize: '11px',
+            lineHeight: '16px',
+        },
+        headerShare: {
+            float: 'right',
+            display: 'flex',
+            flexDirection: 'row',
+            color: 'white',
+        },
+        shareIcon: {
+            marginTop: '12px',
+            marginRight: 'auto',
+            marginLeft: 'auto',
+        },
+        shareText: {
             fontSize: '11px',
             lineHeight: '16px',
         },
@@ -222,6 +239,7 @@ class EventScreen extends React.Component {
             description: "",
             people:[],
             accepted: false,
+            openShare: false,
         };
     }
 
@@ -421,6 +439,7 @@ class EventScreen extends React.Component {
         let accepted = false;
         let buttonText = "Join Event";
         let barTitle = name;
+        let isShared;
 
         let iAmAdmin = false;
 
@@ -504,6 +523,18 @@ class EventScreen extends React.Component {
                                             </div>
                                         </Link>
                             }
+                            {(iAmAdmin || isShared)
+                                ?
+                                <Link to={{pathname:`/event/${eventId}/share`, query: {
+                                        source: "/event/" + this.state.eventId}}}>
+                                    <div className={classes.headerShare}>
+                                        <ShareIcon className={classes.shareIcon} />
+                                        <p className={classes.shareText}>Share</p>
+                                    </div>
+                                </Link>
+                                : ''
+                            }
+
                         </div>
                         <div className={classes.invitations}>
                             <p className={classes.invitaionsHeader}>Invited People ({people.length})</p>

@@ -13,7 +13,6 @@ import Typography from 'material-ui/Typography';
 import TeamInvitationList from "../Team/TeamInvitationList";
 import {getUsers} from "./UserFunctions";
 import {getTeams} from "../Team/TeamFunctions";
-import InviteExtern from "./InviteExtern";
 
 const styles = theme =>({
     root: {
@@ -182,7 +181,6 @@ class SelectUserScreen extends React.Component {
                     <Tab className={classes.tab} label="ALL" />
                     <Tab className={classes.tab} label="PEOPLE" />
                     <Tab className={classes.tab} label="TEAMS" />
-                    <Tab className={classes.tab} label="EXTERN" />
                 </Tabs>
                 <SwipeableViews
                     axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
@@ -199,10 +197,6 @@ class SelectUserScreen extends React.Component {
                     </TabContainer>
                     <TabContainer dir={theme.direction}>
                         {teamlist}
-                    </TabContainer>
-                    <TabContainer dir={theme.direction}>
-                        <InviteExtern
-                        />
                     </TabContainer>
                 </SwipeableViews>
 

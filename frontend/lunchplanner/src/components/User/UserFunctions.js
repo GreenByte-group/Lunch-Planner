@@ -13,7 +13,8 @@ export function getUsers(search, responseFunc) {
 }
 
 export function inviteExtern(eventId, responseFunc) {
-    let url = HOST + eventId +  "/token";
+    console.log("inviteExtern")
+    let url = HOST + "/event/" + eventId +  "/token";
     axios.get(url)
         .then(responseFunc);
 }

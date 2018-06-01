@@ -9,6 +9,14 @@ import Visibility from "@material-ui/icons/es/Visibility";
 import TextField from "material-ui/es/TextField/TextField";
 import CopyButton from "@material-ui/icons/es/ContentCopy"
 import {inviteExtern} from "./UserFunctions";
+import Dialog from "material-ui/es/Dialog/Dialog";
+import DialogTitle from "material-ui/es/Dialog/DialogTitle";
+import DialogContent from "material-ui/es/Dialog/DialogContent";
+import DialogActions from "material-ui/es/Dialog/DialogActions";
+import Button from "material-ui/es/Button/Button";
+import DialogContentText from "material-ui/es/Dialog/DialogContentText";
+import {getHistory} from "../../utils/HistoryUtils";
+import {HOST} from "../../Config";
 
 const styles = {
     linkField:{
@@ -21,29 +29,57 @@ const styles = {
 class InviteExtern extends React.Component {
 
     constructor(props) {
-
-        let link = inviteExtern(id);
-
         super();
+        let eventId = props.match.params.eventId;
+        let inviteLink = inviteExtern(eventId, (response) =>{
+            let link = HOST + "/event/token/" + response.data;
+            this.setState({
+                link: link,
+            });
+            console.log(this.state.link, "link");
+        })
         this.state = {
-            link: link || "",
+            open: true,
+            link: "link",
             copied: false,
+            eventId: eventId,
         };
     }
+
+    handleClose = () => {
+        this.setState({ open: false });
+        getHistory().push(this.props.location.query.source);
+    };
+
 
     render(){
 
         const classes = this.props;
+        let link = this.state.link;
 
-        return(<div >
-            <TextField
-                className={classes.linkField}
-                label={"Copy this link an send it per e-mail"}
-                value = {this.state.link}
-                style={{marginLeft: 24, width: '70%'}}
-
-            />
-            <CopyButton/>
+        return(
+            <div>
+            <Dialog
+                open={this.state.open}
+                closeUrl={"/event/" + this.state.eventId}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Share this event with other people"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText >
+                        Copy this link an invite other people per e-mail
+                        <br/>
+                        Link: {link}
+                        <CopyButton/>
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleClose} color="primary">
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>);
     }
 }
