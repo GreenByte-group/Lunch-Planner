@@ -1,6 +1,6 @@
 import React from 'react';
 import Event from "../components/Event/Event";
-import {StaticRouter} from "react-router-dom";
+import {MemoryRouter} from "react-router-dom";
 import renderer from 'react-test-renderer';
 import { shallow, mount, render } from 'enzyme';
 import * as enzyme from "enzyme";
@@ -8,7 +8,7 @@ import * as enzyme from "enzyme";
 test('Event with dummy data', () => {
     // Render a checkbox with label in the document
     const event = renderer.create(
-        <StaticRouter>
+        <MemoryRouter>
             <Event background='#FFFFFF'
                    id={1}
                    name='event'
@@ -17,7 +17,7 @@ test('Event with dummy data', () => {
                    people={[{userName: 'name', answer: 0, admin: true}]}
                    location='location'
             />
-        </StaticRouter>,
+        </MemoryRouter>,
     );
 
     expect(event).toMatchSnapshot();
