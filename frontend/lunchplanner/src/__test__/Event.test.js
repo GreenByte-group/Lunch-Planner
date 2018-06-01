@@ -2,8 +2,6 @@ import React from 'react';
 import Event from "../components/Event/Event";
 import {MemoryRouter} from "react-router-dom";
 import renderer from 'react-test-renderer';
-import { shallow, mount, render } from 'enzyme';
-import * as enzyme from "enzyme";
 
 test('Event with dummy data', () => {
     const event = renderer.create(

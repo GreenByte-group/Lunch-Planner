@@ -1,10 +1,14 @@
 import React from 'react';
 import Login from '../components/Login';
 import renderer from 'react-test-renderer';
+import {MemoryRouter} from "react-router-dom";
 
 it ("renders correctly", ()=>{
    const tree = renderer.create(
-       <Login location={{state: "/"}} />
+       <MemoryRouter>
+           <Login location={{state: "/"}} />
+       </MemoryRouter>
    ).toJSON();
-   expect(tree).toMatchSnapshort();
+
+   expect(tree).toMatchSnapshot();
 });
