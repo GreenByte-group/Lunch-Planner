@@ -54,8 +54,10 @@ public class User {
     @OneToMany (mappedBy = "receiver")
     private List<Notifications> notification = new ArrayList<>();
 
-    @OneToOne (mappedBy = "userName")
-    private List<NotificationOptions> notificationOptions = new ArrayList<>();
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade =  CascadeType.ALL,
+            mappedBy = "user")
+    private NotificationOptions notificationOptions;
 
     public String getUserName() {
         return userName;
@@ -126,5 +128,13 @@ public class User {
 
     public void setNotification(List<Notifications> notification) {
         this.notification = notification;
+    }
+
+    public NotificationOptions getNotificationOptions() {
+        return notificationOptions;
+    }
+
+    public void setNotificationOptions(NotificationOptions notificationOptions) {
+        this.notificationOptions = notificationOptions;
     }
 }
