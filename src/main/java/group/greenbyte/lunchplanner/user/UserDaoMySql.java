@@ -35,7 +35,7 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_NOTIFICATION_PICTURE = "picture";
     public static final String USER_NOTIFICATION_DATE = "date";
 
-    public static final String USER_NOTIFICATIONOPTIONS_TABLE = "notificationOptions";
+    public static final String USER_NOTIFICATIONOPTIONS_TABLE = "notification_options";
     public static final String USER_NOTIFICATIONOPTIONS_ID = "id";
     public static final String USER_NOTIFICATIONOPTIONS_USER = "user_name";
     public static final String USER_NOTIFICATIONOPTIONS_BLOCKALL = "block_all";
@@ -180,7 +180,7 @@ public class UserDaoMySql implements UserDao {
 
       try {
           List<Object> values = new ArrayList<>();
-          StringBuilder SQL = new StringBuilder(" UPDATE " + USER_NOTIFICATION_TABLE + " SET ");
+          StringBuilder SQL = new StringBuilder(" UPDATE " + USER_NOTIFICATIONOPTIONS_TABLE + " SET ");
           boolean first = true;
           for(Map.Entry entry : map.entrySet()) {
               String key = (String) entry.getKey();
@@ -282,7 +282,7 @@ public class UserDaoMySql implements UserDao {
                   SQL.append(", ");
 
               SQL.append(" " + key + " = ? ");
-              
+
 
           }
           SQL.append(" WHERE " + USER_NOTIFICATIONOPTIONS_USER + " LIKE ? ");

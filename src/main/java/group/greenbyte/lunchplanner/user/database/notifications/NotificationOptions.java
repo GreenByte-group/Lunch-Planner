@@ -10,7 +10,6 @@ import java.util.Date;
 public class NotificationOptions {
 
     @Id
-    @OneToOne
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
@@ -120,6 +119,14 @@ public class NotificationOptions {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public boolean isSubscriptionsBlocked() {
+        return subscriptionsBlocked;
+    }
+
+    public void setSubscriptionsBlocked(boolean subscriptionsBlocked) {
+        this.subscriptionsBlocked = subscriptionsBlocked;
     }
 
     /*
