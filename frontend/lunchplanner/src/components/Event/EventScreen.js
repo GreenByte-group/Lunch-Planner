@@ -20,7 +20,7 @@ import {DatePicker, TimePicker} from "material-ui-old";
 import {
     changeEventLocation,
     changeEventTime,
-    changeEventTitle, getEvent,
+    changeEventTitle, getEvent, getEventExtern,
     inviteMemberToEvent,
     replyToEvent
 } from "./EventFunctions";
@@ -239,9 +239,20 @@ class EventScreen extends React.Component {
 
     componentDidMount() {
         let eventName, description, date, people, accepted, location, eventId;
+        let token = this.props.match.params.securityToken;
+        getEventExtern(token, (response) => {
+            console.log(response);
+            this.setState({
+                eventId: response.data.eventId,
+                name: response.data.eventName,
+                location: response.data.location,
+                date: new Date(response.data.startDate),
+                description: response.data.eventDescription,
+                people: response.data.invitations,
+            });
+        });
 
         eventId = this.props.match.params.eventId;
-
         if(this.props.location.query) {
             if (this.props.location.query.eventName) {
                 eventName = String(this.props.location.query.eventName);
@@ -274,6 +285,7 @@ class EventScreen extends React.Component {
         } else {
             this.loadEvent(eventId);
         }
+
     }
 
     parseUrl = () => {

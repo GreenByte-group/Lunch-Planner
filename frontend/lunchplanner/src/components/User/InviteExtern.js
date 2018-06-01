@@ -11,7 +11,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Input from '@material-ui/core/Input';
 import {getHistory} from "../../utils/HistoryUtils";
-import {HOST_FRONTEND} from "../../Config";
+import {FRONTEND_HOST} from "../../Config";
 import IconButton from '@material-ui/core/IconButton';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
@@ -29,7 +29,7 @@ class InviteExtern extends React.Component {
         super();
         let eventId = props.match.params.eventId;
         let inviteLink = inviteExtern(eventId, (response) =>{
-            let link = HOST_FRONTEND + "/event/token/" + response.data;
+            let link = FRONTEND_HOST + "/event/token/" + response.data;
             this.setState({
                 link: link,
             });
