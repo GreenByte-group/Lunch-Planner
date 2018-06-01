@@ -20,10 +20,12 @@ import {DatePicker, TimePicker} from "material-ui-old";
 import {
     changeEventLocation,
     changeEventTime,
-    changeEventTitle, getEvent,
+    changeEventTitle, getEvent, getEventExtern,
     inviteMemberToEvent,
     replyToEvent
 } from "./EventFunctions";
+import ShareIcon from "@material-ui/icons/Share"
+import InviteExtern from "../User/InviteExtern";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -85,6 +87,22 @@ function Transition(props) {
             marginLeft: 'auto',
         },
         commentText: {
+            fontSize: '11px',
+            lineHeight: '16px',
+        },
+        headerShare: {
+            float: 'right',
+            display: 'flex',
+            flexDirection: 'column',
+            color: 'white',
+            marginRight: '10px',
+        },
+        shareIcon: {
+            marginTop: '12px',
+            marginRight: 'auto',
+            marginLeft: 'auto',
+        },
+        shareText: {
             fontSize: '11px',
             lineHeight: '16px',
         },
@@ -200,12 +218,6 @@ function Transition(props) {
         },
     };
 
-const buttonStyle = {
-    display:"block",
-    marginLeft:"auto",
-    marginRight:"auto",
-};
-
 class EventScreen extends React.Component {
 
     constructor(props) {
@@ -221,14 +233,26 @@ class EventScreen extends React.Component {
             description: "",
             people:[],
             accepted: false,
+            isShared : false,
         };
     }
 
     componentDidMount() {
         let eventName, description, date, people, accepted, location, eventId;
+        let token = this.props.match.params.securityToken;
+        getEventExtern(token, (response) => {
+            console.log(response);
+            this.setState({
+                eventId: response.data.eventId,
+                name: response.data.eventName,
+                location: response.data.location,
+                date: new Date(response.data.startDate),
+                description: response.data.eventDescription,
+                people: response.data.invitations,
+            });
+        });
 
         eventId = this.props.match.params.eventId;
-
         if(this.props.location.query) {
             if (this.props.location.query.eventName) {
                 eventName = String(this.props.location.query.eventName);
@@ -261,6 +285,7 @@ class EventScreen extends React.Component {
         } else {
             this.loadEvent(eventId);
         }
+
     }
 
     parseUrl = () => {
@@ -383,6 +408,12 @@ class EventScreen extends React.Component {
         });
     };
 
+    handleShare = () =>{
+        this.setState({
+            isShared: true,
+        });
+    };
+
     render() {
         const { classes } = this.props;
         const error = this.state.error;
@@ -420,6 +451,7 @@ class EventScreen extends React.Component {
         let accepted = false;
         let buttonText = "Join Event";
         let barTitle = name;
+        let isShared = this.state.isShared;
 
         let iAmAdmin = false;
 
@@ -503,6 +535,18 @@ class EventScreen extends React.Component {
                                             </div>
                                         </Link>
                             }
+                            {(iAmAdmin || isShared)
+                                ?
+                                <Link to={{pathname:`/event/${eventId}/share`, query: {
+                                        source: "/event/" + this.state.eventId}}}>
+                                    <div className={classes.headerShare}>
+                                        <ShareIcon className={classes.shareIcon} onClick={this.handleShare}/>
+                                        <p className={classes.shareText}>Share</p>
+                                    </div>
+                                </Link>
+                                : ''
+                            }
+
                         </div>
                         <div className={classes.invitations}>
                             <p className={classes.invitaionsHeader}>Invited People ({people.length})</p>

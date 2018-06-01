@@ -98,3 +98,9 @@ export function inviteMemberToEvent(eventId, member, responseFunc, errorFunc) {
             })
     });
 }
+
+export function getEventExtern(token,responseFunc) {
+    let url = HOST + "/event/token/" + token;
+    axios.get(url)
+        .then(responseFunc)
+}
