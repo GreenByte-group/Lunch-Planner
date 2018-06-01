@@ -114,6 +114,26 @@ public class UserController {
     }
 
     /**
+     * TODO write tests
+     * @return one user
+     */
+    @RequestMapping(value = "{username}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getUser(@PathVariable("username") String username) {
+        try {
+            User user = userLogic.getUser(username);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(user);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+
+    }
+
+    /**
      *
      * @return a List of all notifications
      */

@@ -9,6 +9,7 @@ import OptionIcon from '@material-ui/icons/Settings';
 import MenuIcon from '@material-ui/icons/Menu';
 import {Link} from "react-router-dom";
 import {getUsername} from "./authentication/Authentication";
+import {getUser} from "./User/UserFunctions";
 
 const styles = {
     list: {
@@ -48,8 +49,20 @@ class LunchMenu extends React.Component {
         this.state = {
             popupVisible: false,
             visible: false,
+            username: getUsername(),
+            email: "",
         };
 
+    }
+
+    componentDidMount() {
+        getUser(getUsername(), (response) => {
+            if(response.status === 200) {
+                this.setState({
+                    email: response.data.eMail,
+                })
+            }
+        })
     }
 
     handleClick() {
@@ -92,7 +105,7 @@ class LunchMenu extends React.Component {
                             <div className={classes.list}>
                                 <List className={classes.profile}>
                                     <Avatar alt={name} className={classes.avatar} >{name.charAt(0)}</Avatar>
-                                    <p className={classes.avatarText}>{name} ● max.mustermann@gmail.com</p>
+                                    <p className={classes.avatarText}>{this.state.username} ● {this.state.email}</p>
                                 </List>
                                 <Divider />
                                 <List className ={classes.menu}>

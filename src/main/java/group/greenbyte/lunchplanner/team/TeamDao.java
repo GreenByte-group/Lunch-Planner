@@ -135,7 +135,9 @@ public interface TeamDao {
      * @throws DatabaseException
      */
     public void leave(String username, int teamId)throws DatabaseException;
-     /* Updates the name of a team
+
+    /*
+     * Updates the name of a team
      *
      * @param teamId of the event to change
      * @param name new name of the event
