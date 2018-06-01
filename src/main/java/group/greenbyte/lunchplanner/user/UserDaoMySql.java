@@ -185,7 +185,7 @@ public class UserDaoMySql implements UserDao {
           for(Map.Entry entry : map.entrySet()) {
               String key = (String) entry.getKey();
 
-              switch(key) {
+              /*switch(key) {
                   case "block_all":
                       if(first)
                           first = false;
@@ -275,7 +275,15 @@ public class UserDaoMySql implements UserDao {
                       SQL.append(" block_subscriptions = ? ");
                       values.add(entry.getValue());
                       break;
-              }
+              }*/
+              if(first)
+                  first = false;
+              else
+                  SQL.append(", ");
+
+              SQL.append(" " + key + " = ? ");
+              
+
           }
           SQL.append(" WHERE " + USER_NOTIFICATIONOPTIONS_USER + " LIKE ? ");
           values.add(userName);
