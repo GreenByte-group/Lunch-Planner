@@ -3,9 +3,9 @@ import FirstScreen, {setAuthenticationHeader} from "./components/authentication/
 import LunchPlanner from "./components/LunchPlanner"
 import { Router, Route, Redirect } from "react-router-dom";
 import {isAuthenticated} from "./components/authentication/LoginFunctions"
-import { MuiThemeProvider } from 'material-ui/styles';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import { MuiThemeProvider as OldMuiThemeProvider } from 'material-ui-old/styles'
-import { createMuiTheme } from 'material-ui/styles'
+import { createMuiTheme } from '@material-ui/core/styles'
 import CreateEventScreen from "./components/Event/CreateEventScreen";
 import SelectUserScreen from "./components/User/SelectUserScreen";
 import EventScreen from "./components/Event/EventScreen";

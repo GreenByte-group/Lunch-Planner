@@ -2,8 +2,8 @@ import React from "react"
 
 import {HOST} from "../../Config"
 import Event from "./Event";
-import List from "material-ui/List";
-import {withStyles} from "material-ui/styles/index";
+import List from "@material-ui/core/List";
+import {withStyles} from "@material-ui/core/styles/index";
 import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
 import {getUsername} from "../authentication/Authentication";

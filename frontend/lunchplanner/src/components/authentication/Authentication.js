@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from "prop-types";
 import Login from "./Login"
 import Register from "./Registration"
-import Tabs, { Tab } from 'material-ui/Tabs';
+import Tabs, { Tab } from '@material-ui/core/Tabs';
 import SwipeableViews from 'react-swipeable-views';
-import AppBar from 'material-ui/AppBar';
-import Typography from 'material-ui/Typography';
-import { withStyles } from 'material-ui/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
 import axios from "axios";
 import {HOST, TOKEN, USERNAME} from "../../Config";
 

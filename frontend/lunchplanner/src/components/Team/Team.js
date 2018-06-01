@@ -1,10 +1,7 @@
 import React from "react"
-import ListItem from "material-ui/List/ListItem";
-import {withStyles} from "material-ui";
+import {withStyles, ListItem, Avatar, IconButton} from "@material-ui/core";
 import {Link} from "react-router-dom";
-import IconButton from "material-ui/es/IconButton/IconButton";
 import TeamIcon from  "@material-ui/icons/Create";
-import Avatar from "material-ui/es/Avatar/Avatar";
 
 const styles = {
     listItem: {

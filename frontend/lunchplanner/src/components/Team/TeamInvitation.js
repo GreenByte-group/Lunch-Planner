@@ -1,8 +1,7 @@
 import React from "react"
-import ListItem from "material-ui/List/ListItem";
-import {withStyles} from "material-ui";
+import {ListItem, Avatar} from "@material-ui/core";
+import {withStyles} from "@material-ui/core";
 import AcceptedButton from "../Event/AcceptedButton";
-import Avatar from "material-ui/es/Avatar/Avatar";
 
 const styles = {
     listItem: {
