@@ -31,6 +31,12 @@ public interface EventDao {
                       Date timeStart,
                       boolean isPublic) throws DatabaseException;
 
+    void deleteInvitationsForEvent(int eventId) throws DatabaseException;
+
+    void deleteBringServiceForEvent(int eventId) throws DatabaseException;
+
+    void deleteCommentsForEvent(int eventId) throws DatabaseException;
+
     /**
      * Delete one event from the database
      *

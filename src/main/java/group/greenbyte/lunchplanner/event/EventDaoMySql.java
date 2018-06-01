@@ -79,12 +79,45 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
-    public void deleteEvent(int eventId) throws DatabaseException {
+    public void deleteInvitationsForEvent(int eventId) throws DatabaseException {
         try {
-            String SQL_DELETE_INVITATIONS = "DELETE FROM " + EVENT_INVITATION_TABLE + " WHERE " + EVENT_INVITATION_EVENT + " = ?";
+            String SQL_DELETE = "DELETE FROM " + EVENT_INVITATION_TABLE + " WHERE " + EVENT_INVITATION_EVENT + " = ?";
 
-            jdbcTemplate.update(SQL_DELETE_INVITATIONS, eventId);
+            jdbcTemplate.update(SQL_DELETE, eventId);
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
 
+    @Override
+    public void deleteBringServiceForEvent(int eventId) throws DatabaseException {
+        try {
+            String SQL_DELETE = "DELETE FROM " + EVENT_BRINGSERVICE_TABLE + " WHERE " + EVENT_BRINGSERVICE_EVENT + " = ?";
+
+            jdbcTemplate.update(SQL_DELETE, eventId);
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void deleteCommentsForEvent(int eventId) throws DatabaseException {
+        try {
+            String SQL_DELETE = "DELETE FROM " + EVENT_COMMENT_TABLE + " WHERE " + EVENT_COMMENT_EVENT + " = ?";
+
+            jdbcTemplate.update(SQL_DELETE, eventId);
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void deleteEvent(int eventId) throws DatabaseException {
+        deleteInvitationsForEvent(eventId);
+        deleteBringServiceForEvent(eventId);
+        deleteCommentsForEvent(eventId);
+
+        try {
             String SQL = "DELETE FROM " + EVENT_TABLE + " WHERE " + EVENT_ID + " = ?";
 
             jdbcTemplate.update(SQL, eventId);
