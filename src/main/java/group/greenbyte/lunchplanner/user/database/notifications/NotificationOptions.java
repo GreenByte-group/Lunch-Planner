@@ -11,6 +11,10 @@ public class NotificationOptions {
 
     @Id
     @OneToOne
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userName")
     private User user;
 
@@ -93,5 +97,13 @@ public class NotificationOptions {
 
     public Date getBlockedToday() {
         return blockedToday;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

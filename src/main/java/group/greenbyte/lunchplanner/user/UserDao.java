@@ -1,6 +1,7 @@
 package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
 import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 import group.greenbyte.lunchplanner.user.database.User;
 
@@ -71,4 +72,13 @@ public interface UserDao {
      */
     void  saveNotificationIntoDatabase(String receiver, String title, String description
                                         ,String builder, String linkToClick, String picturePath) throws DatabaseException;
+
+    /**
+     * Gets notification options of a user
+     *
+     * @param userName
+     * @return
+     * @throws DatabaseException
+     */
+    NotificationOptions getNotificationOptions(String userName) throws DatabaseException;
 }

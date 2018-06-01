@@ -27,6 +27,20 @@ public enum BlockOptions {
         return null;
     }
 
+    public static BlockOptions fromInt(int option) {
+        switch(option) {
+            case 0:
+                return BlockOptions.NONE;
+            case 1:
+                return BlockOptions.PERMANENTLY;
+            case 2:
+                return BlockOptions.TODAY;
+            case 3:
+                return BlockOptions.INTERVAL;
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         switch (value) {

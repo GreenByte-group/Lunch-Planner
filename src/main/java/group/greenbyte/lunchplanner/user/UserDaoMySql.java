@@ -1,9 +1,7 @@
 package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import group.greenbyte.lunchplanner.user.database.notifications.BlockOptions;
-import group.greenbyte.lunchplanner.user.database.notifications.NotificationDatabase;
-import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
+import group.greenbyte.lunchplanner.user.database.notifications.*;
 import group.greenbyte.lunchplanner.user.database.User;
 import group.greenbyte.lunchplanner.user.database.UserDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,7 +102,7 @@ public class UserDaoMySql implements UserDao {
             throw new DatabaseException(e);
         }
     }
-    
+
     @Override
     public void saveNotificationIntoDatabase(String receiver, String title, String description
             , String builder, String linkToClick, String picturePath) throws DatabaseException{
@@ -141,6 +139,27 @@ public class UserDaoMySql implements UserDao {
 
         try {
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public NotificationOptions getNotificationOptions(String userName) throws DatabaseException {
+        try {
+            String SQL = "SELECT * FROM " + USER_NOTIFICATIONOPTIONS_TABLE + " WHERE " + USER_NOTIFICATIONOPTIONS_USER + " LIKE ? ";
+
+            List<NotificationOptionsDatabase> options = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(NotificationOptionsDatabase.class),
+                    userName
+                    );
+
+            if (options.size() == 0)
+                return null;
+            else {
+                NotificationOptions notificationOptions = options.get(0).getNotificationOptions();
+                return notificationOptions;
+            }
         } catch (Exception e) {
             throw new DatabaseException(e);
         }

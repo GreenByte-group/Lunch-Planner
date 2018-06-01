@@ -222,7 +222,18 @@ public class UserLogic {
     }
 
     public NotificationOptions getNotificationOptions(String userName) throws HttpRequestException {
-        return null;
+        if(userName == null || userName.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
+
+        if(userName.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
+
+        try {
+            return userDao.getNotificationOptions(userName);
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
     }
 
     private boolean fcmInitialized = false;
