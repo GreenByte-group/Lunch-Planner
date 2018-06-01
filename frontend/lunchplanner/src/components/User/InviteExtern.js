@@ -1,22 +1,19 @@
 import React from 'react';
 import PropTypes from "prop-types";
-import {withStyles} from "material-ui/styles/index";
-import Input from "@material-ui/icons/es/Input";
-import InputAdornment from "material-ui/es/Input/InputAdornment";
-import IconButton from "material-ui/es/IconButton/IconButton";
-import VisibilityOff from "@material-ui/icons/es/VisibilityOff";
-import Visibility from "@material-ui/icons/es/Visibility";
-import TextField from "material-ui/es/TextField/TextField";
+import {withStyles} from "@material-ui/core/styles/index";
 import CopyButton from "@material-ui/icons/es/ContentCopy"
 import {inviteExtern} from "./UserFunctions";
-import Dialog from "material-ui/es/Dialog/Dialog";
-import DialogTitle from "material-ui/es/Dialog/DialogTitle";
-import DialogContent from "material-ui/es/Dialog/DialogContent";
-import DialogActions from "material-ui/es/Dialog/DialogActions";
-import Button from "material-ui/es/Button/Button";
-import DialogContentText from "material-ui/es/Dialog/DialogContentText";
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Input from '@material-ui/core/Input';
 import {getHistory} from "../../utils/HistoryUtils";
-import {HOST} from "../../Config";
+import {HOST_FRONTEND} from "../../Config";
+import IconButton from '@material-ui/core/IconButton';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 const styles = {
     linkField:{
@@ -32,7 +29,7 @@ class InviteExtern extends React.Component {
         super();
         let eventId = props.match.params.eventId;
         let inviteLink = inviteExtern(eventId, (response) =>{
-            let link = HOST + "/event/token/" + response.data;
+            let link = HOST_FRONTEND + "/event/token/" + response.data;
             this.setState({
                 link: link,
             });
@@ -43,6 +40,7 @@ class InviteExtern extends React.Component {
             link: "link",
             copied: false,
             eventId: eventId,
+            copied: false,
         };
     }
 
@@ -50,6 +48,12 @@ class InviteExtern extends React.Component {
         this.setState({ open: false });
         getHistory().push(this.props.location.query.source);
     };
+
+    handleCopy = () =>{
+        this.setState({
+            copied: true,
+        })
+    }
 
 
     render(){
@@ -70,8 +74,15 @@ class InviteExtern extends React.Component {
                     <DialogContentText >
                         Copy this link an invite other people per e-mail
                         <br/>
-                        Link: {link}
-                        <CopyButton/>
+                        Link: <Input value={link}/>
+                        <CopyToClipboard text={link}
+                                         onCopy={this.handleCopy}>
+                            <IconButton>
+                                <CopyButton />
+                            </IconButton>
+                        </CopyToClipboard>
+
+
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
