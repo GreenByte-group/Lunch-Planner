@@ -2,6 +2,7 @@ package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.SessionManager;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
 import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,6 +129,26 @@ public class UserController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(toReturn);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    /**
+     *
+     * @return the users notification options
+     */
+    @RequestMapping(value = "/options/notifications",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getNotificationOptions() {
+        try {
+            NotificationOptions notificationOptions = userLogic.getNotificationOptions(SessionManager.getUserName());
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(notificationOptions);
         } catch (HttpRequestException e) {
             return ResponseEntity
                     .status(e.getStatusCode())

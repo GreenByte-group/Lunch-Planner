@@ -104,9 +104,7 @@ public class UserDaoMySql implements UserDao {
             throw new DatabaseException(e);
         }
     }
-
-
-
+    
     @Override
     public void saveNotificationIntoDatabase(String receiver, String title, String description
             , String builder, String linkToClick, String picturePath) throws DatabaseException{
@@ -148,9 +146,6 @@ public class UserDaoMySql implements UserDao {
         }
     }
 
-
-
-
     @Override
     public void createUser(String userName, String password, String mail) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
@@ -162,6 +157,13 @@ public class UserDaoMySql implements UserDao {
 
         try {
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+
+        // set default notificationOptions for each user
+        try {
+            saveNotificationOptions(BlockOptions.NONE, userName, null, null, null);
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
