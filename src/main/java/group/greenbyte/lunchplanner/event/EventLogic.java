@@ -303,7 +303,7 @@ public class EventLogic {
         //TODO handle exception
         //TODO check if user wants notifications
         //send a notification to userToInvite
-        userLogic.sendNotification(user.getFcmToken(),title, description,linkToClick);
+        userLogic.sendNotification(user.getFcmToken(),userToInvite,title, description,linkToClick, "");
     }
 
     /**
@@ -342,7 +342,7 @@ public class EventLogic {
                     //TODO handle exception
                     //TODO check if user wants notifications
                     user = userLogic.getUser(member.getUserName());
-                    userLogic.sendNotification(user.getFcmToken(),title, description,linkToClick);
+                    userLogic.sendNotification(user.getFcmToken(),member.getUserName(),title, description,linkToClick, "");
                 }
             }
         }catch(DatabaseException e){

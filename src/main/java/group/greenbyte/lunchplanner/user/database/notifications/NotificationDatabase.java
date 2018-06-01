@@ -1,4 +1,4 @@
-package group.greenbyte.lunchplanner.user.database;
+package group.greenbyte.lunchplanner.user.database.notifications;
 
 import java.util.Date;
 

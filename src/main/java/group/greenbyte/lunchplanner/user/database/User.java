@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.EventInvitation;
 import group.greenbyte.lunchplanner.team.database.TeamMember;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
+import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -51,6 +53,9 @@ public class User {
 
     @OneToMany (mappedBy = "receiver")
     private List<Notifications> notification = new ArrayList<>();
+
+    @OneToOne (mappedBy = "userName")
+    private List<NotificationOptions> notificationOptions = new ArrayList<>();
 
     public String getUserName() {
         return userName;

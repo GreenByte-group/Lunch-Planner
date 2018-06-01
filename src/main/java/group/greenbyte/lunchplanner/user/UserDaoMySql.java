@@ -1,11 +1,11 @@
 package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import group.greenbyte.lunchplanner.user.database.NotificationDatabase;
-import group.greenbyte.lunchplanner.user.database.Notifications;
+import group.greenbyte.lunchplanner.user.database.notifications.BlockOptions;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationDatabase;
+import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 import group.greenbyte.lunchplanner.user.database.User;
 import group.greenbyte.lunchplanner.user.database.UserDatabase;
-import org.hibernate.dialect.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -38,11 +38,10 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_NOTIFICATION_DATE = "date";
 
     public static final String USER_NOTIFICATIONOPTIONS_TABLE = "notificationOptions";
-    public static final String USER_NOTIFICATIONOPTIONS_ID = "user_name";
-    public static final String USER_NOTIFICATIONOPTIONS_OPTION1 = "blocked_permanently";
-    public static final String USER_NOTIFICATIONOPTIONS_OPTION2 = "blocked_today";
+    public static final String USER_NOTIFICATIONOPTIONS_ID = "id";
+    public static final String USER_NOTIFICATIONOPTIONS_USER = "user_name";
+    public static final String USER_NOTIFICATIONOPTIONS_OPTION = "option_selected";
     public static final String USER_NOTIFICATIONOPTIONS_OPTION2_DATE = "date";
-    public static final String USER_NOTIFICATIONOPTIONS_OPTION3 = "blocked_timeInterval";
     public static final String USER_NOTIFICATIONOPTIONS_OPTION3_START = "start";
     public static final String USER_NOTIFICATIONOPTIONS_OPTION3_END = "end";
 
@@ -122,6 +121,24 @@ public class UserDaoMySql implements UserDao {
         parameters.put(USER_NOTIFICATION_LINK,linkToClick);
         parameters.put(USER_NOTIFICATION_PICTURE,picturePath);
         parameters.put(USER_NOTIFICATION_DATE,new Date());
+
+
+        try {
+            simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    private void saveNotificationOptions(BlockOptions optionSelected,String userName, Date blockedToday, Date start, Date end) throws DatabaseException {
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        simpleJdbcInsert.withTableName(USER_NOTIFICATION_TABLE).usingGeneratedKeyColumns(USER_NOTIFICATIONOPTIONS_ID);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(USER_NOTIFICATIONOPTIONS_OPTION, optionSelected.getValue());
+        parameters.put(USER_NOTIFICATIONOPTIONS_USER, userName);
+        parameters.put(USER_NOTIFICATIONOPTIONS_OPTION2_DATE, blockedToday);
+        parameters.put(USER_NOTIFICATIONOPTIONS_OPTION3_START, start);
+        parameters.put(USER_NOTIFICATIONOPTIONS_OPTION3_END, end);
 
 
         try {
