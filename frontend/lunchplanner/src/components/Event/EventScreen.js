@@ -93,8 +93,9 @@ function Transition(props) {
         headerShare: {
             float: 'right',
             display: 'flex',
-            flexDirection: 'row',
+            flexDirection: 'column',
             color: 'white',
+            marginRight: '10px',
         },
         shareIcon: {
             marginTop: '12px',
@@ -216,12 +217,6 @@ function Transition(props) {
             marginLeft: '57px',
         },
     };
-
-const buttonStyle = {
-    display:"block",
-    marginLeft:"auto",
-    marginRight:"auto",
-};
 
 class EventScreen extends React.Component {
 
