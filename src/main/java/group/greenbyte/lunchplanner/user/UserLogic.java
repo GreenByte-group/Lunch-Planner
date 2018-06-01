@@ -23,9 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Service
@@ -238,6 +236,55 @@ public class UserLogic {
 
         try {
             return userDao.getNotificationOptions(userName);
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
+    }
+
+    public void updateNotificationOptions(String userName, Boolean blockAll, Boolean blockedUntil,
+                                            Date block_until, Boolean blockedForWork, Date start_working,
+                                            Date stop_working, Boolean eventsBlocked, Boolean teamsBlocked,
+                                            Boolean subscriptionsBlocked) throws HttpRequestException {
+
+        if(userName == null || userName.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
+
+        if(userName.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
+
+        Map<String, Object> map = new HashMap<>();
+
+        if(blockAll!=null)
+            map.put("block_all",blockAll);
+
+        if(blockedUntil!=null)
+            map.put("blocked_until",blockedUntil);
+
+        if(block_until!=null)
+            map.put("block_until_date",block_until);
+
+        if(blockedForWork!=null)
+            map.put("block_workingTime",blockedForWork);
+
+        if(start_working!=null)
+            map.put("start_working",start_working);
+
+        if(stop_working!=null)
+            map.put("stop_working",stop_working);
+
+        if(eventsBlocked!=null)
+            map.put("block_events",eventsBlocked);
+
+        if(teamsBlocked!=null)
+            map.put("block_teams",teamsBlocked);
+
+        if(subscriptionsBlocked!=null)
+            map.put("block_subscriptions",subscriptionsBlocked);
+
+
+        try {
+            userDao.updateNotificationOptions(userName,map);
         } catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }

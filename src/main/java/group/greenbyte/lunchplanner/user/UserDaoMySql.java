@@ -41,7 +41,7 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_NOTIFICATIONOPTIONS_BLOCKALL = "block_all";
     public static final String USER_NOTIFICATIONOPTIONS_BLOCKEDUNTIL = "blocked_until";
     public static final String USER_NOTIFICATIONOPTIONS_BLOCKUNTILDATE = "block_until_date";
-    public static final String USER_NOTIFICATIONOPTIONS_BLOCKEDFORWORK = "block_workingtime";
+    public static final String USER_NOTIFICATIONOPTIONS_BLOCKEDFORWORK = "block_workingTime";
     public static final String USER_NOTIFICATIONOPTIONS_STARTWORKING = "start_working";
     public static final String USER_NOTIFICATIONOPTIONS_STOPWORKING = "end_working";
     public static final String USER_NOTIFICATIONOPTIONS_BLOCKEVENTS = "block_events";
@@ -173,6 +173,118 @@ public class UserDaoMySql implements UserDao {
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
+    }
+
+    @Override
+    public void updateNotificationOptions(String userName,Map<String,Object> map) throws DatabaseException {
+
+      try {
+          List<Object> values = new ArrayList<>();
+          StringBuilder SQL = new StringBuilder(" UPDATE " + USER_NOTIFICATION_TABLE + " SET ");
+          boolean first = true;
+          for(Map.Entry entry : map.entrySet()) {
+              String key = (String) entry.getKey();
+
+              switch(key) {
+                  case "block_all":
+                      if(first)
+                          first = false;
+                      else
+                          SQL.append(", ");
+
+                      SQL.append(" block_all = ? ");
+                      values.add(entry.getValue());
+                      break;
+
+                  case "blocked_until":
+                      if(first)
+                          first = false;
+                      else
+                          SQL.append(", ");
+
+                      SQL.append(" blocked_until = ? ");
+                      values.add(entry.getValue());
+                      break;
+
+                  case "block_until_date":
+                      if(first)
+                          first = false;
+                      else
+                          SQL.append(", ");
+
+                      SQL.append(" block_until_date = ? ");
+                      values.add(entry.getValue());
+                      break;
+
+                  case "block_workingTime":
+                      if(first)
+                          first = false;
+                      else
+                          SQL.append(", ");
+
+                      SQL.append(" block_workingTime = ? ");
+                      values.add(entry.getValue());
+                      break;
+
+                  case "start_working":
+                      if(first)
+                          first = false;
+                      else
+                          SQL.append(", ");
+
+                      SQL.append(" start_working = ? ");
+                      values.add(entry.getValue());
+                      break;
+
+                  case "stop_working":
+                      if(first)
+                          first = false;
+                      else
+                          SQL.append(", ");
+
+                      SQL.append(" stop_working = ? ");
+                      values.add(entry.getValue());
+                      break;
+
+                  case "block_events":
+                      if(first)
+                          first = false;
+                      else
+                          SQL.append(", ");
+
+                      SQL.append(" block_events = ? ");
+                      values.add(entry.getValue());
+                      break;
+
+                  case "block_teams":
+                      if(first)
+                          first = false;
+                      else
+                          SQL.append(", ");
+
+                      SQL.append(" block_teams = ? ");
+                      values.add(entry.getValue());
+                      break;
+
+                  case "block_subscriptions":
+                      if(first)
+                          first = false;
+                      else
+                          SQL.append(", ");
+
+                      SQL.append(" block_subscriptions = ? ");
+                      values.add(entry.getValue());
+                      break;
+              }
+          }
+          SQL.append(" WHERE " + USER_NOTIFICATIONOPTIONS_USER + " LIKE ? ");
+          values.add(userName);
+
+          jdbcTemplate.update(SQL.toString(), values);
+      }catch(Exception e){
+          throw new DatabaseException(e);
+      }
+
     }
 
     @Override
