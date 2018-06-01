@@ -79,6 +79,21 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
+    public void deleteEvent(int eventId) throws DatabaseException {
+        try {
+            String SQL_DELETE_INVITATIONS = "DELETE FROM " + EVENT_INVITATION_TABLE + " WHERE " + EVENT_INVITATION_EVENT + " = ?";
+
+            jdbcTemplate.update(SQL_DELETE_INVITATIONS, eventId);
+
+            String SQL = "DELETE FROM " + EVENT_TABLE + " WHERE " + EVENT_ID + " = ?";
+
+            jdbcTemplate.update(SQL, eventId);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
     public Event getEvent(int eventId) throws DatabaseException {
         try {
             String SQL = "SELECT * FROM " + EVENT_TABLE + " WHERE " + EVENT_ID + " = ?";

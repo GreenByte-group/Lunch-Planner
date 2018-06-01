@@ -1,5 +1,6 @@
 package group.greenbyte.lunchplanner.event;
 
+import group.greenbyte.lunchplanner.Config;
 import group.greenbyte.lunchplanner.event.database.BringService;
 import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
@@ -11,20 +12,30 @@ import group.greenbyte.lunchplanner.team.database.TeamMemberDataForReturn;
 import group.greenbyte.lunchplanner.security.SessionManager;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import group.greenbyte.lunchplanner.user.database.User;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.Calendar;
 
 @Service
 public class EventLogic {
 
+    private final Scheduler scheduler;
 
     private EventDao eventDao;
     private UserLogic userLogic;
     private TeamDao teamDao;
     private TeamLogic teamLogic;
+
+    @Autowired
+    public EventLogic(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
 
     /**
      * Checks if a user has privileges to change the event object
@@ -102,8 +113,12 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Location is too long, maximum length: " + Event.MAX_LOCATION_LENGTH);
 
         try {
-            return eventDao.insertEvent(userName, eventName, eventDescription, location, timeStart, visible)
+            Integer eventId = eventDao.insertEvent(userName, eventName, eventDescription, location, timeStart, visible)
                     .getEventId();
+
+            scheduleDeleteEvent(eventId);
+
+            return eventId;
         }catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
@@ -219,6 +234,8 @@ public class EventLogic {
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have write access to this event");
 
             Event updatedEvent = eventDao.updateEventTimeStart(eventId, timeStart);
+
+            scheduleDeleteEvent(updatedEvent);
 
             eventChanged(updatedEvent);
         }catch(DatabaseException e){
@@ -568,6 +585,53 @@ public class EventLogic {
         }
     }
 
+    private void scheduleDeleteEvent(int eventId) throws DatabaseException {
+        scheduleDeleteEvent(eventDao.getEvent(eventId));
+    }
+
+    private void scheduleDeleteEvent(Event event) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(event.getStartDate());
+        cal.add(Calendar.SECOND, Config.DELETE_EVENT_AFTER_SECONDS);
+
+        Date timeDelete = cal.getTime();
+
+        int eventId = event.getEventId();
+        JobDetail job = JobBuilder.newJob(DeleteEventJob.class)
+                .usingJobData("eventId", eventId)
+                .build();
+
+        Trigger trigger = TriggerBuilder.newTrigger()
+                .startAt(timeDelete)
+                .build();
+
+        try {
+            scheduler.scheduleJob(job, trigger);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Checks if an event is over and deletes it
+     *
+     * @param eventId
+     */
+    public void deleteEvent(int eventId) {
+        try {
+            Event event = eventDao.getEvent(eventId);
+            if(event == null)
+                return;
+
+            Date now = new Date();
+            if(now.getTime() - event.getStartDate().getTime() >= Config.DELETE_EVENT_AFTER_SECONDS * 1000) {
+                eventDao.deleteEvent(eventId);
+            }
+        } catch(DatabaseException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Autowired
     public void setEventDao(EventDao eventDao) {
         this.eventDao = eventDao;
@@ -586,5 +650,25 @@ public class EventLogic {
     @Autowired
     public void setTeamLogic(TeamLogic teamLogic) {
         this.teamLogic = teamLogic;
+    }
+}
+
+@Component
+class DeleteEventJob implements Job {
+
+    private EventLogic eventLogic;
+
+    @Override
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+        JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+
+        int eventId = dataMap.getInt("eventId");
+
+        eventLogic.deleteEvent(eventId);
+    }
+
+    @Autowired
+    public void setEventLogic(EventLogic eventLogic) {
+        this.eventLogic = eventLogic;
     }
 }

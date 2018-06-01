@@ -32,6 +32,14 @@ public interface EventDao {
                       boolean isPublic) throws DatabaseException;
 
     /**
+     * Delete one event from the database
+     *
+     * @param eventId id of the event
+     * @throws DatabaseException
+     */
+    void deleteEvent(int eventId) throws DatabaseException;
+
+    /**
      * Gets the event with location but without usersInvited and teamsVisible
      *
      * @param eventId id of the event
