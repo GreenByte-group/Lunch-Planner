@@ -3,23 +3,25 @@ package group.greenbyte.lunchplanner.user.database.notifications;
 import java.util.Date;
 
 public class NotificationOptionsDatabase {
-    private int id;
     private String userName;
+    private int id;
     private boolean blockAll;
     private Date block_until;
+    private boolean blockedForWork;
     private boolean blockedUntil;
+    private boolean eventsBlocked;
     private Date start_working;
     private Date stop_working;
-    private boolean eventsBlocked;
-    private boolean teamsBlocked;
     private boolean subscriptionsBlocked;
+    private boolean teamsBlocked;
+
 
     public NotificationOptions getNotificationOptions(){
         NotificationOptions notificationOptions = new NotificationOptions();
-        notificationOptions.setId(id);
         notificationOptions.setBlockAll(blockAll);
-        notificationOptions.setBlockedUntil(blockedUntil);
         notificationOptions.setBlock_until(block_until);
+        notificationOptions.setBlockedUntil(blockedUntil);
+        notificationOptions.setBlockedForWork(blockedForWork);
         notificationOptions.setStart_working(start_working);
         notificationOptions.setStop_working(stop_working);
         notificationOptions.setEventsBlocked(eventsBlocked);
@@ -69,5 +71,9 @@ public class NotificationOptionsDatabase {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setBlockedForWork(boolean blockedForWork) {
+        this.blockedForWork = blockedForWork;
     }
 }

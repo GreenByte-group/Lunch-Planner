@@ -13,10 +13,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.Date;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
@@ -303,5 +306,29 @@ public class UserControllerTest {
 //                .andExpect(MockMvcResultMatchers.status().isBadRequest());
 //    }
 
+    // ------------------------- GET NOTIFICATION OPTIONS ------------------------------
+    @Test
+    @WithMockUser(username = userName)
+    public void test1GetNotificationOptionsValid() throws Exception {
+        Date block_until = new Date();
+        Date start_working = new Date();
+        Date stop_working = new Date();
+        userLogic.updateNotificationOptions(userName, true, false, block_until, false,
+                start_working, stop_working, false, false,false);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/user/options/notifications"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.blockAll").value(true))
+                .andExpect(jsonPath("$.block_until").value(block_until))
+                .andExpect(jsonPath("$.blockedUntil").value(false))
+                .andExpect(jsonPath("$.blockedForWork").value(false))
+                .andExpect(jsonPath("$.start_working").value(start_working))
+                .andExpect(jsonPath("$.stop_working").value(stop_working))
+                .andExpect(jsonPath("$.eventsBlocked").value(false))
+                .andExpect(jsonPath("$.teamsBlocked").value(false))
+                .andExpect(jsonPath("$.username").value(userName))
+                .andExpect(jsonPath("$.subscriptionsBlocked").value(false));
+    }
 
 }

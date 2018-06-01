@@ -262,10 +262,10 @@ public class UserLogic {
             map.put("blocked_until",blockedUntil);
 
         if(block_until!=null)
-            map.put("block_until_date",block_until);
+            map.put("block_until",block_until);
 
         if(blockedForWork!=null)
-            map.put("block_workingTime",blockedForWork);
+            map.put("blocked_for_work",blockedForWork);
 
         if(start_working!=null)
             map.put("start_working",start_working);
@@ -274,14 +274,13 @@ public class UserLogic {
             map.put("stop_working",stop_working);
 
         if(eventsBlocked!=null)
-            map.put("block_events",eventsBlocked);
+            map.put("events_blocked",eventsBlocked);
 
         if(teamsBlocked!=null)
-            map.put("block_teams",teamsBlocked);
+            map.put("teams_blocked",teamsBlocked);
 
         if(subscriptionsBlocked!=null)
-            map.put("block_subscriptions",subscriptionsBlocked);
-
+            map.put("subscriptions_blocked",subscriptionsBlocked);
 
         try {
             userDao.updateNotificationOptions(userName,map);
