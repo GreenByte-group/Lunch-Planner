@@ -1,15 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from 'material-ui/styles';
-import Slide from 'material-ui/transitions/Slide';
+import {withStyles, Tab, Slide, Tabs, Typography} from '@material-ui/core';
 import FloatingActionButton from "../FloatingActionButton";
 import {getHistory} from "../../utils/HistoryUtils";
 import Dialog from "../Dialog";
 import UserList from "./UserList";
-import Tab from "material-ui/es/Tabs/Tab";
-import Tabs from "material-ui/es/Tabs/Tabs";
 import SwipeableViews from 'react-swipeable-views';
-import Typography from 'material-ui/Typography';
 import TeamInvitationList from "../Team/TeamInvitationList";
 import {getUsers} from "./UserFunctions";
 import {getTeams} from "../Team/TeamFunctions";

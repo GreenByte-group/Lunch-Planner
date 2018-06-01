@@ -1,7 +1,7 @@
 import React from "react"
 import {Done} from "@material-ui/icons";
 import Today from "@material-ui/icons/DateRange"
-import {withStyles} from "material-ui";
+import {withStyles} from "@material-ui/core";
 
 const styles = theme => ({
     root: {

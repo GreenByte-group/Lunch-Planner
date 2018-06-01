@@ -1,13 +1,11 @@
 import PropTypes from "prop-types";
-import {withStyles} from "material-ui/styles/index";
+import {withStyles} from "@material-ui/core/styles/index";
 import React from 'react';
-import Slide from 'material-ui/transitions/Slide';
 import Dialog from "../Dialog";
-import {Button} from "material-ui";
+import {Button, Slide, Divider} from "@material-ui/core";
 import {getUsername, setAuthenticationHeader} from "../authentication/Authentication";
 import {getHistory} from "../../utils/HistoryUtils"
-import SecretIcon from "@material-ui/icons/es/Https";
-import Divider from "material-ui/es/Divider/Divider";
+import {Https as SecretIcon} from "@material-ui/icons";
 import UserList from "../User/UserList";
 import {getTeam, replyToTeam, changeTeamDescription,changeTeamName} from "./TeamFunctions";
 import {teamListNeedReload} from "./TeamList";
@@ -15,8 +13,8 @@ import TextFieldEditing from "../editing/TextFieldEditing";
 import axios from "axios";
 import {HOST} from "../../Config";
 
-import Link from "react-router-dom/es/Link";
-import Add from "@material-ui/icons/es/Add";
+import {Link} from "react-router-dom";
+import {Add} from "@material-ui/icons";
 import {inviteMemberToTeam} from "./TeamFunctions";
 
 

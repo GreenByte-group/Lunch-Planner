@@ -1,7 +1,7 @@
 import React from "react"
 import moment from "moment"
-import ListItem from "material-ui/List/ListItem";
-import {withStyles} from "material-ui";
+import {ListItem} from "@material-ui/core";
+import {withStyles} from "@material-ui/core";
 
 const styles = {
     root: {

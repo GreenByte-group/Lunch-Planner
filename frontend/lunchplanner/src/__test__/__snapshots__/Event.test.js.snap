@@ -1,0 +1,117 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Event with dummy data 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <WithStyles(Event)
+    background="#FFFFFF"
+    date={2018-12-17T02:24:00.000Z}
+    description="description"
+    id={1}
+    location="location"
+    name="event"
+    people={
+        Array [
+            Object {
+              "admin": true,
+              "answer": 0,
+              "userName": "name",
+            },
+          ]
+    }
+/>,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "background": "#FFFFFF",
+      "classes": Object {
+        "card": "Event-card-1",
+        "cardContent": "Event-cardContent-12",
+        "date": "Event-date-5",
+        "footer": "Event-footer-13",
+        "icons": "Event-icons-8",
+        "imageDiv": "Event-imageDiv-11",
+        "link": "Event-link-2",
+        "listItem": "Event-listItem-3",
+        "text": "Event-text-9",
+        "textSelected": "Event-textSelected-10",
+        "time": "Event-time-6",
+        "title": "Event-title-4",
+        "users": "Event-users-7",
+      },
+      "date": 2018-12-17T02:24:00.000Z,
+      "description": "description",
+      "id": 1,
+      "location": "location",
+      "name": "event",
+      "people": Array [
+        Object {
+          "admin": true,
+          "answer": 0,
+          "userName": "name",
+        },
+      ],
+    },
+    "ref": null,
+    "rendered": null,
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "background": "#FFFFFF",
+        "classes": Object {
+          "card": "Event-card-1",
+          "cardContent": "Event-cardContent-12",
+          "date": "Event-date-5",
+          "footer": "Event-footer-13",
+          "icons": "Event-icons-8",
+          "imageDiv": "Event-imageDiv-11",
+          "link": "Event-link-2",
+          "listItem": "Event-listItem-3",
+          "text": "Event-text-9",
+          "textSelected": "Event-textSelected-10",
+          "time": "Event-time-6",
+          "title": "Event-title-4",
+          "users": "Event-users-7",
+        },
+        "date": 2018-12-17T02:24:00.000Z,
+        "description": "description",
+        "id": 1,
+        "location": "location",
+        "name": "event",
+        "people": Array [
+          Object {
+            "admin": true,
+            "answer": 0,
+            "userName": "name",
+          },
+        ],
+      },
+      "ref": null,
+      "rendered": null,
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;

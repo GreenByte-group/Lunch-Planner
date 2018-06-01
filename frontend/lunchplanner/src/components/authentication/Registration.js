@@ -1,13 +1,13 @@
 import React from "react";
 import axios from "axios";
-import IconButton from 'material-ui/IconButton';
-import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
-import { FormControl } from 'material-ui/Form';
+import IconButton from '@material-ui/core/IconButton';
+import {Input, InputLabel, InputAdornment } from '@material-ui/core';
+import { FormControl } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import Button from 'material-ui/Button';
+import Button from '@material-ui/core/Button';
 import LoginIcon from '@material-ui/icons/ExitToApp';
-import {withStyles} from "material-ui/styles/index";
+import {withStyles} from "@material-ui/core/styles/index";
 import {HOST} from "../../Config";
 
 const styles = theme => ({

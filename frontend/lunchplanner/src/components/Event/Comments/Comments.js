@@ -1,6 +1,5 @@
 import React from "react";
-import {List, ListItem, TextField, withStyles} from "material-ui";
-import {HOST} from "../../../Config";
+import {List, TextField, withStyles} from "@material-ui/core";
 import {getUsername, setAuthenticationHeader} from "../../authentication/Authentication";
 import Comment from "./Comment";
 import Dialog from "../../Dialog";

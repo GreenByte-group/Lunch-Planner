@@ -1,16 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 import Dialog from '../Dialog';
-import Typography from 'material-ui/Typography';
-import Slide from 'material-ui/transitions/Slide';
-import TextField from "material-ui/es/TextField/TextField";
-import ExpansionPanel, {ExpansionPanelSummary, ExpansionPanelDetails,} from 'material-ui/ExpansionPanel';
+import {Switch, Typography, TextField, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails} from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Switch from 'material-ui/Switch';
 import AddIcon from '@material-ui/icons/Add';
-import {FormGroup, FormControlLabel,} from 'material-ui/Form';
+import {FormGroup, FormControlLabel, Slide} from '@material-ui/core';
 import {DatePicker, TimePicker} from 'material-ui-old';
 import PeopleIcon from '@material-ui/icons/People'
 
@@ -22,7 +18,7 @@ import {eventListNeedReload} from "./EventList";
 import moment from "moment";
 
 import {getHistory} from "../../utils/HistoryUtils";
-import {InputAdornment} from "material-ui";
+import {InputAdornment} from "@material-ui/core";
 import {createEvent} from "./EventFunctions";
 
 const styles = {

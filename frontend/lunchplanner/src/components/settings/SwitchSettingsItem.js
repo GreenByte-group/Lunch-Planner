@@ -1,5 +1,5 @@
 import React from 'react';
-import {ListItem, Switch, withStyles} from "material-ui";
+import {ListItem, Switch, withStyles} from "@material-ui/core";
 
 const styles = {
     listItem: {
