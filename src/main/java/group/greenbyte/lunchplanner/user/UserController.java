@@ -154,6 +154,63 @@ public class UserController {
         }
     }
 
+    /**
+     * TODO:
+     * get a list of all subscribed locations of an user
+     * @param username
+     * @return a list of all subscribed locations of an user
+     */
+    @RequestMapping(value ="/subscribe/{username}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getSubscribedLocations(@PathVariable("username") String username) {
+        try {
+            List<String> toReturn =  userLogic.getSubscribedLocations(username);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(toReturn);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    /**
+     * TODO:
+     * get a list of all subscriber of a location
+     * @param location
+     * @return
+     */
+    @RequestMapping(value ="/subscribe/{location}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getSubscriber(@PathVariable("location") String location) {
+        try {
+            List<User> toReturn =  userLogic.getSubscriber("location");
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(toReturn);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    @RequestMapping(value = "subscribe/{username}", method = RequestMethod.POST)
+    public String subscribe(@PathVariable("username") String username, @RequestBody String location,
+                             HttpServletResponse response) {
+        try {
+            userLogic.subscribe(username, location);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+        return "";
+    }
+
 
 
 //    /**
