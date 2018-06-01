@@ -1,11 +1,9 @@
 import React from "react";
-import {withStyles} from "material-ui/styles/index";
-import Slide from 'material-ui/transitions/Slide';
+import {withStyles} from "@material-ui/core/styles/index";
 import ServiceList, {serviceListNeedReload} from "./ServiceList";
 import Dialog from "../../Dialog";
-import {Button, TextField} from "material-ui";
+import {Button, TextField, Slide} from "@material-ui/core";
 import {getHistory} from "../../../utils/HistoryUtils";
-import {HOST} from "../../../Config";
 import {createService} from "./ServiceFunctions";
 
 function Transition(props) {

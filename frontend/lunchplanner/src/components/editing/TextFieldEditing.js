@@ -1,6 +1,6 @@
 import React from 'react';
-import {withStyles} from "material-ui/styles/index";
-import {Input, TextField} from "material-ui";
+import {withStyles} from "@material-ui/core/styles/index";
+import {Input, TextField} from "@material-ui/core";
 
 const styles = {
     textFieldEditable: {

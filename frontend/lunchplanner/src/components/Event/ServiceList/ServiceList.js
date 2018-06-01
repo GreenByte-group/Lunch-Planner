@@ -1,6 +1,6 @@
 import React from 'react';
-import {withStyles} from "material-ui/styles/index";
-import List from 'material-ui/List';
+import {withStyles} from "@material-ui/core/styles/index";
+import List from '@material-ui/core/List';
 import ServiceListItem from "./ServiceListItem";
 import {getServices} from "./ServiceFunctions";
 

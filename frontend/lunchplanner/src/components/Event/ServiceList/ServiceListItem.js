@@ -1,7 +1,7 @@
 import React from "react";
-import {withStyles} from "material-ui/styles/index";
-import {Card, CardContent, ListItem} from "material-ui";
-import Done from "@material-ui/icons/es/Done";
+import {withStyles} from "@material-ui/core/styles/index";
+import {Card, CardContent, ListItem} from "@material-ui/core";
+import {Done} from "@material-ui/icons";
 import {getUsername} from "../../authentication/Authentication";
 import {acceptService} from "./ServiceFunctions";
 

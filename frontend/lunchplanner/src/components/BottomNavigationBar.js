@@ -1,13 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import BottomNavigation, { BottomNavigationAction } from 'material-ui/BottomNavigation';
+import { withStyles } from '@material-ui/core/styles';
+import { BottomNavigation, BottomNavigationAction } from '@material-ui/core';
 import PlaceIcon from '@material-ui/icons/Place';
 import EventIcon from '@material-ui/icons/LocalDining';
 import SocialIcon from '@material-ui/icons/Group';
 import {Link} from "react-router-dom";
-import IconButton from "material-ui/es/IconButton/IconButton";
-import Button from "material-ui/es/Button/Button";
 
 const styles = {
     root: {
