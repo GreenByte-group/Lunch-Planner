@@ -136,6 +136,7 @@ public class UserController {
         }
     }
 
+    //TODO write tests for this function
     /**
      *
      * @return the users notification options

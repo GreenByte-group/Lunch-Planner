@@ -18,16 +18,111 @@ public class NotificationOptions {
     @JoinColumn(name = "userName")
     private User user;
 
-    private BlockOptions optionSelected;
+    //Option 1: block all notifications permanently
+    private boolean blockAll;
+
     //Option 2: block all notifications for today
-    private Date blockedToday;
+    private Date block_until;
+    private boolean blockedUntil;
+
     //Option 3: block all notifications for specific time interval
-    private Date start;
-    private Date end;
+    private boolean blockedForWork;
+    private Date start_working;
+    private Date stop_working;
+
+    //Option 4: block all event notifications
+    private boolean eventsBlocked;
+
+    //Option 5: block all team notifications
+    private boolean teamsBlocked;
+
+    //Option 6: block notifications from subscriptions
+    private boolean subscriptionsBlocked;
 
     @Transient
     private String username;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public boolean isBlockAll() {
+        return blockAll;
+    }
+
+    public void setBlockAll(boolean blockAll) {
+        this.blockAll = blockAll;
+    }
+
+    public Date getBlock_until() {
+        return block_until;
+    }
+
+    public void setBlock_until(Date block_until) {
+        this.block_until = block_until;
+    }
+
+    public boolean isBlockedUntil() {
+        return blockedUntil;
+    }
+
+    public void setBlockedUntil(boolean blockedUntil) {
+        this.blockedUntil = blockedUntil;
+    }
+
+    public boolean isBlockedForWork() {
+        return blockedForWork;
+    }
+
+    public void setBlockedForWork(boolean blockedForWork) {
+        this.blockedForWork = blockedForWork;
+    }
+
+    public Date getStart_working() {
+        return start_working;
+    }
+
+    public void setStart_working(Date start_working) {
+        this.start_working = start_working;
+    }
+
+    public Date getStop_working() {
+        return stop_working;
+    }
+
+    public void setStop_working(Date stop_working) {
+        this.stop_working = stop_working;
+    }
+
+    public boolean isEventsBlocked() {
+        return eventsBlocked;
+    }
+
+    public void setEventsBlocked(boolean eventsBlocked) {
+        this.eventsBlocked = eventsBlocked;
+    }
+
+    public boolean isTeamsBlocked() {
+        return teamsBlocked;
+    }
+
+    public void setTeamsBlocked(boolean teamsBlocked) {
+        this.teamsBlocked = teamsBlocked;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /*
     public boolean notificationsAllowed() {
         if (optionSelected == BlockOptions.NONE) {
             return true;
@@ -51,7 +146,9 @@ public class NotificationOptions {
         }
         return true;
     }
+    */
 
+    /*
     private boolean isSameDay() {
         if (blockedToday == null) {
             return false;
@@ -66,44 +163,9 @@ public class NotificationOptions {
                 cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
                 cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR));
     }
+    */
 
-    public void setStart(Date start) {
-        this.start = start;
-    }
 
-    public Date getStart() {
-        return this.start;
-    }
 
-    public void setEnd(Date end) {
-        this.end = end;
-    }
 
-    public Date getEnd() {
-        return this.end;
-    }
-
-    public void setOptionSelected(BlockOptions optionSelected) {
-        this.optionSelected = optionSelected;
-    }
-
-    public BlockOptions getOptionSelected() {
-        return optionSelected;
-    }
-
-    public void setBlockedToday(Date blockedToday) {
-        this.blockedToday = blockedToday;
-    }
-
-    public Date getBlockedToday() {
-        return blockedToday;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 }

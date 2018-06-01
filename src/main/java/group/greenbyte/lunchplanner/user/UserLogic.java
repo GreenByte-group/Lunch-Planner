@@ -221,6 +221,14 @@ public class UserLogic {
 
     }
 
+    //TODO write tests for this function
+    /**
+     * Get notification options for user
+     *
+     * @param userName receiver of the notifiction options
+     * @return
+     * @throws HttpRequestException
+     */
     public NotificationOptions getNotificationOptions(String userName) throws HttpRequestException {
         if(userName == null || userName.length() == 0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");

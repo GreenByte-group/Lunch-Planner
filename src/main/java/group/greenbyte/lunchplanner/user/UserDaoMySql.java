@@ -38,12 +38,15 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_NOTIFICATIONOPTIONS_TABLE = "notificationOptions";
     public static final String USER_NOTIFICATIONOPTIONS_ID = "id";
     public static final String USER_NOTIFICATIONOPTIONS_USER = "user_name";
-    public static final String USER_NOTIFICATIONOPTIONS_OPTION = "option_selected";
-    public static final String USER_NOTIFICATIONOPTIONS_OPTION2_DATE = "date";
-    public static final String USER_NOTIFICATIONOPTIONS_OPTION3_START = "start";
-    public static final String USER_NOTIFICATIONOPTIONS_OPTION3_END = "end";
-
-
+    public static final String USER_NOTIFICATIONOPTIONS_BLOCKALL = "block_all";
+    public static final String USER_NOTIFICATIONOPTIONS_BLOCKEDUNTIL = "blocked_until";
+    public static final String USER_NOTIFICATIONOPTIONS_BLOCKUNTILDATE = "block_until_date";
+    public static final String USER_NOTIFICATIONOPTIONS_BLOCKEDFORWORK = "block_workingtime";
+    public static final String USER_NOTIFICATIONOPTIONS_STARTWORKING = "start_working";
+    public static final String USER_NOTIFICATIONOPTIONS_STOPWORKING = "end_working";
+    public static final String USER_NOTIFICATIONOPTIONS_BLOCKEVENTS = "block_events";
+    public static final String USER_NOTIFICATIONOPTIONS_BLOCKTEAMS = "block_teams";
+    public static final String USER_NOTIFICATIONOPTIONS_BLOCKSUBSCRIPTIONS = "block_subscriptions";
 
     @Autowired
     public UserDaoMySql(JdbcTemplate jdbcTemplateObject) {
@@ -105,7 +108,7 @@ public class UserDaoMySql implements UserDao {
 
     @Override
     public void saveNotificationIntoDatabase(String receiver, String title, String description
-            , String builder, String linkToClick, String picturePath) throws DatabaseException{
+            , String builder, String linkToClick, String picturePath) throws DatabaseException {
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(USER_NOTIFICATION_TABLE).usingGeneratedKeyColumns(USER_NOTIFICATION_ID);
@@ -126,15 +129,22 @@ public class UserDaoMySql implements UserDao {
         }
     }
 
-    private void saveNotificationOptions(BlockOptions optionSelected,String userName, Date blockedToday, Date start, Date end) throws DatabaseException {
+    private void saveNotificationOptions(String userName, boolean blockAll, boolean blockedUntil,
+        Date block_until, boolean blockedForWork, Date start_working, Date stop_working,
+        boolean eventsBlocked, boolean teamsBlocked, boolean subscriptionsBlocked) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(USER_NOTIFICATION_TABLE).usingGeneratedKeyColumns(USER_NOTIFICATIONOPTIONS_ID);
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put(USER_NOTIFICATIONOPTIONS_OPTION, optionSelected.getValue());
         parameters.put(USER_NOTIFICATIONOPTIONS_USER, userName);
-        parameters.put(USER_NOTIFICATIONOPTIONS_OPTION2_DATE, blockedToday);
-        parameters.put(USER_NOTIFICATIONOPTIONS_OPTION3_START, start);
-        parameters.put(USER_NOTIFICATIONOPTIONS_OPTION3_END, end);
+        parameters.put(USER_NOTIFICATIONOPTIONS_BLOCKALL, blockAll);
+        parameters.put(USER_NOTIFICATIONOPTIONS_BLOCKEDUNTIL, blockedUntil);
+        parameters.put(USER_NOTIFICATIONOPTIONS_BLOCKUNTILDATE, block_until);
+        parameters.put(USER_NOTIFICATIONOPTIONS_BLOCKEDFORWORK, blockedForWork);
+        parameters.put(USER_NOTIFICATIONOPTIONS_STARTWORKING, start_working);
+        parameters.put(USER_NOTIFICATIONOPTIONS_STOPWORKING, stop_working);
+        parameters.put(USER_NOTIFICATIONOPTIONS_BLOCKEVENTS, eventsBlocked);
+        parameters.put(USER_NOTIFICATIONOPTIONS_BLOCKTEAMS, teamsBlocked);
+        parameters.put(USER_NOTIFICATIONOPTIONS_BLOCKSUBSCRIPTIONS, subscriptionsBlocked);
 
 
         try {
@@ -182,7 +192,9 @@ public class UserDaoMySql implements UserDao {
 
         // set default notificationOptions for each user
         try {
-            saveNotificationOptions(BlockOptions.NONE, userName, null, null, null);
+            saveNotificationOptions(userName,false, false,
+                    null, false, null, null,
+                    false,false,false);
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
