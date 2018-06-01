@@ -147,6 +147,25 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
+    public List<Event> getAllEvents() throws DatabaseException {
+        try {
+            String SQL = "SELECT * FROM " + EVENT_TABLE;
+
+            List<EventDatabase> events = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(EventDatabase.class));
+
+            List<Event> eventsToReturn = new ArrayList<>();
+
+            for(EventDatabase event : events) {
+                eventsToReturn.add(event.getEvent());
+            }
+
+            return eventsToReturn;
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
     public Event updateEventName(int eventId, String eventName) throws DatabaseException {
         String SQL = "UPDATE " + EVENT_TABLE + " SET " + EVENT_NAME + " = ? WHERE " + EVENT_ID + " = ?";
 

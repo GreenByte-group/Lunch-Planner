@@ -37,6 +37,18 @@ public class EventLogic {
         this.scheduler = scheduler;
     }
 
+    private void checkEventsHasToBeDeleted() {
+        try {
+            Date dateDelete = new Date(new Date().getTime() - Config.DELETE_EVENT_AFTER_SECONDS * 1000);
+            List<Event> events = eventDao.getAllEvents();
+            for(Event event : events) {
+
+            }
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Checks if a user has privileges to change the event object
      *

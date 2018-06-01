@@ -54,6 +54,8 @@ public interface EventDao {
      */
     Event getEvent(int eventId) throws DatabaseException;
 
+    List<Event> getAllEvents() throws DatabaseException;
+
     /**
      *
      * @param eventId id of the event
