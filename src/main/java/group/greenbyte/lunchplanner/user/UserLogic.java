@@ -253,6 +253,8 @@ public class UserLogic {
         if(userName.length() > User.MAX_USERNAME_LENGTH)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
 
+
+
         Map<String, Object> map = new HashMap<>();
 
         if(blockAll!=null)
@@ -261,8 +263,12 @@ public class UserLogic {
         if(blockedUntil!=null)
             map.put("blocked_until",blockedUntil);
 
-        if(block_until!=null)
-            map.put("block_until",block_until);
+        if(block_until!=null) {
+            if(block_until.before(new Date()))
+                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Datetime must be in the future");
+
+            map.put("block_until", block_until);
+        }
 
         if(blockedForWork!=null)
             map.put("blocked_for_work",blockedForWork);

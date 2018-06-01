@@ -310,7 +310,7 @@ public class UserControllerTest {
     @Test
     @WithMockUser(username = userName)
     public void test1GetNotificationOptionsValid() throws Exception {
-        Date block_until = new Date();
+        Date block_until = new Date(System.currentTimeMillis() + 10000);
         Date start_working = new Date();
         Date stop_working = new Date();
         userLogic.updateNotificationOptions(userName, true, false, block_until, false,
