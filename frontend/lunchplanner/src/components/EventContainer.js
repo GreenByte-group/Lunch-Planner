@@ -66,7 +66,7 @@ class EventContainer extends React.Component {
 
         return (
             <div className={classes.root}>
-                <AppBar position="relative" color="default">
+                <AppBar position="static" color="default">
                     <Tabs
                         value={this.state.value}
                         onChange={this.handleChange}

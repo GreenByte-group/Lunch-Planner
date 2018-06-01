@@ -7,7 +7,6 @@ import Teamlist from "./Team/TeamList";
 import BottomNavigationBar from "./BottomNavigationBar";
 import {setAuthenticationHeader} from "./authentication/Authentication";
 
-
 function TabContainer({ children, dir }) {
     return (
         <Typography component="div" dir={dir} style={{ padding: 0 }}>
