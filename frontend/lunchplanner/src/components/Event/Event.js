@@ -1,16 +1,10 @@
 import React from "react"
 import moment from "moment"
-import ListItem from "material-ui/List/ListItem";
-import {withStyles} from "material-ui";
+import {Card, CardContent, ListItem, withStyles} from "@material-ui/core";
 import {Schedule, Today} from "@material-ui/icons";
 import AcceptedButton from "./AcceptedButton";
 import InvitedButton from "./InvitedButton";
 import {Link} from "react-router-dom";
-import EventScreen from "./EventScreen";
-import Avatar from "material-ui/es/Avatar/Avatar";
-import Card, { CardActions, CardContent } from 'material-ui/Card';
-import Button from 'material-ui/Button';
-import Typography from 'material-ui/Typography';
 
 const styles = {
     card: {

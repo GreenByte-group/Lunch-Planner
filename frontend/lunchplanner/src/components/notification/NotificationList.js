@@ -1,6 +1,6 @@
 import React from 'react';
-import {withStyles} from "material-ui/styles/index";
-import {List, ListSubheader} from "material-ui";
+import {withStyles} from "@material-ui/core/styles/index";
+import {List, ListSubheader} from "@material-ui/core";
 import NotificationListItem from "./NotificationListItem";
 
 const styles = {

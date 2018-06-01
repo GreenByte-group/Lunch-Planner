@@ -1,24 +1,13 @@
 import React from 'react';
-import Button from 'material-ui/Button';
-import MenuIcon from '@material-ui/icons/Menu';
-import List from "material-ui/es/List/List";
-import Divider from "material-ui/es/Divider/Divider";
+import {Button, MenuItem, List, Divider, withStyles, FormControlLabel, Switch, Drawer, Avatar} from '@material-ui/core';
 import PlaceIcon from '@material-ui/icons/Place';
 import EventIcon from '@material-ui/icons/LocalDining';
 import SocialIcon from '@material-ui/icons/Group';
 import NotificationIcon from '@material-ui/icons/NotificationsNone';
 import SignOutIcon from '@material-ui/icons/ExitToApp';
 import OptionIcon from '@material-ui/icons/Settings';
-import {withStyles} from "material-ui";
-import Drawer from "material-ui/es/Drawer/Drawer";
-import Avatar from "material-ui/es/Avatar/Avatar";
-import ListItem from "material-ui/es/List/ListItem";
-import IconButton from "material-ui/es/IconButton/IconButton";
+import MenuIcon from '@material-ui/icons/Menu';
 import {Link} from "react-router-dom";
-import Menu from "material-ui/es/Menu/Menu";
-import MenuItem from "material-ui/es/Menu/MenuItem";
-import FormControlLabel from "material-ui/es/Form/FormControlLabel";
-import Switch from "material-ui/es/Switch/Switch";
 import {getUsername} from "./authentication/Authentication";
 
 const styles = {

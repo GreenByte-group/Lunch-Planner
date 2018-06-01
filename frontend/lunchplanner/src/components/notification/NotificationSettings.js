@@ -1,7 +1,7 @@
 import React from 'react';
-import {withStyles} from "material-ui/styles/index";
+import {withStyles} from "@material-ui/core/styles/index";
 import SwitchSettingsItem from "../settings/SwitchSettingsItem";
-import {List} from "material-ui";
+import {List} from "@material-ui/core";
 
 const styles = {
     list: {

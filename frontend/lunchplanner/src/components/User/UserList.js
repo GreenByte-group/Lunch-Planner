@@ -1,6 +1,6 @@
 import React from 'react';
-import {withStyles} from 'material-ui/styles';
-import {List} from "material-ui";
+import {withStyles} from '@material-ui/core/styles';
+import {List} from "@material-ui/core";
 import User from "./User";
 
 const styles = {
