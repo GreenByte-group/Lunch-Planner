@@ -29,18 +29,16 @@ class InviteExtern extends React.Component {
         super();
         let eventId = props.match.params.eventId;
         let inviteLink = inviteExtern(eventId, (response) =>{
-            let link = FRONTEND_HOST + "/event/token/" + response.data;
+            let link = FRONTEND_HOST + "/public/" + response.data;
             this.setState({
                 link: link,
             });
-            console.log(this.state.link, "link");
-        })
+        });
         this.state = {
             open: true,
-            link: "link",
+            link: "",
             copied: false,
             eventId: eventId,
-            copied: false,
         };
     }
 
@@ -53,7 +51,7 @@ class InviteExtern extends React.Component {
         this.setState({
             copied: true,
         })
-    }
+    };
 
 
     render(){
@@ -66,8 +64,6 @@ class InviteExtern extends React.Component {
             <Dialog
                 open={this.state.open}
                 closeUrl={"/event/" + this.state.eventId}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">{"Share this event with other people"}</DialogTitle>
                 <DialogContent>

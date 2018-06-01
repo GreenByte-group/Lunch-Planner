@@ -75,7 +75,7 @@ class App extends React.Component {
                     <Router history={getHistory()}>
                         <div style={{height: '100%'}}>
                             <Route exact path="/login" component={FirstScreen} />
-                            <Route exact path="/event/token/:securityToken" component={EventScreen} />
+                            <Route path="/public/:securityToken" component={EventScreen} />
                             <Route exact path="/"
                                           render={ () => <Redirect to="/event" />}
                             />

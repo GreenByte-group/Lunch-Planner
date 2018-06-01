@@ -408,11 +408,6 @@ class EventScreen extends React.Component {
         });
     };
 
-    handleShare = () =>{
-        this.setState({
-            isShared: true,
-        });
-    };
 
     render() {
         const { classes } = this.props;
@@ -451,7 +446,6 @@ class EventScreen extends React.Component {
         let accepted = false;
         let buttonText = "Join Event";
         let barTitle = name;
-        let isShared = this.state.isShared;
 
         let iAmAdmin = false;
 
@@ -535,12 +529,12 @@ class EventScreen extends React.Component {
                                             </div>
                                         </Link>
                             }
-                            {(iAmAdmin || isShared)
+                            {(iAmAdmin)
                                 ?
                                 <Link to={{pathname:`/event/${eventId}/share`, query: {
                                         source: "/event/" + this.state.eventId}}}>
                                     <div className={classes.headerShare}>
-                                        <ShareIcon className={classes.shareIcon} onClick={this.handleShare}/>
+                                        <ShareIcon className={classes.shareIcon}/>
                                         <p className={classes.shareText}>Share</p>
                                     </div>
                                 </Link>
