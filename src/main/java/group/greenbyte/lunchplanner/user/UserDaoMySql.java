@@ -1,11 +1,7 @@
 package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import group.greenbyte.lunchplanner.user.database.NotificationDatabase;
-import group.greenbyte.lunchplanner.user.database.Notifications;
-import group.greenbyte.lunchplanner.user.database.User;
-import group.greenbyte.lunchplanner.user.database.UserDatabase;
-import org.hibernate.dialect.Database;
+import group.greenbyte.lunchplanner.user.database.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -36,6 +32,11 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_NOTIFICATION_LINK = "link";
     public static final String USER_NOTIFICATION_PICTURE = "picture";
     public static final String USER_NOTIFICATION_DATE = "date";
+
+    public static final String USER_SUBSCRIBE_TABLE = "subscribe";
+    public static final String USER_SUBSCRIBE_ID = "subscribeId";
+    public static final String USER_SUBSCRIBE_SUBSCRIBER = "subscriber";
+    public static final String USER_SUBSCRIBE_LOCATION = "location";
 
     @Autowired
     public UserDaoMySql(JdbcTemplate jdbcTemplateObject) {
@@ -120,7 +121,52 @@ public class UserDaoMySql implements UserDao {
         }
     }
 
+    @Override
+    public List<String> getSubscribedLocations(String subscriber) throws DatabaseException {
+        try {
+            String SQL = "SELECT * FROM " + USER_SUBSCRIBE_TABLE + " WHERE " + USER_SUBSCRIBE_SUBSCRIBER + " = ?";
 
+            List<SubscribeDatabase> locations = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(SubscribeDatabase.class), subscriber);
+
+            List<String> locationsReturn = new ArrayList<>(locations.size());
+            for(SubscribeDatabase subscribeDatabase: locations) {
+                String location = subscribeDatabase.getLocation();
+
+                locationsReturn.add(location);
+            }
+            return locationsReturn;
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public List<User> getSubscriber(String location) throws DatabaseException {
+        try{
+            String SQL = "SELECT * FROM " + USER_SUBSCRIBE_TABLE + " WHERE " + USER_SUBSCRIBE_LOCATION + " = ?";
+
+            List<SubscribeDatabase> users = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(SubscribeDatabase.class), location);
+
+            List<User> usersReturn = new ArrayList<>(users.size());
+            for(SubscribeDatabase subscribeDatabase: users) {
+                String userName = subscribeDatabase.getSubscriber();
+                User user = getUser(userName);
+                usersReturn.add(user);
+            }
+            return usersReturn;
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void subscribe(String subscriber, String location) throws DatabaseException {
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        simpleJdbcInsert.withTableName(USER_SUBSCRIBE_TABLE).usingGeneratedKeyColumns(USER_SUBSCRIBE_ID);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(USER_SUBSCRIBE_SUBSCRIBER, subscriber);
+        parameters.put(USER_SUBSCRIBE_LOCATION, location);
+    }
 
 
     @Override

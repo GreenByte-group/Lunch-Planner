@@ -198,6 +198,13 @@ public class UserController {
         }
     }
 
+    /**
+     * An user subscribe a location
+     * @param username who subscribe
+     * @param location that the user subscribe
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "subscribe/{username}", method = RequestMethod.POST)
     public String subscribe(@PathVariable("username") String username, @RequestBody String location,
                              HttpServletResponse response) {

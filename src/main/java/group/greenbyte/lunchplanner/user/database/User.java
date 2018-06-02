@@ -52,6 +52,9 @@ public class User {
     @OneToMany (mappedBy = "receiver")
     private List<Notifications> notification = new ArrayList<>();
 
+    @OneToMany (mappedBy = "location")
+    private List<String> locations = new ArrayList<>();
+
     public String getUserName() {
         return userName;
     }
@@ -122,4 +125,6 @@ public class User {
     public void setNotification(List<Notifications> notification) {
         this.notification = notification;
     }
+
+    public List<String> getLocations(){return locations; }
 }
