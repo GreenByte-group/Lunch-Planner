@@ -183,14 +183,6 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser(username = userName)
-    public void test3SearchwordIsNull() throws Exception {
-        mockMvc.perform(
-                get("/user/search/"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @WithMockUser(username = userName)
     public void test3SearchResultIsNoting() throws Exception {
         mockMvc.perform(
                 get("/user/search/" + createString(10)))

@@ -79,6 +79,54 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
+    public void deleteInvitationsForEvent(int eventId) throws DatabaseException {
+        try {
+            String SQL_DELETE = "DELETE FROM " + EVENT_INVITATION_TABLE + " WHERE " + EVENT_INVITATION_EVENT + " = ?";
+
+            jdbcTemplate.update(SQL_DELETE, eventId);
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void deleteBringServiceForEvent(int eventId) throws DatabaseException {
+        try {
+            String SQL_DELETE = "DELETE FROM " + EVENT_BRINGSERVICE_TABLE + " WHERE " + EVENT_BRINGSERVICE_EVENT + " = ?";
+
+            jdbcTemplate.update(SQL_DELETE, eventId);
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void deleteCommentsForEvent(int eventId) throws DatabaseException {
+        try {
+            String SQL_DELETE = "DELETE FROM " + EVENT_COMMENT_TABLE + " WHERE " + EVENT_COMMENT_EVENT + " = ?";
+
+            jdbcTemplate.update(SQL_DELETE, eventId);
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void deleteEvent(int eventId) throws DatabaseException {
+        deleteInvitationsForEvent(eventId);
+        deleteBringServiceForEvent(eventId);
+        deleteCommentsForEvent(eventId);
+
+        try {
+            String SQL = "DELETE FROM " + EVENT_TABLE + " WHERE " + EVENT_ID + " = ?";
+
+            jdbcTemplate.update(SQL, eventId);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
     public Event getEvent(int eventId) throws DatabaseException {
         try {
             String SQL = "SELECT * FROM " + EVENT_TABLE + " WHERE " + EVENT_ID + " = ?";
@@ -93,6 +141,25 @@ public class EventDaoMySql implements EventDao {
 
                 return event;
             }
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public List<Event> getAllEvents() throws DatabaseException {
+        try {
+            String SQL = "SELECT * FROM " + EVENT_TABLE;
+
+            List<EventDatabase> events = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(EventDatabase.class));
+
+            List<Event> eventsToReturn = new ArrayList<>();
+
+            for(EventDatabase event : events) {
+                eventsToReturn.add(event.getEvent());
+            }
+
+            return eventsToReturn;
         } catch (Exception e) {
             throw new DatabaseException(e);
         }

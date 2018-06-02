@@ -10,6 +10,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import {Link} from "react-router-dom";
 import {getUsername} from "./authentication/Authentication";
 import {getUser} from "./User/UserFunctions";
+import {doLogout} from "./LoginFunctions";
+import {getHistory} from "../utils/HistoryUtils";
 
 const styles = {
     list: {
@@ -64,6 +66,11 @@ class LunchMenu extends React.Component {
             }
         })
     }
+
+    signOut = () => {
+        doLogout();
+        getHistory().push("/login");
+    };
 
     handleClick() {
         if (!this.state.popupVisible) {
@@ -155,12 +162,10 @@ class LunchMenu extends React.Component {
                                             Options
                                         </MenuItem>
                                     </Link>
-                                    <Link to="/signout">
-                                        <MenuItem>
-                                            <SignOutIcon className={classes.icon}/>
-                                            Sign Out
-                                        </MenuItem>
-                                    </Link>
+                                    <MenuItem onClick={this.signOut}>
+                                        <SignOutIcon className={classes.icon}/>
+                                        Sign Out
+                                    </MenuItem>
                                 </List>
                             </div>
                         </div>
