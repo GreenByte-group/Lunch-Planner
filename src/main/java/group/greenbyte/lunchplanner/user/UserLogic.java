@@ -219,7 +219,6 @@ public class UserLogic {
 
     }
 
-    //TODO write tests for this function
     /**
      * Get notification options for user
      *

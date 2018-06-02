@@ -153,4 +153,31 @@ public class UserLogicTest {
         User notAuth = userLogic.validateUser(auth.getToken() + "a");
         assertNull(notAuth);
     }
+
+    // ------------- GET NOTIFICATION OPTIONS ------------------
+
+    @Test
+    public void test1GetNotificationOptionsMinUserName() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(1));
+        userLogic.getNotificationOptions(userName);
+    }
+
+    @Test
+    public void test1GetNotificationOptionsMaxUserName() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(50));
+        userLogic.getNotificationOptions(userName);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test1GetNotificationOptionsEmptyUsername() throws Exception {
+        String userName = "";
+        userLogic.getNotificationOptions(userName);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test1GetNotificationOptionsUserNameTooLong() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(51));
+        userLogic.getNotificationOptions(userName);
+    }
+
 }

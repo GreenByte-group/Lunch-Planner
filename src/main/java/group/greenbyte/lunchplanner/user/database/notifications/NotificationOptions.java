@@ -3,7 +3,6 @@ package group.greenbyte.lunchplanner.user.database.notifications;
 import group.greenbyte.lunchplanner.user.database.User;
 
 import javax.persistence.*;
-import java.util.Calendar;
 import java.util.Date;
 
 @Entity
@@ -129,31 +128,23 @@ public class NotificationOptions {
         this.subscriptionsBlocked = subscriptionsBlocked;
     }
 
-    /*
+
     public boolean notificationsAllowed() {
-        if (optionSelected == BlockOptions.NONE) {
-            return true;
-        }
-
-        if (optionSelected == BlockOptions.PERMANENTLY) {
+        if (blockAll) {
             return false;
         }
 
-        if (optionSelected == BlockOptions.TODAY) {
-            return isSameDay();
-        }
-
-        if (optionSelected == BlockOptions.INTERVAL) {
-
-            Date date = new Date();
-            if (date.after(start) && date.before(end)) {
-                return true;
+        if (blockedUntil) {
+            if(block_until != null) {
+                return new Date().after(block_until);
             }
-            return false;
+        }
+        if (blockedForWork) {
+            //TODO
         }
         return true;
     }
-    */
+
 
     /*
     private boolean isSameDay() {

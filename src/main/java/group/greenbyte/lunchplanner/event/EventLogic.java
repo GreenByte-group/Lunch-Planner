@@ -299,8 +299,6 @@ public class EventLogic {
         String description = String.format("%s invited you to an event", username);
         String linkToClick = "/event/" + eventId;
 
-        //TODO handle exception
-        //TODO check if user wants notifications
         //send a notification to userToInvite
         userLogic.sendNotification(user.getFcmToken(), userToInvite, title, description,linkToClick, "");
     }
