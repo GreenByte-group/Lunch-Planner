@@ -139,8 +139,12 @@ public class NotificationOptions {
                 return new Date().after(block_until);
             }
         }
+        //TODO
         if (blockedForWork) {
-            //TODO
+            if(start_working != null && stop_working != null) {
+                Date now = new Date();
+                return !(now.after(start_working) && now.before(stop_working));
+            }
         }
         return true;
     }

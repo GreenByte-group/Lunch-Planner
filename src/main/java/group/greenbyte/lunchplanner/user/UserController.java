@@ -166,7 +166,7 @@ public class UserController {
                     options.getBlock_until(), options.getBlockedForWork(), options.getStart_working(), options.getStop_working(),
                     options.getEventsBlocked(),options.getTeamsBlocked(),options.getSubscriptionsBlocked());
 
-            response.setStatus(HttpServletResponse.SC_CREATED);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
             return "";
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());

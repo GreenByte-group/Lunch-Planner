@@ -10,8 +10,10 @@ import group.greenbyte.lunchplanner.security.SessionManager;
 import group.greenbyte.lunchplanner.team.TeamDao;
 import group.greenbyte.lunchplanner.team.TeamLogic;
 import group.greenbyte.lunchplanner.team.database.TeamMemberDataForReturn;
+import group.greenbyte.lunchplanner.user.UserDao;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import group.greenbyte.lunchplanner.user.database.User;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ public class EventLogic {
     private UserLogic userLogic;
     private TeamDao teamDao;
     private TeamLogic teamLogic;
+    private UserDao userDao;
 
     /**
      * Checks if a user has privileges to change the event object
@@ -276,7 +279,7 @@ public class EventLogic {
      * @throws HttpRequestException when an unexpected error happens
      *
      */
-    public void inviteFriend(String username, String userToInvite, int eventId) throws HttpRequestException, FirebaseMessagingException {
+    public void inviteFriend(String username, String userToInvite, int eventId) throws HttpRequestException {
 
         if(!isValidName(username))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
@@ -292,15 +295,31 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
 
-
+        //TODO picture
         User user = userLogic.getUser(userToInvite);
         //set notification information
         String title = "Event invitation";
         String description = String.format("%s invited you to an event", username);
         String linkToClick = "/event/" + eventId;
 
+        //save notification
+        try {
+            userDao.saveNotificationIntoDatabase(userToInvite,title,description,SessionManager.getUserName(),linkToClick, "");
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
         //send a notification to userToInvite
-        userLogic.sendNotification(user.getFcmToken(), userToInvite, title, description,linkToClick, "");
+        NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToInvite);
+        if(notificationOptions.notificationsAllowed() && !notificationOptions.isEventsBlocked()) {
+            try {
+                userLogic.sendNotification(user.getFcmToken(), userToInvite, title, description,linkToClick, "");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
     }
 
     /**
@@ -563,5 +582,10 @@ public class EventLogic {
     @Autowired
     public void setTeamLogic(TeamLogic teamLogic) {
         this.teamLogic = teamLogic;
+    }
+
+    @Autowired
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
     }
 }

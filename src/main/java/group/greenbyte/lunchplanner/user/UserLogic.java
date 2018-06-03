@@ -9,10 +9,9 @@ import com.google.firebase.messaging.Message;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.JwtService;
-import group.greenbyte.lunchplanner.security.SessionManager;
+import group.greenbyte.lunchplanner.user.database.User;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
 import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
-import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -117,7 +116,6 @@ public class UserLogic {
         }
     }
 
-
     /**
      *
      * @param searchword String for searching the Database
@@ -131,8 +129,6 @@ public class UserLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
     }
-
-
 
     /**
      *
@@ -170,9 +166,7 @@ public class UserLogic {
         if(!fcmInitialized) {
             try {
                 initNotifications();
-                userDao.saveNotificationIntoDatabase(receiver,title,description,SessionManager.getUserName(),linkToClick, picturePath);
-
-            } catch (DatabaseException|IOException e) {
+            } catch (IOException e) {
                 throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
             }
         }
@@ -185,8 +179,6 @@ public class UserLogic {
                 .putData("picture", picturePath)
                 .setToken(fcmToken)
                 .build();
-
-
 
         // Send a message to the device corresponding to the provided
         // registration token.
@@ -241,6 +233,21 @@ public class UserLogic {
 
     }
 
+    /**
+     * Update notification options
+     *
+     * @param userName
+     * @param blockAll
+     * @param blockedUntil
+     * @param block_until
+     * @param blockedForWork
+     * @param start_working
+     * @param stop_working
+     * @param eventsBlocked
+     * @param teamsBlocked
+     * @param subscriptionsBlocked
+     * @throws HttpRequestException
+     */
     public void updateNotificationOptions(String userName, Boolean blockAll, Boolean blockedUntil,
                                             Date block_until, Boolean blockedForWork, Date start_working,
                                             Date stop_working, Boolean eventsBlocked, Boolean teamsBlocked,

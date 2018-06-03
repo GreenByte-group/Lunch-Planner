@@ -17,10 +17,29 @@ public class OptionsJson implements Serializable {
 
     public OptionsJson() {};
 
+    public OptionsJson(Boolean blockAll, Boolean blockedUntil, Date block_until, Boolean blockedForWork,
+                       Date start_working, Date stop_working, Boolean eventsBlocked, Boolean teamsBlocked,
+                       Boolean subscriptionsBlocked) {
+
+        this.blockAll = blockAll;
+        this.blockedUntil = blockedUntil;
+        this.block_until = block_until;
+        this.blockedForWork = blockedForWork;
+        this.start_working = start_working;
+        this.stop_working = stop_working;
+        this.eventsBlocked = eventsBlocked;
+        this.teamsBlocked = teamsBlocked;
+        this.subscriptionsBlocked = subscriptionsBlocked;
+
+    }
+
+    public OptionsJson
+
+    //------- GETTERS AND SETTERS -------
+
     public Boolean getBlockAll() {
         return blockAll;
     }
-
 
     public void setBlockAll(Boolean blockAll) {
         this.blockAll = blockAll;

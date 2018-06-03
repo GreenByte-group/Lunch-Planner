@@ -2,6 +2,7 @@ package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.EventLogic;
+import group.greenbyte.lunchplanner.user.database.notifications.OptionsJson;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -329,6 +330,25 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.teamsBlocked").value(false))
                 .andExpect(jsonPath("$.username").value(userName))
                 .andExpect(jsonPath("$.subscriptionsBlocked").value(false));
+    }
+
+    // ------------------------- UPDATE NOTIFICATION OPTIONS ------------------------------
+    @Test
+    @WithMockUser(username = userName)
+    public void test1UpdateNotificationOptions() throws Exception {
+        long timeStart = System.currentTimeMillis() + 100000;
+
+        OptionsJson options = new OptionsJson();
+
+        String json = getJsonFromObject(options);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/user/options/notifications").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+                .andReturn();
+
+
     }
 
 }
