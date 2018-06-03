@@ -32,7 +32,7 @@ class Login extends React.Component {
             if(message.type === "LOGIN_EMPTY") {
                 this.setState({
                     error: message.payload.message,
-                });
+                }); 
             } else if(message.type === "LOGIN_SUCCESS") {
                 this.setState({
                     error: "",
