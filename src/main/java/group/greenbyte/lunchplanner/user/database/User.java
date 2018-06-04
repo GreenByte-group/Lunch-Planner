@@ -52,8 +52,8 @@ public class User {
     @OneToMany (mappedBy = "receiver")
     private List<Notifications> notification = new ArrayList<>();
 
-    @OneToMany (mappedBy = "location")
-    private List<String> locations = new ArrayList<>();
+    @OneToMany (mappedBy = "location", cascade = CascadeType.ALL)
+    private List<Subscribe> locations = new ArrayList<>();
 
     public String getUserName() {
         return userName;
@@ -126,5 +126,5 @@ public class User {
         this.notification = notification;
     }
 
-    public List<String> getLocations(){return locations; }
+    //public List<String> getLocations(){return locations; }
 }

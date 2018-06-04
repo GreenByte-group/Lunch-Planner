@@ -2,24 +2,24 @@ package group.greenbyte.lunchplanner.user.database;
 
 public class SubscribeDatabase {
 
-    private String subscriber;
+    private String user;
     private String location;
 
     public Subscribe getSubscribe(){
         Subscribe subscribeLocation = new Subscribe();
         subscribeLocation.setLocation(this.location);
-        subscribeLocation.setSubscriber(this.subscriber);
+        subscribeLocation.setSubscriber(this.user);
 
         return subscribeLocation;
     }
 
     //------------GETTER AND SETTER-----------------------
     public String getSubscriber() {
-        return subscriber;
+        return user;
     }
 
     public void setSubscriber(String userName) {
-        this.subscriber = userName;
+        this.user = userName;
     }
 
     public String getLocation() {

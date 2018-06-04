@@ -1,26 +1,30 @@
 package group.greenbyte.lunchplanner.user.database;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class Subscribe {
-    @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private int  subscribeId;
+public class Subscribe implements Serializable {
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @Column
-    private String subscriber;
+    @Id
+    @OneToOne
+    @JoinColumn(name = "userName")
+    private User subscriber;
+
+    @Id
     private String location;
+
+    @Transient
+    private String user;
 
 
     //------------GETTER AND SETTER-----------------------
     public String getSubscriber() {
-        return subscriber;
+        return user;
     }
 
     public void setSubscriber(String userName) {
-        this.subscriber = userName;
+        this.user = userName;
     }
 
     public String getLocation() {

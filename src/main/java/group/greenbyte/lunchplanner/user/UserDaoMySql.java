@@ -34,7 +34,6 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_NOTIFICATION_DATE = "date";
 
     public static final String USER_SUBSCRIBE_TABLE = "subscribe";
-    public static final String USER_SUBSCRIBE_ID = "subscribeId";
     public static final String USER_SUBSCRIBE_SUBSCRIBER = "subscriber";
     public static final String USER_SUBSCRIBE_LOCATION = "location";
 
@@ -162,7 +161,7 @@ public class UserDaoMySql implements UserDao {
     @Override
     public void subscribe(String subscriber, String location) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        simpleJdbcInsert.withTableName(USER_SUBSCRIBE_TABLE).usingGeneratedKeyColumns(USER_SUBSCRIBE_ID);
+        simpleJdbcInsert.withTableName(USER_SUBSCRIBE_TABLE);
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(USER_SUBSCRIBE_SUBSCRIBER, subscriber);
         parameters.put(USER_SUBSCRIBE_LOCATION, location);
