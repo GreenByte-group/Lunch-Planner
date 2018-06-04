@@ -5,7 +5,9 @@ import {MemoryRouter} from "react-router-dom";
 
 it ("renders correctly", ()=>{
     const tree = renderer.create(
+        <MemoryRouter>
         <TeamList/>
+        </MemoryRouter>
     ).toJSON();
     expect(tree).toMatchSnapshot();
 });

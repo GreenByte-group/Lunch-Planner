@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div
+  className="TeamList-root-1"
+>
+  <ul
+    className="MuiList-root-3 MuiList-padding-4 TeamList-list-2"
+  />
+  <a
+    href="/team/create"
+    onClick={[Function]}
+  >
+    <button
+      className="MuiButtonBase-root-25 MuiButton-root-9 MuiButton-raised-15 MuiButton-fab-20 MuiButton-raisedSecondary-17 FloatingActionButton-whiteSymbol-7 FloatingActionButton-floatingButton-8"
+      disabled={false}
+      onBlur={[Function]}
+      onClick={undefined}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+      onMouseDown={[Function]}
+      onMouseLeave={[Function]}
+      onMouseUp={[Function]}
+      onTouchEnd={[Function]}
+      onTouchMove={[Function]}
+      onTouchStart={[Function]}
+      tabIndex="0"
+      type="button"
+    >
+      <span
+        className="MuiButton-label-10"
+      >
+        <svg
+          aria-hidden="true"
+          className="MuiSvgIcon-root-28"
+          color={undefined}
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <g>
+            <path
+              d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+            />
+          </g>
+        </svg>
+      </span>
+      <span
+        className="MuiTouchRipple-root-34"
+      />
+    </button>
+  </a>
+</div>
+`;

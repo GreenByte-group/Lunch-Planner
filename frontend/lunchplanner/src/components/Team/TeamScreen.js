@@ -396,7 +396,6 @@ TeamScreen.propTypes = {
     isAdmin: PropTypes.bool.isRequired,
     name:PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
-    people:PropTypes.object.isRequired,
 
 };
 export default withStyles(styles, { withTheme: true })(TeamScreen);

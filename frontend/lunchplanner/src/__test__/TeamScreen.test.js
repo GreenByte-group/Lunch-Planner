@@ -5,7 +5,11 @@ import {MemoryRouter} from "react-router-dom";
 
 it ("renders correctly", ()=>{
     const tree = renderer.create(
-        <TeamScreen/>
+        <TeamScreen id={1}
+                    isAdmin={true}
+                    description='Tralala'
+                    name='Test'
+        />
     ).toJSON();
     expect(tree).toMatchSnapshot();
 });
