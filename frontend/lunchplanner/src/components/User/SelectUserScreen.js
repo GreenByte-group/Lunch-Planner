@@ -9,6 +9,7 @@ import SwipeableViews from 'react-swipeable-views';
 import TeamInvitationList from "../Team/TeamInvitationList";
 import {getUsers} from "./UserFunctions";
 import {getTeams} from "../Team/TeamFunctions";
+import {getUsername} from "../authentication/LoginFunctions";
 
 const styles = theme =>({
     root: {
@@ -76,9 +77,12 @@ class SelectUserScreen extends React.Component {
     updateUsers(search) {
         getUsers(search,
             (response) => {
+                let users = response.data;
+                users = users.filter(element => element.userName !== getUsername());
+
                 this.setState({
                     search: search,
-                    users: response.data,
+                    users: users,
                 })
             })
     }

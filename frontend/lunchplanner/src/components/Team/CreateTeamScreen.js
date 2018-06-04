@@ -13,7 +13,7 @@ import {getHistory} from "../../utils/HistoryUtils";
 import {FormControlLabel, FormHelperText, InputAdornment, Switch} from "@material-ui/core";
 import {eventListNeedReload} from "../Event/EventList";
 import {createTeam} from "./TeamFunctions";
-import {setAuthenticationHeader} from "../authentication/Authentication";
+import {setAuthenticationHeader} from "../authentication/LoginFunctions";
 
 const styles = {
     button:{

@@ -1,5 +1,5 @@
 import React from "react";
-import FirstScreen, {setAuthenticationHeader} from "./components/authentication/Authentication"
+import FirstScreen from "./components/authentication/Authentication"
 import LunchPlanner from "./components/LunchPlanner"
 import { Router, Route, Redirect } from "react-router-dom";
 import {isAuthenticated} from "./components/authentication/LoginFunctions"
