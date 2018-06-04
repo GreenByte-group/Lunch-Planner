@@ -172,7 +172,7 @@ class CreateEventScreen extends React.Component {
         if(invitedUsers)
             invitedUsersArray = invitedUsers.split(",")
 
-        createEvent(this.state.location, this.state.date, invitedUsersArray, this.state.visible,
+        createEvent(this.state.location, this.state.date, invitedUsersArray, !this.state.visible,
             (response) => {
                 if(response.status === 201) {
                     eventListNeedReload();

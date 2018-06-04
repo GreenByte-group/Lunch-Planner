@@ -309,9 +309,6 @@ public class EventDaoTest {
 
     @Test
     public void test1ReplyInvitationAccept() throws Exception {
-        String userName = "A";
-        int eventId = 1;
-
         eventDao.replyInvitation(userName, eventId, InvitationAnswer.ACCEPT);
     }
 
