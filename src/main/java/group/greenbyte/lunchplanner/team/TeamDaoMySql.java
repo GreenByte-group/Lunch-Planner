@@ -39,14 +39,13 @@ public class TeamDaoMySql implements TeamDao {
     }
 
     @Override
-    public int insertTeam(String teamName, String description, String adminName) throws DatabaseException {
+    public int insertTeam(String teamName, String description, String adminName, boolean isPublic) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(TEAM_TABLE).usingGeneratedKeyColumns(TEAM_ID);
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(TEAM_NAME, teamName);
         parameters.put(TEAM_DESCRIPTION, description);
-        // fürs erste auf true gesetzt damit findPublicTeams funktioniert
-        parameters.put(TEAM_PUBLIC, true);
+        parameters.put(TEAM_PUBLIC, isPublic);
 
         try {
             Number key = simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
@@ -60,13 +59,14 @@ public class TeamDaoMySql implements TeamDao {
     }
 
     @Override
-    public int insertTeamWithParent(String teamName, String description, String adminName, int parent) throws DatabaseException {
+    public int insertTeamWithParent(String teamName, String description, String adminName, boolean isPublic, int parent) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(TEAM_TABLE).usingGeneratedKeyColumns(TEAM_ID);
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(TEAM_NAME, teamName);
         parameters.put(TEAM_DESCRIPTION, description);
         parameters.put(TEAM_PARENT, parent);
+        parameters.put(TEAM_PUBLIC, isPublic);
 
         try {
             Number key = simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));

@@ -71,7 +71,7 @@ public class TeamDaoTest {
         String teamName = "A";
         String description = "";
 
-        teamDao.insertTeamWithParent(teamName, description, userName, parent);
+        teamDao.insertTeamWithParent(teamName, description, userName, true, parent);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class TeamDaoTest {
         String teamName = createString(50);
         String description = "Super Team";
 
-        teamDao.insertTeamWithParent(teamName, description, adminName, parent);
+        teamDao.insertTeamWithParent(teamName, description, adminName, false, parent);
     }
 
     @Test
@@ -89,7 +89,7 @@ public class TeamDaoTest {
         String teamName = createString(50);
         String description = createString(1000);
 
-        teamDao.insertTeamWithParent(teamName, description, adminName, parent);
+        teamDao.insertTeamWithParent(teamName, description, adminName, true, parent);
     }
 
     @Test(expected = DatabaseException.class)
@@ -98,7 +98,7 @@ public class TeamDaoTest {
         String teamName = createString(50);
         String description = createString(1000);
 
-        teamDao.insertTeamWithParent(teamName, description, adminName, parent);
+        teamDao.insertTeamWithParent(teamName, description, adminName, true, parent);
     }
 
     @Test(expected = DatabaseException.class)
@@ -107,7 +107,7 @@ public class TeamDaoTest {
         String teamName = createString(50);
         String description = createString(1000);
 
-        teamDao.insertTeamWithParent(teamName, description, adminName, parent);
+        teamDao.insertTeamWithParent(teamName, description, adminName, true, parent);
     }
 
     @Test(expected = DatabaseException.class)
@@ -116,7 +116,7 @@ public class TeamDaoTest {
         String teamName = createString(51);
         String description = createString(1000);
 
-        teamDao.insertTeamWithParent(teamName, description, adminName, parent);
+        teamDao.insertTeamWithParent(teamName, description, adminName, true, parent);
     }
 
     @Test(expected = DatabaseException.class)
@@ -125,7 +125,7 @@ public class TeamDaoTest {
         String teamName = createString(50);
         String description = createString(1001);
 
-        teamDao.insertTeamWithParent(teamName, description, adminName, parent);
+        teamDao.insertTeamWithParent(teamName, description, adminName, true, parent);
     }
 
     // ------------------ PUT USER TEAM MEMBER ------------------------

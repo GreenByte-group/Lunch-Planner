@@ -68,7 +68,7 @@ public class TeamLogicTest {
         String teamName = "A";
         String description = "";
 
-        teamLogic.createTeamWithParent(userName, parent, teamName, description);
+        teamLogic.createTeamWithParent(userName, parent, teamName, description, true);
     }
 
     @Test
@@ -78,7 +78,7 @@ public class TeamLogicTest {
         String teamName = createString(50);
         String description = "Super Team";
 
-        teamLogic.createTeamWithParent(userName, parent, teamName, description);
+        teamLogic.createTeamWithParent(userName, parent, teamName, description, true);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class TeamLogicTest {
         String teamName = createString(50);
         String description = createString(1000);
 
-        teamLogic.createTeamWithParent(userName, parent, teamName, description);
+        teamLogic.createTeamWithParent(userName, parent, teamName, description, true);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -97,7 +97,7 @@ public class TeamLogicTest {
         String teamName = createString(50);
         String description = createString(1000);
 
-        teamLogic.createTeamWithParent(userName, parent, teamName, description);
+        teamLogic.createTeamWithParent(userName, parent, teamName, description, true);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -106,7 +106,7 @@ public class TeamLogicTest {
         String teamName = createString(50);
         String description = createString(1000);
 
-        teamLogic.createTeamWithParent(userName, parent, teamName, description);
+        teamLogic.createTeamWithParent(userName, parent, teamName, description, true);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -114,7 +114,7 @@ public class TeamLogicTest {
         String teamName = "";
         String description = createString(1000);
 
-        teamLogic.createTeamWithParent(userName, parent, teamName, description);
+        teamLogic.createTeamWithParent(userName, parent, teamName, description, true);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -122,7 +122,7 @@ public class TeamLogicTest {
         String teamName = createString(51);
         String description = createString(1000);
 
-        teamLogic.createTeamWithParent(userName, parent, teamName, description);
+        teamLogic.createTeamWithParent(userName, parent, teamName, description, true);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -130,7 +130,7 @@ public class TeamLogicTest {
         String teamName = createString(50);
         String description = createString(1001);
 
-        teamLogic.createTeamWithParent(userName, parent, teamName, description);
+        teamLogic.createTeamWithParent(userName, parent, teamName, description, true);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -139,7 +139,7 @@ public class TeamLogicTest {
         String teamName = createString(50);
         String description = createString(1000);
 
-        teamLogic.createTeamWithParent(userName, parent, teamName, description);
+        teamLogic.createTeamWithParent(userName, parent, teamName, description, true);
     }
 
     // ------------------------- CREATE TEAM WITHOUT PARENT ------------------------------
@@ -149,7 +149,7 @@ public class TeamLogicTest {
         String teamName = "A";
         String description = "";
 
-        teamLogic.createTeamWithoutParent(userName, teamName, description);
+        teamLogic.createTeamWithoutParent(userName, teamName, description, true);
     }
 
     @Test
@@ -159,7 +159,7 @@ public class TeamLogicTest {
         String teamName = createString(50);
         String description = "Super Team";
 
-        teamLogic.createTeamWithoutParent(userName, teamName, description);
+        teamLogic.createTeamWithoutParent(userName, teamName, description, true);
     }
 
     @Test
@@ -169,7 +169,7 @@ public class TeamLogicTest {
         String teamName = createString(50);
         String description = createString(1000);
 
-        teamLogic.createTeamWithoutParent(userName, teamName, description);
+        teamLogic.createTeamWithoutParent(userName, teamName, description, true);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -178,7 +178,7 @@ public class TeamLogicTest {
         String teamName = createString(50);
         String description = createString(1000);
 
-        teamLogic.createTeamWithoutParent(userName, teamName, description);
+        teamLogic.createTeamWithoutParent(userName, teamName, description, true);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -187,7 +187,7 @@ public class TeamLogicTest {
         String teamName = createString(50);
         String description = createString(1000);
 
-        teamLogic.createTeamWithoutParent(userName, teamName, description);
+        teamLogic.createTeamWithoutParent(userName, teamName, description, true);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -195,7 +195,7 @@ public class TeamLogicTest {
         String teamName = "";
         String description = createString(1000);
 
-        teamLogic.createTeamWithoutParent(userName, teamName, description);
+        teamLogic.createTeamWithoutParent(userName, teamName, description, true);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -203,7 +203,7 @@ public class TeamLogicTest {
         String teamName = createString(51);
         String description = createString(1000);
 
-        teamLogic.createTeamWithoutParent(userName, teamName, description);
+        teamLogic.createTeamWithoutParent(userName, teamName, description, true);
     }
 
     @Test(expected = HttpRequestException.class)
@@ -211,7 +211,7 @@ public class TeamLogicTest {
         String teamName = createString(50);
         String description = createString(1001);
 
-        teamLogic.createTeamWithoutParent(userName, teamName, description);
+        teamLogic.createTeamWithoutParent(userName, teamName, description, true);
     }
 
     // ------------------------- INVITE TEAM MEMBER ------------------------------
