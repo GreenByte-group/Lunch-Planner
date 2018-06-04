@@ -172,7 +172,7 @@ public class TeamController {
      * @param response response channel
      * @return
      */
-    @RequestMapping(value = "/{userToRemove}/remove/team/{teamId}", method = RequestMethod.DELETE,
+    @RequestMapping(value = "/{userToRemove}/team/{teamId}/remove", method = RequestMethod.DELETE,
             produces = MediaType.TEXT_PLAIN_VALUE )
     @ResponseBody
     public String removeTeamMember(@PathVariable("userToRemove") String userToRemove, @PathVariable ("teamId") int teamId, HttpServletResponse response) {

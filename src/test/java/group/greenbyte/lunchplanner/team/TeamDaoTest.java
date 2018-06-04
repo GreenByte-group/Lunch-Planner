@@ -223,5 +223,5 @@ public class TeamDaoTest {
 
         teamDao.removeTeamMember(userToRemove, parent);
     }
-    
+
 }
