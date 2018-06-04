@@ -26,7 +26,6 @@ export function getTeam(teamId, responseFunc) {
 }
 
 export function createTeam(name, description, member, visible, responseFunc, errorFunc) {
-    //TODO send description
     let url =  HOST + '/team';
     axios.post(url, {teamName: name, description: description, visible: visible})
         .then((response) => {
