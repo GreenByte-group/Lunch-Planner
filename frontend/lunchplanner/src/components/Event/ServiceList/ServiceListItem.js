@@ -2,7 +2,7 @@ import React from "react";
 import {withStyles} from "@material-ui/core/styles/index";
 import {Card, CardContent, ListItem} from "@material-ui/core";
 import {Done} from "@material-ui/icons";
-import {getUsername} from "../../authentication/Authentication";
+import {getUsername} from "../../authentication/LoginFunctions";
 import {acceptService} from "./ServiceFunctions";
 
 const styles = {
@@ -68,9 +68,13 @@ class ServiceListItem extends React.Component {
     acceptedClicked = () => {
         if(!this.state.accepter) {
             acceptService(this.state.eventId, this.state.serviceId, (response) => {
+                console.log('Response Func: ', response);
                 if (response.status !== 204) {
                     this.setState({
                         error: response.response.data,
+                    })
+                } else {
+                    this.setState({
                         accepter: getUsername(),
                     })
                 }
@@ -91,6 +95,7 @@ class ServiceListItem extends React.Component {
         if(accepter)
             classesListItem = classes.listItemAccepted;
 
+        console.log('Accepter: ', accepter);
         return (
             <ListItem button className={classesListItem}>
                 {(error)

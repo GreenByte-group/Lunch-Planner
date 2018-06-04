@@ -2,8 +2,10 @@ package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.SessionManager;
-import group.greenbyte.lunchplanner.user.database.Notifications;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
+import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 import group.greenbyte.lunchplanner.user.database.User;
+import group.greenbyte.lunchplanner.user.database.notifications.OptionsJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -114,6 +116,26 @@ public class UserController {
     }
 
     /**
+     * TODO write tests
+     * @return one user
+     */
+    @RequestMapping(value = "{username}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getUser(@PathVariable("username") String username) {
+        try {
+            User user = userLogic.getUser(username);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(user);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+
+    }
+
+    /**
      *
      * @return a List of all notifications
      */
@@ -133,6 +155,46 @@ public class UserController {
                     .body(e.getErrorMessage());
         }
     }
+
+    /**
+     *
+     * @return the users notification options
+     */
+    @RequestMapping(value = "/options/notifications",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getNotificationOptions() {
+        try {
+            NotificationOptions notificationOptions = userLogic.getNotificationOptions(SessionManager.getUserName());
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(notificationOptions);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    @RequestMapping(value = "/options/notifications/update", method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String updateNotificationOptions(@RequestBody OptionsJson options, HttpServletResponse response){
+        try {
+            userLogic.updateNotificationOptions(SessionManager.getUserName(), options.getBlockAll(),options.getBlockedUntil(),
+                    options.getBlock_until(), options.getBlockedForWork(), options.getStart_working(), options.getStop_working(),
+                    options.getEventsBlocked(),options.getTeamsBlocked(),options.getSubscriptionsBlocked());
+
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            return "";
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            e.printStackTrace();
+            return e.getErrorMessage();
+        }
+    }
+
+
 
 
 

@@ -1,5 +1,5 @@
 import axios from "axios";
-import {HOST, TOKEN} from "../Config";
+import {HOST, TOKEN, USERNAME} from "../Config";
 
 const authentication = {
     isAuthenticated: false,
@@ -41,6 +41,7 @@ export function doLogin(username, password, responseFunc) {
 
 export function doLogout() {
     localStorage.removeItem(TOKEN)
+    localStorage.removeItem(USERNAME)
     authentication.isAuthenticated = false;
     return {
         type: "IS_NOT_AUTHENTICATED",

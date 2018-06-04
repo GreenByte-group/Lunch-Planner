@@ -24,6 +24,7 @@ import static group.greenbyte.lunchplanner.event.Utils.createEvent;
 import static group.greenbyte.lunchplanner.event.Utils.setEventPublic;
 import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -252,7 +253,7 @@ public class EventDaoTest {
 
     @Test
     public void test2GetEventNull() throws Exception {
-        Assert.assertNull(eventDao.getEvent(eventId + 1000));
+        assertNull(eventDao.getEvent(eventId + 1000));
     }
 
 
@@ -308,9 +309,6 @@ public class EventDaoTest {
 
     @Test
     public void test1ReplyInvitationAccept() throws Exception {
-        String userName = "A";
-        int eventId = 1;
-
         eventDao.replyInvitation(userName, eventId, InvitationAnswer.ACCEPT);
     }
 
@@ -340,6 +338,16 @@ public class EventDaoTest {
     @Test(expected = DatabaseException.class)
     public void test1AddTeamNotExistingEvent() throws Exception {
         eventDao.addTeamToEvent(10000, teamId);
+    }
+
+    // ---------------- Delete Event ---------------------
+    @Test
+    public void test1DeleteEvent() throws Exception{
+        int eventId = createEvent(eventLogic, userName, "location");
+
+        eventDao.deleteEvent(eventId);
+
+        assertNull(eventDao.getEvent(eventId));
     }
 
 }

@@ -3,7 +3,7 @@ import {withStyles} from "@material-ui/core/styles/index";
 import React from 'react';
 import Dialog from "../Dialog";
 import {Button, Slide, Divider} from "@material-ui/core";
-import {getUsername, setAuthenticationHeader} from "../authentication/Authentication";
+import {getUsername, setAuthenticationHeader} from "../authentication/LoginFunctions";
 import {getHistory} from "../../utils/HistoryUtils"
 import {Https as SecretIcon} from "@material-ui/icons";
 import UserList from "../User/UserList";
@@ -217,7 +217,6 @@ class TeamScreen extends React.Component {
 
         if(usersToInvite.length !== 0) {
             //remove doubles and already invited people
-            console.log("this.state.people", this.state.people)
             let usersToInviteUnique = usersToInvite.filter((item, pos) => {
                 return usersToInvite.indexOf(item) === pos && !this.state.people.some((person) => person.userName === item);
             });
@@ -259,7 +258,6 @@ class TeamScreen extends React.Component {
     };
 
     sendAnswer = () => {
-        console.log("leave");
         let url = HOST + '/team/' + this.state.teamId + '/leave';
         axios.delete(url)
             .then(() => {

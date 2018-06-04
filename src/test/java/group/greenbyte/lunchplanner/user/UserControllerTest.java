@@ -2,6 +2,7 @@ package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.EventLogic;
+import group.greenbyte.lunchplanner.user.database.notifications.OptionsJson;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,10 +14,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.Date;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
@@ -183,14 +187,6 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser(username = userName)
-    public void test3SearchwordIsNull() throws Exception {
-        mockMvc.perform(
-                get("/user/search/"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @WithMockUser(username = userName)
     public void test3SearchResultIsNoting() throws Exception {
         mockMvc.perform(
                 get("/user/search/" + createString(10)))
@@ -317,5 +313,70 @@ public class UserControllerTest {
 //                .andExpect(MockMvcResultMatchers.status().isBadRequest());
 //    }
 
+    // ------------------------- GET NOTIFICATION OPTIONS ------------------------------
+    @Test
+    @WithMockUser(username = userName)
+    public void test1GetNotificationOptionsValid() throws Exception {
+        Date block_until = new Date(System.currentTimeMillis() + 10000);
+        Date start_working = new Date();
+        Date stop_working = new Date();
+        userLogic.updateNotificationOptions(userName, true, false, block_until, false,
+                start_working, stop_working, false, false,false);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/user/options/notifications"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.blockAll").value(true))
+                .andExpect(jsonPath("$.block_until").value(block_until))
+                .andExpect(jsonPath("$.blockedUntil").value(false))
+                .andExpect(jsonPath("$.blockedForWork").value(false))
+                .andExpect(jsonPath("$.start_working").value(start_working))
+                .andExpect(jsonPath("$.stop_working").value(stop_working))
+                .andExpect(jsonPath("$.eventsBlocked").value(false))
+                .andExpect(jsonPath("$.teamsBlocked").value(false))
+                .andExpect(jsonPath("$.username").value(userName))
+                .andExpect(jsonPath("$.subscriptionsBlocked").value(false));
+    }
+
+    // ------------------------- UPDATE NOTIFICATION OPTIONS ------------------------------
+    @Test
+    @WithMockUser(username = userName)
+    public void test1UpdateNotificationOptions() throws Exception {
+        long timeStart = System.currentTimeMillis() + 100000;
+        long timeEnd = System.currentTimeMillis() + 200000;
+        long until = System.currentTimeMillis() + 300000;
+
+        OptionsJson options = new OptionsJson(false, false, new Date(until),false, new Date(timeStart), new Date(timeEnd), false, false, false );
+
+        String json = getJsonFromObject(options);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/user/options/notifications/update").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+                .andReturn();
+
+
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1UpdateNotificationOptionsBlockUntilInThePast() throws Exception {
+        long timeStart = System.currentTimeMillis() + 100000;
+        long timeEnd = System.currentTimeMillis() + 200000;
+        long until = System.currentTimeMillis() - 10000;
+
+        OptionsJson options = new OptionsJson(false, false, new Date(until),false, new Date(timeStart), new Date(timeEnd), false, false, false );
+
+        String json = getJsonFromObject(options);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/user/options/notifications/update").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+                .andReturn();
+
+
+    }
 
 }

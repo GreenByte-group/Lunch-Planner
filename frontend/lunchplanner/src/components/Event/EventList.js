@@ -6,7 +6,7 @@ import List from "@material-ui/core/List";
 import {withStyles} from "@material-ui/core/styles/index";
 import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
-import {getUsername} from "../authentication/Authentication";
+import {getUsername} from "../authentication/LoginFunctions";
 import {getEvents} from "./EventFunctions";
 
 const styles = {
@@ -109,6 +109,7 @@ class EventList extends React.Component {
                                       invited={invited}
                                       people={listValue.invitations}
                                       location={listValue.location}
+                                      token={listValue.shareToken}
                         />;
                     })}
                 </List>

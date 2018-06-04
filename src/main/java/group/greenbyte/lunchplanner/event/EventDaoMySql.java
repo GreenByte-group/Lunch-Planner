@@ -79,6 +79,54 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
+    public void deleteInvitationsForEvent(int eventId) throws DatabaseException {
+        try {
+            String SQL_DELETE = "DELETE FROM " + EVENT_INVITATION_TABLE + " WHERE " + EVENT_INVITATION_EVENT + " = ?";
+
+            jdbcTemplate.update(SQL_DELETE, eventId);
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void deleteBringServiceForEvent(int eventId) throws DatabaseException {
+        try {
+            String SQL_DELETE = "DELETE FROM " + EVENT_BRINGSERVICE_TABLE + " WHERE " + EVENT_BRINGSERVICE_EVENT + " = ?";
+
+            jdbcTemplate.update(SQL_DELETE, eventId);
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void deleteCommentsForEvent(int eventId) throws DatabaseException {
+        try {
+            String SQL_DELETE = "DELETE FROM " + EVENT_COMMENT_TABLE + " WHERE " + EVENT_COMMENT_EVENT + " = ?";
+
+            jdbcTemplate.update(SQL_DELETE, eventId);
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void deleteEvent(int eventId) throws DatabaseException {
+        deleteInvitationsForEvent(eventId);
+        deleteBringServiceForEvent(eventId);
+        deleteCommentsForEvent(eventId);
+
+        try {
+            String SQL = "DELETE FROM " + EVENT_TABLE + " WHERE " + EVENT_ID + " = ?";
+
+            jdbcTemplate.update(SQL, eventId);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
     public Event getEvent(int eventId) throws DatabaseException {
         try {
             String SQL = "SELECT * FROM " + EVENT_TABLE + " WHERE " + EVENT_ID + " = ?";
@@ -93,6 +141,25 @@ public class EventDaoMySql implements EventDao {
 
                 return event;
             }
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public List<Event> getAllEvents() throws DatabaseException {
+        try {
+            String SQL = "SELECT * FROM " + EVENT_TABLE;
+
+            List<EventDatabase> events = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(EventDatabase.class));
+
+            List<Event> eventsToReturn = new ArrayList<>();
+
+            for(EventDatabase event : events) {
+                eventsToReturn.add(event.getEvent());
+            }
+
+            return eventsToReturn;
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
@@ -276,6 +343,23 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
+    public boolean isEventPublic(int eventId) throws DatabaseException {
+        try {
+            String SQL = "SELECT " + EVENT_IS_PUBLIC + " FROM " + EVENT_TABLE + " WHERE " +
+                    EVENT_ID + " = ?";
+
+            Boolean isPublic = jdbcTemplate.queryForObject(SQL, Boolean.class, eventId);
+
+            if(isPublic == null)
+                return false;
+
+            return isPublic;
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
     public boolean userHasAdminPrivileges(String userName, int eventId) throws DatabaseException {
         try {
             String SQL = "SELECT count(*) FROM " + EVENT_INVITATION_TABLE + " WHERE " +
@@ -283,7 +367,7 @@ public class EventDaoMySql implements EventDao {
                     " AND " + EVENT_INVITATION_EVENT + " = ?" +
                     " AND " + EVENT_INVITATION_ADMIN + " = " + 1;
 
-            int count = jdbcTemplate.queryForObject(SQL,
+            Integer count = jdbcTemplate.queryForObject(SQL,
                     Integer.class,
                     userName, eventId);
 
@@ -295,6 +379,9 @@ public class EventDaoMySql implements EventDao {
 
     @Override
     public boolean userHasPrivileges(String userName, int eventId) throws DatabaseException {
+        if(isEventPublic(eventId))
+            return true;
+
         try {
             String SQL = "SELECT count(*) FROM " + EVENT_INVITATION_TABLE + " WHERE " +
                     EVENT_INVITATION_USER + " = ? " +
@@ -433,8 +520,27 @@ public class EventDaoMySql implements EventDao {
         }
     }
 
+    private boolean isInvited(int eventId, String username) throws DatabaseException {
+        try {
+            String SQL = "SELECT count(*) FROM " + EVENT_INVITATION_TABLE + " WHERE " +
+                    EVENT_INVITATION_USER + " = ? " +
+                    " AND " + EVENT_INVITATION_EVENT + " = ?";
+
+            Integer count = jdbcTemplate.queryForObject(SQL,
+                    Integer.class,
+                    username, eventId);
+
+            return count != 0;
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
     public void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException {
         if(answer != InvitationAnswer.REJECT) {
+            if(!isInvited(eventId, userName)) {
+                putUserInvited(userName, eventId, false);
+            }
             String SQL = "UPDATE " + EVENT_INVITATION_TABLE + " SET " + EVENT_INVITATION_REPLY + " = ? WHERE " + EVENT_INVITATION_EVENT + " = ? AND "
                     + EVENT_INVITATION_USER + " = ?";
 

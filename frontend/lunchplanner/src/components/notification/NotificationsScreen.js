@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Appbar from "../Appbar";
 import Teamlist from "../Team/TeamList";
 import BottomNavigationBar from "../BottomNavigationBar";
-import {setAuthenticationHeader} from "../authentication/Authentication";
+import {setAuthenticationHeader} from "../authentication/LoginFunctions";
 import NotificationList from "./NotificationList";
 import NotificationSettings from "./NotificationSettings";
 

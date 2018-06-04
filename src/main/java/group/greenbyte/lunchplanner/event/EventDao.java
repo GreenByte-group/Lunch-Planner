@@ -5,7 +5,6 @@ import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.event.database.EventInvitationDataForReturn;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import group.greenbyte.lunchplanner.user.database.Notifications;
 
 import java.util.Date;
 import java.util.List;
@@ -31,6 +30,20 @@ public interface EventDao {
                       Date timeStart,
                       boolean isPublic) throws DatabaseException;
 
+    void deleteInvitationsForEvent(int eventId) throws DatabaseException;
+
+    void deleteBringServiceForEvent(int eventId) throws DatabaseException;
+
+    void deleteCommentsForEvent(int eventId) throws DatabaseException;
+
+    /**
+     * Delete one event from the database
+     *
+     * @param eventId id of the event
+     * @throws DatabaseException
+     */
+    void deleteEvent(int eventId) throws DatabaseException;
+
     /**
      * Gets the event with location but without usersInvited and teamsVisible
      *
@@ -39,6 +52,8 @@ public interface EventDao {
      * @throws DatabaseException when an unexpected error happens
      */
     Event getEvent(int eventId) throws DatabaseException;
+
+    List<Event> getAllEvents() throws DatabaseException;
 
     /**
      *
@@ -175,6 +190,8 @@ public interface EventDao {
      * @throws DatabaseException
      */
     void addTeamToEvent(int eventId, int teamId) throws DatabaseException;
+
+    boolean isEventPublic(int eventId) throws DatabaseException;
 
     /**
      * checks if a user has admin privileges for the given event

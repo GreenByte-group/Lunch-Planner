@@ -5,7 +5,7 @@ import {withStyles, AppBar, Tabs, Tab, Typography} from '@material-ui/core';
 import Appbar from "./Appbar";
 import Teamlist from "./Team/TeamList";
 import BottomNavigationBar from "./BottomNavigationBar";
-import {setAuthenticationHeader} from "./authentication/Authentication";
+import {setAuthenticationHeader} from "./authentication/LoginFunctions";
 
 function TabContainer({ children, dir }) {
     return (

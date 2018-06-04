@@ -73,6 +73,7 @@ class UserList extends React.Component {
                 {users.map((listValue) => {
                     return <User selectable={this.state.selectable}
                                  selected={selectedUsers.includes(listValue.userName)}
+                                 invited={othersInvited}
                                  username={listValue.userName}
                                  onClick={this.clickHandler}
                     />;
