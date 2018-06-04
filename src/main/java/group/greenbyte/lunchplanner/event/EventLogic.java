@@ -558,8 +558,8 @@ public class EventLogic {
         try{
             if(food.length() > BringService.MAX_NAME_LENGTH || food.length() == 0)
                 throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Name is too long or empty");
-            if(description.length() > BringService.MAX_DESCRIPTION_LENGTH || description.length() == 0)
-                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Description is too long or empty");
+            if(description.length() > BringService.MAX_DESCRIPTION_LENGTH)
+                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Description is too long");
 
             if(!hasUserPrivileges(event_id, userName))
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You don't have acces to this event");
