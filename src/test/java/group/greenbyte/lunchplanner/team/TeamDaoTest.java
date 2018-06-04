@@ -194,4 +194,34 @@ public class TeamDaoTest {
         Assert.assertEquals(1, events.size());
     }
 
+    // ------------------ REMOVE TEAM MEMBER ------------------------
+
+    @Test
+    public void test1RemoveTeamMemberWithMinLength() throws Exception {
+        String userToRemove = createUserIfNotExists(userLogic, createString(1));
+
+        teamDao.removeTeamMember(userToRemove, parent);
+    }
+
+    @Test
+    public void test2RemoveTeamMemberWithMaxLength() throws Exception {
+        String userToRemove = createUserIfNotExists(userLogic, createString(50));
+
+        teamDao.removeTeamMember(userToRemove, parent);
+    }
+
+    @Test(expected = DatabaseException.class)
+    public void test3RemoveTeamMemberUserToInviteTooLong() throws Exception {
+        String userToRemove = createUserIfNotExists(userLogic, createString(51));
+
+        teamDao.removeTeamMember(userToRemove, parent);
+    }
+
+    @Test(expected = DatabaseException.class)
+    public void test4RemoveTeamMemberWithNoUserToInvite() throws Exception {
+        String userToRemove = createUserIfNotExists(userLogic, createString(0));
+
+        teamDao.removeTeamMember(userToRemove, parent);
+    }
+    
 }
