@@ -2,6 +2,7 @@ package group.greenbyte.lunchplanner.team;
 
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.event.EventLogic;
+import group.greenbyte.lunchplanner.team.database.Team;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,6 +27,7 @@ import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -178,6 +180,74 @@ public class TeamControllerTest {
                 MockMvcRequestBuilders.post("/team").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
+    }
+
+    // ------------------- UPDATE TEAM --------------------------
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1UpdateTeamName() throws Exception {
+        String newName = "new Name";
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/team/" + teamId + "/name").contentType(MediaType.TEXT_PLAIN_VALUE).content(newName))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        Team team = teamLogic.getTeam(userName, teamId);
+        assertEquals(newName, team.getTeamName());
+    }
+
+    @Test
+    @WithMockUser(username = "otherUser")
+    public void test2UpdateTeamNameUnauthorized() throws Exception {
+        String newName = "new Name";
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/team/" + teamId + "/name").contentType(MediaType.TEXT_PLAIN_VALUE).content(newName))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test3UpdateTeamNameTooLong() throws Exception {
+        String newName = createString(Team.MAX_TEAMNAME_LENGHT + 1);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/team/" + teamId + "/name").contentType(MediaType.TEXT_PLAIN_VALUE).content(newName))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1UpdateTeamDescription() throws Exception {
+        String newDescription = "new Description";
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/team/" + teamId + "/description").contentType(MediaType.TEXT_PLAIN_VALUE).content(newDescription))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        Team team = teamLogic.getTeam(userName, teamId);
+        assertEquals(newDescription, team.getDescription());
+    }
+
+    @Test
+    @WithMockUser(username = "otherUser")
+    public void test2UpdateTeamNameDescription() throws Exception {
+        String newDescription = "new Description";
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/team/" + teamId + "/description").contentType(MediaType.TEXT_PLAIN_VALUE).content(newDescription))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test3UpdateTeamDescriptionTooLong() throws Exception {
+        String newDescription = createString(Team.MAX_DESCRIPTION_LENGHT + 1);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/team/" + teamId + "/description").contentType(MediaType.TEXT_PLAIN_VALUE).content(newDescription))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     // ------------------ INVITE TEAM MEMBER ------------------------

@@ -1,6 +1,6 @@
 package group.greenbyte.lunchplanner.event;
 
-import com.google.firebase.messaging.FirebaseMessagingException;
+import group.greenbyte.lunchplanner.Config;
 import group.greenbyte.lunchplanner.event.database.BringService;
 import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
@@ -14,21 +14,43 @@ import group.greenbyte.lunchplanner.user.UserDao;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import group.greenbyte.lunchplanner.user.database.User;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.Calendar;
 
 @Service
 public class EventLogic {
 
+    private final Scheduler scheduler;
 
     private EventDao eventDao;
     private UserLogic userLogic;
     private TeamDao teamDao;
     private TeamLogic teamLogic;
     private UserDao userDao;
+
+    @Autowired
+    public EventLogic(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
+
+    private void checkEventsHasToBeDeleted() {
+        try {
+            Date dateDelete = new Date(new Date().getTime() - Config.DELETE_EVENT_AFTER_SECONDS * 1000);
+            List<Event> events = eventDao.getAllEvents();
+            for(Event event : events) {
+
+            }
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Checks if a user has privileges to change the event object
@@ -106,8 +128,12 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Location is too long, maximum length: " + Event.MAX_LOCATION_LENGTH);
 
         try {
-            return eventDao.insertEvent(userName, eventName, eventDescription, location, timeStart, visible)
+            Integer eventId = eventDao.insertEvent(userName, eventName, eventDescription, location, timeStart, visible)
                     .getEventId();
+
+            scheduleDeleteEvent(eventId);
+
+            return eventId;
         }catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
@@ -224,6 +250,8 @@ public class EventLogic {
 
             Event updatedEvent = eventDao.updateEventTimeStart(eventId, timeStart);
 
+            scheduleDeleteEvent(updatedEvent);
+
             eventChanged(updatedEvent);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
@@ -318,8 +346,6 @@ public class EventLogic {
                 e.printStackTrace();
             }
         }
-
-
     }
 
     /**
@@ -330,7 +356,7 @@ public class EventLogic {
      * @param teamId id of team
      * @throws HttpRequestException
      */
-    public void inviteTeam(String userName, int eventId, int teamId) throws HttpRequestException, FirebaseMessagingException {
+    public void inviteTeam(String userName, int eventId, int teamId) throws HttpRequestException {
 
         if(!isValidName(userName))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
@@ -357,12 +383,15 @@ public class EventLogic {
 
                     //TODO handle exception
                     //TODO check if user wants notifications
+                    //TODO picture path
                     user = userLogic.getUser(member.getUserName());
                     userLogic.sendNotification(user.getFcmToken(),member.getUserName(),title, description,linkToClick, "");
                 }
             }
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -535,21 +564,31 @@ public class EventLogic {
     }
 
 
-    public void putService(int event_id, String food, String description) throws HttpRequestException{
+    public void putService(String userName, int event_id, String food, String description) throws HttpRequestException{
         try{
+            if(food.length() > BringService.MAX_NAME_LENGTH || food.length() == 0)
+                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Name is too long or empty");
+            if(description.length() > BringService.MAX_DESCRIPTION_LENGTH)
+                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Description is too long");
+
+            if(!hasUserPrivileges(event_id, userName))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You don't have acces to this event");
+
             eventDao.putService(SessionManager.getUserName(),event_id,food,description);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
     }
 
-    public List<BringService> getService(int eventId) throws HttpRequestException{
+    public List<BringService> getService(String userName, int eventId) throws HttpRequestException{
         try {
-//            if(eventId == null)
-//                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "eventId is null "+eventId);
+            if(eventDao.getEvent(eventId) == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with id  "+eventId + " not found.");
 
-            List<BringService> serviceList = eventDao.getService(eventId);
-            return serviceList;
+            if(!hasUserPrivileges(eventId, userName))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "Your don't have permission to see this event");
+
+            return eventDao.getService(eventId);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
@@ -557,10 +596,61 @@ public class EventLogic {
 
     public void updateBringservice(int eventId, String accepter, int serviceId) throws HttpRequestException{
         try{
-            //TODO check ob schon jemand anderes eingetragen ist
+            BringService bringService = eventDao.getOneService(serviceId);
+
+            if(bringService.getAccepter() != null)
+                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), bringService.getAccepter() + " already accepted this task");
+
             eventDao.updateBringservice(eventId,accepter,serviceId);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    private void scheduleDeleteEvent(int eventId) throws DatabaseException {
+        scheduleDeleteEvent(eventDao.getEvent(eventId));
+    }
+
+    private void scheduleDeleteEvent(Event event) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(event.getStartDate());
+        cal.add(Calendar.SECOND, Config.DELETE_EVENT_AFTER_SECONDS);
+
+        Date timeDelete = cal.getTime();
+
+        int eventId = event.getEventId();
+        JobDetail job = JobBuilder.newJob(DeleteEventJob.class)
+                .usingJobData("eventId", eventId)
+                .build();
+
+        Trigger trigger = TriggerBuilder.newTrigger()
+                .startAt(timeDelete)
+                .build();
+
+        try {
+            scheduler.scheduleJob(job, trigger);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Checks if an event is over and deletes it
+     *
+     * @param eventId
+     */
+    public void deleteEvent(int eventId) {
+        try {
+            Event event = eventDao.getEvent(eventId);
+            if(event == null)
+                return;
+
+            Date now = new Date();
+            if(now.getTime() - event.getStartDate().getTime() >= Config.DELETE_EVENT_AFTER_SECONDS * 1000) {
+                eventDao.deleteEvent(eventId);
+            }
+        } catch(DatabaseException e) {
+            e.printStackTrace();
         }
     }
 
@@ -587,5 +677,25 @@ public class EventLogic {
     @Autowired
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
+    }
+}
+
+@Component
+class DeleteEventJob implements Job {
+
+    private EventLogic eventLogic;
+
+    @Override
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+        JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+
+        int eventId = dataMap.getInt("eventId");
+
+        eventLogic.deleteEvent(eventId);
+    }
+
+    @Autowired
+    public void setEventLogic(EventLogic eventLogic) {
+        this.eventLogic = eventLogic;
     }
 }

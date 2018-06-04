@@ -1,6 +1,6 @@
 import React from 'react';
-import {withStyles} from 'material-ui/styles';
-import {List} from "material-ui";
+import {withStyles} from '@material-ui/core/styles';
+import {List} from "@material-ui/core";
 import TeamInvitation from "./TeamInvitation";
 
 const styles = {
@@ -20,6 +20,7 @@ class TeamInvitationList extends React.Component {
             teams: props.teams || [],
             selectable: props.selectable || false,
             onSelectionChanged: props.onSelectionChanged,
+            othersInvited: props.othersInvited || false,
         };
     }
 
@@ -64,8 +65,7 @@ class TeamInvitationList extends React.Component {
         const { classes } = this.props;
         let teams = this.state.teams;
         let selectedTeams = this.state.selectedTeams;
-
-        console.log('selected teams: ', selectedTeams);
+        let othersInvited = this.state.othersInvited;
 
         return (
             <List

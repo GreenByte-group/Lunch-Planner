@@ -1,14 +1,14 @@
 import React from "react";
-import axios from "axios";
-import IconButton from 'material-ui/IconButton';
-import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
-import { FormControl } from 'material-ui/Form';
+import IconButton from '@material-ui/core/IconButton';
+import {register, doLogin} from './LoginFunctions';
+import {Input, InputLabel, InputAdornment } from '@material-ui/core';
+import { FormControl } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import Button from 'material-ui/Button';
+import Button from '@material-ui/core/Button';
 import LoginIcon from '@material-ui/icons/ExitToApp';
-import {withStyles} from "material-ui/styles/index";
-import {HOST} from "../../Config";
+import {withStyles} from "@material-ui/core/styles/index";
+import {getHistory} from "../../utils/HistoryUtils";
 
 const styles = theme => ({
     root: {
@@ -64,27 +64,27 @@ class Registration extends React.Component {
 
     handleSubmit(event) {
         if(this.state.username && this.state.password && this.state.email) {
-            let url =  HOST + '/user';
-            axios.post(url, {userName: this.state.username, password: this.state.password, mail: this.state.email})
-                .then((response) => {
+            register(this.state.username, this.state.email, this.state.password,
+                (response) => {
                     if(response.status === 201) {
-                        this.setState({
-                            error: 'successfull registered'
-                        })
+                        doLogin(this.state.username, this.state.password, message => {
+                        if(message.type === "LOGIN_SUCCESS") {
+                            getHistory().push("/event");
+                        }})
                     } else {
                         this.setState({
                             error: response.data,
                         })
                     }
-                })
-                .catch((err) => {
+                },
+                (err) => {
                     this.setState({
                         error: err.response.data,
                     })
-                })
+                });
         } else {
             this.setState({
-                error: "All fields are requiered"
+                error: "All fields are required"
             })
         }
 

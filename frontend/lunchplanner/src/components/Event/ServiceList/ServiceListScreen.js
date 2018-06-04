@@ -1,14 +1,10 @@
 import React from "react";
-import axios from 'axios';
-import {withStyles} from "material-ui/styles/index";
-import Slide from 'material-ui/transitions/Slide';
+import {withStyles} from "@material-ui/core/styles/index";
 import ServiceList, {serviceListNeedReload} from "./ServiceList";
-import Dialog from "../Dialog";
-import {Button, TextField} from "material-ui";
-import {getHistory} from "../../utils/HistoryUtils";
-import {eventListNeedReload} from "./EventList";
-import {createTeam} from "../Team/CreateTeamFunctions";
-import {HOST} from "../../Config";
+import Dialog from "../../Dialog";
+import {Button, TextField, Slide} from "@material-ui/core";
+import {getHistory} from "../../../utils/HistoryUtils";
+import {createService} from "./ServiceFunctions";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -57,19 +53,18 @@ class ServiceListScreen extends React.Component {
     }
 
     handleAccept = () => {
-        let url = HOST + "/event/" + this.state.eventId + "/service";
-        axios.put(url, {food: this.state.food, description: this.state.description})
-            .then((response) => {
+        createService(this.state.eventId, this.state.food, this.state.description,
+            (response) => {
                 if(response.status === 201) {
                     serviceListNeedReload();
                     getHistory().push("/event/" + this.state.eventId);
                 }
-            })
-            .catch((error) => {
+            },
+            (error) => {
                 this.setState({
                     error: error.message,
                 })
-            })
+            });
     };
 
     handleChange = (event) => {

@@ -2,13 +2,13 @@ import React from "react";
 import {doLogin} from "./LoginFunctions";
 import {Redirect} from "react-router-dom";
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import IconButton from 'material-ui/IconButton';
-import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
-import { FormControl, } from 'material-ui/Form';
+import { withStyles } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
+import {Input, InputLabel, InputAdornment } from '@material-ui/core';
+import { FormControl, } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import Button from 'material-ui/Button';
+import Button from '@material-ui/core/Button';
 import LoginIcon from '@material-ui/icons/ExitToApp';
 const styles = theme => ({
     root: {
@@ -50,9 +50,7 @@ class Login extends React.Component {
     }
 
     handleSubmit(event) {
-        console.log("Submit");
         doLogin(this.state.username, this.state.password, message => {
-            console.log(message);
 
             if(message.type === "LOGIN_EMPTY") {
                 this.setState({

@@ -243,6 +243,7 @@ public class UserDaoMySql implements UserDao {
     @Override
     public List<User> searchUserByName(String searchword) throws DatabaseException {
         try {
+
             String SQL = "SELECT * FROM " + USER_TABLE + " WHERE " + USER_NAME + " LIKE ?";
 
             List<UserDatabase> users = jdbcTemplate.query(SQL,
@@ -253,11 +254,13 @@ public class UserDaoMySql implements UserDao {
                 return new ArrayList<>();
             else {
                 List<User> listOfUser = new ArrayList<>();
+
                 for(UserDatabase a:users){
                     listOfUser.add(a.getUser());
                 }
                 return  listOfUser;
             }
+
         }catch (Exception e){
             throw new DatabaseException(e);
         }
@@ -270,6 +273,7 @@ public class UserDaoMySql implements UserDao {
         try {
             jdbcTemplate.update(SQL, fcmToken, username);
         } catch (Exception e) {
+
             throw new DatabaseException(e);
         }
     }

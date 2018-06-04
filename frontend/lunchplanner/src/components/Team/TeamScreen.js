@@ -1,18 +1,21 @@
 import PropTypes from "prop-types";
-import {withStyles} from "material-ui/styles/index";
+import {withStyles} from "@material-ui/core/styles/index";
 import React from 'react';
-import Slide from 'material-ui/transitions/Slide';
-import {HOST} from "../../Config";
-import axios from "axios/index";
 import Dialog from "../Dialog";
-import {Button} from "material-ui";
-import {getUsername} from "../authentication/Authentication";
-import InvitationButton from "../Event/InvitationButton";
-//import {eventListNeedReload} from "../components/Event/EventList";
+import {Button, Slide, Divider} from "@material-ui/core";
+import {getUsername, setAuthenticationHeader} from "../authentication/LoginFunctions";
 import {getHistory} from "../../utils/HistoryUtils"
-import SecretIcon from "@material-ui/icons/es/Https";
-import Divider from "material-ui/es/Divider/Divider";
+import {Https as SecretIcon} from "@material-ui/icons";
 import UserList from "../User/UserList";
+import {getTeam, replyToTeam, changeTeamDescription,changeTeamName} from "./TeamFunctions";
+import {teamListNeedReload} from "./TeamList";
+import TextFieldEditing from "../editing/TextFieldEditing";
+import axios from "axios";
+import {HOST} from "../../Config";
+
+import {Link} from "react-router-dom";
+import {Add} from "@material-ui/icons";
+import {inviteMemberToTeam} from "./TeamFunctions";
 
 
 function Transition(props) {
@@ -96,23 +99,34 @@ const styles = {
         marginLeft: '100px',
     },
     description: {
-        marginTop: '50px',
+        paddingTop: '10px',
+        marginTop: '15px',
+        fontSize: '16px',
+        width: '300px',
     },
     secretTeam:{
         marginTop: '20px',
+        marginLeft: '20px',
         color: '#1EA185',
     },
     secretTeamText:{
         marginLeft: '40px',
-        marginTop: '-30px'
+        marginTop: '-30px',
+        width: '50%',
     },
     divider:{
-        marginTop: '50px',
         width: '100%',
     },
-    member:{
+    invitations: {
+        marginLeft: '0px',
+        marginTop: '8px',
+    },
+    invitaionsHeader: {
         marginLeft: '16px',
-        marginTop: '10px',
+        marginBottom: '0px',
+        fontSize: '16px',
+        fontWeight: '500',
+        lineHeight: '24px',
     },
     overButton: {
         height: '100%',
@@ -121,27 +135,38 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
     },
-};
-
-const buttonStyle = {
-    display:"block",
-    marginLeft:"auto",
-    marginRight:"auto",
+    // ADD NEW PEOPLE
+    addNewPeopleRoot: {
+        height: '72px',
+        padding: '20px 16px',
+        backgroundColor: '#f3f3f3',
+        "&:hover": {
+            cursor: 'pointer',
+        },
+    },
+    newPeopleIcon: {
+        height: '32px',
+        float: 'left',
+    },
+    newPeopleText: {
+        marginTop: '6px',
+        marginLeft: '57px',
+    },
 };
 
 class TeamScreen extends React.Component {
 
     constructor(props) {
         super();
-
+        setAuthenticationHeader();
         this.state = {
             teamId: 0,
             open: true,
-            isAdmin: false,
             name:"",
             description: "",
             people:[],
         };
+
     }
 
     componentDidMount() {
@@ -175,22 +200,50 @@ class TeamScreen extends React.Component {
         }
     }
 
+    parseUrl = () => {
+        const params = new URLSearchParams(this.props.location.search);
+        let invitedUsers = params.get('invitedUsers');
+        let invitedTeams = params.get('invitedTeams');
+        let teamMember = params.get('teamMember');
+
+        let usersToInvite = [];
+
+        if(invitedUsers) {
+            usersToInvite = usersToInvite.concat(invitedUsers.split(','));
+        }
+        if(teamMember) {
+            usersToInvite = usersToInvite.concat(teamMember.split(','));
+        }
+
+        if(usersToInvite.length !== 0) {
+            //remove doubles and already invited people
+            let usersToInviteUnique = usersToInvite.filter((item, pos) => {
+                return usersToInvite.indexOf(item) === pos && !this.state.people.some((person) => person.userName === item);
+            });
+
+            inviteMemberToTeam(this.state.teamId, usersToInviteUnique, (user) => {
+                let allUsers = this.state.people;
+                allUsers.push({userName: user, admin: false});
+                this.setState({
+                    people: allUsers,
+                });
+            })
+        }
+    };
+
     loadTeam = (teamId) => {
         if(!teamId)
             teamId = this.state.teamId;
 
-        let url = HOST + "/team/" + teamId;
+        getTeam(teamId, (response) => {
+            this.setState({
+                teamId: response.data.teamId,
+                name: response.data.teamName,
+                description: response.data.description,
+                people: response.data.invitations,
 
-        axios.get(url)
-            .then((response) => {
-                console.log(response.data);
-                this.setState({
-                    teamId: response.data.teamId,
-                    name: response.data.teamName,
-                    description: response.data.description,
-                    people: response.data.invitations,
-                })
             });
+        })
     };
 
     handleLeave = () => {
@@ -198,26 +251,42 @@ class TeamScreen extends React.Component {
         let people = this.state.people;
         let index = people.indexOf(getUsername());
         people.splice(index, 1);
-        console.log("people", people);
         this.setState({
            people: people,
         });
-        this.sendAnswer('reject');
+        this.sendAnswer();
     };
 
-    sendAnswer = (answer) => {
-        let config = {
-            headers: {
-                'Content-Type': 'text/plain',
-            }
-        };
-
-        let url = HOST + '/team/' + this.state.teamId + '/reply';
-        axios.put(url, answer, config)
-            .then((response) => {
-                this.loadTeam();
-                //eventListNeedReload();
+    sendAnswer = () => {
+        let url = HOST + '/team/' + this.state.teamId + '/leave';
+        axios.delete(url)
+            .then(() => {
+                teamListNeedReload();
             })
+    };
+
+    onTitleChanged = (event) => {
+        this.setState({
+            name: event.target.value,
+        });
+
+        //TODO error func
+        changeTeamName(this.state.teamId, event.target.value, this.reloadTeamsOnSuccess);
+    };
+
+    onDescriptionChanged = (event) => {
+        this.setState({
+            description: event.target.value,
+        });
+
+        //TODO error func
+        changeTeamDescription(this.state.teamId, event.target.value, this.reloadTeamsOnSuccess);
+    };
+
+    reloadTeamsOnSuccess = (response) => {
+        if(response.status === 204) {
+            teamListNeedReload();
+        }
     };
 
     render() {
@@ -226,9 +295,12 @@ class TeamScreen extends React.Component {
         let name = this.state.name;
         let description = this.state.description;
         let people = this.state.people;
+        let iAmAdmin = false;
+        let userName = getUsername();
 
-        let admin = "";
-        let selectedUsers = [];
+        if(people.length !== 0) {
+            this.parseUrl();
+        }
 
         people.sort((a, b) => {
             if(a.answer === 0 && b.answer !== 0) {
@@ -240,6 +312,15 @@ class TeamScreen extends React.Component {
             }
         });
 
+        people.forEach((listValue) => {
+            if(listValue.userName === userName) {
+                if(listValue.admin) {
+                    iAmAdmin = true;
+                }
+            }
+        });
+
+        let selectedUsers = [];
         let buttonText = "Join Team";
         let username = getUsername();
 
@@ -248,7 +329,6 @@ class TeamScreen extends React.Component {
                 buttonText = "Leave Team";
             }
         });
-
 
         return (
             <div>
@@ -262,21 +342,38 @@ class TeamScreen extends React.Component {
                                 <div className={classes.picture}/>
                                 <div className={classes.teamName}>
                                     <p className={classes.fontSmall}>Team Name</p>
-                                    <p className={classes.fontBig}>{name}</p>
+                                    <TextFieldEditing onChange={this.onTitleChanged} value={name} editable={iAmAdmin} className={classes.fontBig} />
                                 </div>
                                 <div className={classes.description}>
                                     <p className={classes.fontSmall}>Description</p>
-                                    <p>{description}</p>
-                                </div>
-                                <div className={classes.secretTeam}>
-                                    <SecretIcon/>
-                                    <p className={classes.secretTeamText}>Secret team. Only you can see the activity of this team.</p>
+                                    <TextFieldEditing rowsMax="3" onChange={this.onDescriptionChanged} value={description} editable={iAmAdmin} className={classes.description}  multiline/>
                                 </div>
                             </div>
-                            <Divider className={classes.divider}/>
-                            <div className={classes.member}>
-                                <p className={classes.fontBig}> Team Member ({people.length})</p>
+                            <div className={classes.secretTeam}>
+                                <SecretIcon/>
+                                <p className={classes.secretTeamText}>Secret team. Only you can see the activity of this team.</p>
+                            </div>
+                            <Divider className={classes.divider} />
+
+                            <div className={classes.invitations}>
+                                <p className={classes.invitaionsHeader}> Team Member ({people.length})</p>
+                                {
+                                    (iAmAdmin)
+                                        ? <Link to={{pathname: "/team/create/invite",  query: {
+                                                source: "/team/" + this.state.teamId,
+                                                invitedUsers: people.map((value) => value.userName).join(','),
+                                            }}}>
+                                            <div className={classes.addNewPeopleRoot}>
+                                                <Add className={classes.newPeopleIcon} />
+                                                <p className={classes.newPeopleText}>Add more people...</p>
+                                            </div>
+                                        </Link>
+                                        : ''
+                                }
                                 <UserList
+                                    selectedUsers={selectedUsers}
+                                    othersInvited={true}
+                                    selectable={false}
                                     users={people}
                                 />
                             </div>

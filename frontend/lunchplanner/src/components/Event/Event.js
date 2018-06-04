@@ -1,16 +1,10 @@
 import React from "react"
 import moment from "moment"
-import ListItem from "material-ui/List/ListItem";
-import {withStyles} from "material-ui";
+import {Card, CardContent, ListItem, withStyles} from "@material-ui/core";
 import {Schedule, Today} from "@material-ui/icons";
 import AcceptedButton from "./AcceptedButton";
 import InvitedButton from "./InvitedButton";
 import {Link} from "react-router-dom";
-import EventScreen from "./EventScreen";
-import Avatar from "material-ui/es/Avatar/Avatar";
-import Card, { CardActions, CardContent } from 'material-ui/Card';
-import Button from 'material-ui/Button';
-import Typography from 'material-ui/Typography';
 
 const styles = {
     card: {
@@ -129,23 +123,57 @@ class Event extends React.Component {
             invitations: invitations,
             people: people,
             location: props.location,
+            token: props.token,
         }
     }
 
     componentWillReceiveProps(newProps) {
-        if(newProps.invited !== undefined || newProps.invited !== this.state.invited) {
+        if(newProps.name !== undefined && newProps.name !== this.state.name) {
+            this.setState({
+                name: newProps.name,
+            });
+        }
+
+        if(newProps.description !== undefined && newProps.description !== this.state.description) {
+            this.setState({
+                description: newProps.description,
+            });
+        }
+
+        if(newProps.location !== undefined && newProps.location !== this.state.location) {
+            this.setState({
+                location: newProps.location,
+            });
+        }
+
+        if(newProps.date !== undefined && newProps.date !== this.state.date) {
+            let date = moment(newProps.date);
+
+            this.setState({
+                date: date,
+                monthDay: date.format('DD MMM'),
+                time: date.format('HH:mm'),
+            });
+        }
+
+        if(newProps.invited !== undefined && newProps.invited !== this.state.invited) {
             this.setState({
                 invited: newProps.invited,
             });
         }
 
-        if(newProps.accepted !== undefined || newProps.accepted !== this.state.accepted) {
+        if(newProps.accepted !== undefined && newProps.accepted !== this.state.accepted) {
             this.setState({
                 accepted: newProps.accepted,
             });
         }
+        if(newProps.token !== undefined && newProps.token !== this.state.token) {
+            this.setState({
+                token: newProps.token,
+            });
+        }
 
-        if(newProps.people !== undefined || newProps.people !== this.state.people) {
+        if(newProps.people !== undefined && newProps.people !== this.state.people) {
             let invitations = newProps.people;
             let people = "";
 
@@ -181,6 +209,7 @@ class Event extends React.Component {
         let people = this.state.people;
         let invitations = this.state.invitations;
         let location = this.state.location;
+        let token = this.state.token;
 
         people = people.split(',');
         people = people.map((value) => value.trim());
@@ -189,6 +218,10 @@ class Event extends React.Component {
         if(accepted)
             classesText = classes.textSelected;
 
+        let eventName = name;
+        if(name !== location)
+            eventName += " @ " + location;
+
         return (
             <Link className={classes.link} to={{pathname:`/event/${this.state.id}`, query:{
                     eventName: name,
@@ -196,7 +229,8 @@ class Event extends React.Component {
                     date: date,
                     people: invitations,
                     accepted: accepted,
-                    location:location
+                    location:location,
+                    token: token,
                 }}}>
 
                 <ListItem style={{backgroundColor: background}} button className={classes.listItem}>
@@ -207,7 +241,7 @@ class Event extends React.Component {
 
                             </div>
                             <div className={classesText}>
-                                <p className={classes.title}>{name}</p>
+                                <p className={classes.title}>{eventName}</p>
                                 <p className={classes.time}>
                                     <Schedule viewBox="0 0 22 22" className={classes.icons}/> {time}
                                 </p>

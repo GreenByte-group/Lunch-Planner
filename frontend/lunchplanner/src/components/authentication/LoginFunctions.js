@@ -14,12 +14,36 @@ export function isAuthenticated() {
     }
 }
 
+export function getUsername() {
+    return localStorage.getItem(USERNAME) || "please login again";
+}
+
+export function setAuthenticationHeader() {
+    let token = localStorage.getItem(TOKEN);
+
+    axios.interceptors.request.use(function(config) {
+        if ( token != null ) {
+            config.headers.Authorization = token;
+        }
+
+        return config;
+    }, function(err) {
+        return Promise.reject(err);
+    });
+}
+
+export function register(username, mail, password, responseFunc, errorFunc) {
+    let url =  HOST + '/user';
+    axios.post(url, {userName: username, password: password, mail: mail})
+        .then(responseFunc)
+        .catch(errorFunc)
+}
+
 export function doLogin(username, password, responseFunc) {
     if(username && password) {
         let url =  HOST + '/login?username=' + username +  '&password=' + password;
         axios.post(url)
             .then((response) => {
-                console.log("Token: " + response.data.token);
                 localStorage.removeItem(TOKEN);
                 localStorage.setItem(TOKEN, response.data.token );
                 localStorage.setItem(USERNAME, username);

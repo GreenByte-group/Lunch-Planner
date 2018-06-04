@@ -1,13 +1,13 @@
 import React from "react"
-import axios from "axios"
 
 import {HOST} from "../../Config"
 import Event from "./Event";
-import List from "material-ui/List";
-import {withStyles} from "material-ui/styles/index";
+import List from "@material-ui/core/List";
+import {withStyles} from "@material-ui/core/styles/index";
 import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
-import {getUsername} from "../authentication/Authentication";
+import {getUsername} from "../authentication/LoginFunctions";
+import {getEvents} from "./EventFunctions";
 
 const styles = {
     root: {
@@ -58,18 +58,11 @@ class EventList extends React.Component {
         if(search === null || search === undefined)
             search = this.state.search;
 
-        let url;
-        if(search)
-            url = HOST + "/event/search/" + search;
-        else
-            url = HOST + "/event";
-
-        axios.get(url)
-            .then((response) => {
-                this.setState({
-                    events: response.data,
-                })
+        getEvents(search, (response) => {
+            this.setState({
+                events: response.data,
             })
+        });
     }
 
     render() {
@@ -109,12 +102,14 @@ class EventList extends React.Component {
                                       key={'Event' + listValue.eventId}
                                       id={listValue.eventId}
                                       description={listValue.eventDescription}
+                                      location={listValue.location}
                                       date={listValue.startDate}
                                       background={background}
                                       accepted={accepted}
                                       invited={invited}
                                       people={listValue.invitations}
                                       location={listValue.location}
+                                      token={listValue.shareToken}
                         />;
                     })}
                 </List>

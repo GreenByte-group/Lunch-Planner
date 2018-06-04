@@ -1,8 +1,5 @@
 import React from "react"
-import moment from "moment"
-import ListItem from "material-ui/List/ListItem";
-import {withStyles} from "material-ui";
-import {Schedule, Today} from "@material-ui/icons";
+import {withStyles, ListItem} from "@material-ui/core";
 import AcceptedButton from "../Event/AcceptedButton";
 
 const styles = {
@@ -68,7 +65,6 @@ class Event extends React.Component {
 
     componentWillReceiveProps(newProps) {
         if(newProps.username && newProps.username !== this.state.username) {
-            console.log('username: ' + newProps.username);
             this.setState ({
                 username: newProps.username,
             });

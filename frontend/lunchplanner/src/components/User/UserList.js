@@ -1,6 +1,6 @@
 import React from 'react';
-import {withStyles} from 'material-ui/styles';
-import {List} from "material-ui";
+import {withStyles} from '@material-ui/core/styles';
+import {List} from "@material-ui/core";
 import User from "./User";
 
 const styles = {
@@ -73,6 +73,7 @@ class UserList extends React.Component {
                 {users.map((listValue) => {
                     return <User selectable={this.state.selectable}
                                  selected={selectedUsers.includes(listValue.userName)}
+                                 invited={othersInvited}
                                  username={listValue.userName}
                                  onClick={this.clickHandler}
                     />;

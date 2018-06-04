@@ -2,31 +2,13 @@ import React from 'react';
 import PropTypes from "prop-types";
 import Login from "./Login"
 import Register from "./Registration"
-import Tabs, { Tab } from 'material-ui/Tabs';
+import {Tabs,  Tab } from '@material-ui/core';
 import SwipeableViews from 'react-swipeable-views';
-import AppBar from 'material-ui/AppBar';
-import Typography from 'material-ui/Typography';
-import { withStyles } from 'material-ui/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
 import axios from "axios";
 import {HOST, TOKEN, USERNAME} from "../../Config";
-
-export function setAuthenticationHeader() {
-    let token = localStorage.getItem(TOKEN);
-
-    axios.interceptors.request.use(function(config) {
-        if ( token != null ) {
-            config.headers.Authorization = token;
-        }
-
-        return config;
-    }, function(err) {
-        return Promise.reject(err);
-    });
-}
-
-export function getUsername() {
-    return localStorage.getItem(USERNAME) || "please login again";
-}
 
 function TabContainer({ children, dir }) {
     return (

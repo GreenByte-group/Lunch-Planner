@@ -1,10 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import {withStyles} from 'material-ui/styles';
+import {withStyles} from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import DoneIcon from '@material-ui/icons/Done'
-import Button from 'material-ui/Button';
+import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
     whiteSymbol: {

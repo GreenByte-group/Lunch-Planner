@@ -1,24 +1,17 @@
 import React from 'react';
-import Button from 'material-ui/Button';
-import MenuIcon from '@material-ui/icons/Menu';
-import List from "material-ui/es/List/List";
-import Divider from "material-ui/es/Divider/Divider";
+import {Button, MenuItem, List, Divider, withStyles, FormControlLabel, Switch, Drawer, Avatar} from '@material-ui/core';
 import PlaceIcon from '@material-ui/icons/Place';
 import EventIcon from '@material-ui/icons/LocalDining';
 import SocialIcon from '@material-ui/icons/Group';
 import NotificationIcon from '@material-ui/icons/NotificationsNone';
 import SignOutIcon from '@material-ui/icons/ExitToApp';
 import OptionIcon from '@material-ui/icons/Settings';
-import {withStyles} from "material-ui";
-import Drawer from "material-ui/es/Drawer/Drawer";
-import Avatar from "material-ui/es/Avatar/Avatar";
-import ListItem from "material-ui/es/List/ListItem";
-import IconButton from "material-ui/es/IconButton/IconButton";
+import MenuIcon from '@material-ui/icons/Menu';
 import {Link} from "react-router-dom";
-import Menu from "material-ui/es/Menu/Menu";
-import MenuItem from "material-ui/es/Menu/MenuItem";
-import FormControlLabel from "material-ui/es/Form/FormControlLabel";
-import Switch from "material-ui/es/Switch/Switch";
+import {getUsername} from "./authentication/LoginFunctions";
+import {getUser} from "./User/UserFunctions";
+import {doLogout} from "./LoginFunctions";
+import {getHistory} from "../utils/HistoryUtils";
 
 const styles = {
     list: {
@@ -31,7 +24,10 @@ const styles = {
         backgroundColor: "darkGrey",
     },
     avatar:{
-        marginLeft: 15,
+        marginTop: 24,
+        marginLeft: 24,
+        width: 64,
+        height: 64,
         marginBottom: 15,
 
     },
@@ -39,6 +35,11 @@ const styles = {
         marginRight: 20,
         color: "#1EA185",
     },
+    avatarText:{
+        marginLeft: -10,
+        marginBottom: -5,
+    }
+
 };
 class LunchMenu extends React.Component {
 
@@ -50,9 +51,26 @@ class LunchMenu extends React.Component {
         this.state = {
             popupVisible: false,
             visible: false,
+            username: getUsername(),
+            email: "",
         };
 
     }
+
+    componentDidMount() {
+        getUser(getUsername(), (response) => {
+            if(response.status === 200) {
+                this.setState({
+                    email: response.data.eMail,
+                })
+            }
+        })
+    }
+
+    signOut = () => {
+        doLogout();
+        getHistory().push("/login");
+    };
 
     handleClick() {
         if (!this.state.popupVisible) {
@@ -74,8 +92,9 @@ class LunchMenu extends React.Component {
     }
 
     render() {
-
         const { classes } = this.props;
+
+        let name = getUsername();
         return (
 
             <div ref={node => { this.node = node; }}>
@@ -92,8 +111,8 @@ class LunchMenu extends React.Component {
                         >
                             <div className={classes.list}>
                                 <List className={classes.profile}>
-                                    <Avatar alt="Max Mustermann" className={classes.avatar} >MM</Avatar>
-                                    <p>Max Mustermann ● max.mustermann@gmail.com</p>
+                                    <Avatar alt={name} className={classes.avatar} >{name.charAt(0)}</Avatar>
+                                    <p className={classes.avatarText}>{this.state.username} ● {this.state.email}</p>
                                 </List>
                                 <Divider />
                                 <List className ={classes.menu}>
@@ -143,12 +162,10 @@ class LunchMenu extends React.Component {
                                             Options
                                         </MenuItem>
                                     </Link>
-                                    <Link to="/signout">
-                                        <MenuItem>
-                                            <SignOutIcon className={classes.icon}/>
-                                            Sign Out
-                                        </MenuItem>
-                                    </Link>
+                                    <MenuItem onClick={this.signOut}>
+                                        <SignOutIcon className={classes.icon}/>
+                                        Sign Out
+                                    </MenuItem>
                                 </List>
                             </div>
                         </div>

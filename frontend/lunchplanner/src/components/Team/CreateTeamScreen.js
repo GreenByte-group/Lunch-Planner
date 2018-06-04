@@ -1,22 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 import Dialog from '../Dialog';
-import Slide from 'material-ui/transitions/Slide';
-import TextField from "material-ui/es/TextField/TextField";
+import { Slide, TextField } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import PeopleIcon from '@material-ui/icons/People'
 
 import {Link} from "react-router-dom";
-import moment from "moment";
 
 import {getHistory} from "../../utils/HistoryUtils";
-import {FormControlLabel, FormHelperText, InputAdornment, Switch} from "material-ui";
+import {FormControlLabel, FormHelperText, InputAdornment, Switch} from "@material-ui/core";
 import {eventListNeedReload} from "../Event/EventList";
-import {createEvent} from "../CreateEventFunctions";
-import {createTeam} from "./CreateTeamFunctions";
-import {setAuthenticationHeader} from "../authentication/Authentication";
+import {createTeam} from "./TeamFunctions";
+import {setAuthenticationHeader} from "../authentication/LoginFunctions";
 
 const styles = {
     button:{

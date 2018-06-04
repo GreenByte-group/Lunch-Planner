@@ -30,6 +30,20 @@ public interface EventDao {
                       Date timeStart,
                       boolean isPublic) throws DatabaseException;
 
+    void deleteInvitationsForEvent(int eventId) throws DatabaseException;
+
+    void deleteBringServiceForEvent(int eventId) throws DatabaseException;
+
+    void deleteCommentsForEvent(int eventId) throws DatabaseException;
+
+    /**
+     * Delete one event from the database
+     *
+     * @param eventId id of the event
+     * @throws DatabaseException
+     */
+    void deleteEvent(int eventId) throws DatabaseException;
+
     /**
      * Gets the event with location but without usersInvited and teamsVisible
      *
@@ -38,6 +52,8 @@ public interface EventDao {
      * @throws DatabaseException when an unexpected error happens
      */
     Event getEvent(int eventId) throws DatabaseException;
+
+    List<Event> getAllEvents() throws DatabaseException;
 
     /**
      *
@@ -150,8 +166,16 @@ public interface EventDao {
 
     /**
      *
+     * @param serviceId
+     * @return
+     * @throws DatabaseException
+     */
+    BringService getOneService(int serviceId) throws DatabaseException;
+
+    /**
+     *
      * @param eventId
-     * @param creater
+     * @param accepter
      * @param serviceId
      */
     void updateBringservice(int eventId, String accepter, int serviceId) throws DatabaseException;
@@ -166,6 +190,8 @@ public interface EventDao {
      * @throws DatabaseException
      */
     void addTeamToEvent(int eventId, int teamId) throws DatabaseException;
+
+    boolean isEventPublic(int eventId) throws DatabaseException;
 
     /**
      * checks if a user has admin privileges for the given event

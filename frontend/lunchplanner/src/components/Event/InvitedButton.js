@@ -1,6 +1,6 @@
 import React from "react"
 import {DateRange} from "@material-ui/icons";
-import {withStyles} from "material-ui";
+import {withStyles} from "@material-ui/core";
 
 const styles = theme => ({
     root: {

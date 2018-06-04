@@ -1,10 +1,10 @@
 import React from "react";
-import {List, ListItem, TextField, withStyles} from "material-ui";
-import {HOST} from "../../Config";
-import axios from "axios/index";
-import {getUsername, setAuthenticationHeader} from "../authentication/Authentication";
+import {Send} from "@material-ui/icons";
+import {List, TextField, withStyles, IconButton} from "@material-ui/core";
+import {getUsername, setAuthenticationHeader} from "../../authentication/LoginFunctions";
 import Comment from "./Comment";
-import Dialog from "../Dialog";
+import Dialog from "../../Dialog";
+import {loadComments, sendComment} from "./CommentFunctions";
 
 const styles = {
     list: {
@@ -14,10 +14,16 @@ const styles = {
     },
     textField: {
         zIndex: '10003',
-        width: '100%',
         padding: '16px',
         fontSize: '16px',
         lineHeight: '24px',
+        width: '100%',
+    },
+    iconButtonSend: {
+        alignSelf: 'center',
+    },
+    iconSend: {
+
     },
     formComment: {
         backgroundColor: 'white',
@@ -26,6 +32,8 @@ const styles = {
         bottom: 0,
         width: '100%',
         boxShadow: '0 -10px 15px 0 rgba(0,0,0,0.05)',
+        display: 'flex',
+        flexDirection: 'row',
     },
 };
 
@@ -58,21 +66,11 @@ class Comments extends React.Component {
         if(eventId == null || eventId === undefined)
             eventId = this.state.eventId;
 
-        let url = HOST + "/event/" + eventId + "/getComments";
-
-        axios.get(url)
-            .then((response) => {
-                this.setState({
-                    comments: response.data,
-                })
+        loadComments(eventId, (response) => {
+            this.setState({
+                comments: response.data,
             })
-
-        // this.setState({
-        //     comments: [{userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
-        //         {userName: "Felix", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
-        //         {userName: "Can", date: new Date(), commentText: "Text 1 a bilt longer than normal"},
-        //         {userName: "Martin", date: new Date(), commentText: "Text 1 a bilt longer than normal"}]
-        // })
+        });
     }
 
     keyPress = (e) => {
@@ -82,27 +80,23 @@ class Comments extends React.Component {
     };
 
     textFieldChanged = (event) => {
-        console.log("Comment eingegeben");
-
         this.setState({
             newComment: event.target.value,
         })
     };
 
     onSubmit = () => {
+        this.setState({
+            newComment: "",
+        });
 
-      let url = HOST + "/event/" + this.state.eventId + "/comment";
-
-      let config = {
-          headers: {
-              'Content-Type': 'text/plain',
-          }
-      };
-
-      axios.put(url, this.state.newComment, config)
-          .then((response) => {
-              this.loadComments();
-          });
+        sendComment(this.state.eventId, this.state.newComment,
+            (response) => {
+                this.loadComments();
+                this.setState({
+                    newComment: "",
+                })
+        });
     };
 
     render() {
@@ -140,6 +134,9 @@ class Comments extends React.Component {
                             multiline
                             rows="6"
                         />
+                        <IconButton onClick={this.onSubmit} className={classes.iconButtonSend}>
+                            <Send className={classes.iconSend} />
+                        </IconButton>
                     </form>
                 </Dialog>
             </div>

@@ -1,7 +1,7 @@
 import React from "react"
 import moment from "moment"
-import ListItem from "material-ui/List/ListItem";
-import {withStyles} from "material-ui";
+import {ListItem} from "@material-ui/core";
+import {withStyles} from "@material-ui/core";
 
 const styles = {
     root: {
@@ -35,6 +35,7 @@ class Comment extends React.Component {
 
         this.state = {
             text: props.text,
+            date: date,
             dateText: date.format("HH:mm"),
             username: props.creater,
         }
@@ -43,11 +44,20 @@ class Comment extends React.Component {
     render() {
         const {classes} = this.props;
 
+        let date = this.state.date;
+
+        let isCurrentDate = date.isSame(new Date(), "day");
+        let dateToShow = "";
+        if(isCurrentDate)
+            dateToShow = this.state.dateText;
+        else
+            dateToShow = date.format("DD.MM HH:mm");
+
         return (
             <ListItem button className={classes.listItem}>
                 <div className={classes.root}>
                     <p className={classes.dateText}>
-                        {this.state.username} - {this.state.dateText}
+                        {this.state.username} - {dateToShow}
                     </p>
                     <p className={classes.text}>
                         {this.state.text}

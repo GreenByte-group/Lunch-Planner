@@ -1,25 +1,26 @@
 import React from "react";
-import FirstScreen, {setAuthenticationHeader} from "./components/authentication/Authentication"
+import FirstScreen from "./components/authentication/Authentication"
 import LunchPlanner from "./components/LunchPlanner"
 import { Router, Route, Redirect } from "react-router-dom";
 import {isAuthenticated} from "./components/authentication/LoginFunctions"
-import { MuiThemeProvider } from 'material-ui/styles';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import { MuiThemeProvider as OldMuiThemeProvider } from 'material-ui-old/styles'
-import { createMuiTheme } from 'material-ui/styles'
-import CreateEventScreen from "./components/CreateEventScreen";
+import { createMuiTheme } from '@material-ui/core/styles'
+import CreateEventScreen from "./components/Event/CreateEventScreen";
 import SelectUserScreen from "./components/User/SelectUserScreen";
 import EventScreen from "./components/Event/EventScreen";
-import ServiceListScreen from "./components/Event/ServiceListScreen";
+import ServiceListScreen from "./components/Event/ServiceList/ServiceListScreen";
 import {getMuiTheme} from "material-ui-old/styles/index";
 import SocialScreen from "./components/SocialScreen";
 import LocationScreen from "./components/LocationScreen";
-import Comments from "./components/Event/Comments";
+import Comments from "./components/Event/Comments/Comments";
 import { createBrowserHistory as createHistory } from "history";
 import {setHistory, getHistory} from "./utils/HistoryUtils";
 import CreateTeamScreen from "./components/Team/CreateTeamScreen";
 import {init} from './components/notification/Firebase'
 import NotificationsScreen from "./components/notification/NotificationsScreen";
 import TeamScreen from "./components/Team/TeamScreen";
+import InviteExtern from "./components/User/InviteExtern";
 
 const oldTheme = getMuiTheme({
     palette: {
@@ -74,6 +75,7 @@ class App extends React.Component {
                     <Router history={getHistory()}>
                         <div style={{height: '100%'}}>
                             <Route exact path="/login" component={FirstScreen} />
+                            <Route path="/public/:securityToken" component={EventScreen} />
                             <Route exact path="/"
                                           render={ () => <Redirect to="/event" />}
                             />
@@ -89,6 +91,7 @@ class App extends React.Component {
                             <PrivateRoute path="/event/create/invite" component={SelectUserScreen} />
                             <PrivateRoute path="/event/:eventId(\d+)" component={EventScreen} />
                             <PrivateRoute path="/event/:eventId(\d+)/comments" component={Comments} />
+                            <PrivateRoute path="/event/:eventId(\d+)/share" component={InviteExtern} />
                             <PrivateRoute path="/event/:eventId(\d+)/service" component={ServiceListScreen} />
                         </div>
                     </Router>

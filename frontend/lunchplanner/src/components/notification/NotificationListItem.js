@@ -1,5 +1,5 @@
 import React from 'react';
-import {ListItem, withStyles} from "material-ui";
+import {ListItem, withStyles} from "@material-ui/core";
 
 const styles = {
     listItem: {
@@ -80,7 +80,6 @@ class NotificationListItem extends React.Component {
     }
 
     clickHandler = (event) => {
-        console.log('Notification clicked: ', event);
         //TODO notification click
     };
 

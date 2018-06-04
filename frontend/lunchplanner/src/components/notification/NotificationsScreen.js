@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from 'material-ui/styles';
+import {withStyles} from '@material-ui/core/styles';
 import SwipeableViews from 'react-swipeable-views';
-import AppBar from 'material-ui/AppBar';
-import Tabs, {Tab} from 'material-ui/Tabs';
-import Typography from 'material-ui/Typography';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs, {Tab} from '@material-ui/core/Tabs';
+import Typography from '@material-ui/core/Typography';
 import Appbar from "../Appbar";
 import Teamlist from "../Team/TeamList";
 import BottomNavigationBar from "../BottomNavigationBar";
-import {setAuthenticationHeader} from "../authentication/Authentication";
+import {setAuthenticationHeader} from "../authentication/LoginFunctions";
 import NotificationList from "./NotificationList";
 import NotificationSettings from "./NotificationSettings";
 
@@ -73,7 +73,6 @@ class NotificationsScreen extends React.Component {
         const params = new URLSearchParams(props.location.search);
         let tab = params.get('tab');
         if(tab != null && tab !== undefined) {
-            console.log('tab value: ' + tab);
             return tab;
         } else {
             return 0;
@@ -84,7 +83,6 @@ class NotificationsScreen extends React.Component {
         const params = new URLSearchParams(props.location.search);
         let tab = params.get('tab');
         if(tab != null && tab !== undefined && tab !== this.state.value) {
-            console.log('tab value: ' + tab);
             this.setState({
                 value: tab,
             });

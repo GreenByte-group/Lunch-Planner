@@ -1,12 +1,13 @@
 import React from "react"
-import axios from "axios"
 
 import {HOST} from "../../Config"
 import Team from "./Team";
-import List from "material-ui/List";
-import {withStyles} from "material-ui/styles/index";
+import List from "@material-ui/core/List";
+import {withStyles} from "@material-ui/core/styles/index";
 import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
+import {setAuthenticationHeader} from "../authentication/LoginFunctions";
+import {getTeams} from "./TeamFunctions";
 
 const styles = {
     root: {
@@ -18,9 +19,16 @@ const styles = {
     },
 };
 
+export let needReload = false;
+
+export function teamListNeedReload() {
+    needReload = true;
+}
+
 class TeamList extends React.Component {
 
     constructor(props) {
+        setAuthenticationHeader();
         super(props);
         this.state = {
             teams: [],
@@ -33,19 +41,12 @@ class TeamList extends React.Component {
             search: this.props.search,
         });
 
-        let url;
-        if(this.props.search)
-            url = HOST + "/team/search/" + this.props.search;
-        else
-            url = HOST + "/team";
-
-        axios.get(url)
-            .then((response) => {
-                console.log(response.data);
+        getTeams(this.props.search,
+            (response) => {
                 this.setState({
                     teams: response.data,
                 })
-            })
+            });
     }
 
     render() {

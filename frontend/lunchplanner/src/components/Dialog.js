@@ -1,16 +1,13 @@
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
-import DialogMaterial from 'material-ui/Dialog';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import IconButton from 'material-ui/IconButton';
-import Typography from 'material-ui/Typography';
+import { withStyles, Slide, TextField } from '@material-ui/core';
+import DialogMaterial from '@material-ui/core/Dialog';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import SearchIcon from '@material-ui/icons/Search';
-import Slide from 'material-ui/transitions/Slide';
-import {Link} from "react-router-dom";
 import {getHistory} from "../utils/HistoryUtils";
-import {TextField} from "material-ui";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -80,13 +77,10 @@ class Dialog extends React.Component {
 
     onClose = () => {
         if(this.state.onClose) {
-            console.log("close function");
             this.state.onClose();
         } else if(this.state.closeUrl) {
-            console.log("closeurl");
            getHistory().push(this.state.closeUrl);
         } else {
-            console.log("close go back");
             getHistory().goBack();
         }
     };
@@ -108,8 +102,6 @@ class Dialog extends React.Component {
         if(this.state.imageUrl) {
             classesCloseButton = classes.closeIconAbsolute;
         }
-
-        console.log("Search: " + search);
 
         //TODO zeige text auch wenn ein Bild angezeigt wird
 

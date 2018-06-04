@@ -50,7 +50,6 @@ public class UserController {
     }
 
     /**
-     * TODO write tests for this
      * Set the fcm (firebase cloud messaging) token for push notifications
      *
      * @return error message or nothing
@@ -108,6 +107,26 @@ public class UserController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(toReturn);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+
+    }
+
+    /**
+     * TODO write tests
+     * @return one user
+     */
+    @RequestMapping(value = "{username}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getUser(@PathVariable("username") String username) {
+        try {
+            User user = userLogic.getUser(username);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(user);
         } catch (HttpRequestException e) {
             return ResponseEntity
                     .status(e.getStatusCode())
