@@ -52,7 +52,7 @@ public class User {
     @OneToMany (mappedBy = "receiver")
     private List<Notifications> notification = new ArrayList<>();
 
-    @OneToMany (mappedBy = "location", cascade = CascadeType.ALL)
+    @OneToMany (mappedBy = "subscriber", cascade = CascadeType.ALL)
     private List<Subscribe> locations = new ArrayList<>();
 
     public String getUserName() {

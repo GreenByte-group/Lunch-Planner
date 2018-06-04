@@ -206,8 +206,8 @@ public class UserControllerTest {
     // ------------------ SUBSCRIBE  -----------------------
 
     @Test
+    @WithMockUser(username = userName)
     public void test1Subscribe() throws Exception {
-        String userName = createString(50);
         String location = "TestLocationFromGoogle";
         mockMvc.perform(
                 post("/user/subscribe/" + userName).contentType(MediaType.APPLICATION_JSON).

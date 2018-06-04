@@ -34,7 +34,7 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_NOTIFICATION_DATE = "date";
 
     public static final String USER_SUBSCRIBE_TABLE = "subscribe";
-    public static final String USER_SUBSCRIBE_SUBSCRIBER = "subscriber";
+    public static final String USER_SUBSCRIBE_SUBSCRIBER = "user_name";
     public static final String USER_SUBSCRIBE_LOCATION = "location";
 
     @Autowired
@@ -127,13 +127,11 @@ public class UserDaoMySql implements UserDao {
 
             List<SubscribeDatabase> locations = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(SubscribeDatabase.class), subscriber);
 
-            List<String> locationsReturn = new ArrayList<>(locations.size());
+            List<String> locationList = new ArrayList<>(locations.size());
             for(SubscribeDatabase subscribeDatabase: locations) {
-                String location = subscribeDatabase.getLocation();
-
-                locationsReturn.add(location);
+                locationList.add(subscribeDatabase.getLocation());
             }
-            return locationsReturn;
+            return locationList;
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
@@ -146,13 +144,11 @@ public class UserDaoMySql implements UserDao {
 
             List<SubscribeDatabase> users = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(SubscribeDatabase.class), location);
 
-            List<User> usersReturn = new ArrayList<>(users.size());
+            List<User> userList = new ArrayList<>(users.size());
             for(SubscribeDatabase subscribeDatabase: users) {
-                String userName = subscribeDatabase.getSubscriber();
-                User user = getUser(userName);
-                usersReturn.add(user);
+                userList.add(getUser(subscribeDatabase.getUserName()));
             }
-            return usersReturn;
+            return userList;
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
@@ -165,6 +161,11 @@ public class UserDaoMySql implements UserDao {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(USER_SUBSCRIBE_SUBSCRIBER, subscriber);
         parameters.put(USER_SUBSCRIBE_LOCATION, location);
+        try {
+            simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
     }
 
 
