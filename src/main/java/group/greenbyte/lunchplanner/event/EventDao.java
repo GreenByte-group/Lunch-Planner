@@ -192,6 +192,8 @@ public interface EventDao {
      */
     void addTeamToEvent(int eventId, int teamId) throws DatabaseException;
 
+    boolean isEventPublic(int eventId) throws DatabaseException;
+
     /**
      * checks if a user has admin privileges for the given event
      *

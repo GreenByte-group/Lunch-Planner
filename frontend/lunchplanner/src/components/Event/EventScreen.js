@@ -461,6 +461,7 @@ class EventScreen extends React.Component {
         });
 
         let username = getUsername();
+        console.log("Username: ", username);
         let invited = false;
         let accepted = false;
         let buttonText = "Join Event";
