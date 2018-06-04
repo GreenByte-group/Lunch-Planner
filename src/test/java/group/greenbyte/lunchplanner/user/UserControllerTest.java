@@ -337,14 +337,36 @@ public class UserControllerTest {
     @WithMockUser(username = userName)
     public void test1UpdateNotificationOptions() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
+        long timeEnd = System.currentTimeMillis() + 200000;
+        long until = System.currentTimeMillis() + 300000;
 
-        OptionsJson options = new OptionsJson();
+        OptionsJson options = new OptionsJson(false, false, new Date(until),false, new Date(timeStart), new Date(timeEnd), false, false, false );
 
         String json = getJsonFromObject(options);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/user/options/notifications").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+                MockMvcRequestBuilders.put("/user/options/notifications/update").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+                .andReturn();
+
+
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1UpdateNotificationOptionsBlockUntilInThePast() throws Exception {
+        long timeStart = System.currentTimeMillis() + 100000;
+        long timeEnd = System.currentTimeMillis() + 200000;
+        long until = System.currentTimeMillis() - 10000;
+
+        OptionsJson options = new OptionsJson(false, false, new Date(until),false, new Date(timeStart), new Date(timeEnd), false, false, false );
+
+        String json = getJsonFromObject(options);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/user/options/notifications/update").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
                 .andReturn();
 

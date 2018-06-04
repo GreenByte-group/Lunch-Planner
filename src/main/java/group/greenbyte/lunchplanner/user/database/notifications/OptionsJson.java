@@ -33,7 +33,6 @@ public class OptionsJson implements Serializable {
 
     }
 
-    public OptionsJson
 
     //------- GETTERS AND SETTERS -------
 
