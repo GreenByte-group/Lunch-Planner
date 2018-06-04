@@ -156,7 +156,66 @@ public class UserController {
         }
     }
 
+
     /**
+     * TODO:
+     * get a list of all subscriber of a location
+     * @param location
+     * @return
+     */
+    @RequestMapping(value ="/subscribe/{location}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getSubscriber(@PathVariable("location") String location) {
+        try {
+            List<User> toReturn =  userLogic.getSubscriber("location");
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(toReturn);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    /**
+     * An user subscribe a location
+     * @param username who subscribe
+     * @param location that the user subscribe
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "subscribe/{username}", method = RequestMethod.POST)
+    public String subscribe(@PathVariable("username") String username, @RequestBody String location,
+                             HttpServletResponse response) {
+        try {
+            userLogic.subscribe(username, location);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+        return "";
+    }
+
+
+  /**
+     * TODO:
+     * get a list of all subscribed locations of an user
+     * @param username
+     * @return a list of all subscribed locations of an user
+     */
+    @RequestMapping(value ="/subscribe/{username}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getSubscribedLocations(@PathVariable("username") String username) {
+        try {
+            List<String> toReturn =  userLogic.getSubscribedLocations(username);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(toReturn);
+
      *
      * @return the users notification options
      */
@@ -175,7 +234,7 @@ public class UserController {
                     .body(e.getErrorMessage());
         }
     }
-
+          
     @RequestMapping(value = "/options/notifications/update", method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
@@ -193,9 +252,6 @@ public class UserController {
             return e.getErrorMessage();
         }
     }
-
-
-
 
 
 //    /**

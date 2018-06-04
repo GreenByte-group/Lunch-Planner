@@ -52,6 +52,23 @@ public class EventLogic {
         }
     }
 
+    @Autowired
+    public EventLogic(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
+
+    private void checkEventsHasToBeDeleted() {
+        try {
+            Date dateDelete = new Date(new Date().getTime() - Config.DELETE_EVENT_AFTER_SECONDS * 1000);
+            List<Event> events = eventDao.getAllEvents();
+            for(Event event : events) {
+
+            }
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Checks if a user has privileges to change the event object
      *
@@ -677,6 +694,26 @@ public class EventLogic {
     @Autowired
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
+    }
+}
+
+@Component
+class DeleteEventJob implements Job {
+
+    private EventLogic eventLogic;
+
+    @Override
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+        JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+
+        int eventId = dataMap.getInt("eventId");
+
+        eventLogic.deleteEvent(eventId);
+    }
+
+    @Autowired
+    public void setEventLogic(EventLogic eventLogic) {
+        this.eventLogic = eventLogic;
     }
 }
 

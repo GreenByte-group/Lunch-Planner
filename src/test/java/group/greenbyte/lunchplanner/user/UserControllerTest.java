@@ -207,6 +207,17 @@ public class UserControllerTest {
         assertEquals(fcmToken, userLogic.getUser(userName).getFcmToken());
     }
 
+    // ------------------ SUBSCRIBE  -----------------------
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1Subscribe() throws Exception {
+        String location = "TestLocationFromGoogle";
+        mockMvc.perform(
+                post("/user/subscribe/" + userName).contentType(MediaType.APPLICATION_JSON).
+                        content("{\"location\":\"" + location + "\"}"))
+                .andExpect(status().isCreated());
+    }
 
     // ------------------------- SEND INVITATION ------------------------------
 

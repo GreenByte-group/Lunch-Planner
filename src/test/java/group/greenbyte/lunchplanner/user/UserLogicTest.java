@@ -11,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -155,6 +156,40 @@ public class UserLogicTest {
         assertNull(notAuth);
     }
 
+
+    // ------------------------SUBSCRIBE------------------------
+    @Test
+    public void testSubscribeValidateUser() throws Exception {
+        String userName = createUserIfNotExists(userLogic, "username");
+        userLogic.subscribe(userName, "location");
+    }
+    @Test(expected = HttpRequestException.class)
+    public void testSubscribeInvalidUser() throws Exception {
+        String userName = "user";
+        userLogic.subscribe(userName, "location");
+    }
+    @Test
+    public void testGetSubscribeValidateUser() throws Exception {
+        String userName = createUserIfNotExists(userLogic, "username");
+        userLogic.subscribe(userName, "location");
+        List<String> returnList = userLogic.getSubscribedLocations(userName);
+
+        assertEquals("location",returnList.get(0));
+    }
+    @Test(expected = HttpRequestException.class)
+    public void testGetSubscribeInvalidUser() throws Exception {
+        String userName = "username";
+        userLogic.subscribe(userName, "location");
+        List<String> returnList = userLogic.getSubscribedLocations(userName);
+    }
+    @Test
+    public void testGetSubscriberValidateUser() throws Exception {
+        String userName = createUserIfNotExists(userLogic, "username");
+        userLogic.subscribe(userName, "location");
+        List<User> returnList = userLogic.getSubscriber("location");
+        assertEquals("username",returnList.get(0).getUserName());
+    }
+
     // ------------- GET NOTIFICATION OPTIONS ------------------
 
     @Test
@@ -219,6 +254,4 @@ public class UserLogicTest {
                 false, null, null, null, null, null);
 
     }
-
-
 }

@@ -54,6 +54,10 @@ public class User {
     @OneToMany (mappedBy = "receiver")
     private List<Notifications> notification = new ArrayList<>();
 
+
+    @OneToMany (mappedBy = "subscriber", cascade = CascadeType.ALL)
+    private List<Subscribe> locations = new ArrayList<>();
+
     @OneToOne(fetch = FetchType.LAZY,
             cascade =  CascadeType.ALL,
             mappedBy = "user")
@@ -129,6 +133,9 @@ public class User {
     public void setNotification(List<Notifications> notification) {
         this.notification = notification;
     }
+
+
+    //public List<String> getLocations(){return locations; }
 
     public NotificationOptions getNotificationOptions() {
         return notificationOptions;

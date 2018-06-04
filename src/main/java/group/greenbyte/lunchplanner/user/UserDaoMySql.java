@@ -1,9 +1,7 @@
 package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import group.greenbyte.lunchplanner.user.database.notifications.*;
-import group.greenbyte.lunchplanner.user.database.User;
-import group.greenbyte.lunchplanner.user.database.UserDatabase;
+import group.greenbyte.lunchplanner.user.database.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -35,6 +33,10 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_NOTIFICATION_PICTURE = "picture";
     public static final String USER_NOTIFICATION_DATE = "date";
 
+    public static final String USER_SUBSCRIBE_TABLE = "subscribe";
+    public static final String USER_SUBSCRIBE_SUBSCRIBER = "user_name";
+    public static final String USER_SUBSCRIBE_LOCATION = "location";
+
     public static final String USER_NOTIFICATIONOPTIONS_TABLE = "notification_options";
     public static final String USER_NOTIFICATIONOPTIONS_ID = "id";
     public static final String USER_NOTIFICATIONOPTIONS_USER = "user_name";
@@ -47,6 +49,7 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_NOTIFICATIONOPTIONS_BLOCKEVENTS = "events_blocked";
     public static final String USER_NOTIFICATIONOPTIONS_BLOCKTEAMS = "teams_blocked";
     public static final String USER_NOTIFICATIONOPTIONS_BLOCKSUBSCRIPTIONS = "subscriptions_blocked";
+
 
     @Autowired
     public UserDaoMySql(JdbcTemplate jdbcTemplateObject) {
@@ -129,7 +132,8 @@ public class UserDaoMySql implements UserDao {
         }
     }
 
-    private void saveNotificationOptions(String userName, boolean blockAll, boolean blockedUntil,
+
+   private void saveNotificationOptions(String userName, boolean blockAll, boolean blockedUntil,
         Date block_until, boolean blockedForWork, Date start_working, Date stop_working,
         boolean eventsBlocked, boolean teamsBlocked, boolean subscriptionsBlocked) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
@@ -146,6 +150,62 @@ public class UserDaoMySql implements UserDao {
         parameters.put(USER_NOTIFICATIONOPTIONS_BLOCKTEAMS, teamsBlocked);
         parameters.put(USER_NOTIFICATIONOPTIONS_BLOCKSUBSCRIPTIONS, false);
 
+
+        try {
+            simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+}
+
+   
+  @Override
+    public List<String> getSubscribedLocations(String subscriber) throws DatabaseException {
+        try {
+            String SQL = "SELECT * FROM " + USER_SUBSCRIBE_TABLE + " WHERE " + USER_SUBSCRIBE_SUBSCRIBER + " = ?";
+
+            List<SubscribeDatabase> locations = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(SubscribeDatabase.class), subscriber);
+
+            List<String> locationList = new ArrayList<>(locations.size());
+            for(SubscribeDatabase subscribeDatabase: locations) {
+                locationList.add(subscribeDatabase.getLocation());
+            }
+            return locationList;
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public List<User> getSubscriber(String location) throws DatabaseException {
+        try{
+            String SQL = "SELECT * FROM " + USER_SUBSCRIBE_TABLE + " WHERE " + USER_SUBSCRIBE_LOCATION + " = ?";
+
+            List<SubscribeDatabase> users = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(SubscribeDatabase.class), location);
+
+            List<User> userList = new ArrayList<>(users.size());
+            for(SubscribeDatabase subscribeDatabase: users) {
+                userList.add(getUser(subscribeDatabase.getUserName()));
+            }
+            return userList;
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void subscribe(String subscriber, String location) throws DatabaseException {
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        simpleJdbcInsert.withTableName(USER_SUBSCRIBE_TABLE);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(USER_SUBSCRIBE_SUBSCRIBER, subscriber);
+        parameters.put(USER_SUBSCRIBE_LOCATION, location);
+        try {
+            simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
 
         try {
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));

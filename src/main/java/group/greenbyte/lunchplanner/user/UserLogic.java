@@ -322,4 +322,37 @@ public class UserLogic {
         this.userDao = userDao;
     }
 
+    // --------------------- SUBSCRIBE ----------------------
+
+    public  List<String> getSubscribedLocations(String subscriber) throws HttpRequestException{
+        if(subscriber == null || subscriber.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "subscriber name is empty");
+
+        if(subscriber.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "subscriber name is too long");
+
+        try {
+            return userDao.getSubscribedLocations(subscriber);
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    public List<User> getSubscriber(String location) throws HttpRequestException{
+        if(location == null || location.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "location is empty");
+        try {
+            return userDao.getSubscriber(location);
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    public void subscribe(String subscriber, String location) throws HttpRequestException{
+        try {
+            userDao.subscribe(subscriber, location);
+        } catch (DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
 }

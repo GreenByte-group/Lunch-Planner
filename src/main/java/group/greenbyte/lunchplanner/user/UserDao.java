@@ -74,18 +74,34 @@ public interface UserDao {
     void  saveNotificationIntoDatabase(String receiver, String title, String description
                                         ,String builder, String linkToClick, String picturePath) throws DatabaseException;
 
+
     /**
      * Gets notification options of a user
-     *
      * @param userName
      * @return
      * @throws DatabaseException
      */
+    List<String> getSubscribedLocations(String userName) throws DatabaseException;
+
+    /**
+     *
+     * @param location
+     * @return
+     * @throws DatabaseException
+     */
+    List<User> getSubscriber(String location) throws DatabaseException;
+
+    /**
+     *
+     * @param userName
+     * @param location
+     * @throws DatabaseException
+     */
+    void subscribe(String userName, String location) throws DatabaseException;
     NotificationOptions getNotificationOptions(String userName) throws DatabaseException;
 
     /**
      * Update notification options for user
-     *
      * @param userName user that updates his options
      * @param map contains column names and option values
      * @throws DatabaseException
