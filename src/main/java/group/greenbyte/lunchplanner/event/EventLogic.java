@@ -304,7 +304,7 @@ public class EventLogic {
 
         //save notification
         try {
-            userDao.saveNotificationIntoDatabase(userToInvite,title,description,SessionManager.getUserName(),linkToClick, "");
+            userDao.saveNotificationIntoDatabase(userToInvite,title,description,username,linkToClick, "");
         } catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
