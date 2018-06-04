@@ -461,7 +461,6 @@ class EventScreen extends React.Component {
         });
 
         let username = getUsername();
-        console.log("Username: ", username);
         let invited = false;
         let accepted = false;
         let buttonText = "Join Event";
@@ -492,6 +491,10 @@ class EventScreen extends React.Component {
                 admin = listValue.userName;
             }
         });
+
+        console.log('people: ', people);
+        console.log('Invited: ', invited);
+        console.log('Username: ', username);
 
         //TODO anzahl kommentare
         return (
@@ -539,16 +542,12 @@ class EventScreen extends React.Component {
                                         : <p className={classes.fontSmall}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
                                 }
                             </div>
-                            {
-                                (invited)
-                                    ? ''
-                                    :   <Link to={{pathname:`/event/${eventId}/comments`}}>
-                                            <div className={classes.headerComment}>
-                                            <CommentsIcon className={classes.commentIcon} />
-                                                <p className={classes.commentText}>Comments</p>
-                                            </div>
-                                        </Link>
-                            }
+                            <Link to={{pathname:`/event/${eventId}/comments`}}>
+                                <div className={classes.headerComment}>
+                                <CommentsIcon className={classes.commentIcon} />
+                                    <p className={classes.commentText}>Comments</p>
+                                </div>
+                            </Link>
                             {(iAmAdmin || isShared)
                                 ?
                                 <Link to={{pathname:`/event/${eventId}/share`, query: {
@@ -581,9 +580,8 @@ class EventScreen extends React.Component {
                         </div>
 
                         {
-                            (invited)
-                                ? ''
-                                : <div>
+                            (accepted)
+                                ? <div>
                                     <ServiceList eventId={eventId} />
                                     <Link className={classes.serviceListLink} to={{pathname:`/event/${eventId}/service`}}>
                                         <div className={classes.serviceList}>
@@ -592,6 +590,7 @@ class EventScreen extends React.Component {
                                         </div>
                                     </Link>
                                 </div>
+                                : ''
                         }
                     </div>
                     {
