@@ -2,7 +2,7 @@ import React from "react";
 import Appbar from "./Appbar";
 import EventContainer from "./EventContainer";
 import BottomNavigationBar from "./BottomNavigationBar";
-import {setAuthenticationHeader} from "./authentication/Authentication";
+import {setAuthenticationHeader} from "./authentication/LoginFunctions";
 
 class LunchPlanner extends React.Component {
 

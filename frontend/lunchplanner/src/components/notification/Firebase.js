@@ -1,7 +1,7 @@
 import firebase from "firebase";
 import axios from 'axios';
 import {HOST} from "../../Config";
-import {setAuthenticationHeader} from "../authentication/Authentication";
+import {setAuthenticationHeader} from "../authentication/LoginFunctions";
 
 const config = {
     apiKey: "AIzaSyDyuySWwkXgZDrLnO0gX9bmGpR7XAHnngE",

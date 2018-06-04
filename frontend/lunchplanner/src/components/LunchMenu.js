@@ -8,7 +8,7 @@ import SignOutIcon from '@material-ui/icons/ExitToApp';
 import OptionIcon from '@material-ui/icons/Settings';
 import MenuIcon from '@material-ui/icons/Menu';
 import {Link} from "react-router-dom";
-import {getUsername} from "./authentication/Authentication";
+import {getUsername} from "./authentication/LoginFunctions";
 import {getUser} from "./User/UserFunctions";
 import {doLogout} from "./LoginFunctions";
 import {getHistory} from "../utils/HistoryUtils";

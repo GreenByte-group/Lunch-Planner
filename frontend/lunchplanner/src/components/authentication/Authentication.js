@@ -10,24 +10,6 @@ import { withStyles } from '@material-ui/core/styles';
 import axios from "axios";
 import {HOST, TOKEN, USERNAME} from "../../Config";
 
-export function setAuthenticationHeader() {
-    let token = localStorage.getItem(TOKEN);
-
-    axios.interceptors.request.use(function(config) {
-        if ( token != null ) {
-            config.headers.Authorization = token;
-        }
-
-        return config;
-    }, function(err) {
-        return Promise.reject(err);
-    });
-}
-
-export function getUsername() {
-    return localStorage.getItem(USERNAME) || "please login again";
-}
-
 function TabContainer({ children, dir }) {
     return (
         <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>

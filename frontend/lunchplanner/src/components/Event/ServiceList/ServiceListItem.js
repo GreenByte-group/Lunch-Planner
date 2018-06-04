@@ -2,7 +2,7 @@ import React from "react";
 import {withStyles} from "@material-ui/core/styles/index";
 import {Card, CardContent, ListItem} from "@material-ui/core";
 import {Done} from "@material-ui/icons";
-import {getUsername} from "../../authentication/Authentication";
+import {getUsername} from "../../authentication/LoginFunctions";
 import {acceptService} from "./ServiceFunctions";
 
 const styles = {

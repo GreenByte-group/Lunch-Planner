@@ -11,7 +11,7 @@ import CommentsIcon from '@material-ui/icons/Message';
 import UserList from "../User/UserList";
 import {Button} from "@material-ui/core";
 import ServiceList from "./ServiceList/ServiceList";
-import {getUsername} from "../authentication/Authentication";
+import {getUsername} from "../authentication/LoginFunctions";
 import InvitationButton from "./InvitationButton";
 import {eventListNeedReload} from "./EventList";
 import {getHistory} from "../../utils/HistoryUtils";
