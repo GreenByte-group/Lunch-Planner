@@ -1,4 +1,6 @@
-package group.greenbyte.lunchplanner.user.database;
+package group.greenbyte.lunchplanner.user.database.notifications;
+
+import group.greenbyte.lunchplanner.user.database.User;
 
 import javax.persistence.*;
 import java.util.Date;
