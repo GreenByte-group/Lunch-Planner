@@ -159,7 +159,7 @@ class CreateTeamScreen extends React.Component {
 
         return (
             <Dialog
-                title="Create Team"closeIconAbsolute
+                title="Create Team" closeIconAbsolute
                 closeUrl="/social?tab=1"
             >
                 <div className={classes.overButton}>

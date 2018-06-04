@@ -1,17 +1,12 @@
 import React from 'react';
-import SelectUserScreen from '../components/User/SelectUserScreen';
+import CreateTeamScreen from '../components/Team/CreateTeamScreen';
 import renderer from 'react-test-renderer';
 import {MemoryRouter} from "react-router-dom";
 
 it ("renders correctly", ()=>{
     const tree = renderer.create(
-        <SelectUserScreen  location={
-            {
-                query: {
-                    invitedUsers: 'Martin,Can'
-                }
-            }
-        }
+        <CreateTeamScreen
+        location={{search: ""}}
         />
     ).toJSON();
     expect(tree).toMatchSnapshot();
