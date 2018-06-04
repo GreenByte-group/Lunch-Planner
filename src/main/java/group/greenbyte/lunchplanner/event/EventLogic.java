@@ -16,7 +16,6 @@ import group.greenbyte.lunchplanner.user.database.User;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -34,23 +33,6 @@ public class EventLogic {
     private TeamDao teamDao;
     private TeamLogic teamLogic;
     private UserDao userDao;
-
-    @Autowired
-    public EventLogic(Scheduler scheduler) {
-        this.scheduler = scheduler;
-    }
-
-    private void checkEventsHasToBeDeleted() {
-        try {
-            Date dateDelete = new Date(new Date().getTime() - Config.DELETE_EVENT_AFTER_SECONDS * 1000);
-            List<Event> events = eventDao.getAllEvents();
-            for(Event event : events) {
-
-            }
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Autowired
     public EventLogic(Scheduler scheduler) {
@@ -694,26 +676,6 @@ public class EventLogic {
     @Autowired
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
-    }
-}
-
-@Component
-class DeleteEventJob implements Job {
-
-    private EventLogic eventLogic;
-
-    @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
-        JobDataMap dataMap = context.getJobDetail().getJobDataMap();
-
-        int eventId = dataMap.getInt("eventId");
-
-        eventLogic.deleteEvent(eventId);
-    }
-
-    @Autowired
-    public void setEventLogic(EventLogic eventLogic) {
-        this.eventLogic = eventLogic;
     }
 }
 

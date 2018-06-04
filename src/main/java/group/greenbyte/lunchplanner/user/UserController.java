@@ -211,18 +211,23 @@ public class UserController {
     @ResponseBody
     public ResponseEntity getSubscribedLocations(@PathVariable("username") String username) {
         try {
-            List<String> toReturn =  userLogic.getSubscribedLocations(username);
+            List<String> toReturn = userLogic.getSubscribedLocations(username);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(toReturn);
+        }catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
 
-     *
+     /**
      * @return the users notification options
      */
-    @RequestMapping(value = "/options/notifications",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getNotificationOptions() {
+    @RequestMapping(value = "/options/notifications", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+        public ResponseEntity getNotificationOptions() {
         try {
             NotificationOptions notificationOptions = userLogic.getNotificationOptions(SessionManager.getUserName());
             return ResponseEntity

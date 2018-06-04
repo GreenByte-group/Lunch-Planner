@@ -1,7 +1,13 @@
 package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import group.greenbyte.lunchplanner.user.database.*;
+import group.greenbyte.lunchplanner.user.database.SubscribeDatabase;
+import group.greenbyte.lunchplanner.user.database.User;
+import group.greenbyte.lunchplanner.user.database.UserDatabase;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationDatabase;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptionsDatabase;
+import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -207,12 +213,7 @@ public class UserDaoMySql implements UserDao {
         }
     }
 
-        try {
-            simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
-        } catch (Exception e) {
-            throw new DatabaseException(e);
-        }
-    }
+
 
     @Override
     public NotificationOptions getNotificationOptions(String userName) throws DatabaseException {
