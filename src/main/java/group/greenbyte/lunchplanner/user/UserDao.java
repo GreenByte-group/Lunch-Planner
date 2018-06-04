@@ -1,10 +1,12 @@
 package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import group.greenbyte.lunchplanner.user.database.Notifications;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
+import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 import group.greenbyte.lunchplanner.user.database.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserDao {
 
@@ -74,7 +76,7 @@ public interface UserDao {
 
 
     /**
-     *
+     * Gets notification options of a user
      * @param userName
      * @return
      * @throws DatabaseException
@@ -96,4 +98,13 @@ public interface UserDao {
      * @throws DatabaseException
      */
     void subscribe(String userName, String location) throws DatabaseException;
+    NotificationOptions getNotificationOptions(String userName) throws DatabaseException;
+
+    /**
+     * Update notification options for user
+     * @param userName user that updates his options
+     * @param map contains column names and option values
+     * @throws DatabaseException
+     */
+    void updateNotificationOptions(String userName,Map<String,Object> map) throws DatabaseException;
 }

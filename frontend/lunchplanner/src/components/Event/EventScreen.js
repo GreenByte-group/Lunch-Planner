@@ -11,7 +11,7 @@ import CommentsIcon from '@material-ui/icons/Message';
 import UserList from "../User/UserList";
 import {Button} from "@material-ui/core";
 import ServiceList from "./ServiceList/ServiceList";
-import {getUsername} from "../authentication/Authentication";
+import {getUsername} from "../authentication/LoginFunctions";
 import InvitationButton from "./InvitationButton";
 import {eventListNeedReload} from "./EventList";
 import {getHistory} from "../../utils/HistoryUtils";
@@ -242,62 +242,64 @@ class EventScreen extends React.Component {
 
         token = this.props.match.params.securityToken;
 
-        getEventExtern(token, (response) => {
-            this.setState({
-                eventId: response.data.eventId,
-                name: response.data.eventName,
-                location: response.data.location,
-                date: new Date(response.data.startDate),
-                description: response.data.eventDescription,
-                people: response.data.invitations,
-                token:response.data.shareToken,
-                isShared: true,
-            });
-        });
-
-        eventId = this.props.match.params.eventId;
-        if(this.props.location.query) {
-            if (this.props.location.query.eventName) {
-                eventName = String(this.props.location.query.eventName);
-            }
-            if (this.props.location.query.description) {
-                description = String(this.props.location.query.description);
-            }
-            if (this.props.location.query.date) {
-                date = this.props.location.query.date;
-            }
-            if (this.props.location.query.people) {
-                people = this.props.location.query.people;
-            }
-            if (this.props.location.query.accepted) {
-                accepted = Boolean(this.props.location.query.accepted);
-            }
-            if (this.props.location.query.location) {
-                location = String(this.props.location.query.location);
-            }
-            if (this.props.location.query.token) {
-                token = String(this.props.location.query.token);
-            }
-
-            this.setState({
-                eventId: eventId,
-                name: eventName,
-                description: description,
-                date: new Date(date),
-                people: people,
-                accepted: accepted,
-                location: location,
-                token: token,
-            });
-            if(this.state.token !== null){
+        if(token) {
+            getEventExtern(token, (response) => {
                 this.setState({
+                    eventId: response.data.eventId,
+                    name: response.data.eventName,
+                    location: response.data.location,
+                    date: new Date(response.data.startDate),
+                    description: response.data.eventDescription,
+                    people: response.data.invitations,
+                    token: response.data.shareToken,
                     isShared: true,
                 });
-            }
+            });
         } else {
-            this.loadEvent(eventId);
-        }
 
+            eventId = this.props.match.params.eventId;
+            if (this.props.location.query) {
+                if (this.props.location.query.eventName) {
+                    eventName = String(this.props.location.query.eventName);
+                }
+                if (this.props.location.query.description) {
+                    description = String(this.props.location.query.description);
+                }
+                if (this.props.location.query.date) {
+                    date = this.props.location.query.date;
+                }
+                if (this.props.location.query.people) {
+                    people = this.props.location.query.people;
+                }
+                if (this.props.location.query.accepted) {
+                    accepted = Boolean(this.props.location.query.accepted);
+                }
+                if (this.props.location.query.location) {
+                    location = String(this.props.location.query.location);
+                }
+                if (this.props.location.query.token) {
+                    token = String(this.props.location.query.token);
+                }
+
+                this.setState({
+                    eventId: eventId,
+                    name: eventName,
+                    description: description,
+                    date: new Date(date),
+                    people: people,
+                    accepted: accepted,
+                    location: location,
+                    token: token,
+                });
+                if (this.state.token !== null) {
+                    this.setState({
+                        isShared: true,
+                    });
+                }
+            } else {
+                this.loadEvent(eventId);
+            }
+        }
     }
 
     parseUrl = () => {
@@ -492,6 +494,10 @@ class EventScreen extends React.Component {
             }
         });
 
+        console.log('people: ', people);
+        console.log('Invited: ', invited);
+        console.log('Username: ', username);
+
         //TODO anzahl kommentare
         return (
             <div>
@@ -538,16 +544,12 @@ class EventScreen extends React.Component {
                                         : <p className={classes.fontSmall}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
                                 }
                             </div>
-                            {
-                                (invited)
-                                    ? ''
-                                    :   <Link to={{pathname:`/event/${eventId}/comments`}}>
-                                            <div className={classes.headerComment}>
-                                            <CommentsIcon className={classes.commentIcon} />
-                                                <p className={classes.commentText}>Comments</p>
-                                            </div>
-                                        </Link>
-                            }
+                            <Link to={{pathname:`/event/${eventId}/comments`}}>
+                                <div className={classes.headerComment}>
+                                <CommentsIcon className={classes.commentIcon} />
+                                    <p className={classes.commentText}>Comments</p>
+                                </div>
+                            </Link>
                             {(iAmAdmin || isShared)
                                 ?
                                 <Link to={{pathname:`/event/${eventId}/share`, query: {
@@ -580,9 +582,8 @@ class EventScreen extends React.Component {
                         </div>
 
                         {
-                            (invited)
-                                ? ''
-                                : <div>
+                            (accepted)
+                                ? <div>
                                     <ServiceList eventId={eventId} />
                                     <Link className={classes.serviceListLink} to={{pathname:`/event/${eventId}/service`}}>
                                         <div className={classes.serviceList}>
@@ -591,6 +592,7 @@ class EventScreen extends React.Component {
                                         </div>
                                     </Link>
                                 </div>
+                                : ''
                         }
                     </div>
                     {

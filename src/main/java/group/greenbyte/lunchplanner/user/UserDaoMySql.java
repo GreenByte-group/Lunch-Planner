@@ -37,6 +37,20 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_SUBSCRIBE_SUBSCRIBER = "user_name";
     public static final String USER_SUBSCRIBE_LOCATION = "location";
 
+    public static final String USER_NOTIFICATIONOPTIONS_TABLE = "notification_options";
+    public static final String USER_NOTIFICATIONOPTIONS_ID = "id";
+    public static final String USER_NOTIFICATIONOPTIONS_USER = "user_name";
+    public static final String USER_NOTIFICATIONOPTIONS_BLOCKALL = "block_all";
+    public static final String USER_NOTIFICATIONOPTIONS_BLOCKEDUNTIL = "blocked_until";
+    public static final String USER_NOTIFICATIONOPTIONS_BLOCKUNTILDATE = "block_until";
+    public static final String USER_NOTIFICATIONOPTIONS_BLOCKEDFORWORK = "blocked_for_work";
+    public static final String USER_NOTIFICATIONOPTIONS_STARTWORKING = "start_working";
+    public static final String USER_NOTIFICATIONOPTIONS_STOPWORKING = "stop_working";
+    public static final String USER_NOTIFICATIONOPTIONS_BLOCKEVENTS = "events_blocked";
+    public static final String USER_NOTIFICATIONOPTIONS_BLOCKTEAMS = "teams_blocked";
+    public static final String USER_NOTIFICATIONOPTIONS_BLOCKSUBSCRIPTIONS = "subscriptions_blocked";
+
+
     @Autowired
     public UserDaoMySql(JdbcTemplate jdbcTemplateObject) {
         this.jdbcTemplate = jdbcTemplateObject;
@@ -95,11 +109,9 @@ public class UserDaoMySql implements UserDao {
         }
     }
 
-
-
     @Override
     public void saveNotificationIntoDatabase(String receiver, String title, String description
-            , String builder, String linkToClick, String picturePath) throws DatabaseException{
+            , String builder, String linkToClick, String picturePath) throws DatabaseException {
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(USER_NOTIFICATION_TABLE).usingGeneratedKeyColumns(USER_NOTIFICATION_ID);
@@ -120,7 +132,34 @@ public class UserDaoMySql implements UserDao {
         }
     }
 
-    @Override
+
+   private void saveNotificationOptions(String userName, boolean blockAll, boolean blockedUntil,
+        Date block_until, boolean blockedForWork, Date start_working, Date stop_working,
+        boolean eventsBlocked, boolean teamsBlocked, boolean subscriptionsBlocked) throws DatabaseException {
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        simpleJdbcInsert.withTableName(USER_NOTIFICATIONOPTIONS_TABLE).usingGeneratedKeyColumns(USER_NOTIFICATIONOPTIONS_ID);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(USER_NOTIFICATIONOPTIONS_USER, userName);
+        parameters.put(USER_NOTIFICATIONOPTIONS_BLOCKALL, blockAll);
+        parameters.put(USER_NOTIFICATIONOPTIONS_BLOCKEDUNTIL, blockedUntil);
+        parameters.put(USER_NOTIFICATIONOPTIONS_BLOCKUNTILDATE, block_until);
+        parameters.put(USER_NOTIFICATIONOPTIONS_BLOCKEDFORWORK, blockedForWork);
+        parameters.put(USER_NOTIFICATIONOPTIONS_STARTWORKING, start_working);
+        parameters.put(USER_NOTIFICATIONOPTIONS_STOPWORKING, stop_working);
+        parameters.put(USER_NOTIFICATIONOPTIONS_BLOCKEVENTS, eventsBlocked);
+        parameters.put(USER_NOTIFICATIONOPTIONS_BLOCKTEAMS, teamsBlocked);
+        parameters.put(USER_NOTIFICATIONOPTIONS_BLOCKSUBSCRIPTIONS, false);
+
+
+        try {
+            simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+}
+
+   
+  @Override
     public List<String> getSubscribedLocations(String subscriber) throws DatabaseException {
         try {
             String SQL = "SELECT * FROM " + USER_SUBSCRIBE_TABLE + " WHERE " + USER_SUBSCRIBE_SUBSCRIBER + " = ?";
@@ -168,6 +207,60 @@ public class UserDaoMySql implements UserDao {
         }
     }
 
+        try {
+            simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public NotificationOptions getNotificationOptions(String userName) throws DatabaseException {
+        try {
+            String SQL = "SELECT * FROM " + USER_NOTIFICATIONOPTIONS_TABLE + " WHERE " + USER_NOTIFICATIONOPTIONS_USER + " LIKE ? ";
+
+            List<NotificationOptionsDatabase> options = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(NotificationOptionsDatabase.class), userName);
+
+            if (options.size() == 0)
+                return null;
+            else {
+                NotificationOptions notificationOptions = options.get(0).getNotificationOptions();
+                return notificationOptions;
+            }
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void updateNotificationOptions(String userName,Map<String,Object> map) throws DatabaseException {
+
+      try {
+          List<Object> values = new ArrayList<>();
+          StringBuilder SQL = new StringBuilder(" UPDATE " + USER_NOTIFICATIONOPTIONS_TABLE + " SET ");
+          boolean first = true;
+          for(Map.Entry entry : map.entrySet()) {
+              String key = (String) entry.getKey();
+              if(first)
+                  first = false;
+              else
+                  SQL.append(", ");
+
+              SQL.append(" " + key + " = ? ");
+              values.add(entry.getValue());
+
+
+          }
+          SQL.append(" WHERE " + USER_NOTIFICATIONOPTIONS_USER + " LIKE ? ");
+          values.add(userName);
+
+          jdbcTemplate.update(SQL.toString(), values.toArray());
+      }catch(Exception e){
+          throw new DatabaseException(e);
+      }
+
+    }
 
     @Override
     public void createUser(String userName, String password, String mail) throws DatabaseException {
@@ -180,6 +273,15 @@ public class UserDaoMySql implements UserDao {
 
         try {
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+
+        // set default notificationOptions for each user
+        try {
+            saveNotificationOptions(userName,false, false,
+                    null, false, null, null,
+                    false,false,false);
         } catch (Exception e) {
             throw new DatabaseException(e);
         }

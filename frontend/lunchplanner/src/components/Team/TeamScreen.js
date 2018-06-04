@@ -3,7 +3,7 @@ import {withStyles} from "@material-ui/core/styles/index";
 import React from 'react';
 import Dialog from "../Dialog";
 import {Button, Slide, Divider} from "@material-ui/core";
-import {getUsername, setAuthenticationHeader} from "../authentication/Authentication";
+import {getUsername, setAuthenticationHeader} from "../authentication/LoginFunctions";
 import {getHistory} from "../../utils/HistoryUtils"
 import {Https as SecretIcon} from "@material-ui/icons";
 import UserList from "../User/UserList";

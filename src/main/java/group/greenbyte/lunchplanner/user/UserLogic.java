@@ -9,9 +9,9 @@ import com.google.firebase.messaging.Message;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.JwtService;
-import group.greenbyte.lunchplanner.security.SessionManager;
-import group.greenbyte.lunchplanner.user.database.Notifications;
 import group.greenbyte.lunchplanner.user.database.User;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
+import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -23,9 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Service
@@ -119,7 +117,6 @@ public class UserLogic {
         }
     }
 
-
     /**
      *
      * @param searchword String for searching the Database
@@ -133,8 +130,6 @@ public class UserLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
     }
-
-
 
     /**
      *
@@ -172,9 +167,7 @@ public class UserLogic {
         if(!fcmInitialized) {
             try {
                 initNotifications();
-                userDao.saveNotificationIntoDatabase(receiver,title,description,SessionManager.getUserName(),linkToClick, picturePath);
-
-            } catch (DatabaseException|IOException e) {
+            } catch (IOException e) {
                 throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
             }
         }
@@ -187,8 +180,6 @@ public class UserLogic {
                 .putData("picture", picturePath)
                 .setToken(fcmToken)
                 .build();
-
-
 
         // Send a message to the device corresponding to the provided
         // registration token.
@@ -219,7 +210,96 @@ public class UserLogic {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
 
+    }
 
+    /**
+     * Get notification options for user
+     *
+     * @param userName receiver of the notifiction options
+     * @return
+     * @throws HttpRequestException
+     */
+    public NotificationOptions getNotificationOptions(String userName) throws HttpRequestException {
+        if(userName == null || userName.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
+
+        if(userName.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
+
+        try {
+            return userDao.getNotificationOptions(userName);
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
+    }
+
+    /**
+     * Update notification options
+     *
+     * @param userName
+     * @param blockAll
+     * @param blockedUntil
+     * @param block_until
+     * @param blockedForWork
+     * @param start_working
+     * @param stop_working
+     * @param eventsBlocked
+     * @param teamsBlocked
+     * @param subscriptionsBlocked
+     * @throws HttpRequestException
+     */
+    public void updateNotificationOptions(String userName, Boolean blockAll, Boolean blockedUntil,
+                                            Date block_until, Boolean blockedForWork, Date start_working,
+                                            Date stop_working, Boolean eventsBlocked, Boolean teamsBlocked,
+                                            Boolean subscriptionsBlocked) throws HttpRequestException {
+
+        if(userName == null || userName.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
+
+        if(userName.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
+
+
+
+        Map<String, Object> map = new HashMap<>();
+
+        if(blockAll!=null)
+            map.put("block_all",blockAll);
+
+        if(blockedUntil!=null)
+            map.put("blocked_until",blockedUntil);
+
+        if(block_until!=null) {
+            if(block_until.before(new Date()))
+                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Datetime must be in the future");
+
+            map.put("block_until", block_until);
+        }
+
+        if(blockedForWork!=null)
+            map.put("blocked_for_work",blockedForWork);
+
+        if(start_working!=null)
+            map.put("start_working",start_working);
+
+        if(stop_working!=null)
+            map.put("stop_working",stop_working);
+
+        if(eventsBlocked!=null)
+            map.put("events_blocked",eventsBlocked);
+
+        if(teamsBlocked!=null)
+            map.put("teams_blocked",teamsBlocked);
+
+        if(subscriptionsBlocked!=null)
+            map.put("subscriptions_blocked",subscriptionsBlocked);
+
+        try {
+            userDao.updateNotificationOptions(userName,map);
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
 
     }
 

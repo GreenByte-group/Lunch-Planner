@@ -5,7 +5,6 @@ import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.event.database.EventInvitationDataForReturn;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import group.greenbyte.lunchplanner.user.database.Notifications;
 
 import java.util.Date;
 import java.util.List;
@@ -191,6 +190,8 @@ public interface EventDao {
      * @throws DatabaseException
      */
     void addTeamToEvent(int eventId, int teamId) throws DatabaseException;
+
+    boolean isEventPublic(int eventId) throws DatabaseException;
 
     /**
      * checks if a user has admin privileges for the given event

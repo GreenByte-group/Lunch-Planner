@@ -2,8 +2,10 @@ package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.SessionManager;
-import group.greenbyte.lunchplanner.user.database.Notifications;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
+import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 import group.greenbyte.lunchplanner.user.database.User;
+import group.greenbyte.lunchplanner.user.database.notifications.OptionsJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -154,27 +156,6 @@ public class UserController {
         }
     }
 
-    /**
-     * TODO:
-     * get a list of all subscribed locations of an user
-     * @param username
-     * @return a list of all subscribed locations of an user
-     */
-    @RequestMapping(value ="/subscribe/{username}", method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity getSubscribedLocations(@PathVariable("username") String username) {
-        try {
-            List<String> toReturn =  userLogic.getSubscribedLocations(username);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(toReturn);
-        } catch (HttpRequestException e) {
-            return ResponseEntity
-                    .status(e.getStatusCode())
-                    .body(e.getErrorMessage());
-        }
-    }
 
     /**
      * TODO:
@@ -218,6 +199,59 @@ public class UserController {
         return "";
     }
 
+
+  /**
+     * TODO:
+     * get a list of all subscribed locations of an user
+     * @param username
+     * @return a list of all subscribed locations of an user
+     */
+    @RequestMapping(value ="/subscribe/{username}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getSubscribedLocations(@PathVariable("username") String username) {
+        try {
+            List<String> toReturn =  userLogic.getSubscribedLocations(username);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(toReturn);
+
+     *
+     * @return the users notification options
+     */
+    @RequestMapping(value = "/options/notifications",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getNotificationOptions() {
+        try {
+            NotificationOptions notificationOptions = userLogic.getNotificationOptions(SessionManager.getUserName());
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(notificationOptions);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+          
+    @RequestMapping(value = "/options/notifications/update", method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String updateNotificationOptions(@RequestBody OptionsJson options, HttpServletResponse response){
+        try {
+            userLogic.updateNotificationOptions(SessionManager.getUserName(), options.getBlockAll(),options.getBlockedUntil(),
+                    options.getBlock_until(), options.getBlockedForWork(), options.getStart_working(), options.getStop_working(),
+                    options.getEventsBlocked(),options.getTeamsBlocked(),options.getSubscriptionsBlocked());
+
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            return "";
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            e.printStackTrace();
+            return e.getErrorMessage();
+        }
+    }
 
 
 //    /**
