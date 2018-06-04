@@ -242,62 +242,64 @@ class EventScreen extends React.Component {
 
         token = this.props.match.params.securityToken;
 
-        getEventExtern(token, (response) => {
-            this.setState({
-                eventId: response.data.eventId,
-                name: response.data.eventName,
-                location: response.data.location,
-                date: new Date(response.data.startDate),
-                description: response.data.eventDescription,
-                people: response.data.invitations,
-                token:response.data.shareToken,
-                isShared: true,
-            });
-        });
-
-        eventId = this.props.match.params.eventId;
-        if(this.props.location.query) {
-            if (this.props.location.query.eventName) {
-                eventName = String(this.props.location.query.eventName);
-            }
-            if (this.props.location.query.description) {
-                description = String(this.props.location.query.description);
-            }
-            if (this.props.location.query.date) {
-                date = this.props.location.query.date;
-            }
-            if (this.props.location.query.people) {
-                people = this.props.location.query.people;
-            }
-            if (this.props.location.query.accepted) {
-                accepted = Boolean(this.props.location.query.accepted);
-            }
-            if (this.props.location.query.location) {
-                location = String(this.props.location.query.location);
-            }
-            if (this.props.location.query.token) {
-                token = String(this.props.location.query.token);
-            }
-
-            this.setState({
-                eventId: eventId,
-                name: eventName,
-                description: description,
-                date: new Date(date),
-                people: people,
-                accepted: accepted,
-                location: location,
-                token: token,
-            });
-            if(this.state.token !== null){
+        if(token) {
+            getEventExtern(token, (response) => {
                 this.setState({
+                    eventId: response.data.eventId,
+                    name: response.data.eventName,
+                    location: response.data.location,
+                    date: new Date(response.data.startDate),
+                    description: response.data.eventDescription,
+                    people: response.data.invitations,
+                    token: response.data.shareToken,
                     isShared: true,
                 });
-            }
+            });
         } else {
-            this.loadEvent(eventId);
-        }
 
+            eventId = this.props.match.params.eventId;
+            if (this.props.location.query) {
+                if (this.props.location.query.eventName) {
+                    eventName = String(this.props.location.query.eventName);
+                }
+                if (this.props.location.query.description) {
+                    description = String(this.props.location.query.description);
+                }
+                if (this.props.location.query.date) {
+                    date = this.props.location.query.date;
+                }
+                if (this.props.location.query.people) {
+                    people = this.props.location.query.people;
+                }
+                if (this.props.location.query.accepted) {
+                    accepted = Boolean(this.props.location.query.accepted);
+                }
+                if (this.props.location.query.location) {
+                    location = String(this.props.location.query.location);
+                }
+                if (this.props.location.query.token) {
+                    token = String(this.props.location.query.token);
+                }
+
+                this.setState({
+                    eventId: eventId,
+                    name: eventName,
+                    description: description,
+                    date: new Date(date),
+                    people: people,
+                    accepted: accepted,
+                    location: location,
+                    token: token,
+                });
+                if (this.state.token !== null) {
+                    this.setState({
+                        isShared: true,
+                    });
+                }
+            } else {
+                this.loadEvent(eventId);
+            }
+        }
     }
 
     parseUrl = () => {
