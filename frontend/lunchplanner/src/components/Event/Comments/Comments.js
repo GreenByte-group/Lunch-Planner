@@ -1,5 +1,6 @@
 import React from "react";
-import {List, TextField, withStyles} from "@material-ui/core";
+import {Send} from "@material-ui/icons";
+import {List, TextField, withStyles, IconButton} from "@material-ui/core";
 import {getUsername, setAuthenticationHeader} from "../../authentication/LoginFunctions";
 import Comment from "./Comment";
 import Dialog from "../../Dialog";
@@ -13,10 +14,16 @@ const styles = {
     },
     textField: {
         zIndex: '10003',
-        width: '100%',
         padding: '16px',
         fontSize: '16px',
         lineHeight: '24px',
+        width: '100%',
+    },
+    iconButtonSend: {
+        alignSelf: 'center',
+    },
+    iconSend: {
+
     },
     formComment: {
         backgroundColor: 'white',
@@ -25,6 +32,8 @@ const styles = {
         bottom: 0,
         width: '100%',
         boxShadow: '0 -10px 15px 0 rgba(0,0,0,0.05)',
+        display: 'flex',
+        flexDirection: 'row',
     },
 };
 
@@ -77,6 +86,9 @@ class Comments extends React.Component {
     };
 
     onSubmit = () => {
+        this.setState({
+            newComment: "",
+        });
 
         sendComment(this.state.eventId, this.state.newComment,
             (response) => {
@@ -119,6 +131,9 @@ class Comments extends React.Component {
                             multiline
                             rows="6"
                         />
+                        <IconButton className={classes.iconButtonSend}>
+                            <Send className={classes.iconSend} />
+                        </IconButton>
                     </form>
                 </Dialog>
             </div>
