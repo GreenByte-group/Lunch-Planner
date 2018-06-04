@@ -93,6 +93,9 @@ class Comments extends React.Component {
         sendComment(this.state.eventId, this.state.newComment,
             (response) => {
                 this.loadComments();
+                this.setState({
+                    newComment: "",
+                })
         });
     };
 
@@ -131,7 +134,7 @@ class Comments extends React.Component {
                             multiline
                             rows="6"
                         />
-                        <IconButton className={classes.iconButtonSend}>
+                        <IconButton onClick={this.onSubmit} className={classes.iconButtonSend}>
                             <Send className={classes.iconSend} />
                         </IconButton>
                     </form>
