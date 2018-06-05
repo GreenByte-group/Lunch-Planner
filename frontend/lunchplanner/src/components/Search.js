@@ -15,21 +15,15 @@ import DialogActions from "@material-ui/core/es/DialogActions/DialogActions";
 const styles =  theme => ({
     root:{
       height: 320,
+        width: "max-content",
     },
     list: {
-        width: "auto",
+        width: "100%",
         color:"white",
         height: 200,
     },
-    profile:{
-        fontSize: 10,
-        textAlign: "center",
-        backgroundColor: "darkGrey",
-    },
-    avatar:{
-        marginLeft: 15,
-        marginBottom: 15,
-
+    listItem: {
+        width: '100%',
     },
     icon:{
         marginRight: 20,
@@ -54,9 +48,9 @@ const citys = [
     {value: "Ladenburg"},
 ];
 const teams = [
-    {value: "Mannheim"},
-    {value: "Heidelberg"},
-    {value: "Ladenburg"},
+    {value: "Team1"},
+    {value: "Team2"},
+    {value: "Team3"},
 ];
 class Search extends React.Component {
 
@@ -103,6 +97,10 @@ class Search extends React.Component {
         this.state.clickCancel;
         this.setState({ open: false });
     };
+
+    handleSearch = () => {
+        console.log("handle Search");
+    }
     render() {
 
         const { classes } = this.props;
@@ -113,12 +111,11 @@ class Search extends React.Component {
                 onClose={this.handleClose}
                 anchor='top'
             >
-                <DialogContent>
+                <DialogContent >
                     <div className={classes.list}>
                         <List className ={classes.menu}>
                             <ListItem
                                 dense
-                                button
                                 className={classes.listItem}>
                                 <TextField
                                     id="Search"
@@ -135,6 +132,8 @@ class Search extends React.Component {
                                     </IconButton>
                                 </ListItemSecondaryAction>
                             </ListItem>
+                            <ListItem
+                                className={classes.listItem}>>
                             <TextField
                                 id="select-city"
                                 select
@@ -154,6 +153,9 @@ class Search extends React.Component {
                                     </MenuItem>
                                 ))}
                             </TextField>
+                            </ListItem>
+                            <ListItem
+                                className={classes.listItem}>>
                             <TextField
                                 id="select-team"
                                 select
@@ -173,6 +175,7 @@ class Search extends React.Component {
                                     </MenuItem>
                                 ))}
                             </TextField>
+                            </ListItem>
                         </List>
                     </div>
                 </DialogContent>
