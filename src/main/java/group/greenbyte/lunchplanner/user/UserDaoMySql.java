@@ -33,7 +33,7 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_NOTIFICATION_ID = "notificationsId";
     public static final String USER_NOTIFICATION_TITEL = "titel";
     public static final String USER_NOTIFICATION_MESSAGE = "message";
-    public static final String USER_NOTIFICATION_RECEIVER = "receiver";
+    public static final String USER_NOTIFICATION_RECEIVER = "user_name";
     public static final String USER_NOTIFICATION_BUILDER = "builder";
     public static final String USER_NOTIFICATION_LINK = "link";
     public static final String USER_NOTIFICATION_PICTURE = "picture";

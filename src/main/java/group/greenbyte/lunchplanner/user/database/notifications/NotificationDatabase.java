@@ -8,7 +8,7 @@ public class NotificationDatabase {
     private Date date;
     private String titel;
     private String message;
-    private String receiver;
+    private String userName;
     private String builder;
     private String link;
     private String picture;
@@ -20,7 +20,7 @@ public class NotificationDatabase {
         notification.setLink(this.link);
         notification.setMessage(this.message);
         notification.setPicture(this.picture);
-        notification.setReceiverName(this.receiver);
+        notification.setReceiverName(this.userName);
         notification.setNotificationId(this.notificationId);
         notification.setDate(this.date);
 
@@ -35,8 +35,8 @@ public class NotificationDatabase {
         this.message = message;
     }
 
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public void setBuilder(String builder) {
