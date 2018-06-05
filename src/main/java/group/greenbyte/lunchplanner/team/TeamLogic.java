@@ -140,6 +140,57 @@ public class TeamLogic {
     }
 
     /**
+     * Remove a team member from a team
+     *
+     * @param userName user that is going to be removed
+     * @param teamId id of the team
+     * @throws DatabaseException
+     */
+    public void removeTeamMember(String userName,String userToRemove, int teamId) throws HttpRequestException {
+
+        if(!isValidName(userName))
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximun length" + User.MAX_USERNAME_LENGTH + ", minimum length 1");
+        if(!isValidName(userToRemove))
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username of removed user is not valid, maximun length" + User.MAX_USERNAME_LENGTH + ", minimum length 1");
+
+
+        try{
+            if(!hasAdminPrivileges(teamId, userName))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have write access to this team");
+
+            teamdao.removeTeamMember(userToRemove, teamId);
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
+        //TODO picture
+        //TODO write own method for each entity?
+        User user = userLogic.getUser(userToRemove);
+        Team team = getTeam(userName, teamId);
+        //set notification information
+        String title = "You have been removed from a team";
+        String description = String.format("%s removed you from team %s", userName, team.getTeamName());
+        String linkToClick = "/team/" + teamId;
+
+        //save notification
+        try {
+            userDao.saveNotificationIntoDatabase(userToRemove,title,description,userName,linkToClick, "");
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
+        //send a notification to userToInvite
+        NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToRemove);
+        if(notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked()) {
+            try {
+                userLogic.sendNotification(user.getFcmToken(), userToRemove, title, description,linkToClick, "");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
      *
      * @param userName the user who wants to access the team
      * @param teamId  id of the team

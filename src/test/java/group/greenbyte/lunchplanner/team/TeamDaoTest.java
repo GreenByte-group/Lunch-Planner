@@ -7,6 +7,7 @@ import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 
 import group.greenbyte.lunchplanner.team.database.Team;
 
+import group.greenbyte.lunchplanner.team.database.TeamMemberDataForReturn;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,6 +27,7 @@ import static group.greenbyte.lunchplanner.event.Utils.createEvent;
 import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
 import static group.greenbyte.lunchplanner.team.Utils.setTeamPublic;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
+import static junit.framework.TestCase.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -192,6 +194,36 @@ public class TeamDaoTest {
         String searchWord = newTeamName;
         List<Team> events = teamDao.findPublicTeams(searchWord);
         Assert.assertEquals(1, events.size());
+    }
+
+    // ------------------ REMOVE TEAM MEMBER ------------------------
+
+    @Test
+    public void test1RemoveTeamMemberWithMinLength() throws Exception {
+        String userToRemove = createUserIfNotExists(userLogic, createString(1));
+
+        teamDao.removeTeamMember(userToRemove, parent);
+    }
+
+    @Test
+    public void test2RemoveTeamMemberWithMaxLength() throws Exception {
+        String userToRemove = createUserIfNotExists(userLogic, createString(50));
+
+        teamDao.removeTeamMember(userToRemove, parent);
+    }
+
+    @Test
+    public void test3RemoveTeamMemberRemovingUser() throws Exception {
+        String userToRemove = createUserIfNotExists(userLogic, createString(50));
+        teamLogic.inviteTeamMember(userName, userToRemove, parent);
+
+        teamDao.removeTeamMember(userToRemove, parent);
+        List<TeamMemberDataForReturn> members = teamDao.getInvitations(parent);
+
+        if(members.size() > 1) {
+            fail("Member was not removed!");
+        }
+
     }
 
 }
