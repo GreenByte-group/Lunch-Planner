@@ -68,6 +68,7 @@ public class UserController {
         return "";
     }
 
+    // --------------------- GET OR SEARCH USERS ---------------------
     /**
      *
      * @param toSearch searchword for Database to search for User/s
@@ -134,6 +135,8 @@ public class UserController {
         }
 
     }
+
+    // --------------------- SUBSCRIPTION ---------------------
 
     /**
      *
@@ -222,6 +225,8 @@ public class UserController {
         }
     }
 
+    // --------------------- NOTIFICATIONS ---------------------
+
      /**
      * @return the users notification options
      */
@@ -239,7 +244,14 @@ public class UserController {
                     .body(e.getErrorMessage());
         }
     }
-          
+
+    /**
+     * Update notification options
+     *
+     * @param options options that have been set by the user
+     * @param response response channel
+     * @return
+     */
     @RequestMapping(value = "/options/notifications/update", method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
@@ -251,6 +263,28 @@ public class UserController {
 
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
             return "";
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            e.printStackTrace();
+            return e.getErrorMessage();
+        }
+    }
+
+    // --------------------- USER PROFILE ---------------------
+    /**
+     * Update the profile picture
+     *
+     * @param picturePath picture identificator
+     * @param response response channel
+     * @return
+     */
+    @RequestMapping(value = "/options/profile/picture", method = RequestMethod.PUT,
+            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String updateProfilePicture(@RequestBody String picturePath, HttpServletResponse response){
+        try {
+            userLogic.updateProfilePicture(SessionManager.getUserName(), picturePath);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());
             e.printStackTrace();
