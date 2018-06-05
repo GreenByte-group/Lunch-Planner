@@ -169,7 +169,7 @@ public class UserLogic {
             try {
                 initNotifications();
             } catch (IOException e) {
-                throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+                e.printStackTrace();
             }
         }
 
