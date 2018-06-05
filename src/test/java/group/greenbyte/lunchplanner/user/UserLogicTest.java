@@ -221,28 +221,28 @@ public class UserLogicTest {
     @Test
     public void test1UpdateNotificationOptionsMinUser() throws Exception {
         String userName = createUserIfNotExists(userLogic, createString(1));
-        userLogic.updateNotificationOptions(userName,false,false, null,
+        userLogic.updateNotificationOptions(userName,false, null,
                 false, null, null, null, null, null);
     }
 
     @Test
     public void test2UpdateNotificationOptionsMaxUser() throws Exception {
         String userName = createUserIfNotExists(userLogic, createString(50));
-        userLogic.updateNotificationOptions(userName,false,false, null,
+        userLogic.updateNotificationOptions(userName,false, null,
                 false, null, null, null, null, null);
     }
 
     @Test (expected = HttpRequestException.class)
     public void test3UpdateNotificationOptionsEmptyUserName() throws Exception {
         String userName = "";
-        userLogic.updateNotificationOptions(userName,false,false, null,
+        userLogic.updateNotificationOptions(userName,false, null,
                 false, null, null, null, null, null);
     }
 
     @Test (expected = HttpRequestException.class)
     public void test4UpdateNotificationOptionsUserNameTooLong() throws Exception {
         String userName = createUserIfNotExists(userLogic, createString(51));
-        userLogic.updateNotificationOptions(userName,false,false, null,
+        userLogic.updateNotificationOptions(userName,false, null,
                 false, null, null, null, null, null);
     }
 
@@ -250,7 +250,7 @@ public class UserLogicTest {
     public void test5UpdateNotificationOptionsBlockUntilInThePast() throws Exception {
         Date until = new Date(System.currentTimeMillis() - 10000);
         String userName = createUserIfNotExists(userLogic, createString(50));
-        userLogic.updateNotificationOptions(userName,false,false, until,
+        userLogic.updateNotificationOptions(userName,false, until,
                 false, null, null, null, null, null);
 
     }

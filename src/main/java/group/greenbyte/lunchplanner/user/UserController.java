@@ -245,7 +245,7 @@ public class UserController {
     @ResponseBody
     public String updateNotificationOptions(@RequestBody OptionsJson options, HttpServletResponse response){
         try {
-            userLogic.updateNotificationOptions(SessionManager.getUserName(), options.getBlockAll(),options.getBlockedUntil(),
+            userLogic.updateNotificationOptions(SessionManager.getUserName(), options.getBlockAll(),
                     options.getBlock_until(), options.getBlockedForWork(), options.getStart_working(), options.getStop_working(),
                     options.getEventsBlocked(),options.getTeamsBlocked(),options.getSubscriptionsBlocked());
 

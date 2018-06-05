@@ -243,7 +243,6 @@ public class UserLogic {
      *
      * @param userName
      * @param blockAll
-     * @param blockedUntil
      * @param block_until
      * @param blockedForWork
      * @param start_working
@@ -253,7 +252,7 @@ public class UserLogic {
      * @param subscriptionsBlocked
      * @throws HttpRequestException
      */
-    public void updateNotificationOptions(String userName, Boolean blockAll, Boolean blockedUntil,
+    public void updateNotificationOptions(String userName, Boolean blockAll,
                                             Date block_until, Boolean blockedForWork, String start_working,
                                             String stop_working, Boolean eventsBlocked, Boolean teamsBlocked,
                                             Boolean subscriptionsBlocked) throws HttpRequestException {
@@ -270,9 +269,6 @@ public class UserLogic {
 
         if(blockAll!=null)
             map.put("block_all",blockAll);
-
-        if(blockedUntil!=null)
-            map.put("blocked_until",blockedUntil);
 
         if(block_until!=null) {
             if(block_until.before(new Date()))

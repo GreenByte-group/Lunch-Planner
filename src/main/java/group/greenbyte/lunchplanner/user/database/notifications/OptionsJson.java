@@ -6,7 +6,6 @@ import java.util.Date;
 public class OptionsJson implements Serializable {
 
     private Boolean blockAll;
-    private Boolean blockedUntil;
     private Date block_until;
     private Boolean blockedForWork;
     private String start_working;
@@ -17,12 +16,11 @@ public class OptionsJson implements Serializable {
 
     public OptionsJson() {};
 
-    public OptionsJson(Boolean blockAll, Boolean blockedUntil, Date block_until, Boolean blockedForWork,
+    public OptionsJson(Boolean blockAll, Date block_until, Boolean blockedForWork,
                        String start_working, String stop_working, Boolean eventsBlocked, Boolean teamsBlocked,
                        Boolean subscriptionsBlocked) {
 
         this.blockAll = blockAll;
-        this.blockedUntil = blockedUntil;
         this.block_until = block_until;
         this.blockedForWork = blockedForWork;
         this.start_working = start_working;
@@ -42,14 +40,6 @@ public class OptionsJson implements Serializable {
 
     public void setBlockAll(Boolean blockAll) {
         this.blockAll = blockAll;
-    }
-
-    public Boolean getBlockedUntil() {
-        return blockedUntil;
-    }
-
-    public void setBlockedUntil(Boolean blockedUntil) {
-        this.blockedUntil = blockedUntil;
     }
 
     public Date getBlock_until() {

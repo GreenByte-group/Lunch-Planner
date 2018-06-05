@@ -329,9 +329,9 @@ public class UserControllerTest {
     @WithMockUser(username = userName)
     public void test1GetNotificationOptionsValid() throws Exception {
         Date block_until = new Date(System.currentTimeMillis() + 10000);
-        Date start_working = new Date();
-        Date stop_working = new Date();
-        userLogic.updateNotificationOptions(userName, true, false, block_until, false,
+        String start_working = "00:00";
+        String stop_working = "00:00";
+        userLogic.updateNotificationOptions(userName, true,  block_until, false,
                 start_working, stop_working, false, false,false);
 
         mockMvc.perform(
@@ -339,10 +339,9 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(jsonPath("$.blockAll").value(true))
                 .andExpect(jsonPath("$.block_until").value(block_until))
-                .andExpect(jsonPath("$.blockedUntil").value(false))
                 .andExpect(jsonPath("$.blockedForWork").value(false))
-                .andExpect(jsonPath("$.start_working").value(start_working))
-                .andExpect(jsonPath("$.stop_working").value(stop_working))
+                .andExpect(jsonPath("$.start_working").value(OptionsJson.getMinutesFromDate(start_working)))
+                .andExpect(jsonPath("$.stop_working").value(OptionsJson.getMinutesFromDate(stop_working)))
                 .andExpect(jsonPath("$.eventsBlocked").value(false))
                 .andExpect(jsonPath("$.teamsBlocked").value(false))
                 .andExpect(jsonPath("$.username").value(userName))
@@ -353,11 +352,11 @@ public class UserControllerTest {
     @Test
     @WithMockUser(username = userName)
     public void test1UpdateNotificationOptions() throws Exception {
-        long timeStart = System.currentTimeMillis() + 100000;
-        long timeEnd = System.currentTimeMillis() + 200000;
+        String timeStart = "00:00";
+        String timeEnd = "24:00";
         long until = System.currentTimeMillis() + 300000;
 
-        OptionsJson options = new OptionsJson(false, false, new Date(until),false, new Date(timeStart), new Date(timeEnd), false, false, false );
+        OptionsJson options = new OptionsJson(false, new Date(until),false, timeStart, timeEnd, false, false, false );
 
         String json = getJsonFromObject(options);
 
@@ -373,11 +372,11 @@ public class UserControllerTest {
     @Test
     @WithMockUser(username = userName)
     public void test1UpdateNotificationOptionsBlockUntilInThePast() throws Exception {
-        long timeStart = System.currentTimeMillis() + 100000;
-        long timeEnd = System.currentTimeMillis() + 200000;
+        String timeStart = "00:00";
+        String timeEnd = "24:00";
         long until = System.currentTimeMillis() - 10000;
 
-        OptionsJson options = new OptionsJson(false, false, new Date(until),false, new Date(timeStart), new Date(timeEnd), false, false, false );
+        OptionsJson options = new OptionsJson(false, new Date(until),false, timeStart, timeEnd, false, false, false );
 
         String json = getJsonFromObject(options);
 
