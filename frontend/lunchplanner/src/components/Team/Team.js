@@ -148,9 +148,9 @@ class Team extends React.Component {
                        </div>
                         <p className={classes.title}>{name}</p>
                     </div>
-                    <IconButton>
-                        <TeamIcon className={classes.icon} color="primary" />
-                    </IconButton>
+                    {/*<IconButton>*/}
+                        {/*<TeamIcon className={classes.icon} color="primary" />*/}
+                    {/*</IconButton>*/}
                 </ListItem>
             </Link>
 

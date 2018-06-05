@@ -1,5 +1,6 @@
 import React from "react"
-import {withStyles, ListItem} from "@material-ui/core";
+import {withStyles, ListItem, IconButton} from "@material-ui/core";
+import {Close} from "@material-ui/icons"
 import AcceptedButton from "../Event/AcceptedButton";
 
 const styles = {
@@ -47,7 +48,13 @@ const styles = {
         borderRadius: '50%',
         height: '32px',
         width: '32px',
-    }
+    },
+    iconButtonRemove: {
+        marginLeft: '7px',
+    },
+    iconRemove: {
+
+    },
 };
 
 class Event extends React.Component {
@@ -60,6 +67,7 @@ class Event extends React.Component {
             invited: props.invited || false,
             username: props.username,
             selectable: props.selectable || false,
+            clickRemove: props.clickRemove,
         };
     }
 
@@ -93,6 +101,10 @@ class Event extends React.Component {
         }
     };
 
+    clickRemove = () => {
+        this.state.clickRemove(this.state.username);
+    };
+
     render() {
         const {classes} = this.props;
         let selected= this.state.selected;
@@ -122,6 +134,10 @@ class Event extends React.Component {
                         ? <AcceptedButton invited={true} />
                         : ""
                 )}
+                {(this.state.clickRemove)
+                        ? <IconButton className={classes.iconButtonRemove} onClick={this.clickRemove}><Close className={classes.iconRemove} /></IconButton>
+                        : ""
+                }
             </ListItem>
         );
     }

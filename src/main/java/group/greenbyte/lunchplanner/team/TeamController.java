@@ -165,6 +165,28 @@ public class TeamController {
     }
 
     /**
+     * Remove a team member from a team
+     *
+     * @param userToRemove user that is going to be removed
+     * @param teamId id of the team
+     * @param response response channel
+     * @return
+     */
+    @RequestMapping(value = "/{userToRemove}/team/{teamId}/remove", method = RequestMethod.DELETE,
+            produces = MediaType.TEXT_PLAIN_VALUE )
+    @ResponseBody
+    public String removeTeamMember(@PathVariable("userToRemove") String userToRemove, @PathVariable ("teamId") int teamId, HttpServletResponse response) {
+        try {
+            teamlogic.removeTeamMember(SessionManager.getUserName(), userToRemove, teamId);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+        return "";
+    }
+
+    /**
      * Update the name for a team
      *
      * @return nothing or an error message

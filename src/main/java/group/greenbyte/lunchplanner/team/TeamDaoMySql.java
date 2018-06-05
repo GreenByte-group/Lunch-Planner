@@ -210,6 +210,25 @@ public class TeamDaoMySql implements TeamDao {
         }
     }
 
+    /**
+     * Remove a team member from database
+     *
+     * @param userToRemove user that is going to be deleted from database
+     * @param teamId id of the team
+     * @throws DatabaseException
+     */
+    @Override
+    public void removeTeamMember(String userToRemove, int teamId) throws DatabaseException {
+        String SQL = " DELETE FROM " + TEAM_MEMBER_TABLE + " WHERE " + TEAM_MEMBER_TEAM + " = ? AND "
+                + TEAM_MEMBER_USER + " = ? ";
+
+        try {
+            jdbcTemplate.update(SQL, teamId, userToRemove);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
     @Override
     public void leave(String username, int teamId) throws DatabaseException {
         String SQL = "DELETE FROM " + TEAM_MEMBER_TABLE + " WHERE " + TEAM_MEMBER_USER + " = ? AND "

@@ -330,11 +330,7 @@ public class EventLogic {
         String linkToClick = "/event/" + eventId;
 
         //save notification
-        try {
-            userDao.saveNotificationIntoDatabase(userToInvite,title,description,username,linkToClick, "");
-        } catch(DatabaseException e) {
-            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
-        }
+        userLogic.saveNotification(userToInvite,title,description,username,linkToClick, "");
 
         //send a notification to userToInvite
         NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToInvite);
