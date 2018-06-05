@@ -289,6 +289,10 @@ class TeamScreen extends React.Component {
         }
     };
 
+    clickRemove = (username) => {
+        console.log(username);
+    };
+
     render() {
         const { classes } = this.props;
         const error = this.state.error;
@@ -329,6 +333,10 @@ class TeamScreen extends React.Component {
                 buttonText = "Leave Team";
             }
         });
+
+        let clickRemove;
+        if(iAmAdmin)
+            clickRemove = this.clickRemove;
 
         return (
             <div>
@@ -371,10 +379,11 @@ class TeamScreen extends React.Component {
                                         : ''
                                 }
                                 <UserList
-                                    selectedUsers={selectedUsers}
-                                    othersInvited={true}
+                                    selectedUsers={people.map(value => value.userName)}
+                                    othersInvited={false}
                                     selectable={false}
                                     users={people}
+                                    clickRemove={clickRemove}
                                 />
                             </div>
                         </div>
