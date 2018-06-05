@@ -177,8 +177,6 @@ public class UserLogic {
                 .putData("title", title)
                 .putData("body", description)
                 .putData("tag", linkToClick)
-                .putData("click_action", linkToClick)
-//                .putData("picture", picturePath)
                 .putData("icon", "https://greenbyte.group/assets/images/logo.png")
                 .setToken(fcmToken)
                 .build();

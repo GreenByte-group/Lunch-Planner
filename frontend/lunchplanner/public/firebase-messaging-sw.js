@@ -23,7 +23,6 @@ messaging.setBackgroundMessageHandler((payload) => {
     let notificationOptions = {
         body: payload.data.body,
         icon: payload.data.icon,
-        click_action: 'https://lunchplanner.greenbyte.group',
         tag: FRONTEND_HOST + payload.data.tag,
     };
 
@@ -31,9 +30,10 @@ messaging.setBackgroundMessageHandler((payload) => {
 });
 
 self.addEventListener('notificationclick', function(event) {
-    let url = event.notification.click_action;//.click_action;
+    let url = event.notification.tag;//.click_action;
     console.log("url: ", url);
-    console.log("Event: ", event);
+    console.log("Event: ");
+    console.log("tag: ", event.notification.tag);
     event.notification.close(); // Android needs explicit close.
     // This looks to see if the current is already open and
     // focuses if it is
