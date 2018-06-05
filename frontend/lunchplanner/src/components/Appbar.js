@@ -6,9 +6,11 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/core/styles';
 import Search from "./Search";
+import SearchIcon from '@material-ui/icons/Search';
 
 
 import LunchMenu from "./LunchMenu";
+import {Link} from "react-router-dom";
 
 const styles = {
     root: {
@@ -27,6 +29,9 @@ const styles = {
     appbar: {
         position: 'relative',
         boxShadow: 'none',
+    },
+    search:{
+        color: 'white',
     }
 };
 
@@ -34,11 +39,24 @@ class ButtonAppBar extends React.Component {
 
     constructor(props) {
         super();
-
+        this.handleOpenSearch = this.handleOpenSearch.bind(this);
         this.state = {
             currentScreen: props.currentScreen,
+            openSearch: false,
         };
     }
+
+    handleOpenSearch = () =>{
+        console.log("handle open", this.state.openSearch);
+        this.setState({
+            openSearch : true,
+        });
+    };
+
+    handleCancel = () => {
+        console.log("handle cancel");
+        this.setState({openSearch: false});
+    };
 
     render() {
         const { classes } = this.props;
@@ -55,7 +73,13 @@ class ButtonAppBar extends React.Component {
                             {titel}
                         </Typography>
                         <div color="inherit">
-                            <Search/>
+                            <IconButton onClick={this.handleOpenSearch} className={classes.search}>
+                                <SearchIcon/>
+                                {this.state.openSearch ?
+                                    <Search open={this.state.openSearch} clickCancel={this.handleCancel}/> :
+                                   ""
+                                }
+                            </IconButton>
                         </div>
                     </Toolbar>
                 </AppBar>
