@@ -181,7 +181,7 @@ public class TeamLogic {
 
         //send a notification to userToInvite
         NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToRemove);
-        if(notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked()) {
+        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
             try {
                 userLogic.sendNotification(user.getFcmToken(), userToRemove, title, description,linkToClick, "");
             } catch (Exception e) {
