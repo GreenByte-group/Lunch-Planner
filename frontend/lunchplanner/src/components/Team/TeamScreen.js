@@ -7,7 +7,7 @@ import {getUsername, setAuthenticationHeader} from "../authentication/LoginFunct
 import {getHistory} from "../../utils/HistoryUtils"
 import {Https as SecretIcon} from "@material-ui/icons";
 import UserList from "../User/UserList";
-import {getTeam, replyToTeam, changeTeamDescription,changeTeamName} from "./TeamFunctions";
+import {getTeam, replyToTeam, changeTeamDescription, changeTeamName, removeUserFromTeam} from "./TeamFunctions";
 import {teamListNeedReload} from "./TeamList";
 import TextFieldEditing from "../editing/TextFieldEditing";
 import axios from "axios";
@@ -289,6 +289,18 @@ class TeamScreen extends React.Component {
         }
     };
 
+    clickRemove = (username) => {
+        let people = this.state.people;
+        people = people.filter(listValue => listValue.userName !== username)
+        this.setState({
+            people: people,
+        });
+
+        removeUserFromTeam(this.state.teamId, username, (response) => {
+            //TODO
+        })
+    };
+
     render() {
         const { classes } = this.props;
         const error = this.state.error;
@@ -329,6 +341,10 @@ class TeamScreen extends React.Component {
                 buttonText = "Leave Team";
             }
         });
+
+        let clickRemove;
+        if(iAmAdmin)
+            clickRemove = this.clickRemove;
 
         return (
             <div>
@@ -371,10 +387,11 @@ class TeamScreen extends React.Component {
                                         : ''
                                 }
                                 <UserList
-                                    selectedUsers={selectedUsers}
-                                    othersInvited={true}
+                                    selectedUsers={people.map(value => value.userName)}
+                                    othersInvited={false}
                                     selectable={false}
                                     users={people}
+                                    clickRemove={clickRemove}
                                 />
                             </div>
                         </div>
