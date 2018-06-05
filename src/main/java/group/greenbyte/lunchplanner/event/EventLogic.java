@@ -4,6 +4,7 @@ import group.greenbyte.lunchplanner.Config;
 import group.greenbyte.lunchplanner.event.database.BringService;
 import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
+import group.greenbyte.lunchplanner.event.database.EventInvitationDataForReturn;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.SessionManager;
@@ -482,10 +483,33 @@ public class EventLogic {
                 if(!hasAdminPrivileges(eventId, userName))
                     throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");
 
-
             eventDao.putCommentForEvent(userName,eventId, comment);
 
+            List<EventInvitationDataForReturn> invitations = eventDao.getInvitations(eventId);
+            for(EventInvitationDataForReturn invitation : invitations) {
+                if(invitation.getAnswer() == InvitationAnswer.ACCEPT.getValue() && !invitation.getUserName().equals(userName)) {
+                    User user = userLogic.getUser(invitation.getUserName());
 
+                    String title = "New comment in " + event.getEventName();
+                    String description = userName + ": " + comment;
+                    String linkToClick = "/event/" + eventId + "/comments";
+                    String picturePath = "";
+
+                    //save notification
+                    userLogic.saveNotification(userName, title, description,
+                            user.getUserName(), linkToClick, picturePath);
+
+                    //send a notification to userToInvite
+                    NotificationOptions notificationOptions = userLogic.getNotificationOptions(user.getUserName());
+                    if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isEventsBlocked())) {
+                        try {
+                            userLogic.sendNotification(user.getFcmToken(), user.getUserName(), title, description, linkToClick, picturePath);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
@@ -559,17 +583,44 @@ public class EventLogic {
     }
 
 
-    public void putService(String userName, int event_id, String food, String description) throws HttpRequestException{
+    public void putService(String userName, int eventId, String food, String description) throws HttpRequestException{
         try{
             if(food.length() > BringService.MAX_NAME_LENGTH || food.length() == 0)
                 throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Name is too long or empty");
             if(description.length() > BringService.MAX_DESCRIPTION_LENGTH)
                 throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Description is too long");
 
-            if(!hasUserPrivileges(event_id, userName))
+            if(!hasUserPrivileges(eventId, userName))
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You don't have acces to this event");
 
-            eventDao.putService(SessionManager.getUserName(),event_id,food,description);
+            eventDao.putService(SessionManager.getUserName(),eventId,food,description);
+
+            List<EventInvitationDataForReturn> invitations = eventDao.getInvitations(eventId);
+            Event event = eventDao.getEvent(eventId);
+            for(EventInvitationDataForReturn invitation : invitations) {
+                if(invitation.getAnswer() == InvitationAnswer.ACCEPT.getValue() && !invitation.getUserName().equals(userName)) {
+                    User user = userLogic.getUser(invitation.getUserName());
+
+                    String title = "New task in " + event.getEventName();
+                    String descriptionNotification = userName + ": " + food;
+                    String linkToClick = "/event/" + eventId;
+                    String picturePath = "";
+
+                    //save notification
+                    userLogic.saveNotification(userName, title, descriptionNotification,
+                            user.getUserName(), linkToClick, picturePath);
+
+                    //send a notification to userToInvite
+                    NotificationOptions notificationOptions = userLogic.getNotificationOptions(user.getUserName());
+                    if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isEventsBlocked())) {
+                        try {
+                            userLogic.sendNotification(user.getFcmToken(), user.getUserName(), title, descriptionNotification, linkToClick, picturePath);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
@@ -597,6 +648,27 @@ public class EventLogic {
                 throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), bringService.getAccepter() + " already accepted this task");
 
             eventDao.updateBringservice(eventId,accepter,serviceId);
+
+            //Send notification
+            User user = userLogic.getUser(bringService.getCreatorName());
+
+            String title = "Task accepted";
+            String descriptionNotification = user.getUserName() + " accepted your task \"" + bringService.getFood() + "\"";
+            String linkToClick = "/event/" + eventId;
+            String picturePath = "";
+
+            //save notification
+            userLogic.saveNotification(accepter, title, descriptionNotification,
+                    user.getUserName(), linkToClick, picturePath);
+
+            NotificationOptions notificationOptions = userLogic.getNotificationOptions(user.getUserName());
+            if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isEventsBlocked())) {
+                try {
+                    userLogic.sendNotification(user.getFcmToken(), user.getUserName(), title, descriptionNotification, linkToClick, picturePath);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
