@@ -3,8 +3,10 @@ package group.greenbyte.lunchplanner.team;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.team.database.Team;
+import group.greenbyte.lunchplanner.user.UserDao;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import group.greenbyte.lunchplanner.user.database.User;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class TeamLogic {
     private TeamDao teamdao;
 
     private UserLogic userLogic;
+
+    private UserDao userDao;
     /**
      *
      * @param userName userName that is logged in
@@ -110,7 +114,29 @@ public class TeamLogic {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
 
-        userLogic.sendInvitation(username, userToInvite);
+        //TODO picture
+        User user = userLogic.getUser(userToInvite);
+        //set notification information
+        String title = "Team invitation";
+        String description = String.format("%s invited you to join their team", username);
+        String linkToClick = "/team/" + teamId;
+
+        //save notification
+        try {
+            userDao.saveNotificationIntoDatabase(userToInvite,title,description,username,linkToClick, "");
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
+        //send a notification to userToInvite
+        NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToInvite);
+        if(notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked()) {
+            try {
+                userLogic.sendNotification(user.getFcmToken(), userToInvite, title, description,linkToClick, "");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -278,4 +304,8 @@ public class TeamLogic {
         this.userLogic = userLogic;
     }
 
+    @Autowired
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
 }

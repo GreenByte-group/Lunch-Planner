@@ -6,15 +6,16 @@ import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
+import group.greenbyte.lunchplanner.security.SessionManager;
 import group.greenbyte.lunchplanner.team.TeamDao;
 import group.greenbyte.lunchplanner.team.TeamLogic;
 import group.greenbyte.lunchplanner.team.database.TeamMemberDataForReturn;
-import group.greenbyte.lunchplanner.security.SessionManager;
+import group.greenbyte.lunchplanner.user.UserDao;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import group.greenbyte.lunchplanner.user.database.User;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class EventLogic {
     private UserLogic userLogic;
     private TeamDao teamDao;
     private TeamLogic teamLogic;
+    private UserDao userDao;
 
     @Autowired
     public EventLogic(Scheduler scheduler) {
@@ -320,21 +322,28 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
 
-
+        //TODO picture
         User user = userLogic.getUser(userToInvite);
         //set notification information
         String title = "Event invitation";
         String description = String.format("%s invited you to an event", username);
         String linkToClick = "/event/" + eventId;
 
-        //TODO handle exception
-        //TODO check if user wants notifications
-        //send a notification to userToInvite
+        //save notification
         try {
-            //TODO picture path
-            userLogic.sendNotification(user.getFcmToken(), user.getUserName(),title, description,linkToClick, "");
-        } catch (Exception e) {
-            e.printStackTrace();
+            userDao.saveNotificationIntoDatabase(userToInvite,title,description,username,linkToClick, "");
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
+        //send a notification to userToInvite
+        NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToInvite);
+        if(notificationOptions.notificationsAllowed() && !notificationOptions.isEventsBlocked()) {
+            try {
+                userLogic.sendNotification(user.getFcmToken(), userToInvite, title, description,linkToClick, "");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -375,7 +384,7 @@ public class EventLogic {
                     //TODO check if user wants notifications
                     //TODO picture path
                     user = userLogic.getUser(member.getUserName());
-                    userLogic.sendNotification(user.getFcmToken(), user.getUserName(), title, description,linkToClick, "");
+                    userLogic.sendNotification(user.getFcmToken(),member.getUserName(),title, description,linkToClick, "");
                 }
             }
         }catch(DatabaseException e){
@@ -662,6 +671,11 @@ public class EventLogic {
     @Autowired
     public void setTeamLogic(TeamLogic teamLogic) {
         this.teamLogic = teamLogic;
+    }
+
+    @Autowired
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
     }
 }
 

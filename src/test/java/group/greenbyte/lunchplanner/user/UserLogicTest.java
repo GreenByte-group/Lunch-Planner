@@ -11,8 +11,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
@@ -152,5 +154,104 @@ public class UserLogicTest {
 
         User notAuth = userLogic.validateUser(auth.getToken() + "a");
         assertNull(notAuth);
+    }
+
+
+    // ------------------------SUBSCRIBE------------------------
+    @Test
+    public void testSubscribeValidateUser() throws Exception {
+        String userName = createUserIfNotExists(userLogic, "username");
+        userLogic.subscribe(userName, "location");
+    }
+    @Test(expected = HttpRequestException.class)
+    public void testSubscribeInvalidUser() throws Exception {
+        String userName = "user";
+        userLogic.subscribe(userName, "location");
+    }
+    @Test
+    public void testGetSubscribeValidateUser() throws Exception {
+        String userName = createUserIfNotExists(userLogic, "username");
+        userLogic.subscribe(userName, "location");
+        List<String> returnList = userLogic.getSubscribedLocations(userName);
+
+        assertEquals("location",returnList.get(0));
+    }
+    @Test(expected = HttpRequestException.class)
+    public void testGetSubscribeInvalidUser() throws Exception {
+        String userName = "username";
+        userLogic.subscribe(userName, "location");
+        List<String> returnList = userLogic.getSubscribedLocations(userName);
+    }
+    @Test
+    public void testGetSubscriberValidateUser() throws Exception {
+        String userName = createUserIfNotExists(userLogic, "username");
+        userLogic.subscribe(userName, "location");
+        List<User> returnList = userLogic.getSubscriber("location");
+        assertEquals("username",returnList.get(0).getUserName());
+    }
+
+    // ------------- GET NOTIFICATION OPTIONS ------------------
+
+    @Test
+    public void test1GetNotificationOptionsMinUserName() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(1));
+        userLogic.getNotificationOptions(userName);
+    }
+
+    @Test
+    public void test1GetNotificationOptionsMaxUserName() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(50));
+        userLogic.getNotificationOptions(userName);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test1GetNotificationOptionsEmptyUsername() throws Exception {
+        String userName = "";
+        userLogic.getNotificationOptions(userName);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test1GetNotificationOptionsUserNameTooLong() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(51));
+        userLogic.getNotificationOptions(userName);
+    }
+
+    // ------------- UPDATE NOTIFICATION OPTIONS ------------------
+
+    @Test
+    public void test1UpdateNotificationOptionsMinUser() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(1));
+        userLogic.updateNotificationOptions(userName,false,false, null,
+                false, null, null, null, null, null);
+    }
+
+    @Test
+    public void test2UpdateNotificationOptionsMaxUser() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(50));
+        userLogic.updateNotificationOptions(userName,false,false, null,
+                false, null, null, null, null, null);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test3UpdateNotificationOptionsEmptyUserName() throws Exception {
+        String userName = "";
+        userLogic.updateNotificationOptions(userName,false,false, null,
+                false, null, null, null, null, null);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test4UpdateNotificationOptionsUserNameTooLong() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(51));
+        userLogic.updateNotificationOptions(userName,false,false, null,
+                false, null, null, null, null, null);
+    }
+
+    @Test (expected = HttpRequestException.class)
+    public void test5UpdateNotificationOptionsBlockUntilInThePast() throws Exception {
+        Date until = new Date(System.currentTimeMillis() - 10000);
+        String userName = createUserIfNotExists(userLogic, createString(50));
+        userLogic.updateNotificationOptions(userName,false,false, until,
+                false, null, null, null, null, null);
+
     }
 }
