@@ -51,7 +51,9 @@ export function inviteMember(teamId, member) {
 }
 
 export function removeUserFromTeam(teamdId, username, responseFunc) {
-    //TODO
+    let url = HOST + '/team/' + username + "/team/" + teamdId + "/remove";
+    axios.delete(url)
+        .then(responseFunc);
 }
 
 export function replyToTeam(teamId, answer, responseFunc) {
