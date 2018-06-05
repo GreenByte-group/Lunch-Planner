@@ -507,6 +507,8 @@ public class EventLogic {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                    } else {
+                        System.out.println("Notification options disallow");
                     }
                 }
             }
