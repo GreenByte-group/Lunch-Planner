@@ -7,7 +7,7 @@ import {getUsername, setAuthenticationHeader} from "../authentication/LoginFunct
 import {getHistory} from "../../utils/HistoryUtils"
 import {Https as SecretIcon} from "@material-ui/icons";
 import UserList from "../User/UserList";
-import {getTeam, replyToTeam, changeTeamDescription,changeTeamName} from "./TeamFunctions";
+import {getTeam, replyToTeam, changeTeamDescription, changeTeamName, removeUserFromTeam} from "./TeamFunctions";
 import {teamListNeedReload} from "./TeamList";
 import TextFieldEditing from "../editing/TextFieldEditing";
 import axios from "axios";
@@ -290,7 +290,15 @@ class TeamScreen extends React.Component {
     };
 
     clickRemove = (username) => {
-        console.log(username);
+        let people = this.state.people;
+        people = people.filter(listValue => listValue.userName !== username)
+        this.setState({
+            people: people,
+        });
+
+        removeUserFromTeam(this.state.teamId, username, (response) => {
+            //TODO
+        })
     };
 
     render() {

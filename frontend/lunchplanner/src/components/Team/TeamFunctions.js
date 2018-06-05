@@ -50,6 +50,10 @@ export function inviteMember(teamId, member) {
     }
 }
 
+export function removeUserFromTeam(teamdId, username, responseFunc) {
+    //TODO
+}
+
 export function replyToTeam(teamId, answer, responseFunc) {
     let url = HOST + '/team/' + teamId + '/reply';
     axios.put(url, answer, config)
