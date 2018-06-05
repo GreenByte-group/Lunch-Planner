@@ -6,23 +6,21 @@ import java.util.Date;
 public class OptionsJson implements Serializable {
 
     private Boolean blockAll;
-    private Boolean blockedUntil;
     private Date block_until;
     private Boolean blockedForWork;
-    private Date start_working;
-    private Date stop_working;
+    private String start_working;
+    private String stop_working;
     private Boolean eventsBlocked;
     private Boolean teamsBlocked;
     private Boolean subscriptionsBlocked;
 
     public OptionsJson() {};
 
-    public OptionsJson(Boolean blockAll, Boolean blockedUntil, Date block_until, Boolean blockedForWork,
-                       Date start_working, Date stop_working, Boolean eventsBlocked, Boolean teamsBlocked,
+    public OptionsJson(Boolean blockAll, Date block_until, Boolean blockedForWork,
+                       String start_working, String stop_working, Boolean eventsBlocked, Boolean teamsBlocked,
                        Boolean subscriptionsBlocked) {
 
         this.blockAll = blockAll;
-        this.blockedUntil = blockedUntil;
         this.block_until = block_until;
         this.blockedForWork = blockedForWork;
         this.start_working = start_working;
@@ -44,14 +42,6 @@ public class OptionsJson implements Serializable {
         this.blockAll = blockAll;
     }
 
-    public Boolean getBlockedUntil() {
-        return blockedUntil;
-    }
-
-    public void setBlockedUntil(Boolean blockedUntil) {
-        this.blockedUntil = blockedUntil;
-    }
-
     public Date getBlock_until() {
         return block_until;
     }
@@ -68,19 +58,19 @@ public class OptionsJson implements Serializable {
         this.blockedForWork = blockedForWork;
     }
 
-    public Date getStart_working() {
+    public String getStart_working() {
         return start_working;
     }
 
-    public void setStart_working(Date start_working) {
+    public void setStart_working(String start_working) {
         this.start_working = start_working;
     }
 
-    public Date getStop_working() {
+    public String getStop_working() {
         return stop_working;
     }
 
-    public void setStop_working(Date stop_working) {
+    public void setStop_working(String stop_working) {
         this.stop_working = stop_working;
     }
 
@@ -106,5 +96,14 @@ public class OptionsJson implements Serializable {
 
     public void setSubscriptionsBlocked(Boolean subscriptionsBlocked) {
         this.subscriptionsBlocked = subscriptionsBlocked;
+    }
+
+    public static Integer getMinutesFromDate(String date) throws NumberFormatException {
+        String[] dates = date.split(":");
+        int minutes = 0;
+        minutes += Integer.parseInt(dates[0]) * 60;
+        minutes += Integer.parseInt(dates[1]);
+
+        return minutes;
     }
 }

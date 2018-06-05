@@ -338,7 +338,7 @@ public class EventLogic {
 
         //send a notification to userToInvite
         NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToInvite);
-        if(notificationOptions.notificationsAllowed() && !notificationOptions.isEventsBlocked()) {
+        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isEventsBlocked())) {
             try {
                 userLogic.sendNotification(user.getFcmToken(), userToInvite, title, description,linkToClick, "");
             } catch (Exception e) {

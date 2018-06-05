@@ -127,9 +127,9 @@ public class TeamController {
             int teamId;
 
             if(teamjson.getParent()!= null) {
-                teamId = teamlogic.createTeamWithParent(SessionManager.getUserName(), teamjson.getParent(), teamjson.getTeamName(), teamjson.getDescription());
+                teamId = teamlogic.createTeamWithParent(SessionManager.getUserName(), teamjson.getParent(), teamjson.getTeamName(), teamjson.getDescription(), teamjson.isVisible());
             }else{
-                teamId = teamlogic.createTeamWithoutParent(SessionManager.getUserName(),teamjson.getTeamName(), teamjson.getDescription());
+                teamId = teamlogic.createTeamWithoutParent(SessionManager.getUserName(),teamjson.getTeamName(), teamjson.getDescription(), teamjson.isVisible());
             }
 
             response.setStatus(HttpServletResponse.SC_CREATED);

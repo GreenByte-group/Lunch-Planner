@@ -9,9 +9,8 @@ public class NotificationOptionsDatabase {
     private Date block_until;
     private boolean blockedForWork;
     private boolean blockedUntil;
-    private boolean eventsBlocked;
-    private Date start_working;
-    private Date stop_working;
+    private Integer start_working;
+    private Integer stop_working;
     private boolean subscriptionsBlocked;
     private boolean teamsBlocked;
 
@@ -20,11 +19,9 @@ public class NotificationOptionsDatabase {
         NotificationOptions notificationOptions = new NotificationOptions();
         notificationOptions.setBlockAll(blockAll);
         notificationOptions.setBlock_until(block_until);
-        notificationOptions.setBlockedUntil(blockedUntil);
         notificationOptions.setBlockedForWork(blockedForWork);
         notificationOptions.setStart_working(start_working);
         notificationOptions.setStop_working(stop_working);
-        notificationOptions.setEventsBlocked(eventsBlocked);
         notificationOptions.setTeamsBlocked(teamsBlocked);
         notificationOptions.setSubscriptionsBlocked(subscriptionsBlocked);
         notificationOptions.setUsername(userName);
@@ -49,16 +46,12 @@ public class NotificationOptionsDatabase {
         this.blockedUntil = blockedUntil;
     }
 
-    public void setStart_working(Date start_working) {
+    public void setStart_working(Integer start_working) {
         this.start_working = start_working;
     }
 
-    public void setStop_working(Date stop_working) {
+    public void setStop_working(Integer stop_working) {
         this.stop_working = stop_working;
-    }
-
-    public void setEventsBlocked(boolean eventsBlocked) {
-        this.eventsBlocked = eventsBlocked;
     }
 
     public void setTeamsBlocked(boolean teamsBlocked) {

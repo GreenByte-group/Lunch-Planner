@@ -34,14 +34,14 @@ public class TeamLogic {
      * @throws HttpRequestException when teamName, userName, description not valid
      * or an Database error happens
      */
-    int createTeamWithParent(String userName, int parent, String teamName, String description) throws HttpRequestException {
+    int createTeamWithParent(String userName, int parent, String teamName, String description, boolean isPublic) throws HttpRequestException {
         checkParams(userName, teamName, description);
 
         try {
             if(!hasViewPrivileges(userName, parent))
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "No Privileges to acces parent team: " + parent);
 
-            return teamdao.insertTeamWithParent(teamName, description, userName, parent);
+            return teamdao.insertTeamWithParent(teamName, description, userName, isPublic, parent);
         } catch(DatabaseException d){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), d.getMessage());
         }
@@ -56,11 +56,11 @@ public class TeamLogic {
      * @throws HttpRequestException when teamName, userName, description not valid
      * or an Database error happens
      */
-    int createTeamWithoutParent(String userName, String teamName, String description) throws HttpRequestException {
+    int createTeamWithoutParent(String userName, String teamName, String description, boolean isPublic) throws HttpRequestException {
         checkParams(userName, teamName, description);
 
         try {
-            return teamdao.insertTeam(teamName, description, userName);
+            return teamdao.insertTeam(teamName, description, userName, isPublic);
         } catch(DatabaseException d){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), d.getMessage());
         }

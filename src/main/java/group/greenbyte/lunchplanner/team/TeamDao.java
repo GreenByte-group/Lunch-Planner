@@ -16,7 +16,7 @@ public interface TeamDao {
      * @return returns the teamId created by the database
      * @throws DatabaseException
      */
-    int insertTeam(String teamName, String description, String adminName) throws DatabaseException;
+    int insertTeam(String teamName, String description, String adminName, boolean isPublic) throws DatabaseException;
 
     /**
      *
@@ -27,7 +27,7 @@ public interface TeamDao {
      * @return returns the teamId created by the database
      * @throws DatabaseException
      */
-    int insertTeamWithParent(String teamName, String description, String adminName, int parent) throws DatabaseException;
+    int insertTeamWithParent(String teamName, String description, String adminName, boolean isPublic, int parent) throws DatabaseException;
 
 
     /**

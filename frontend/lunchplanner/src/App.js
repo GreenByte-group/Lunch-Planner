@@ -65,6 +65,19 @@ class App extends React.Component {
             console.log('notificaton: error: ', error);
         }, (message) => {
             console.log('notificaton: message: ', message);
+            let notificationTitle = message.data.title;
+            let notificationOptions = {
+                body: message.data.body,
+                icon: message.data.icon,
+                tag: message.data.tag,
+                click_action: message.data.tag,
+            };
+
+            let notification = new Notification(notificationTitle, notificationOptions);
+            notification.addEventListener('click', (event) => {
+                console.log('click', event);
+                getHistory().push(event.target.tag);
+            })
         });
     }
 

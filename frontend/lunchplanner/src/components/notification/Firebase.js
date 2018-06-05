@@ -1,4 +1,4 @@
-import firebase from "firebase";
+import * as firebase from "firebase";
 import axios from 'axios';
 import {HOST} from "../../Config";
 import {setAuthenticationHeader} from "../authentication/LoginFunctions";
@@ -77,6 +77,7 @@ function getToken(response, error) {
         }
     }).catch((err) => {
         token = false;
+        console.log(err);
         error('Could not retrieve token from fcm');
     });
 }

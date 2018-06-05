@@ -68,7 +68,6 @@ class ServiceListItem extends React.Component {
     acceptedClicked = () => {
         if(!this.state.accepter) {
             acceptService(this.state.eventId, this.state.serviceId, (response) => {
-                console.log('Response Func: ', response);
                 if (response.status !== 204) {
                     this.setState({
                         error: response.response.data,
@@ -95,7 +94,6 @@ class ServiceListItem extends React.Component {
         if(accepter)
             classesListItem = classes.listItemAccepted;
 
-        console.log('Accepter: ', accepter);
         return (
             <ListItem button className={classesListItem}>
                 {(error)

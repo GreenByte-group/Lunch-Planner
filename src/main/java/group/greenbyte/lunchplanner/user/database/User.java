@@ -8,13 +8,14 @@ import group.greenbyte.lunchplanner.user.database.notifications.NotificationOpti
 import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-public class User {
+public class User implements Serializable {
 
     static final public int MAX_USERNAME_LENGTH = 50;
     static final public int MAX_MAIL_LENGTH = 50;
