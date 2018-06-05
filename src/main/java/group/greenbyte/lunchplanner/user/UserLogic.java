@@ -164,6 +164,15 @@ public class UserLogic {
         //ToDO send notfication to user
     }
 
+    public void saveNotification(String creator, String title, String description, String receiver, String linkToClick, String picturePath) throws HttpRequestException {
+        //save notification
+        try {
+            userDao.saveNotificationIntoDatabase(receiver,title,description,creator,linkToClick, picturePath);
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
     public void sendNotification(String fcmToken, String receiver, String title, String description, String linkToClick, String picturePath) throws FirebaseMessagingException,HttpRequestException {
         if(!fcmInitialized) {
             try {

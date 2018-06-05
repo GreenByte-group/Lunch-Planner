@@ -122,15 +122,11 @@ public class TeamLogic {
         String linkToClick = "/team/" + teamId;
 
         //save notification
-        try {
-            userDao.saveNotificationIntoDatabase(userToInvite,title,description,username,linkToClick, "");
-        } catch(DatabaseException e) {
-            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
-        }
+        userLogic.saveNotification(userToInvite,title,description,username,linkToClick, "");
 
         //send a notification to userToInvite
         NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToInvite);
-        if(notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked()) {
+        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
             try {
                 userLogic.sendNotification(user.getFcmToken(), userToInvite, title, description,linkToClick, "");
             } catch (Exception e) {
@@ -173,11 +169,7 @@ public class TeamLogic {
         String linkToClick = "/team/" + teamId;
 
         //save notification
-        try {
-            userDao.saveNotificationIntoDatabase(userToRemove,title,description,userName,linkToClick, "");
-        } catch(DatabaseException e) {
-            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
-        }
+        userLogic.saveNotification(userToRemove,title,description,userName,linkToClick, "");
 
         //send a notification to userToInvite
         NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToRemove);
