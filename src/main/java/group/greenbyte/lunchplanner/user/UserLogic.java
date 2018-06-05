@@ -182,6 +182,7 @@ public class UserLogic {
             }
         }
 
+        System.out.println("FCM token null");
         if(fcmToken == null)
             return;
 

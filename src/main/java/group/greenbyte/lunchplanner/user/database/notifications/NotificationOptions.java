@@ -119,7 +119,7 @@ public class NotificationOptions {
         }
 
         Date now = new Date();
-        if(block_until == null || now.after(block_until)) {
+        if(block_until != null && now.after(block_until)) {
             return false;
         }
 
