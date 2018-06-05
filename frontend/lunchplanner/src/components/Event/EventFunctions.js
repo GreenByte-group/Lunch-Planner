@@ -93,7 +93,8 @@ export function inviteMemberToEvent(eventId, member, responseFunc, errorFunc) {
         axios.post(url)
             .then((response) => {
                 if(response.status === 201)
-                    responseFunc(oneMember)
+                    if(responseFunc)
+                        responseFunc(oneMember)
             })
     });
 }

@@ -183,8 +183,10 @@ public class UserLogic {
         Message message = Message.builder()
                 .putData("title", title)
                 .putData("body", description)
+                .putData("tag", linkToClick)
                 .putData("click_action", linkToClick)
-                .putData("picture", picturePath)
+//                .putData("picture", picturePath)
+                .putData("icon", "https://greenbyte.group/assets/images/logo.png")
                 .setToken(fcmToken)
                 .build();
 
