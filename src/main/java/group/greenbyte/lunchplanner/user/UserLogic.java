@@ -12,6 +12,7 @@ import group.greenbyte.lunchplanner.security.JwtService;
 import group.greenbyte.lunchplanner.user.database.User;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
 import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
+import group.greenbyte.lunchplanner.user.database.notifications.OptionsJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -172,6 +173,9 @@ public class UserLogic {
             }
         }
 
+        if(fcmToken == null)
+            return;
+
         // See documentation on defining a message payload.
         Message message = Message.builder()
                 .putData("title", title)
@@ -250,8 +254,8 @@ public class UserLogic {
      * @throws HttpRequestException
      */
     public void updateNotificationOptions(String userName, Boolean blockAll, Boolean blockedUntil,
-                                            Date block_until, Boolean blockedForWork, Date start_working,
-                                            Date stop_working, Boolean eventsBlocked, Boolean teamsBlocked,
+                                            Date block_until, Boolean blockedForWork, String start_working,
+                                            String stop_working, Boolean eventsBlocked, Boolean teamsBlocked,
                                             Boolean subscriptionsBlocked) throws HttpRequestException {
 
         if(userName == null || userName.length() == 0)
@@ -280,11 +284,19 @@ public class UserLogic {
         if(blockedForWork!=null)
             map.put("blocked_for_work",blockedForWork);
 
-        if(start_working!=null)
-            map.put("start_working",start_working);
+        if(start_working!=null) {
+            try {
+                int minutes = OptionsJson.getMinutesFromDate(start_working);
+                map.put("start_working", minutes);
+            } catch (NumberFormatException ignored) {}
+        }
 
-        if(stop_working!=null)
-            map.put("stop_working",stop_working);
+        if(stop_working!=null) {
+            try {
+                int minutes = OptionsJson.getMinutesFromDate(stop_working);
+                map.put("stop_working", minutes);
+            } catch (NumberFormatException ignored) {}
+        }
 
         if(eventsBlocked!=null)
             map.put("events_blocked",eventsBlocked);
@@ -294,6 +306,9 @@ public class UserLogic {
 
         if(subscriptionsBlocked!=null)
             map.put("subscriptions_blocked",subscriptionsBlocked);
+
+        if(map.size() == 0)
+            return;
 
         try {
             userDao.updateNotificationOptions(userName,map);
