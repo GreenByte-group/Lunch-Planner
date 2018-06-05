@@ -7,6 +7,7 @@ import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 
 import group.greenbyte.lunchplanner.team.database.Team;
 
+import group.greenbyte.lunchplanner.team.database.TeamMemberDataForReturn;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,6 +27,7 @@ import static group.greenbyte.lunchplanner.event.Utils.createEvent;
 import static group.greenbyte.lunchplanner.team.Utils.createTeamWithoutParent;
 import static group.greenbyte.lunchplanner.team.Utils.setTeamPublic;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
+import static junit.framework.TestCase.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -210,18 +212,18 @@ public class TeamDaoTest {
         teamDao.removeTeamMember(userToRemove, parent);
     }
 
-    @Test(expected = DatabaseException.class)
-    public void test3RemoveTeamMemberUserToInviteTooLong() throws Exception {
-        String userToRemove = createUserIfNotExists(userLogic, createString(51));
+    @Test
+    public void test3RemoveTeamMemberRemovingUser() throws Exception {
+        String userToRemove = createUserIfNotExists(userLogic, createString(50));
+        teamLogic.inviteTeamMember(userName, userToRemove, parent);
 
         teamDao.removeTeamMember(userToRemove, parent);
-    }
+        List<TeamMemberDataForReturn> members = teamDao.getInvitations(parent);
 
-    @Test(expected = DatabaseException.class)
-    public void test4RemoveTeamMemberWithNoUserToInvite() throws Exception {
-        String userToRemove = createUserIfNotExists(userLogic, createString(0));
+        if(members.size() > 1) {
+            fail("Member was not removed!");
+        }
 
-        teamDao.removeTeamMember(userToRemove, parent);
     }
 
 }
