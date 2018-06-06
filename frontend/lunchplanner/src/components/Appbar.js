@@ -76,8 +76,8 @@ class ButtonAppBar extends React.Component {
                             <IconButton onClick={this.handleOpenSearch} className={classes.search}>
                                 <SearchIcon/>
                                 {this.state.openSearch ?
-                                    <Search open={this.state.openSearch} clickCancel={this.handleCancel}/> :
-                                   ""
+                                    <Search open={this.state.openSearch} click={this.handleCancel}/> :
+                                    ""
                                 }
                             </IconButton>
                         </div>

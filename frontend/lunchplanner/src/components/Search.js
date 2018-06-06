@@ -11,26 +11,29 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from "@material-ui/core/es/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
 import DialogActions from "@material-ui/core/es/DialogActions/DialogActions";
+import {getTeams} from "./Team/TeamFunctions";
+import {getEvents} from "./Event/EventFunctions";
 
 const styles =  theme => ({
     root:{
-      height: 320,
+        height: 100,
         width: "max-content",
     },
     list: {
         width: "100%",
         color:"white",
-        height: 200,
+        height: 50,
     },
     listItem: {
         width: '100%',
     },
     icon:{
+        float: "right",
         marginRight: 20,
     },
-    textField:{
-        float: 'left',
-        width: '90%',
+    textField: {
+        marginBottom: 30,
+        width: 300,
     },
     menu: {
         width: 200,
@@ -42,16 +45,6 @@ const styles =  theme => ({
         margin: theme.spacing.unit,
     },
 });
-const citys = [
-    {value: "Mannheim"},
-    {value: "Heidelberg"},
-    {value: "Ladenburg"},
-];
-const teams = [
-    {value: "Team1"},
-    {value: "Team2"},
-    {value: "Team3"},
-];
 class Search extends React.Component {
 
     constructor(props){
@@ -65,21 +58,11 @@ class Search extends React.Component {
             open: props.open,
             search: "",
             city: "",
+            teams: [],
             team: "",
-            clickCancel: props.clickCancel,
+            cancel: props.cancel,
         };
-    }
-
-    handleClick() {
-        if (!this.state.popupVisible) {
-            // attach/remove event handler
-            document.addEventListener('click', this.handleClick, false);
-        } else {
-            document.removeEventListener('click', this.handleClick, false);
-        }
-        this.setState(prevState => ({
-            popupVisible: !prevState.popupVisible,
-        }));
+        this.setState()
     }
 
     handleChange = name => event => {
@@ -94,16 +77,18 @@ class Search extends React.Component {
     };
 
     handleClose = () => {
-        this.state.clickCancel;
+        console.log(this.state.open, "open");
         this.setState({ open: false });
     };
 
     handleSearch = () => {
-        console.log("handle Search");
+        console.log("handle Search")
+        getEvents(this.state.search);
     }
     render() {
 
         const { classes } = this.props;
+        let teams = this.state.teams;
         return (
 
             <Drawer
@@ -117,76 +102,33 @@ class Search extends React.Component {
                             <ListItem
                                 dense
                                 className={classes.listItem}>
-                                <TextField
-                                    id="Search"
-                                    label="Search"
-                                    placeholder="Search for ..."
-                                    multiline
-                                    className={classes.textField}
-                                    onChange={this.handleChange('search')}
+                                <form noValidate autoComplete="on" >
+                                    <TextField
+                                        id="Search"
+                                        label="Search"
+                                        placeholder="Search for ..."
+                                        multiline
+                                        className={classes.textField}
+                                        onChange={this.handleChange('search')}
+                                        margin="normal"
+                                    />
+                                </form>
+                                <IconButton>
+                                    <SearchIcon className={classes.icon} onClick={this.handleSearch}/>
+                                </IconButton>
 
-                                />
-                                <ListItemSecondaryAction>
-                                    <IconButton onClick={this.handleSearch}>
-                                        <SearchIcon />
-                                    </IconButton>
-                                </ListItemSecondaryAction>
-                            </ListItem>
-                            <ListItem
-                                className={classes.listItem}>>
-                            <TextField
-                                id="select-city"
-                                select
-                                label="City"
-                                className={classes.textField}
-                                value={this.state.city}
-                                onChange={this.handleChange('city')}
-                                SelectProps={{
-                                    MenuProps: {
-                                        className: classes.menu,
-                                    },
-                                }}
-                                margin="normal">
-                                {citys.map(option => (
-                                    <MenuItem key={option.value} value={option.value}>
-                                        {option.value}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                            </ListItem>
-                            <ListItem
-                                className={classes.listItem}>>
-                            <TextField
-                                id="select-team"
-                                select
-                                label="Team"
-                                className={classes.textField}
-                                value={this.state.team}
-                                onChange={this.handleChange('team')}
-                                SelectProps={{
-                                    MenuProps: {
-                                        className: classes.menu,
-                                    },
-                                }}
-                                margin="normal">
-                                {teams.map(option => (
-                                    <MenuItem key={option.value} value={option.value}>
-                                        {option.value}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
                             </ListItem>
                         </List>
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="contained" color="secondary" className={classes.button} onClick={this.handleClose}>
+                    <Button variant="contained" color="secondary" className={classes.button} onClick={this.state.cancel}>
                         Cancel
                     </Button>
                     <Link to={{pathname:'/event/create'}}>
-                    <Button variant="contained" color="secondary" className={classes.button}>
-                        Create Event
-                    </Button>
+                        <Button variant="contained" color="secondary" className={classes.button}>
+                            Create Event
+                        </Button>
                     </Link>
                 </DialogActions>
             </Drawer>
