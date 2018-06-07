@@ -6,6 +6,7 @@ import AppBar from '@material-ui/core/AppBar';
 import {Tabs, Tab, Typography} from '@material-ui/core';
 import {getEvents} from "./EventFunctions";
 import EventList from "./EventList";
+import LocationList from "./LocationList";
 
 
 function TabContainer({ children, dir }) {
@@ -133,7 +134,7 @@ class EventContainer extends React.Component {
                         fullWidth
                     >
                         <Tab className={classes.tab} label="PERSONAL" />
-                        <Tab className={classes.tab} label="FOLLOWING" />
+                        <Tab className={classes.tab} label="PLACES" />
                         <Tab className={classes.tab} label="BY DATE" />
                     </Tabs>
                 </AppBar >
@@ -148,7 +149,7 @@ class EventContainer extends React.Component {
                         <EventList events={this.state.events} sort="personal"/>
                     </TabContainer>
                     <TabContainer dir={theme.direction}>
-                        <EventList events={this.state.events} sort="following"/>
+                        <LocationList events={this.state.events} />
                     </TabContainer>
                     <TabContainer dir={theme.direction}>
                         <EventList events={this.state.events} sort="date"/>

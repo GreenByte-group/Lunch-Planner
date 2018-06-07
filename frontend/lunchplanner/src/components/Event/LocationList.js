@@ -1,7 +1,7 @@
 import React from "react"
 
 import {HOST} from "../../Config"
-import Event from "./Event";
+import Event from "./EventLocation";
 import List from "@material-ui/core/List";
 import {withStyles} from "@material-ui/core/styles/index";
 import {Link} from "react-router-dom";
@@ -21,17 +21,14 @@ const styles = {
     },
 };
 
-const lightBackground = 'transparent';
-const darkerBackground = '#03030305';
-
-class EventList extends React.Component {
+class LocationList extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             events: props.events,
             search:props.search,
-            sort: props.sort,
+            locations:[],
         }
     }
 
@@ -53,31 +50,30 @@ class EventList extends React.Component {
     render() {
         const { classes } = this.props;
         let events = this.state.events || [];
-        let showLightBackground = true;
-        let sortByDate = false;
-        let sortByFollowing = false;
         let locations = [];
-
+        // Sort events with location name
+        events.sort(function(a,b) {return (a.location > b.location) ? 1 : ((b.location > a.location) ? -1 : 0);});
+        console.log(events);
         for(let i = 0; i < events.length; i++){
             locations.push(events[i].location);
         }
-
-        if(this.state.sort === "date"){
-            events.sort(function(a,b) {return (a.startDate > b.startDate) ? 1 : ((b.startDate > a.startDate) ? -1 : 0);});
-        }else if(this.state.sort === "following"){
-            events.sort(function(a,b) {return (a.location > b.location) ? 1 : ((b.location > a.location) ? -1 : 0);});
-        }
-
+        /*let locationsUnique = locations.filter((item, pos) => {
+            return locationsUnique.indexOf(item) === pos && !locations.some((lo) => lo === item);
+        });*/
+        console.log(locations);
+        let counter = 0;
         return (
             <div className={classes.root}>
                 <List className={classes.list}>
                     {events.map(function(listValue){
-                        let background;
-                        if(showLightBackground)
-                            background = lightBackground;
-                        else
-                            background = darkerBackground;
-                        showLightBackground = !showLightBackground;
+                        let locationname = "";
+                        if(counter === 0 || locations[counter-1] !== locations[counter]){
+                            locationname = locations[counter];
+                            counter++;
+                            console.log(locationname);
+                        }else{
+                            counter++;
+                        }
 
                         let accepted = false;
                         let invited = false;
@@ -91,18 +87,21 @@ class EventList extends React.Component {
                             }
                         });
 
-                        return <Event name={listValue.eventName}
-                                      key={'Event' + listValue.eventId}
-                                      id={listValue.eventId}
-                                      description={listValue.eventDescription}
-                                      location={listValue.location}
-                                      date={listValue.startDate}
-                                      background={background}
-                                      accepted={accepted}
-                                      invited={invited}
-                                      people={listValue.invitations}
-                                      token={listValue.shareToken}
-                        />;
+                        return (
+                            <div>
+                                <p>{locationname}</p>
+                                <Event name={listValue.eventName}
+                                       key={'Event' + listValue.eventId}
+                                       id={listValue.eventId}
+                                       description={listValue.eventDescription}
+                                       location={listValue.location}
+                                       date={listValue.startDate}
+                                       accepted={accepted}
+                                       invited={invited}
+                                       people={listValue.invitations}
+                                       token={listValue.shareToken}
+                                />
+                            </div>);
                     })}
                 </List>
                 <Link to={{pathname:'/event/create'}}>
@@ -114,4 +113,4 @@ class EventList extends React.Component {
     }
 }
 
-export default withStyles(styles)(EventList);
+export default withStyles(styles)(LocationList);
