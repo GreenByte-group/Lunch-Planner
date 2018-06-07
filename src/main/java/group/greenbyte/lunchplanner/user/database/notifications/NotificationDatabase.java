@@ -12,6 +12,7 @@ public class NotificationDatabase {
     private String builder;
     private String link;
     private String picture;
+    private boolean isRead;
 
     public Notifications getNotification(){
         Notifications notification = new Notifications();
@@ -23,6 +24,7 @@ public class NotificationDatabase {
         notification.setReceiverName(this.userName);
         notification.setNotificationId(this.notificationId);
         notification.setDate(this.date);
+        notification.setIsRead(this.isRead);
 
         return notification;
     }
@@ -61,5 +63,9 @@ public class NotificationDatabase {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public void setIsRead(boolean isRead) {
+        this.isRead = isRead;
     }
 }

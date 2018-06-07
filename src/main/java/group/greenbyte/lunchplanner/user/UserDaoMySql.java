@@ -30,7 +30,7 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_FCM_TOKEN = "fcm_token";
 
     public static final String USER_NOTIFICATION_TABLE = "notifications";
-    public static final String USER_NOTIFICATION_ID = "notificationsId";
+    public static final String USER_NOTIFICATION_ID = "notification_id";
     public static final String USER_NOTIFICATION_TITEL = "titel";
     public static final String USER_NOTIFICATION_MESSAGE = "message";
     public static final String USER_NOTIFICATION_RECEIVER = "user_name";
@@ -38,6 +38,7 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_NOTIFICATION_LINK = "link";
     public static final String USER_NOTIFICATION_PICTURE = "picture";
     public static final String USER_NOTIFICATION_DATE = "date";
+    public static final String USER_NOTIFICATION_READ = "is_read";
 
     public static final String USER_SUBSCRIBE_TABLE = "subscribe";
     public static final String USER_SUBSCRIBE_SUBSCRIBER = "user_name";
@@ -83,7 +84,7 @@ public class UserDaoMySql implements UserDao {
 
     @Override
     public List<Notifications> getNotifications(String userName) throws DatabaseException{
-        String SQL = " SELECT * FROM " + USER_NOTIFICATION_TABLE + " WHERE " + USER_NOTIFICATION_BUILDER + " = ?";
+        String SQL = " SELECT * FROM " + USER_NOTIFICATION_TABLE + " WHERE " + USER_NOTIFICATION_RECEIVER + " = ?";
 
 //        List<BringServiceDatabase> serviceList = jdbcTemplate.query(SQL,
 //                new BeanPropertyRowMapper<>(BringServiceDatabase.class),
@@ -129,7 +130,7 @@ public class UserDaoMySql implements UserDao {
         parameters.put(USER_NOTIFICATION_LINK,linkToClick);
         parameters.put(USER_NOTIFICATION_PICTURE,picturePath);
         parameters.put(USER_NOTIFICATION_DATE,new Date());
-
+        parameters.put(USER_NOTIFICATION_READ, false);
 
         try {
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
@@ -138,6 +139,37 @@ public class UserDaoMySql implements UserDao {
         }
     }
 
+    @Override
+    public Notifications getNotification(int notificationId) throws DatabaseException {
+        try {
+            String SQL = "SELECT * FROM " + USER_NOTIFICATION_TABLE + " WHERE " +
+                    USER_NOTIFICATION_ID + " = ?";
+
+            List<NotificationDatabase> notificationList =
+                    jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(NotificationDatabase.class),
+                    notificationId);
+
+            if(notificationList.size() == 0)
+                return null;
+            else {
+                return notificationList.get(0).getNotification();
+            }
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void setNotificationRead(int notificationId, boolean read) throws DatabaseException {
+        try {
+            String SQL = "UPDATE " + USER_NOTIFICATION_TABLE + " SET " + USER_NOTIFICATION_READ +
+                    " = ? WHERE " + USER_NOTIFICATION_ID + " = ?";
+
+            jdbcTemplate.update(SQL, read, notificationId);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
 
    private void saveNotificationOptions(String userName, boolean blockAll, boolean blockedUntil,
         Date block_until, boolean blockedForWork, Date start_working, Date stop_working,
