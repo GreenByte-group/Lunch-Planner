@@ -64,16 +64,28 @@ public class NotificationOptions {
         this.blockedForWork = blockedForWork;
     }
 
-    public Integer getStart_working() {
-        return start_working;
+    public Date getStart_working() {
+        if(start_working == null)
+            return null;
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, start_working / 60);
+        cal.set(Calendar.MINUTE, start_working % 60);
+        return cal.getTime();
     }
 
     public void setStart_working(Integer start_working) {
         this.start_working = start_working;
     }
 
-    public Integer getStop_working() {
-        return stop_working;
+    public Date getStop_working() {
+        if(stop_working == null)
+            return null;
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, stop_working / 60);
+        cal.set(Calendar.MINUTE, stop_working % 60);
+        return cal.getTime();
     }
 
     public void setStop_working(Integer stop_working) {
@@ -126,7 +138,7 @@ public class NotificationOptions {
         if (blockedForWork) {
             if(start_working != null && stop_working != null) {
                 Calendar calendar = Calendar.getInstance();
-                int minutes = calendar.get(Calendar.HOUR) * 60 + calendar.get(Calendar.MINUTE);
+                int minutes = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE);
                 if(start_working < minutes || stop_working > minutes)
                     return false;
             } else {

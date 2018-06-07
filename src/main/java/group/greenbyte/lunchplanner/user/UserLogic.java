@@ -286,8 +286,8 @@ public class UserLogic {
      * @throws HttpRequestException
      */
     public void updateNotificationOptions(String userName, Boolean blockAll,
-                                            Date block_until, Boolean blockedForWork, String start_working,
-                                            String stop_working, Boolean eventsBlocked, Boolean teamsBlocked,
+                                            Date block_until, Boolean blockedForWork, Date start_working,
+                                            Date stop_working, Boolean eventsBlocked, Boolean teamsBlocked,
                                             Boolean subscriptionsBlocked) throws HttpRequestException {
 
         if(userName == null || userName.length() == 0)
