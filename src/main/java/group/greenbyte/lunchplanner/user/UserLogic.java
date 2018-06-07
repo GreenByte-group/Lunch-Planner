@@ -20,6 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import javax.imageio.ImageIO;
+import javax.servlet.ServletContext;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
@@ -33,7 +38,9 @@ public class UserLogic {
     private final JwtService jwtService;
 
     private static final Pattern REGEX_MAIL = Pattern.compile("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
-    private static final Pattern REGEX_PICTUREPATH = Pattern.compile("([^\\s]+(\\.(?i)(/bmp|jpg|gif|png))$)");
+
+    @Autowired
+    ServletContext context;
 
 
     // This variable will be set over the setter Method by java spring
@@ -323,9 +330,54 @@ public class UserLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
 
         if(!imageFile.isEmpty()) {
-            //TODO
+
+           try{
+               String relativePath = "/resources/profilePictures";
+               String absolutePath = context.getRealPath(relativePath);
+               File uploadedFile = new File(absolutePath, userName);
+               imageFile.transferTo(uploadedFile);
+
+               userDao.savePicturePath(userName, relativePath + "/" + userName + ".jpg");
+
+
+           } catch(IOException | DatabaseException e){
+               throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+           }
+
         }
     }
+
+    /*private BufferedImage resizeImage(byte[] image) throws IOException {
+        // Get a BufferedImage object from a byte array
+        InputStream in = new ByteArrayInputStream(image);
+        BufferedImage originalImage = ImageIO.read(in);
+
+        // Get image dimensions
+        int height = originalImage.getHeight();
+        int width = originalImage.getWidth();
+
+        // The image is already a square
+        if (height == width) {
+            return originalImage;
+        }
+
+        // Compute the size of the square
+        int squareSize = (height > width ? width : height);
+
+        // Coordinates of the image's middle
+        int xc = width / 2;
+        int yc = height / 2;
+
+        // Crop
+        BufferedImage croppedImage = originalImage.getSubimage(
+                xc - (squareSize / 2), // x coordinate of the upper-left corner
+                yc - (squareSize / 2), // y coordinate of the upper-left corner
+                squareSize,            // widht
+                squareSize             // height
+        );
+
+        return croppedImage;
+    }*/
 
     /**
      * Update user password
@@ -352,18 +404,24 @@ public class UserLogic {
 
     }
 
-    public void updateUserEmail(String userName, String eMail) throws HttpRequestException {
+    public void updateUserEmail(String userName, String mail) throws HttpRequestException {
         if(userName == null || userName.length() == 0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
 
         if(userName.length() > User.MAX_USERNAME_LENGTH)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
 
-        if(!REGEX_MAIL.matcher(eMail).matches())
+        if(mail == null || mail.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "mail is empty");
+
+        if(mail.length() > User.MAX_MAIL_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "mail is too long");
+
+        if(!REGEX_MAIL.matcher(mail).matches())
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "mail is not valid");
 
         try {
-            userDao.saveNewEmail(userName, eMail);
+            userDao.saveNewEmail(userName, mail);
         } catch (DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }

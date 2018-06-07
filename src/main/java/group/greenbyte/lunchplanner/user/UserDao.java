@@ -125,4 +125,16 @@ public interface UserDao {
      * @throws DatabaseException
      */
     void saveNewEmail(String userName, String eMail) throws DatabaseException;
+
+    /**
+     * Put the picture path into database
+     *
+     * @param userName
+     * @param picturePath relative path to the picture
+     * @throws DatabaseException
+     */
+    void savePicturePath(String userName, String picturePath) throws DatabaseException;
+
+
+
 }
