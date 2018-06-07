@@ -75,6 +75,10 @@ public interface UserDao {
                                         ,String builder, String linkToClick, String picturePath) throws DatabaseException;
 
 
+    Notifications getNotification(int notificationId) throws DatabaseException;
+
+    void setNotificationRead(int notificationId, boolean read) throws DatabaseException;
+
     /**
      * Gets notification options of a user
      * @param userName

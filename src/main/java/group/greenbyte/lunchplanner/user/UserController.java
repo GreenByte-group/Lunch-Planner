@@ -156,6 +156,21 @@ public class UserController {
         }
     }
 
+    @RequestMapping(value = "/notification/{id}", method = RequestMethod.POST)
+    public ResponseEntity setNotificationRead(@PathVariable("id") int notificationId) {
+        try {
+            userLogic.setNotificationRead(SessionManager.getUserName(), notificationId, true);
+        } catch(HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("");
+    }
+
 
     /**
      * TODO:
