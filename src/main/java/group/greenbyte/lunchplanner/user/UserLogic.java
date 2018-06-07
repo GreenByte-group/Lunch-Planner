@@ -367,10 +367,10 @@ public class UserLogic {
     }
 
     /**
+     * Get the relative picture path
      *
-     *
-     * @param userName
-     * @return picture path
+     * @param userName user
+     * @return absolute picture path
      */
     public String getPicturePath(String userName) throws HttpRequestException {
         if(userName == null || userName.length() == 0)
