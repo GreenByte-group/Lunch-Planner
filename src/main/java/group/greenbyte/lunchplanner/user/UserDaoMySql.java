@@ -263,6 +263,44 @@ public class UserDaoMySql implements UserDao {
 
     }
 
+    /**
+     * Put the hashed password into the database
+     *
+     * @param userName       user that updates their password
+     * @param hashedPassword new hashed password
+     * @throws DatabaseException
+     */
+    @Override
+    public void saveNewPassword(String userName, String hashedPassword) throws DatabaseException {
+
+        String SQL = "UPDATE " + USER_TABLE + " SET " + USER_PASSWORD + " = ? WHERE " + USER_NAME + " = ?";
+
+        try {
+            jdbcTemplate.update(SQL, hashedPassword, userName);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    /**
+     * Put the new e-mail into the database
+     *
+     * @param userName
+     * @param eMail
+     * @throws DatabaseException
+     */
+    @Override
+    public void saveNewEmail(String userName, String eMail) throws DatabaseException {
+
+        String SQL = " UPDATE " + USER_TABLE + " SET " + USER_MAIL + " = ? WHERE " + USER_NAME + " = ? ";
+
+        try {
+            jdbcTemplate.update(SQL, eMail, userName);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
     @Override
     public void createUser(String userName, String password, String mail) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);

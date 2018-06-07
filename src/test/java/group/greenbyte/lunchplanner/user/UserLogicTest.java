@@ -254,4 +254,6 @@ public class UserLogicTest {
                 false, null, null, null, null, null);
 
     }
+
+
 }

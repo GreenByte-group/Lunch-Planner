@@ -324,7 +324,7 @@ public class UserController {
      * @param response response channel
      * @return error message or nothing
      */
-    @RequestMapping(value = "/options/profile/e-mail", method = RequestMethod.PUT,
+    @RequestMapping(value = "/options/profile/mail", method = RequestMethod.PUT,
             consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public String updateUserEmail(@RequestBody String eMail, HttpServletResponse response) {

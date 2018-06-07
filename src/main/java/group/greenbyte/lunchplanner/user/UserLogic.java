@@ -17,6 +17,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
@@ -32,6 +33,8 @@ public class UserLogic {
     private final JwtService jwtService;
 
     private static final Pattern REGEX_MAIL = Pattern.compile("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
+    private static final Pattern REGEX_PICTUREPATH = Pattern.compile("([^\\s]+(\\.(?i)(/bmp|jpg|gif|png))$)");
+
 
     // This variable will be set over the setter Method by java spring
     private UserDao userDao;
@@ -300,6 +303,71 @@ public class UserLogic {
         } catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
+
+    }
+
+    // --------------------- USER PROFILE ---------------------
+    /**
+     * Update profile picture
+     *
+     * @param userName user that wants to update their picture
+     * @param imageFile path of the picture
+     * @throws HttpRequestException
+     */
+    public void uploadProfilePicture(String userName, MultipartFile imageFile) throws HttpRequestException {
+
+        if(userName == null || userName.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
+
+        if(userName.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
+
+        if(!imageFile.isEmpty()) {
+            //TODO
+        }
+    }
+
+    /**
+     * Update user password
+     *
+     * @param userName user that wants to update their password
+     * @param password
+     * @throws HttpRequestException
+     */
+    public void updateUserPassword(String userName, String password) throws HttpRequestException {
+        if(userName == null || userName.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
+
+        if(userName.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
+
+        if(password == null || password.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "password is empty");
+
+        try {
+            userDao.saveNewPassword(userName, SecurityHelper.hashPassword(password));
+        } catch(DatabaseException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
+    }
+
+    public void updateUserEmail(String userName, String eMail) throws HttpRequestException {
+        if(userName == null || userName.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
+
+        if(userName.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
+
+        if(!REGEX_MAIL.matcher(eMail).matches())
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "mail is not valid");
+
+        try {
+            userDao.saveNewEmail(userName, eMail);
+        } catch (DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
 
     }
 

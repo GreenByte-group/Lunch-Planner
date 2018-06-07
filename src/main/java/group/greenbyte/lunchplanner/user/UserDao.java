@@ -107,4 +107,22 @@ public interface UserDao {
      * @throws DatabaseException
      */
     void updateNotificationOptions(String userName,Map<String,Object> map) throws DatabaseException;
+
+    /**
+     * Put the hashed password into the database
+     *
+     * @param userName user that updates their password
+     * @param hashedPassword new hashed password
+     * @throws DatabaseException
+     */
+    void saveNewPassword(String userName, String hashedPassword) throws DatabaseException;
+
+    /**
+     * Put the new e-mail into the database
+     *
+     * @param userName
+     * @param eMail
+     * @throws DatabaseException
+     */
+    void saveNewEmail(String userName, String eMail) throws DatabaseException;
 }
