@@ -347,7 +347,7 @@ public class UserLogic {
                if(!new File(absolutePath).exists()) {
                    new File(absolutePath).mkdir();
                }
-               imageFile.getOriginalFilename();
+               //TODO file extension ?
                String fileName = userName;
                String path = absolutePath + fileName;
                File destination = new File(path);
