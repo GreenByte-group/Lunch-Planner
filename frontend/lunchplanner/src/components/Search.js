@@ -1,156 +1,134 @@
 import React from 'react';
 import {Button, List, ListItem, Divider, withStyles, Drawer, IconButton, MenuItem, FormControlLabel, Switch, TextField, ListItemSecondaryAction} from '@material-ui/core';
-import EventIcon from '@material-ui/icons/LocalDining';
-import SocialIcon from '@material-ui/icons/Group';
-import NotificationIcon from '@material-ui/icons/NotificationsNone';
-import SignOutIcon from '@material-ui/icons/ExitToApp';
-import OptionIcon from '@material-ui/icons/Build';
 import {Link} from "react-router-dom";
 import SearchIcon from '@material-ui/icons/Search';
+import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
+import DialogActions from "@material-ui/core/es/DialogActions/DialogActions";
 
-const styles = {
+const styles =  theme => ({
+    root:{
+        height: 100,
+        width: "max-content",
+    },
     list: {
-        width: "auto",
+        width: "100%",
         color:"white",
-        height: 200,
+        height: 50,
     },
-    profile:{
-        fontSize: 10,
-        textAlign: "center",
-        backgroundColor: "darkGrey",
-    },
-    avatar:{
-        marginLeft: 15,
-        marginBottom: 15,
-
+    listItem: {
+        width: '100%',
     },
     icon:{
+        float: "right",
         marginRight: 20,
-    }
-};
+    },
+    textField: {
+        marginBottom: 30,
+        width: 300,
+    },
+    menu: {
+        width: 200,
+    },
+    input: {
+        display: 'none',
+    },
+    button: {
+        margin: theme.spacing.unit,
+    },
+});
 class Search extends React.Component {
 
-    constructor(){
+    constructor(props){
         super();
 
-        this.handleClick = this.handleClick.bind(this);
-
         this.state = {
-            popupVisible: false,
             visible: false,
+            open: props.open,
+            search: props.search,
+            team: "",
+            cancel: props.cancel,
         };
-
     }
 
-    handleClick() {
-        if (!this.state.popupVisible) {
-            // attach/remove event handler
-            document.addEventListener('click', this.handleClick, false);
-        } else {
-            document.removeEventListener('click', this.handleClick, false);
+    componentWillReceiveProps(newProps) {
+        if(newProps.search !== this.state.search){
+            this.setState({
+                search: newProps.search,
+            });
         }
-        this.setState(prevState => ({
-            popupVisible: !prevState.popupVisible,
-        }));
     }
 
-    handleVisibility = name => event =>{
+    handleChange = name => event => {
         this.setState({
-            [name]: event.target.checked,
-            popupVisible : false,
+            [name]: event.target.value,
         });
-    }
 
+    };
+
+
+    handleClickOpen = () => {
+        this.setState({ open: true });
+    };
+
+    handleCancel = () => {
+        this.setState({open: false});
+        this.props.handleCancel();
+    };
+
+    handleClose = () => {
+        this.setState({ open: false });
+    };
+
+    searchForEvents = () => {
+        this.setState({ open: false });
+        this.props.handleSearch(this.state.search);
+    };
     render() {
 
         const { classes } = this.props;
+        let teams = this.state.teams;
         return (
 
-            <div ref={node => { this.node = node; }}>
-                <Button
-                    onClick={this.handleClick}
-                >
-                    <SearchIcon style={{color: "white"}}/>
-                </Button>
-                {this.state.popupVisible && (
-                    <Drawer anchor="top" open={this.state.popupVisible}>
-                        <div
-                            tabIndex={0}
-                            role="button"
-                        >
-                            <div className={classes.list}>
-                                <List className ={classes.menu}>
-                                    <ListItem
-                                        role={undefined}
-                                        dense
-                                        button
-                                        className={classes.listItem}>
-                                        <TextField
-                                            id="service"
-                                            label="Service"
-                                            placeholder="What do you want?"
-                                            multiline
-                                            className={classes.textField}
-                                            onChange={this.handleChange}
-                                        />
-                                        <ListItemSecondaryAction>
-                                            <IconButton onClick={this.handleSearch}>
-                                                <SearchIcon />
-                                            </IconButton>
-                                        </ListItemSecondaryAction>
-                                    </ListItem>
-                                    <Link to="/event">
-                                        <MenuItem>
-                                            <EventIcon className={classes.icon}/>
-                                            Event
-                                        </MenuItem>
-                                    </Link>
-                                    <Link to="/social">
-                                        <MenuItem>
-                                            <SocialIcon className={classes.icon}/>
-                                            Social
-                                        </MenuItem>
-                                    </Link>
-                                    <Divider />
-                                    <Link to="/notifications">
-                                        <MenuItem>
-                                            <NotificationIcon className={classes.icon}/>
-                                            Notifications
-                                        </MenuItem>
-                                    </Link>
-                                    <MenuItem>
-                                        <FormControlLabel
-                                            control={
-                                                <Switch
-                                                    float ="left"
-                                                    color = "primary"
-                                                    checked={this.state.visible}
-                                                    onChange={this.handleVisibility("visible")}
-                                                    value="visible"
-                                                />
-                                            }
-                                            label="No notifications today"
-                                        />
-                                    </MenuItem>
-                                    <Divider />
-                                    <Link to="/options">
-                                        <MenuItem>
-                                            <OptionIcon className={classes.icon}/>
-                                            Options
-                                        </MenuItem>
-                                    </Link>
-                                    <Link to="/signout">
-                                        <MenuItem>
-                                            <SignOutIcon className={classes.icon}/>
-                                            Sign Out
-                                        </MenuItem>
-                                    </Link>
-                                </List>
-                            </div>
-                        </div>
-                    </Drawer>
-                )}
-            </div>
+            <Drawer
+                open={this.state.open}
+                onClose={this.handleClose}
+                anchor='top'
+            >
+                <DialogContent >
+                    <div className={classes.list}>
+                        <List className ={classes.menu}>
+                            <ListItem
+                                dense
+                                className={classes.listItem}>
+                                <form noValidate autoComplete="on" >
+                                    <TextField
+                                        id="Search"
+                                        label="Search"
+                                        defaultValue={this.state.search}
+                                        className={classes.textField}
+                                        onChange={this.handleChange('search')}
+                                        margin="normal"
+                                    />
+                                </form>
+                                <IconButton>
+                                    <SearchIcon className={classes.icon} onClick={this.searchForEvents}/>
+                                </IconButton>
+
+                            </ListItem>
+                        </List>
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <Button variant="contained" color="secondary" className={classes.button} onClick={this.handleCancel}>
+                        Cancel
+                    </Button>
+                    <Link to={{pathname:'/event/create'}}>
+                        <Button variant="contained" color="secondary" className={classes.button}>
+                            Create Event
+                        </Button>
+                    </Link>
+                </DialogActions>
+            </Drawer>
         );
     }
 }

@@ -92,7 +92,6 @@ class App extends React.Component {
                             <Route exact path="/"
                                           render={ () => <Redirect to="/event" />}
                             />
-
                             <PrivateRoute path="/event" component={LunchPlanner} />
                             <PrivateRoute path="/social" component={SocialScreen} />
                             <PrivateRoute path="/team/create" component={CreateTeamScreen}/>
