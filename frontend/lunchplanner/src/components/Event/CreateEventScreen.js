@@ -14,7 +14,7 @@ import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import "../../assets/CreateEventScreen.css"
 import {Link} from "react-router-dom";
 import {Today, Schedule} from "@material-ui/icons";
-import {eventListNeedReload} from "./EventList";
+import {eventListNeedReload} from "./EventContainer";
 import moment from "moment";
 
 import {getHistory} from "../../utils/HistoryUtils";

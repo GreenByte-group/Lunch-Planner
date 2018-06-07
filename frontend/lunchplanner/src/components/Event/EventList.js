@@ -8,6 +8,7 @@ import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
 import {getUsername} from "../authentication/LoginFunctions";
 import {getEvents} from "./EventFunctions";
+import {needReload} from "./EventContainer";
 
 const styles = {
     root: {
@@ -20,12 +21,6 @@ const styles = {
     },
 };
 
-export let needReload = false;
-
-export function eventListNeedReload() {
-    needReload = true;
-}
-
 const lightBackground = 'transparent';
 const darkerBackground = '#03030305';
 
@@ -34,52 +29,38 @@ class EventList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            events: [],
+            events: props.events,
             search:props.search,
+            sort: props.sort,
         }
-    }
-
-    componentDidMount() {
-        this.setState({
-            search: this.props.search,
-        });
-
-        this.loadEvents(this.props.search);
     }
 
     componentWillReceiveProps(newProps) {
-        if(needReload) {
-            needReload = !needReload;
-            this.loadEvents();
-        }
         if(newProps.search !== this.state.search){
             this.setState({
                 search: newProps.search,
             });
-            this.loadEvents(newProps.search);
+        }
+        if(newProps.events !== this.state.events){
+            this.setState({
+                events: newProps.events,
+            });
         }
     }
 
-    loadEvents(search) {
-        if(search === null || search === undefined)
-            search = this.state.search;
 
-        getEvents(search, (response) => {
-            this.setState({
-                events: response.data,
-            })
-        });
-    }
 
     render() {
         const { classes } = this.props;
-        let events = this.state.events;
+        let events = this.state.events || [];
         let showLightBackground = true;
 
-        if(needReload) {
-            needReload = !needReload;
-            this.loadEvents();
+        if(this.state.sort === "date"){
+            events.sort(function(a,b) {return (a.startDate > b.startDate) ? 1 : ((b.startDate > a.startDate) ? -1 : 0);});
+        }else if(this.state.sort === "following"){
+            events.sort(function(a,b) {return (a.location > b.location) ? 1 : ((b.location > a.location) ? -1 : 0);});
         }
+
         return (
             <div className={classes.root}>
                 <List className={classes.list}>

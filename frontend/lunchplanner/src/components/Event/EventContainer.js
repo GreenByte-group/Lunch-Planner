@@ -4,7 +4,8 @@ import {withStyles} from '@material-ui/core/styles';
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@material-ui/core/AppBar';
 import {Tabs, Tab, Typography} from '@material-ui/core';
-import EventList from "./Event/EventList";
+import {getEvents} from "./EventFunctions";
+import EventList from "./EventList";
 
 
 function TabContainer({ children, dir }) {
@@ -19,6 +20,12 @@ TabContainer.propTypes = {
     children: PropTypes.node.isRequired,
     dir: PropTypes.string.isRequired,
 };
+
+export let needReload = false;
+
+export function eventListNeedReload() {
+    needReload = true;
+}
 
 const styles = theme => ({
     root: {
@@ -54,15 +61,49 @@ class EventContainer extends React.Component {
         this.state = {
             value: 0,
             search: props.search,
+            events: [],
         };
     }
 
+    componentDidMount() {
+        this.setState({
+            search: this.props.search,
+            events: this.props.events,
+        });
+
+        this.loadEvents(this.props.search);
+    }
+
     componentWillReceiveProps(newProps) {
+        if(needReload) {
+            needReload = !needReload;
+            this.loadEvents();
+        }
         if(newProps.search !== this.state.search){
             this.setState({
                 search: newProps.search,
             });
+            this.loadEvents(newProps.search);
         }
+        if(newProps.events !== this.state.events){
+            this.setState({
+                events: newProps.events,
+            });
+            this.loadEvents();
+        }
+    }
+
+    loadEvents(search) {
+        if(search === null || search === undefined)
+            search = this.state.search;
+
+        getEvents(search, (response) => {
+            this.setState({
+                events: response.data,
+            });
+            console.log(this.state.events);
+        });
+
     }
 
     handleChange = (event, value) => {
@@ -76,6 +117,10 @@ class EventContainer extends React.Component {
     render() {
         const { classes, theme } = this.props;
 
+        if(needReload) {
+            needReload = !needReload;
+            this.loadEvents();
+        }
         return (
             <div className={classes.root}>
                 <AppBar position="relative" color="default" >
@@ -100,10 +145,14 @@ class EventContainer extends React.Component {
                 >
 
                     <TabContainer dir={theme.direction}>
-                        <EventList search={this.state.search}/>
+                        <EventList events={this.state.events} sort="personal"/>
                     </TabContainer>
-                    <TabContainer dir={theme.direction}>Eventlist Following</TabContainer>
-                    <TabContainer dir={theme.direction}>Eventlist sort by date</TabContainer>
+                    <TabContainer dir={theme.direction}>
+                        <EventList events={this.state.events} sort="following"/>
+                    </TabContainer>
+                    <TabContainer dir={theme.direction}>
+                        <EventList events={this.state.events} sort="date"/>
+                    </TabContainer>
                 </SwipeableViews>
 
             </div>

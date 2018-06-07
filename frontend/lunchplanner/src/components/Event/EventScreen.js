@@ -13,7 +13,7 @@ import {Button} from "@material-ui/core";
 import ServiceList from "./ServiceList/ServiceList";
 import {getUsername} from "../authentication/LoginFunctions";
 import InvitationButton from "./InvitationButton";
-import {eventListNeedReload} from "./EventList";
+import {eventListNeedReload} from "./EventContainer";
 import {getHistory} from "../../utils/HistoryUtils";
 import TextFieldEditing from "../editing/TextFieldEditing";
 import {DatePicker, TimePicker} from "material-ui-old";
