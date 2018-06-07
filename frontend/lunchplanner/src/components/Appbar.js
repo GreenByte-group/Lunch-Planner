@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -39,23 +40,33 @@ class ButtonAppBar extends React.Component {
 
     constructor(props) {
         super();
-        this.handleOpenSearch = this.handleOpenSearch.bind(this);
         this.state = {
             currentScreen: props.currentScreen,
             openSearch: false,
+            search: props.searchValue,
         };
+        this.handleSearch = this.handleSearch.bind(this);
     }
 
-    handleOpenSearch = () =>{
-        console.log("handle open", this.state.openSearch);
-        this.setState({
-            openSearch : true,
-        });
+    componentWillReceiveProps(newProps) {
+        if(newProps.searchValue !== this.state.search){
+            this.setState({
+                search: newProps.searchValue,
+            });
+        }
+    }
+
+    showSearch = () => {
+        this.setState({openSearch: true});
     };
 
-    handleCancel = () => {
-        console.log("handle cancel");
-        this.setState({openSearch: false});
+    cancelSearch = () => {
+        this.setState({ openSearch: false });
+    };
+
+    handleSearch = (search) => {
+        this.props.onHandleSearch(search);
+        this.setState({ openSearch: false });
     };
 
     render() {
@@ -73,10 +84,10 @@ class ButtonAppBar extends React.Component {
                             {titel}
                         </Typography>
                         <div color="inherit">
-                            <IconButton onClick={this.handleOpenSearch} className={classes.search}>
-                                <SearchIcon/>
+                            <IconButton  className={classes.search}>
+                                <SearchIcon onClick={this.showSearch}/>
                                 {this.state.openSearch ?
-                                    <Search open={this.state.openSearch} click={this.handleCancel}/> :
+                                    <Search open={this.state.openSearch} handleCancel={this.cancelSearch} handleSearch={this.handleSearch} search={this.state.search}/> :
                                     ""
                                 }
                             </IconButton>

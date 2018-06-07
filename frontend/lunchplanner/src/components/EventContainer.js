@@ -49,9 +49,21 @@ const styles = theme => ({
 });
 
 class EventContainer extends React.Component {
-    state = {
-        value: 0,
-    };
+    constructor(props) {
+        super();
+        this.state = {
+            value: 0,
+            search: props.search,
+        };
+    }
+
+    componentWillReceiveProps(newProps) {
+        if(newProps.search !== this.state.search){
+            this.setState({
+                search: newProps.search,
+            });
+        }
+    }
 
     handleChange = (event, value) => {
         this.setState({ value });
@@ -66,7 +78,7 @@ class EventContainer extends React.Component {
 
         return (
             <div className={classes.root}>
-                <AppBar position="relative" color="default">
+                <AppBar position="relative" color="default" >
                     <Tabs
                         value={this.state.value}
                         onChange={this.handleChange}
@@ -79,7 +91,7 @@ class EventContainer extends React.Component {
                         <Tab className={classes.tab} label="FOLLOWING" />
                         <Tab className={classes.tab} label="BY DATE" />
                     </Tabs>
-                </AppBar>
+                </AppBar >
                 <SwipeableViews
                     axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                     index={this.state.value}
@@ -88,7 +100,7 @@ class EventContainer extends React.Component {
                 >
 
                     <TabContainer dir={theme.direction}>
-                        <EventList/>
+                        <EventList search={this.state.search}/>
                     </TabContainer>
                     <TabContainer dir={theme.direction}>Eventlist Following</TabContainer>
                     <TabContainer dir={theme.direction}>Eventlist sort by date</TabContainer>

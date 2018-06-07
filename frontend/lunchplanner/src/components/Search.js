@@ -1,18 +1,9 @@
 import React from 'react';
 import {Button, List, ListItem, Divider, withStyles, Drawer, IconButton, MenuItem, FormControlLabel, Switch, TextField, ListItemSecondaryAction} from '@material-ui/core';
-import EventIcon from '@material-ui/icons/LocalDining';
-import SocialIcon from '@material-ui/icons/Group';
-import NotificationIcon from '@material-ui/icons/NotificationsNone';
-import SignOutIcon from '@material-ui/icons/ExitToApp';
-import OptionIcon from '@material-ui/icons/Build';
 import {Link} from "react-router-dom";
 import SearchIcon from '@material-ui/icons/Search';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from "@material-ui/core/es/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
 import DialogActions from "@material-ui/core/es/DialogActions/DialogActions";
-import {getTeams} from "./Team/TeamFunctions";
-import {getEvents} from "./Event/EventFunctions";
 
 const styles =  theme => ({
     root:{
@@ -50,25 +41,28 @@ class Search extends React.Component {
     constructor(props){
         super();
 
-        //this.handleClick = this.handleClick.bind(this);
-
         this.state = {
-            popupVisible: false,
             visible: false,
             open: props.open,
-            search: "",
-            city: "",
-            teams: [],
+            search: props.search,
             team: "",
             cancel: props.cancel,
         };
-        this.setState()
+    }
+
+    componentWillReceiveProps(newProps) {
+        if(newProps.search !== this.state.search){
+            this.setState({
+                search: newProps.search,
+            });
+        }
     }
 
     handleChange = name => event => {
         this.setState({
             [name]: event.target.value,
         });
+
     };
 
 
@@ -76,15 +70,19 @@ class Search extends React.Component {
         this.setState({ open: true });
     };
 
+    handleCancel = () => {
+        this.setState({open: false});
+        this.props.handleCancel();
+    };
+
     handleClose = () => {
-        console.log(this.state.open, "open");
         this.setState({ open: false });
     };
 
-    handleSearch = () => {
-        console.log("handle Search")
-        getEvents(this.state.search);
-    }
+    searchForEvents = () => {
+        this.setState({ open: false });
+        this.props.handleSearch(this.state.search);
+    };
     render() {
 
         const { classes } = this.props;
@@ -106,15 +104,14 @@ class Search extends React.Component {
                                     <TextField
                                         id="Search"
                                         label="Search"
-                                        placeholder="Search for ..."
-                                        multiline
+                                        defaultValue={this.state.search}
                                         className={classes.textField}
                                         onChange={this.handleChange('search')}
                                         margin="normal"
                                     />
                                 </form>
                                 <IconButton>
-                                    <SearchIcon className={classes.icon} onClick={this.handleSearch}/>
+                                    <SearchIcon className={classes.icon} onClick={this.searchForEvents}/>
                                 </IconButton>
 
                             </ListItem>
@@ -122,7 +119,7 @@ class Search extends React.Component {
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="contained" color="secondary" className={classes.button} onClick={this.state.cancel}>
+                    <Button variant="contained" color="secondary" className={classes.button} onClick={this.handleCancel}>
                         Cancel
                     </Button>
                     <Link to={{pathname:'/event/create'}}>

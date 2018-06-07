@@ -32,10 +32,10 @@ const darkerBackground = '#03030305';
 class EventList extends React.Component {
 
     constructor(props) {
-        super();
+        super(props);
         this.state = {
             events: [],
-            search:null,
+            search:props.search,
         }
     }
 
@@ -51,6 +51,12 @@ class EventList extends React.Component {
         if(needReload) {
             needReload = !needReload;
             this.loadEvents();
+        }
+        if(newProps.search !== this.state.search){
+            this.setState({
+                search: newProps.search,
+            });
+            this.loadEvents(newProps.search);
         }
     }
 
@@ -74,7 +80,6 @@ class EventList extends React.Component {
             needReload = !needReload;
             this.loadEvents();
         }
-
         return (
             <div className={classes.root}>
                 <List className={classes.list}>
@@ -108,7 +113,6 @@ class EventList extends React.Component {
                                       accepted={accepted}
                                       invited={invited}
                                       people={listValue.invitations}
-                                      location={listValue.location}
                                       token={listValue.shareToken}
                         />;
                     })}
