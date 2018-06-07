@@ -73,10 +73,9 @@ class LocationList extends React.Component {
         const { classes } = this.props;
         let events = this.state.events || [];
         let locations = [];
-        let isRow = false;
+
         // Sort events with location name
         events.sort(function(a,b) {return (a.location > b.location) ? 1 : ((b.location > a.location) ? -1 : 0);});
-        console.log(events);
         for(let i = 0; i < events.length; i++){
             locations.push(events[i].location);
         }
@@ -87,14 +86,13 @@ class LocationList extends React.Component {
                 return locations.indexOf(item) === pos && !locations.some((person) => person.location === item);
             });
         }
-
-        let counter = 0;
-        let titelNotSet = true;
+        let isSameLocation = false;
         return (
             <div className={classes.root}>
                 <List className={classes.list}>
                     {locationsUnique.map((value) => {
-                        console.log(value)
+                        console.log("value",value);
+                        let counter = 0;
                         return(
                             <div>
                                 <ListItem>
@@ -103,25 +101,12 @@ class LocationList extends React.Component {
                                         <GPSIcon className={classes.icon}/>
                                     </div>
                                     {events.map(function(listValue){
-                                        /*let locationname = "";
-                                        if(counter === 0 || locations[counter-1] !== locations[counter]){
-                                            locationname = locations[counter];
-                                            if(locations[counter] === locations[counter +1]){
-                                                isRow = true;
-                                            }else{
-                                                isRow = false;
-                                            }
-                                            counter++;
+                                        if(value === locations[counter]){
+                                            isSameLocation = true;
                                         }else{
-                                            counter++;
-                                            if(locations[counter] === locations[counter +1]){
-                                                isRow = true;
-                                            }else{
-                                                isRow = false;
-                                            }
-                                            counter++;
-                                        }*/
-
+                                            isSameLocation = false;
+                                        }
+                                        counter++;
                                         let accepted = false;
                                         let invited = false;
                                         let username = getUsername();
@@ -137,15 +122,8 @@ class LocationList extends React.Component {
                                         return (
                                             <div>
                                                 <div>
-                                                    {isRow ?
+                                                    {isSameLocation ?
                                                         (<div>
-                                                            {titelNotSet ?  (<div className={classes.location}>
-
-                                                                <p className={classes.locationText}>{locationname}</p>
-                                                                <GPSIcon className={classes.icon}/>
-
-                                                            </div> ) : ""}
-                                                            {titelNotSet = false}
                                                             <div className={classes.row}>
                                                                 <Event name={listValue.eventName}
                                                                        key={'Event' + listValue.eventId}
@@ -161,24 +139,7 @@ class LocationList extends React.Component {
                                                             </div>
                                                         </div>)
                                                         :
-                                                        (<div>
-                                                            <div className={classes.location}>
-                                                                <p className={classes.locationText}>{locationname}</p>
-                                                                <GPSIcon className={classes.icon}/>
-                                                            </div>
-                                                            {titelNotSet = true}
-                                                            <Event name={listValue.eventName}
-                                                                   key={'Event' + listValue.eventId}
-                                                                   id={listValue.eventId}
-                                                                   description={listValue.eventDescription}
-                                                                   location={listValue.location}
-                                                                   date={listValue.startDate}
-                                                                   accepted={accepted}
-                                                                   invited={invited}
-                                                                   people={listValue.invitations}
-                                                                   token={listValue.shareToken}
-                                                            />
-                                                        </div>)
+                                                       ""
                                                     }
                                                 </div>
                                             </div>
