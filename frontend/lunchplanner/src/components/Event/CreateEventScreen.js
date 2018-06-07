@@ -6,6 +6,7 @@ import Dialog from '../Dialog';
 import {Switch, Typography, TextField, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails} from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
+import MapIcon from '@material-ui/icons/Map'
 import {FormGroup, FormControlLabel, Slide} from '@material-ui/core';
 import {DatePicker, TimePicker} from 'material-ui-old';
 import PeopleIcon from '@material-ui/icons/People'
@@ -20,6 +21,7 @@ import moment from "moment";
 import {getHistory} from "../../utils/HistoryUtils";
 import {InputAdornment} from "@material-ui/core";
 import {createEvent} from "./EventFunctions";
+import GoogleSuggest from "../Map/GoogleSuggest";
 
 const styles = {
     appBar: {
@@ -31,7 +33,21 @@ const styles = {
     textField: {
         marginBottom:30,
         marginLeft: 20,
-        width: "90%",
+        width: "60%",
+    },
+    searchfield: {
+        marginBottom:30,
+        marginLeft:20,
+        width:"100%",
+        float: "left"
+    },
+    searchboxField: {
+      marginTop:30,
+        width:"75%",
+        float: "left"
+    },
+    mapIcon:{
+        marginLeft:'15px'
     },
     button:{
         fontSize: '16px',
@@ -52,6 +68,11 @@ const styles = {
     pickerWithIcon: {
         width: '50%',
         float: 'left',
+    },
+    mapIcon: {
+        width: '60% !important',
+        overflow: 'hidden',
+        float: 'right'
     },
     datePicker: {
         width: '60% !important',
@@ -92,6 +113,7 @@ const styles = {
         float: 'left',
         color: '#A4A4A4',
     },
+
     inviteTextField: {
         width: '100%',
     },
@@ -216,6 +238,13 @@ class CreateEventScreen extends React.Component {
     handleVisibility = name => event =>{
         this.setState({ [name]: event.target.checked });
     }
+    handleLocationChange= (location) => {
+        this.setState({
+            location: location,
+        });
+        console.log("Location: ", location);
+        console.info("längengrad: "+location.l)
+    }
 
     render() {
         this.parseUrl();
@@ -237,16 +266,25 @@ class CreateEventScreen extends React.Component {
                             ? <p className={classes.error}>{error}</p>
                             : ""
                     )}
-                    <form className={classes.container} noValidate autoComplete="on" >
-                        <TextField
+                    <form noValidate autoComplete="on" >
+                       <div>
+                        <GoogleSuggest
+                            className={classes.searchboxField}
                             id="location"
                             label="Location"
                             value={this.state.location}
-                            className={classes.textField}
                             placeholder ="Add an Location ..."
-                            onChange={this.handleChange}
-                            margin="normal"
+                            float="left"
+                            onChange={this.handleLocationChange}
                         />
+                        <Link className={classes.mapIcon}
+                              float="right"
+                              to={{pathname: "/event/create/map", query: {
+                                  location: this.state.location,}}}
+                              location={ this.state.location}
+                        >   <MapIcon className={classes.mapIcon}  to={{pathname: "/event/create/map"}} />
+                        </Link>
+                       </div>
                     </form>
                     <div>
                         <p className={classes.dateHeader}>Date</p><p className={classes.timeHeader}>Time</p>
