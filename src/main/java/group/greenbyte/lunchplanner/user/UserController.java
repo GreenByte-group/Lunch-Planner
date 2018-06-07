@@ -279,7 +279,7 @@ public class UserController {
      * @param response response channel
      * @return error message or nothing
      */
-    @RequestMapping(value = "/options/profile/picture", method = RequestMethod.PUT,
+    @RequestMapping(value = "/options/profile/picture/upload", method = RequestMethod.PUT,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public String uploadProfilePicture(@RequestParam("imageFile") MultipartFile imageFile, HttpServletResponse response) {
@@ -294,6 +294,25 @@ public class UserController {
         return "";
     }
 
+    /**
+     *
+     * @return user profile picture
+     */
+    @RequestMapping(value = "/getProfilePicture", method = RequestMethod.GET,
+            produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public ResponseEntity getProfilePicture() {
+        try {
+            String picturePath = userLogic.getPicturePath(SessionManager.getUserName());
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(picturePath);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
 
     /**
      * Update user password

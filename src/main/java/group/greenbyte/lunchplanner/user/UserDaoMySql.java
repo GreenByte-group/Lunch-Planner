@@ -320,7 +320,6 @@ public class UserDaoMySql implements UserDao {
         }
     }
 
-
     @Override
     public void createUser(String userName, String password, String mail) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);

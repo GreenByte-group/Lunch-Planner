@@ -134,7 +134,4 @@ public interface UserDao {
      * @throws DatabaseException
      */
     void savePicturePath(String userName, String picturePath) throws DatabaseException;
-
-
-
 }

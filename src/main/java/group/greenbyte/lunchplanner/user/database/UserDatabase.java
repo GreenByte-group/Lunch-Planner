@@ -16,6 +16,8 @@ public class UserDatabase {
 
     private String fcmToken;
 
+    private String profilePictureUrl;
+
     public User getUser() {
         User user = new User();
         user.setUserName(userName);
@@ -23,6 +25,7 @@ public class UserDatabase {
         user.seteMail(eMail);
         user.setToken(token);
         user.setFcmToken(fcmToken);
+        user.setProfilePictureUrl(profilePictureUrl);
 
         return user;
     }
@@ -61,5 +64,9 @@ public class UserDatabase {
 
     public void setFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
+    }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
 }

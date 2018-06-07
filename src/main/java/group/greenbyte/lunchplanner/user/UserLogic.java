@@ -367,6 +367,28 @@ public class UserLogic {
     }
 
     /**
+     *
+     *
+     * @param userName
+     * @return picture path
+     */
+    public String getPicturePath(String userName) throws HttpRequestException {
+        if(userName == null || userName.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
+
+        if(userName.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
+
+        try {
+            String path = userDao.getUser(userName).getProfilePictureUrl();
+            String absolutePath = request.getServletContext().getRealPath(path);
+            return absolutePath;
+        } catch (DatabaseException e) {
+            throw new HttpRequestException (HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    /**
      * Update user password
      *
      * @param userName user that wants to update their password
