@@ -19,11 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-
-import javax.imageio.ImageIO;
-import javax.servlet.ServletContext;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,7 +36,8 @@ public class UserLogic {
     private static final Pattern REGEX_MAIL = Pattern.compile("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
 
     @Autowired
-    ServletContext context;
+    private HttpServletRequest request;
+    //private ServletContext context;
 
 
     // This variable will be set over the setter Method by java spring
@@ -330,54 +327,44 @@ public class UserLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
 
         if(!imageFile.isEmpty()) {
-
            try{
-               String relativePath = "/resources/profilePictures";
-               String absolutePath = context.getRealPath(relativePath);
-               File uploadedFile = new File(absolutePath, userName);
-               imageFile.transferTo(uploadedFile);
 
-               userDao.savePicturePath(userName, relativePath + "/" + userName + ".jpg");
+               String contentType = imageFile.getContentType();
+               String type = contentType.split("/")[0];
+               if (type.equalsIgnoreCase("image")) {
+                   throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "the uploaded file is not an image");
+               }
+
+               String relativePath = "/profilePictures/";
+
+               /*with servletContext
+               String absolutePath = context.getRealPath(relativePath);*/
+
+               //the path changes in a different context
+               String absolutePath = request.getServletContext().getRealPath(relativePath);
+
+               //create a new directory if it doesn't exist
+               if(!new File(absolutePath).exists()) {
+                   new File(absolutePath).mkdir();
+               }
+               imageFile.getOriginalFilename();
+               String fileName = userName;
+               String path = absolutePath + fileName;
+               File destination = new File(path);
+               imageFile.transferTo(destination);
+
+               userDao.savePicturePath(userName, relativePath + fileName);
 
 
            } catch(IOException | DatabaseException e){
                throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
            }
 
+        } else {
+            //TODO geht das?
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "uploaded file is empty");
         }
     }
-
-    /*private BufferedImage resizeImage(byte[] image) throws IOException {
-        // Get a BufferedImage object from a byte array
-        InputStream in = new ByteArrayInputStream(image);
-        BufferedImage originalImage = ImageIO.read(in);
-
-        // Get image dimensions
-        int height = originalImage.getHeight();
-        int width = originalImage.getWidth();
-
-        // The image is already a square
-        if (height == width) {
-            return originalImage;
-        }
-
-        // Compute the size of the square
-        int squareSize = (height > width ? width : height);
-
-        // Coordinates of the image's middle
-        int xc = width / 2;
-        int yc = height / 2;
-
-        // Crop
-        BufferedImage croppedImage = originalImage.getSubimage(
-                xc - (squareSize / 2), // x coordinate of the upper-left corner
-                yc - (squareSize / 2), // y coordinate of the upper-left corner
-                squareSize,            // widht
-                squareSize             // height
-        );
-
-        return croppedImage;
-    }*/
 
     /**
      * Update user password
