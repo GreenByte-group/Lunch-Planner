@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -272,26 +273,71 @@ public class UserController {
 
     // --------------------- USER PROFILE ---------------------
     /**
-     * Update the profile picture
+     * Upload a profile picture
      *
-     * @param picturePath picture identificator
+     * @param imageFile image that is going to be saved
      * @param response response channel
-     * @return
+     * @return error message or nothing
      */
     @RequestMapping(value = "/options/profile/picture", method = RequestMethod.PUT,
-            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
-    public String updateProfilePicture(@RequestBody String picturePath, HttpServletResponse response){
+    public String uploadProfilePicture(@RequestParam("imageFile") MultipartFile imageFile, HttpServletResponse response) {
         try {
-            userLogic.updateProfilePicture(SessionManager.getUserName(), picturePath);
+            userLogic.uploadProfilePicture(SessionManager.getUserName(), imageFile);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());
             e.printStackTrace();
             return e.getErrorMessage();
         }
+        return "";
     }
 
+    /**
+     * Update user password
+     *
+     * @param password new password
+     * @param response response channel
+     * @return error message or nothing
+     */
+
+    @RequestMapping(value = "/options/profile/password", method = RequestMethod.PUT,
+            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String updateUserPassword(@RequestBody String password, HttpServletResponse response) {
+        try {
+            userLogic.updateUserPassword(SessionManager.getUserName(), password);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            e.printStackTrace();
+            return e.getErrorMessage();
+        }
+        return "";
+    }
+
+    /**
+     * Update user e-mail
+     *
+     * @param eMail new e-mail
+     * @param response response channel
+     * @return error message or nothing
+     */
+    @RequestMapping(value = "/options/profile/e-mail", method = RequestMethod.PUT,
+            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String updateUserEmail(@RequestBody String eMail, HttpServletResponse response) {
+        try {
+            userLogic.updateUserEmail(SessionManager.getUserName(), eMail);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        }catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            e.printStackTrace();
+            return e.getErrorMessage();
+        }
+        return "";
+    }
 
 //    /**
 //     *
