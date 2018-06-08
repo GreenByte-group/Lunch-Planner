@@ -119,7 +119,7 @@ class EventList extends React.Component {
                         />;
                     })}
                 </List>
-                <FloatingActionButton onClick={() => getHistory().push('/event/create')} />
+                <FloatingActionButton onClick={() => getHistory().push('/app/event/create')} />
             </div>
 
         );

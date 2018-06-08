@@ -223,7 +223,7 @@ class Event extends React.Component {
             eventName += " @ " + location;
 
         return (
-            <Link className={classes.link} to={{pathname:`/event/${this.state.id}`, query:{
+            <Link className={classes.link} to={{pathname:`/app/event/${this.state.id}`, query:{
                     eventName: name,
                     description: description,
                     date: date,

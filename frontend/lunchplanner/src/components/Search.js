@@ -122,7 +122,7 @@ class Search extends React.Component {
                     <Button variant="contained" color="secondary" className={classes.button} onClick={this.handleCancel}>
                         Cancel
                     </Button>
-                    <Link to={{pathname:'/event/create'}}>
+                    <Link to={{pathname:'/app/event/create'}}>
                         <Button variant="contained" color="secondary" className={classes.button}>
                             Create Event
                         </Button>

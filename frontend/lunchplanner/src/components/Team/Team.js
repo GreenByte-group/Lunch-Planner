@@ -125,7 +125,7 @@ class Team extends React.Component {
         people = people.map((value) => value.trim());
 
         return (
-            <Link to={{pathname:`/team/${this.state.id}`}}>
+            <Link to={{pathname:`/app/team/${this.state.id}`}}>
                 <ListItem style={{backgroundColor: background}} button className={classes.listItem}>
                     <div className={classes.text}>
                         <div className={classes.row}>
