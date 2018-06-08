@@ -8,6 +8,7 @@ import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
 import {getUsername} from "../authentication/LoginFunctions";
 import {getEvents} from "./EventFunctions";
+import {getHistory} from "../../utils/HistoryUtils";
 
 const styles = {
     root: {
@@ -117,9 +118,7 @@ class EventList extends React.Component {
                         />;
                     })}
                 </List>
-                <Link to={{pathname:'/event/create'}}>
-                    <FloatingActionButton />
-                </Link>
+                <FloatingActionButton onClick={() => getHistory().push('/event/create')} />
             </div>
 
         );
