@@ -57,7 +57,7 @@ class ServiceListScreen extends React.Component {
             (response) => {
                 if(response.status === 201) {
                     serviceListNeedReload();
-                    getHistory().push("/app/event/" + this.state.eventId);
+                    getHistory().push("/event/" + this.state.eventId);
                 }
             },
             (error) => {
@@ -81,7 +81,7 @@ class ServiceListScreen extends React.Component {
         return (
             <Dialog
                 title="Add Checklist..."
-                closeUrl={"/app/event/" + this.state.eventId}
+                closeUrl={"/event/" + this.state.eventId}
             >
                 <div className={classes.overButton}>
                     {

@@ -171,7 +171,7 @@ class CreateEventScreen extends React.Component {
             (response) => {
                 if(response.status === 201) {
                     eventListNeedReload();
-                    getHistory().push('/app/event');
+                    getHistory().push('/event');
                 } else {
                     this.setState({error: response.response.data});
                 }
@@ -224,7 +224,7 @@ class CreateEventScreen extends React.Component {
         return (
             <Dialog
                 title="Create Event"closeIconAbsolute
-                closeUrl="/app/event"
+                closeUrl="/event"
                 paddingBottom={'48px'}
             >
                 <div className={classes.overButton}>
@@ -272,8 +272,8 @@ class CreateEventScreen extends React.Component {
                         <ExpansionPanelDetails>
                             <FormGroup row>
                                 <Link className={classes.inviteTextField}
-                                      to={{pathname: "/app/event/create/invite",  query: {
-                                        source: "/app/event/create",
+                                      to={{pathname: "/event/create/invite",  query: {
+                                        source: "/event/create",
                                         invitedUsers: this.state.invitedUsers,
                                     }}}>
                                     <TextField

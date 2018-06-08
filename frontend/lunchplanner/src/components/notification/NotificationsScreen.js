@@ -30,7 +30,7 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.paper,
         //width: 1500,,
         position: 'relative',
-        height: 'calc(100% - 110px)',
+        height: '100%',
         display: 'flex',
         flexDirection: 'column'
     },
@@ -133,6 +133,7 @@ class NotificationsScreen extends React.Component {
                         <NotificationSettings />
                     </TabContainer>
                 </SwipeableViews>
+                <BottomNavigationBar />
             </div>
         );
     }

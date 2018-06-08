@@ -81,7 +81,7 @@ const styles = {
     },
     appbar: {
         position: 'relative',
-        boxShadow: '0px 2px 4px -1px rgba(0, 0, 0, 0.2),0px 4px 5px 0px rgba(0, 0, 0, 0.14),0px 1px 10px 0px rgba(0, 0, 0, 0.12)',
+        boxShadow: 'none',
     },
 };
 
@@ -155,23 +155,18 @@ class AppContainer extends React.Component {
         let component = this.props.match.params.component;
         let children;
         let title;
-        let bottomNavigationValue = -1;
-
         switch(component) {
             case 'event':
                 children = <LunchPlanner/>;
                 title = "Events";
-                bottomNavigationValue = 1;
                 break;
             case 'team':
                 children = <SocialScreen/>;
                 title = "Teams";
-                bottomNavigationValue = 2;
                 break;
             case 'location':
                 children = <LocationScreen/>;
                 title = "Places";
-                bottomNavigationValue = 0;
                 break;
             case 'notifications':
                 children = <NotificationsScreen/>;
@@ -200,13 +195,13 @@ class AppContainer extends React.Component {
                         <Link to="/app/event">
                             <MenuItem>
                                 <LocalDining className={classes.icon}/>
-                                Events
+                                Event
                             </MenuItem>
                         </Link>
                         <Link to="/app/team">
                             <MenuItem>
                                 <Group className={classes.icon}/>
-                                Teams
+                                Social
                             </MenuItem>
                         </Link>
                         <Divider />
@@ -300,7 +295,7 @@ class AppContainer extends React.Component {
                     {children}
 
                     <Hidden mdUp>
-                        <BottomNavigationBar value={bottomNavigationValue} />
+                        <BottomNavigationBar />
                     </Hidden>
                 </div>
             </div>

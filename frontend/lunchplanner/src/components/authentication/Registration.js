@@ -69,7 +69,7 @@ class Registration extends React.Component {
                     if(response.status === 201) {
                         doLogin(this.state.username, this.state.password, message => {
                         if(message.type === "LOGIN_SUCCESS") {
-                            getHistory().push("/app/event");
+                            getHistory().push("/event");
                         }})
                     } else {
                         this.setState({

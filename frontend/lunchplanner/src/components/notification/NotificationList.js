@@ -16,13 +16,13 @@ const styles = {
         padding: 0,
     },
     subheader: {
+        backgroundColor: 'white',
         padding: '8px 16px',
         lineHeight: '24px',
         fontWeight: 500,
         fontSize: '16px',
         color: 'rgba(46,46,46,0.87)',
-        boxShadow: '0px 2px 5px -4px black',
-        backgroundColor: '#f8f8f8',
+        borderTop: '1px solid #D2D2D2;'
     },
     clearAll: {
         float: 'right',
