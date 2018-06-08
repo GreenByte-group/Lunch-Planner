@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import {withStyles, AppBar, Tabs, Tab, Typography} from '@material-ui/core';
-import Appbar from "./Appbar";
 import Teamlist from "./Team/TeamList";
 import BottomNavigationBar from "./BottomNavigationBar";
 import {setAuthenticationHeader} from "./authentication/LoginFunctions";
@@ -66,10 +65,14 @@ class SocialScreen extends React.Component {
     }
 
     getTabValue(props) {
-        const params = new URLSearchParams(props.location.search);
-        let tab = params.get('tab');
-        if(tab != null && tab !== undefined) {
-            return tab;
+        if(props.location) {
+            const params = new URLSearchParams(props.location.search);
+            let tab = params.get('tab');
+            if (tab != null && tab !== undefined) {
+                return tab;
+            } else {
+                return 0;
+            }
         } else {
             return 0;
         }
@@ -98,33 +101,7 @@ class SocialScreen extends React.Component {
 
         return (
             <div className={classes.root}>
-                <Appbar currentScreen="Social"/>
-                <AppBar position="relative" color="default">
-                    <Tabs
-                        value={this.state.value}
-                        onChange={this.handleChange}
-                        indicatorColor="secondary"
-                        textColor="secondary"
-                        centered
-                        fullWidth
-                    >
-                        <Tab className={classes.tab} label="PERSON" />
-                        <Tab className={classes.tab} label="TEAMS" />
-                    </Tabs>
-                </AppBar>
-                <SwipeableViews
-                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                    index={this.state.value}
-                    onChangeIndex={this.handleChangeIndex}
-                    className={classes.swipeViews}
-                >
-
-                    <TabContainer dir={theme.direction}></TabContainer>
-                    <TabContainer dir={theme.direction}>
-                        <Teamlist/>
-                    </TabContainer>
-                </SwipeableViews>
-                <BottomNavigationBar />
+                <Teamlist/>
             </div>
         );
     }
