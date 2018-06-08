@@ -54,10 +54,9 @@ const styles = {
         fontSize: '16px',
         fontFamily: 'Work Sans',
         color: "white",
-        position: "fixed",
         bottom: 0,
         width: "100%",
-        height: '56px',
+        minHeight: '56px',
         zIndex: '10000',
     },
     buttonInvitation: {
@@ -130,7 +129,6 @@ const styles = {
     },
     overButton: {
         height: '100%',
-        marginBottom: '56px',
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',

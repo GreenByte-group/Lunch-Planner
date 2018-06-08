@@ -37,10 +37,9 @@ const styles = {
         fontSize: '16px',
         fontFamily: 'Work Sans',
         color: "white",
-        position: "fixed",
         bottom: 0,
         width: "100%",
-        height: '56px',
+        minHeight: '56px',
         zIndex: '10000',
     },
     error: {
@@ -101,10 +100,6 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
     },
-};
-const buttonStyle = {
-    float: 'right',
-    marginBottom: '15px',
 };
 
 function Transition(props) {

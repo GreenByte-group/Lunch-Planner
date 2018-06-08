@@ -27,6 +27,8 @@ const styles = theme => ({
         position: 'relative',
         height: '100%',
         overflowY: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
     },
     fab: {
         position: 'absolute',
@@ -43,8 +45,12 @@ const styles = theme => ({
         fontSize: '13px',
     },
     swipeViews: {
-        height: 'calc(100% - 48px)',
+        height: '100%',
         overflowY: 'auto',
+        maxWidth: '1024px',
+        width: '100%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
     }
 });
 
