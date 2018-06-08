@@ -1,13 +1,13 @@
 import React from "react"
 
-import {HOST} from "../../Config"
 import Team from "./Team";
 import List from "@material-ui/core/List";
+import {People, TagFaces} from "@material-ui/icons";
 import {withStyles} from "@material-ui/core/styles/index";
-import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
 import {setAuthenticationHeader} from "../authentication/LoginFunctions";
 import {getTeams} from "./TeamFunctions";
+import {getHistory} from "../../utils/HistoryUtils";
 
 const styles = {
     root: {
@@ -62,7 +62,14 @@ class TeamList extends React.Component {
                         />;
                     })}
                 </List>
-                <Link to="/team/create"><FloatingActionButton /></Link>
+                <FloatingActionButton
+                    actions={
+                        [
+                            {icon: <People />, text: 'Work team', onClick: () => getHistory().push("/team/create?withParent=true") },
+                            {icon: <TagFaces />, text: 'Social group', onClick: () => getHistory().push("/team/create?withParent=false") }
+                        ]
+                    }
+                />
             </div>
 
         );
