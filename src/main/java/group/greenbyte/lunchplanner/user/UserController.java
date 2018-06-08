@@ -279,13 +279,13 @@ public class UserController {
      * @param response response channel
      * @return error message or nothing
      */
-    @RequestMapping(value = "/options/profile/picture/upload", method = RequestMethod.PUT,
+    @RequestMapping(value = "/options/profile/picture/upload", method = RequestMethod.POST,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public String uploadProfilePicture(@RequestParam("imageFile") MultipartFile imageFile, HttpServletResponse response) {
         try {
             userLogic.uploadProfilePicture(SessionManager.getUserName(), imageFile);
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());
             e.printStackTrace();

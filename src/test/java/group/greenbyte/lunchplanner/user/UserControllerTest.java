@@ -27,9 +27,7 @@ import static group.greenbyte.lunchplanner.Utils.getJsonFromObject;
 import static group.greenbyte.lunchplanner.event.Utils.createEvent;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
 import static org.junit.Assert.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -458,5 +456,18 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
     }
+
+    // ------------------------- UPLOAD PICTURE -------------------------
+
+    //TODO mockMultiPartFile
+    /*@Test
+    @WithMockUser(username = userName)
+    public void test1UploadPicture() throws Exception {
+        MockMultipartFile image = new MockMultipartFile("image", "image.jpg", "image/jpg",
+                "<<jpg data>>".getBytes());
+
+
+    }*/
+
 
 }
