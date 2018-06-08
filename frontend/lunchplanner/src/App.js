@@ -77,7 +77,7 @@ class App extends React.Component {
             let notification = new Notification(notificationTitle, notificationOptions);
             notification.addEventListener('click', (event) => {
                 console.log('click', event);
-                getHistory().push(event.target.tag);
+                getHistory().push("/app" + event.target.tag);
             })
         });
     }
