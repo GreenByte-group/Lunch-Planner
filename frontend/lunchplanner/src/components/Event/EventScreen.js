@@ -120,9 +120,10 @@ function Transition(props) {
             fontSize: '16px',
             fontFamily: 'Work Sans',
             color: "white",
+            position: "fixed",
             bottom: 0,
             width: "100%",
-            minHeight: '56px',
+            height: '56px',
             zIndex: '10000',
         },
         buttonInvitation: {
@@ -151,6 +152,7 @@ function Transition(props) {
         },
         overButton: {
             height: '100%',
+            marginBottom: '56px',
             overflowY: 'auto',
             display: 'flex',
             flexDirection: 'column',
@@ -159,12 +161,6 @@ function Transition(props) {
             float: 'left',
             marginRight: '5px',
             width: '17px',
-        },
-        image: {
-            minHeight: '152px',
-            width: '100%',
-            backgroundPosition: 'center',
-            backgroundSize: 'cover',
         },
 
         // TIME AND DATE
@@ -508,9 +504,9 @@ class EventScreen extends React.Component {
                 <Dialog
                     title={barTitle}
                     closeUrl="/event"
+                    imageUrl="https://greenbyte.group/assets/images/logo.png"
                 >
                     <div className={classes.overButton}>
-                        <div className={classes.image} style={{backgroundImage:"url(" + "https://greenbyte.group/assets/images/logo.png" + ")"}} />
                         <div className={classes.header}>
                             <div className={classes.headerText}>
                                 <p className={classes.fontSmall}>Created by {admin}</p>

@@ -47,10 +47,6 @@ const styles = theme => ({
     swipeViews: {
         height: '100%',
         overflowY: 'auto',
-        maxWidth: '1024px',
-        width: '100%',
-        marginLeft: 'auto',
-        marginRight: 'auto',
     },
 });
 

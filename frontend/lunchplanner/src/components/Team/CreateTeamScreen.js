@@ -20,9 +20,10 @@ const styles = {
         fontSize: '16px',
         fontFamily: 'Work Sans',
         color: "white",
+        position: "fixed",
         bottom: 0,
         width: "100%",
-        minHeight: '56px',
+        height: '56px',
         zIndex: '10000',
     },
     padding: {
@@ -49,7 +50,7 @@ const styles = {
         marginLeft: '24px',
     },
     overButton: {
-        height: '100%',
+        height: 'calc(100% - 112px)',
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
