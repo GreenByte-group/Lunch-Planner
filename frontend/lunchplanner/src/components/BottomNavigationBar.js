@@ -36,14 +36,14 @@ class BottomNavigationBar extends React.Component {
                     onChange={this.handleChange}
                     showLabels
                 >
-                    <Link to="/app/location">
+                    <Link to="/location">
                         <BottomNavigationAction showLabel={true} label="Places" icon={<PlaceIcon />} />
                     </Link>
-                    <Link to="/app/event">
+                    <Link to="/event">
                         <BottomNavigationAction showLabel={true} label="Events" icon={<EventIcon />} />
                     </Link>
-                        <Link to="/app/team">
-                        <BottomNavigationAction showLabel={true} label="Teams" icon={<SocialIcon />}/>
+                        <Link to="/social">
+                        <BottomNavigationAction showLabel={true} label="Social" icon={<SocialIcon />}/>
                     </Link>
                 </BottomNavigation>
         );

@@ -13,7 +13,6 @@ const styles = theme => ({
         float: 'right',
         bottom: '15px',
         marginLeft: 'calc(100% - 56px - 15px - 100px)',
-        width: 0,
     },
     whiteSymbol: {
         color: theme.palette.common.white

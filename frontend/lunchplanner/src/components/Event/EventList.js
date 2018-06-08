@@ -18,7 +18,6 @@ const styles = {
     },
     list: {
         padding: 0,
-        paddingBottom: '75px',
     },
 };
 

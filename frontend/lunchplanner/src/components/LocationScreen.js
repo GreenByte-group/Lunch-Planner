@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import SwipeableViews from 'react-swipeable-views';
 import {AppBar, Tabs, Tab, Typography} from '@material-ui/core';
+import Appbar from "./Appbar";
 import BottomNavigationBar from "./BottomNavigationBar";
 
 
@@ -62,7 +63,30 @@ class LocationScreen extends React.Component {
 
         return (
             <div className={classes.root}>
-                //TODO location
+                <Appbar currentScreen="Places"/>
+                <AppBar position="relative" color="default">
+                    <Tabs
+                        value={this.state.value}
+                        onChange={this.handleChange}
+                        indicatorColor="secondary"
+                        textColor="secondary"
+                        centered
+                        fullWidth
+                    >
+                        <Tab className={classes.tab} label="LOCATION" />
+                        <Tab className={classes.tab} label="LOCATION" />
+                    </Tabs>
+                </AppBar>
+                <SwipeableViews
+                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                    index={this.state.value}
+                    onChangeIndex={this.handleChangeIndex}
+                >
+
+                    <TabContainer dir={theme.direction}></TabContainer>
+                    <TabContainer dir={theme.direction}></TabContainer>
+                </SwipeableViews>
+                <BottomNavigationBar />
             </div>
         );
     }
