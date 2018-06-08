@@ -12,35 +12,35 @@ import {needReload} from "./EventContainer";
 import Divider from "@material-ui/core/es/Divider/Divider";
 import GPSIcon from "@material-ui/icons/GpsFixed";
 import ListItem from "@material-ui/core/es/ListItem/ListItem";
+import ListItemText from "@material-ui/core/es/ListItemText/ListItemText";
+import ListItemSecondaryAction from "@material-ui/core/es/ListItemSecondaryAction/ListItemSecondaryAction";
+import ListItemIcon from "@material-ui/core/es/ListItemIcon/ListItemIcon";
+import ListSubheader from "@material-ui/core/es/ListSubheader/ListSubheader";
 
 const styles = {
     root: {
         height: '100%',
-        overflowX: 'hidden',
-        overflowY: 'auto',
+        fontSize: 16,
     },
     list: {
         padding: 0,
     },
     row: {
         float: "left",
-        marginLeft: "auto"
+        marginLeft: "auto",
     },
     locationText:{
-        marginTop: 20,
+        fontSize: 16,
+        marginTop: 15,
         marginLeft: 24,
         fontFamily: "Work Sans",
-        fontSize: '16px',
     },
     icon:{
         float: "right",
+        marginTop:-23,
         marginRight: 24,
         color: "#1EA185",
-        marginTop: -30,
     },
-    divider:{
-
-    }
 };
 
 class LocationList extends React.Component {
@@ -81,7 +81,7 @@ class LocationList extends React.Component {
         }
         let locationsUnique = [];
         if(locations.length !== 0) {
-            //remove doubles and already invited people
+            //remove doubles
             locationsUnique = locations.filter((item, pos) => {
                 return locations.indexOf(item) === pos && !locations.some((person) => person.location === item);
             });
@@ -91,15 +91,12 @@ class LocationList extends React.Component {
             <div className={classes.root}>
                 <List className={classes.list}>
                     {locationsUnique.map((value) => {
-                        console.log("value",value);
                         let counter = 0;
                         return(
                             <div>
+                                <p className={classes.locationText}>{value}</p>
+                                <GPSIcon className={classes.icon}/>
                                 <ListItem>
-                                    <div className={classes.location}>
-                                        <p className={classes.locationText}>{value}</p>
-                                        <GPSIcon className={classes.icon}/>
-                                    </div>
                                     {events.map(function(listValue){
                                         if(value === locations[counter]){
                                             isSameLocation = true;
@@ -121,7 +118,7 @@ class LocationList extends React.Component {
 
                                         return (
                                             <div>
-                                                <div>
+                                                <div className={classes.row}>
                                                     {isSameLocation ?
                                                         (<div>
                                                             <div className={classes.row}>
@@ -147,7 +144,7 @@ class LocationList extends React.Component {
                                     })}
 
                                 </ListItem>
-                                <Divider className={classes.divider}/>
+                                <Divider />
                             </div>);
                     })
                     }

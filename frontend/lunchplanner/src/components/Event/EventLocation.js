@@ -12,7 +12,7 @@ const styles = {
         '&:hover': {
             textDecoration: 'none',
         },
-        height: '88px'
+        height: '88px',
     },
     link: {
         '&:hover': {
@@ -35,10 +35,23 @@ const styles = {
         marginRight: 'auto',
     },
     text:{
+        marginBottom: '0px',
+        display: 'table',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        color: "black",
+    },
+    textSelected: {
+        marginBottom: '0px',
+        display: 'table',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        color: '#75A045',
+    },
+    goingPeople:{
         fontFamily: "Work Sans",
         fontSize: '11px',
         lineHeight: '11px',
-        marginBottom: '0px',
         display: 'table',
         marginLeft: 'auto',
         marginRight: 'auto',
@@ -54,11 +67,6 @@ const styles = {
     icons: {
         width: '13px',
         height: 'auto',
-    },
-    textSelected: {
-        width: 'auto',
-        color: '#75A045',
-        marginLeft: '72px',
     },
     cardContent: {
         display: 'table',
@@ -197,17 +205,11 @@ class EventLocation extends React.Component {
         let invitations = this.state.invitations;
         let location = this.state.location;
         let token = this.state.token;
-
         people = people.split(',');
         people = people.map((value) => value.trim());
-
         let classesText = classes.text;
         if(accepted)
             classesText = classes.textSelected;
-
-        let eventName = name;
-        if(name !== location)
-            eventName += " @ " + location;
 
         return (
             <div >
@@ -224,30 +226,26 @@ class EventLocation extends React.Component {
                     <div className={classes.listItem}>
                         <Card className={classes.card}>
                             <CardContent className={classes.cardContent}>
-                                <div>
+                                <div className={classesText}>
                                     <p className={classes.title}> {time}</p>
-                                    <p className={classes.text}> {people.length} going</p>
+                                    <p className={classes.goingPeople}> {people.length} going</p>
                                     <List className={classes.users}>
                                         <div className={classes.row}>
                                             {people.map((person)=>{
                                                 return (
-                                                    <Avatar className={classes.memberAvatar}>
-                                            <span className={classes.memberAvatarTextLast}>
-                                                {person.charAt(0)}
-                                                </span>
-                                                    </Avatar>);
+                                                    (people.length !== 0)
+                                                        ?
+                                                        <Avatar className={classes.memberAvatar}>
+                                                            <span className={classes.memberAvatarTextLast}>
+                                                                {person.charAt(0)}
+                                                                </span>
+                                                        </Avatar>
+                                                        : "");
                                             })}
                                         </div>
                                     </List>
                                 </div>
                             </CardContent>
-                            <hr style={{marginBottom: '11px'}} />
-                            <div className={classes.footer}>
-                                {(accepted
-                                        ? <AcceptedButton text="Accepted" />
-                                        : (invited) ? <InvitedButton text="Invited" /> : ''
-                                )}
-                            </div>
                         </Card>
 
                     </div>
