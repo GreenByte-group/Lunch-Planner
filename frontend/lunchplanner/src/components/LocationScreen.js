@@ -26,7 +26,11 @@ const styles = theme => ({
         position: 'relative',
         height: '100%',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        maxWidth: '1024px',
+        width: '100%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
     },
     fab: {
         position: 'absolute',
