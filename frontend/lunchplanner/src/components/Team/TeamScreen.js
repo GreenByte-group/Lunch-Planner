@@ -268,7 +268,6 @@ class TeamScreen extends React.Component {
             name: event.target.value,
         });
 
-        //TODO error func
         changeTeamName(this.state.teamId, event.target.value, this.reloadTeamsOnSuccess);
     };
 
@@ -277,7 +276,6 @@ class TeamScreen extends React.Component {
             description: event.target.value,
         });
 
-        //TODO error func
         changeTeamDescription(this.state.teamId, event.target.value, this.reloadTeamsOnSuccess);
     };
 
