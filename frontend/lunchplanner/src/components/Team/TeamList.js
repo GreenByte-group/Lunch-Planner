@@ -65,8 +65,8 @@ class TeamList extends React.Component {
                 <FloatingActionButton
                     actions={
                         [
-                            {icon: <People />, text: 'Work team', onClick: () => getHistory().push("/app/team/create?withParent=true") },
-                            {icon: <TagFaces />, text: 'Social group', onClick: () => getHistory().push("/app/team/create?withParent=false") }
+                            {icon: <People />, text: 'Work team', onClick: () => getHistory().push("/team/create?withParent=true") },
+                            {icon: <TagFaces />, text: 'Social group', onClick: () => getHistory().push("/team/create?withParent=false") }
                         ]
                     }
                 />

@@ -20,9 +20,10 @@ const styles = {
         fontSize: '16px',
         fontFamily: 'Work Sans',
         color: "white",
+        position: "fixed",
         bottom: 0,
         width: "100%",
-        minHeight: '56px',
+        height: '56px',
         zIndex: '10000',
     },
     padding: {
@@ -49,7 +50,7 @@ const styles = {
         marginLeft: '24px',
     },
     overButton: {
-        height: '100%',
+        height: 'calc(100% - 112px)',
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
@@ -151,7 +152,7 @@ class CreateTeamScreen extends React.Component {
             (response) => {
                 if(response.status === 201) {
                     eventListNeedReload();
-                    getHistory().push('/app/team?tab=1');
+                    getHistory().push('/social?tab=1');
                 } else {
                     this.setState({error: response.response.data});
                 }
@@ -198,7 +199,7 @@ class CreateTeamScreen extends React.Component {
         return (
             <Dialog
                 title="Create Team"closeIconAbsolute
-                closeUrl="/app/team?tab=1"
+                closeUrl="/social?tab=1"
             >
                 <div className={classes.overButton}>
                     {(error
@@ -256,8 +257,8 @@ class CreateTeamScreen extends React.Component {
 
                         <Link className={classes.inviteTextField}
                               style={{width: '100%'}}
-                              to={{pathname: "/app/team/create/invite",  query: {
-                                source: "/app/team/create",
+                              to={{pathname: "/team/create/invite",  query: {
+                                source: "/team/create",
                                 invitedUsers: this.state.invitedUsers,
                             }}}>
                             <TextField

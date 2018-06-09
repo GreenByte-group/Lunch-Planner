@@ -27,8 +27,6 @@ const styles = theme => ({
         position: 'relative',
         height: '100%',
         overflowY: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
     },
     fab: {
         position: 'absolute',
@@ -45,13 +43,9 @@ const styles = theme => ({
         fontSize: '13px',
     },
     swipeViews: {
-        height: '100%',
+        height: 'calc(100% - 48px)',
         overflowY: 'auto',
-        maxWidth: '1024px',
-        width: '100%',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-    },
+    }
 });
 
 class EventContainer extends React.Component {
@@ -106,7 +100,7 @@ class EventContainer extends React.Component {
                 >
 
                     <TabContainer dir={theme.direction}>
-                        <EventList className={classes.eventList} search={this.state.search}/>
+                        <EventList search={this.state.search}/>
                     </TabContainer>
                     <TabContainer dir={theme.direction}>Eventlist Following</TabContainer>
                     <TabContainer dir={theme.direction}>Eventlist sort by date</TabContainer>

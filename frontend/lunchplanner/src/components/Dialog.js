@@ -1,6 +1,5 @@
 import React from 'react';
 import { withStyles, Slide, TextField } from '@material-ui/core';
-import {isWidthDown} from '@material-ui/core/withWidth'
 import DialogMaterial from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -19,10 +18,9 @@ const styles = {
         position: 'relative',
         padding: '0px',
     },
-    typograph: {
+    flex: {
         flex: 1,
         textAlign: 'center',
-        marginRight: '52px',
     },
     closeIconAbsolute: {
         position: 'absolute',
@@ -34,6 +32,12 @@ const styles = {
         marginLeft: '8px',
         marginRight: '8px',
     },
+    image: {
+        height: '152px',
+        width: '100%',
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+    },
     noPadding: {
         padding: '0px',
     },
@@ -43,18 +47,6 @@ const styles = {
     paddingBottom: {
         paddingBottom: '56px',
     },
-    paper: {
-        maxWidth: '1024px',
-        maxHeight: '100vh',
-        width: '600px',
-        display: 'flex',
-        flexDirection: 'column',
-        flex: '0 1 auto',
-        position: 'relative',
-        overflowY: 'auto', // Fix IE11 issue, to remove at some point.
-        // We disable the focus ring for mouse, touch and keyboard users.
-        outline: 'none',
-    }
 };
 
 class Dialog extends React.Component {
@@ -73,32 +65,6 @@ class Dialog extends React.Component {
             zIndex: props.zIndex || 1300,
             paddingBottom: props.paddingBottom || '0px',
         }
-    }
-
-    updateDimensions = () => {
-        var w = window,
-            d = document,
-            documentElement = d.documentElement,
-            body = d.getElementsByTagName('body')[0],
-            width = w.innerWidth || documentElement.clientWidth || body.clientWidth,
-            height = w.innerHeight|| documentElement.clientHeight|| body.clientHeight;
-
-        this.setState({
-            width: width,
-            height: height
-        });
-    };
-
-    componentWillMount() {
-        this.updateDimensions();
-    };
-
-    componentDidMount() {
-        window.addEventListener("resize", this.updateDimensions);
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener("resize", this.updateDimensions);
     }
 
     componentWillReceiveProps(newProps) {
@@ -133,15 +99,11 @@ class Dialog extends React.Component {
 
         let classesCloseButton = classes.closeIcon;
 
-        let fullScreen = true;
+        if(this.state.imageUrl) {
+            classesCloseButton = classes.closeIconAbsolute;
+        }
+
         //TODO zeige text auch wenn ein Bild angezeigt wird
-
-        let style;
-
-        if(this.state.width <= 600)
-            style = {height: '100vh'};
-        else
-            style= {maxHeight: '90vh',};
 
         return (
                 <DialogMaterial
@@ -150,17 +112,20 @@ class Dialog extends React.Component {
                     open={this.state.open}
                     transition={Transition}
                     className={classes.dialog}
-                    PaperProps={{className: classes.paper, style: style}}
                 >
                     <AppBar className={classes.appBar} color ="white">
                         <Toolbar className={classes.noPadding}>
                             <IconButton onClick={this.onClose} color="inherit" aria-label="Close" className={classesCloseButton}>
                                 <CloseIcon color='primary' />
                             </IconButton>
-
-                            <Typography variant="title" color="inherit" className={classes.typograph}>
-                                {this.state.title}
-                            </Typography>
+                            {(this.state.imageUrl)
+                                ?
+                                <div className={classes.image} style={{backgroundImage:"url(" + this.state.imageUrl + ")"}} />
+                                :
+                                <Typography variant="title" color="inherit" className={classes.flex}>
+                                    {this.state.title}
+                                </Typography>
+                            }
 
                             {(search) ?
                                 <div>

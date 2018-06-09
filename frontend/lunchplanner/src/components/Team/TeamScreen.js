@@ -54,9 +54,10 @@ const styles = {
         fontSize: '16px',
         fontFamily: 'Work Sans',
         color: "white",
+        position: "fixed",
         bottom: 0,
         width: "100%",
-        minHeight: '56px',
+        height: '56px',
         zIndex: '10000',
     },
     buttonInvitation: {
@@ -129,6 +130,7 @@ const styles = {
     },
     overButton: {
         height: '100%',
+        marginBottom: '56px',
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
@@ -245,7 +247,7 @@ class TeamScreen extends React.Component {
     };
 
     handleLeave = () => {
-        getHistory().push("/app/team?tab=1");
+        getHistory().push("/social?tab=1");
         let people = this.state.people;
         let index = people.indexOf(getUsername());
         people.splice(index, 1);
@@ -348,7 +350,7 @@ class TeamScreen extends React.Component {
             <div>
                 <Dialog
                     title={name}
-                    closeUrl="/app/team?tab=1"
+                    closeUrl="/social?tab=1"
                 >
                     <div className={classes.overButton}>
                         <div className={classes.content}>
@@ -373,8 +375,8 @@ class TeamScreen extends React.Component {
                                 <p className={classes.invitaionsHeader}> Team Member ({people.length})</p>
                                 {
                                     (iAmAdmin)
-                                        ? <Link to={{pathname: "/app/team/create/invite",  query: {
-                                                source: "/app/team/" + this.state.teamId,
+                                        ? <Link to={{pathname: "/team/create/invite",  query: {
+                                                source: "/team/" + this.state.teamId,
                                                 invitedUsers: people.map((value) => value.userName).join(','),
                                             }}}>
                                             <div className={classes.addNewPeopleRoot}>

@@ -6,7 +6,6 @@ import PlaceIcon from '@material-ui/icons/Place';
 import EventIcon from '@material-ui/icons/LocalDining';
 import SocialIcon from '@material-ui/icons/Group';
 import {Link} from "react-router-dom";
-import {getHistory} from "../utils/HistoryUtils";
 
 const styles = {
     root: {
@@ -18,39 +17,12 @@ const styles = {
 };
 
 class BottomNavigationBar extends React.Component {
-
-    constructor(props) {
-        super();
-
-        let value = props.value;
-
-        this.state = {
-            value: value,
-        };
-    }
-
-    componentWillReceiveProps(newProps) {
-        if(newProps.value !== undefined && newProps.value !== null) {
-            this.setState({
-                value: newProps.value,
-            })
-        }
-    }
+    state = {
+        value: 1,
+    };
 
     handleChange = (event, value) => {
         this.setState({ value });
-
-        switch(value) {
-            case 0:
-                getHistory().push("/app/location");
-                break;
-            case 1:
-                getHistory().push("/app/event");
-                break;
-            case 2:
-                getHistory().push("/app/team");
-                break;
-        }
     };
 
     render() {
@@ -64,9 +36,15 @@ class BottomNavigationBar extends React.Component {
                     onChange={this.handleChange}
                     showLabels
                 >
-                    <BottomNavigationAction label="Places" icon={<PlaceIcon />} />
-                    <BottomNavigationAction label="Events" icon={<EventIcon />} />
-                    <BottomNavigationAction label="Teams" icon={<SocialIcon />}/>
+                    <Link to="/location">
+                        <BottomNavigationAction showLabel={true} label="Places" icon={<PlaceIcon />} />
+                    </Link>
+                    <Link to="/event">
+                        <BottomNavigationAction showLabel={true} label="Events" icon={<EventIcon />} />
+                    </Link>
+                        <Link to="/social">
+                        <BottomNavigationAction showLabel={true} label="Social" icon={<SocialIcon />}/>
+                    </Link>
                 </BottomNavigation>
         );
     }

@@ -12,19 +12,17 @@ const styles = theme => ({
         position: 'absolute',
         float: 'right',
         bottom: '15px',
-        marginLeft: 'calc(100% - 56px - 15px)',
-        width: 0,
+        marginLeft: 'calc(100% - 56px - 15px - 100px)',
     },
     whiteSymbol: {
         color: theme.palette.common.white
     },
     floatingButton: {
-
+        marginLeft: '100px',
     },
     allActions: {
         display: 'flex',
         flexDirection: 'column',
-        marginRight: '-57px',
     },
     actionContainer: {
         display: 'flex',
