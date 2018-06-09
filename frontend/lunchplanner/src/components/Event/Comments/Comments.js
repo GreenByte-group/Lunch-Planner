@@ -7,6 +7,12 @@ import Dialog from "../../Dialog";
 import {loadComments, sendComment} from "./CommentFunctions";
 
 const styles = {
+    root: {
+        display: 'flex',
+        flexDirection: 'column',
+        maxHeight: '100%',
+        overflowY: 'auto',
+    },
     list: {
         padding: '0px',
         overflowY: 'auto',
@@ -27,9 +33,6 @@ const styles = {
     },
     formComment: {
         backgroundColor: 'white',
-        zIndex: '10003',
-        position: 'fixed',
-        bottom: 0,
         width: '100%',
         boxShadow: '0 -10px 15px 0 rgba(0,0,0,0.05)',
         display: 'flex',
@@ -109,35 +112,37 @@ class Comments extends React.Component {
                     title={"Comments (" + comments.length + ")"}
                     closeUrl={"/app/event/" + this.state.eventId}
                 >
-                    <List className={classes.list}>
-                        {comments.map((listValue) => {
-                            return (
-                                <Comment
-                                    text={listValue.commentText}
-                                    date={listValue.date}
-                                    creater={listValue.userName}
-                                />
-                            )
-                        })}
-                    </List>
-                    <form
-                        className={classes.formComment}
-                        noValidate autoComplete="on"
-                    >
-                        <TextField
-                            className={classes.textField}
-                            id="textFieldComment"
-                            value={this.state.newComment}
-                            onChange={this.textFieldChanged}
-                            onKeyDown={this.keyPress}
-                            placeholder ="Write a comment ..."
-                            multiline
-                            rows="6"
-                        />
-                        <IconButton onClick={this.onSubmit} className={classes.iconButtonSend}>
-                            <Send className={classes.iconSend} />
-                        </IconButton>
-                    </form>
+                    <div className={classes.root}>
+                        <List className={classes.list}>
+                            {comments.map((listValue) => {
+                                return (
+                                    <Comment
+                                        text={listValue.commentText}
+                                        date={listValue.date}
+                                        creater={listValue.userName}
+                                    />
+                                )
+                            })}
+                        </List>
+                        <form
+                            className={classes.formComment}
+                            noValidate autoComplete="on"
+                        >
+                            <TextField
+                                className={classes.textField}
+                                id="textFieldComment"
+                                value={this.state.newComment}
+                                onChange={this.textFieldChanged}
+                                onKeyDown={this.keyPress}
+                                placeholder ="Write a comment ..."
+                                multiline
+                                rows="6"
+                            />
+                            <IconButton onClick={this.onSubmit} className={classes.iconButtonSend}>
+                                <Send className={classes.iconSend} />
+                            </IconButton>
+                        </form>
+                    </div>
                 </Dialog>
             </div>
         )

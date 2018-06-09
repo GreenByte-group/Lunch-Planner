@@ -134,7 +134,6 @@ class Dialog extends React.Component {
         let classesCloseButton = classes.closeIcon;
 
         let fullScreen = true;
-        //TODO zeige text auch wenn ein Bild angezeigt wird
 
         let style;
 
