@@ -304,9 +304,6 @@ public class UserLogic {
             map.put("block_all",blockAll);
 
         if(block_until!=null) {
-            if(block_until.before(new Date()))
-                throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Datetime must be in the future");
-
             map.put("block_until", block_until);
         }
 
