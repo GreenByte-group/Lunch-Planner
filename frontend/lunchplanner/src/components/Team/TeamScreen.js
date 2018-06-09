@@ -292,9 +292,7 @@ class TeamScreen extends React.Component {
             people: people,
         });
 
-        removeUserFromTeam(this.state.teamId, username, (response) => {
-            //TODO
-        })
+        removeUserFromTeam(this.state.teamId, username, this.reloadTeamsOnSuccess)
     };
 
     render() {

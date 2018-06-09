@@ -26,12 +26,19 @@ export function getTeam(teamId, responseFunc) {
 }
 
 export function createTeam(name, description, member, visible, responseFunc, errorFunc) {
-    createTeamWithParent(name,description, undefined, member, visible, responseFunc, errorFunc);
+    createTeamWithParent(name,description, null, member, visible, responseFunc, errorFunc);
 }
 
 export function createTeamWithParent(name, description, parent, member, visible, responseFunc, errorFunc) {
     let url =  HOST + '/team';
-    axios.post(url, {teamName: name, description: description, visible: visible, parent: parent})
+    let data;
+    if(parent !== null) {
+        data = {teamName: name, description: description, visible: visible, parent: parent};
+    } else {
+        data = {teamName: name, description: description, visible: visible}
+    }
+
+    axios.post(url, data)
         .then((response) => {
             if(response.status === 201) {
                 inviteMember(response.data, member);

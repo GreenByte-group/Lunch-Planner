@@ -41,15 +41,31 @@ class TeamList extends React.Component {
             search: this.props.search,
         });
 
+        this.getTeams();
+    }
+
+    getTeams = () => {
         getTeams(this.props.search,
             (response) => {
                 this.setState({
                     teams: response.data,
                 })
             });
+    };
+
+    componentWillReceiveProps(newProps) {
+        if(needReload) {
+            needReload = !needReload;
+            this.getTeams();
+        }
     }
 
     render() {
+        if(needReload) {
+            needReload = !needReload;
+            this.getTeams();
+        }
+
         const { classes } = this.props;
         let teams = this.state.teams;
         return (

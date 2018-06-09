@@ -94,8 +94,8 @@ class CreateTeamScreen extends React.Component {
             invitedUsers: params.get('invitedUsers') || [],
             invitedTeams: params.get('invitedTeams') || [],
             invitedTeamMember: params.get('teamMember') || [],
-            withParent: false,
-            parentTeam: "",
+            withParent: params.get('withParent') == 'true',
+            parentTeam: null,
             teams: [],
         };
 
@@ -131,16 +131,6 @@ class CreateTeamScreen extends React.Component {
             this.setState({
                 invitedTeamMember: params.get('teamMember'),
             });
-        }
-
-        let withParent = params.get('withParent') == 'true';
-        console.log('with paretn: ', withParent);
-        console.log('with parent state: ', this.state.withParent);
-        if(withParent === true && this.state.withParent !== true) {
-            console.log('set with parent true');
-            this.setState({
-                withParent: true,
-            })
         }
     };
 
