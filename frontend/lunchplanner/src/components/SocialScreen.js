@@ -27,11 +27,7 @@ const styles = theme => ({
         position: 'relative',
         height: '100%',
         display: 'flex',
-        flexDirection: 'column',
-        maxWidth: '1024px',
-        width: '100%',
-        marginLeft: 'auto',
-        marginRight: 'auto',
+        flexDirection: 'column'
     },
     fab: {
         position: 'absolute',
@@ -40,6 +36,20 @@ const styles = theme => ({
     },
     whiteSymbol: {
         color: theme.palette.common.white
+    },
+    tab: {
+        fontFamily: "Work Sans",
+        fontWeight: '600',
+        letterSpacing: '0.65px',
+        fontSize: '13px',
+    },
+    swipeViews: {
+        height: '100%',
+        overflowY: 'auto',
+        maxWidth: '1024px',
+        width: '100%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
     },
 });
 
