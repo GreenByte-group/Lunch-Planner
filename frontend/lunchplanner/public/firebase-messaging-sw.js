@@ -23,7 +23,7 @@ messaging.setBackgroundMessageHandler((payload) => {
     let notificationOptions = {
         body: payload.data.body,
         icon: payload.data.icon,
-        tag: FRONTEND_HOST + payload.data.tag,
+        tag: FRONTEND_HOST + '/app' + payload.data.tag,
     };
 
     return self.registration.showNotification(notificationTitle, notificationOptions);

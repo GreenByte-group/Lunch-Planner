@@ -18,6 +18,7 @@ const styles = {
     },
     list: {
         padding: 0,
+        paddingBottom: '75px',
     },
 };
 
@@ -118,7 +119,7 @@ class EventList extends React.Component {
                         />;
                     })}
                 </List>
-                <FloatingActionButton onClick={() => getHistory().push('/event/create')} />
+                <FloatingActionButton onClick={() => getHistory().push('/app/event/create')} />
             </div>
 
         );

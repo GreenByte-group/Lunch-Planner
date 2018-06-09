@@ -21,6 +21,7 @@ import {init} from './components/notification/Firebase'
 import NotificationsScreen from "./components/notification/NotificationsScreen";
 import TeamScreen from "./components/Team/TeamScreen";
 import InviteExtern from "./components/User/InviteExtern";
+import AppContainer from "./components/AppContainer";
 
 const oldTheme = getMuiTheme({
     palette: {
@@ -76,7 +77,7 @@ class App extends React.Component {
             let notification = new Notification(notificationTitle, notificationOptions);
             notification.addEventListener('click', (event) => {
                 console.log('click', event);
-                getHistory().push(event.target.tag);
+                getHistory().push("/app" + event.target.tag);
             })
         });
     }
@@ -90,21 +91,23 @@ class App extends React.Component {
                             <Route exact path="/login" component={FirstScreen} />
                             <Route path="/public/:securityToken" component={EventScreen} />
                             <Route exact path="/"
-                                          render={ () => <Redirect to="/event" />}
+                                          render={ () => <Redirect to="/app/event" />}
                             />
-                            <PrivateRoute path="/event" component={LunchPlanner} />
-                            <PrivateRoute path="/social" component={SocialScreen} />
-                            <PrivateRoute path="/team/create" component={CreateTeamScreen}/>
-                            <PrivateRoute path="/team/create/invite" component={SelectUserScreen} />
-                            <PrivateRoute path="/team/:teamId(\d+)" component={TeamScreen} />
-                            <PrivateRoute path="/location" component={LocationScreen} />
-                            <PrivateRoute path="/notifications" component={NotificationsScreen} />
-                            <PrivateRoute path="/event/create" component={CreateEventScreen} />
-                            <PrivateRoute path="/event/create/invite" component={SelectUserScreen} />
-                            <PrivateRoute path="/event/:eventId(\d+)" component={EventScreen} />
-                            <PrivateRoute path="/event/:eventId(\d+)/comments" component={Comments} />
-                            <PrivateRoute path="/event/:eventId(\d+)/share" component={InviteExtern} />
-                            <PrivateRoute path="/event/:eventId(\d+)/service" component={ServiceListScreen} />
+                            <PrivateRoute path="/app/:component" component={AppContainer} />
+                            {/*<PrivateRoute path="/event" component={LunchPlanner} />*/}
+                            {/*<PrivateRoute path="/social" component={SocialScreen} />*/}
+
+                            {/*<PrivateRoute path="/location" component={LocationScreen} />*/}
+                            {/*<PrivateRoute path="/notifications" component={NotificationsScreen} />*/}
+                            <PrivateRoute path="/app/team/create" component={CreateTeamScreen}/>
+                            <PrivateRoute path="/app/team/create/invite" component={SelectUserScreen} />
+                            <PrivateRoute path="/app/team/:teamId(\d+)" component={TeamScreen} />
+                            <PrivateRoute path="/app/event/create" component={CreateEventScreen} />
+                            <PrivateRoute path="/app/event/create/invite" component={SelectUserScreen} />
+                            <PrivateRoute path="/app/event/:eventId(\d+)" component={EventScreen} />
+                            <PrivateRoute path="/app/event/:eventId(\d+)/comments" component={Comments} />
+                            <PrivateRoute path="/app/event/:eventId(\d+)/share" component={InviteExtern} />
+                            <PrivateRoute path="/app/event/:eventId(\d+)/service" component={ServiceListScreen} />
                         </div>
                     </Router>
                 </MuiThemeProvider>
