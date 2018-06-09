@@ -25,8 +25,8 @@ export function getTeam(teamId, responseFunc) {
         .then(responseFunc);
 }
 
-export function createTeam(name, description, parent, member, visible, responseFunc, errorFunc) {
-    createTeamWithParent(name,description, undefined, parent, member, visible, responseFunc, errorFunc);
+export function createTeam(name, description, member, visible, responseFunc, errorFunc) {
+    createTeamWithParent(name,description, undefined, member, visible, responseFunc, errorFunc);
 }
 
 export function createTeamWithParent(name, description, parent, member, visible, responseFunc, errorFunc) {
