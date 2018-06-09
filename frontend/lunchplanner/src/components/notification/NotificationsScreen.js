@@ -5,7 +5,6 @@ import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@material-ui/core/AppBar';
 import {Tabs, Tab} from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
-import Appbar from "../Appbar";
 import Teamlist from "../Team/TeamList";
 import BottomNavigationBar from "../BottomNavigationBar";
 import {getUsername, setAuthenticationHeader} from "../authentication/LoginFunctions";
@@ -71,10 +70,14 @@ class NotificationsScreen extends React.Component {
     }
 
     getTabValue(props) {
-        const params = new URLSearchParams(props.location.search);
-        let tab = params.get('tab');
-        if(tab != null && tab !== undefined) {
-            return tab;
+        if(props.location) {
+            const params = new URLSearchParams(props.location.search);
+            let tab = params.get('tab');
+            if (tab != null && tab !== undefined) {
+                return tab;
+            } else {
+                return 0;
+            }
         } else {
             return 0;
         }
@@ -103,7 +106,6 @@ class NotificationsScreen extends React.Component {
 
         return (
             <div className={classes.root}>
-                <Appbar currentScreen="Notifications"/>
                 <AppBar position="relative" color="default">
                     <Tabs
                         value={this.state.value}
@@ -131,7 +133,6 @@ class NotificationsScreen extends React.Component {
                         <NotificationSettings />
                     </TabContainer>
                 </SwipeableViews>
-                <BottomNavigationBar />
             </div>
         );
     }

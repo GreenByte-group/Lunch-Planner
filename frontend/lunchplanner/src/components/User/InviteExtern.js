@@ -63,7 +63,7 @@ class InviteExtern extends React.Component {
             <div>
             <Dialog
                 open={this.state.open}
-                closeUrl={"/event/" + this.state.eventId}
+                closeUrl={"/app/event/" + this.state.eventId}
             >
                 <DialogTitle id="alert-dialog-title">{"Share this event with other people"}</DialogTitle>
                 <DialogContent>
