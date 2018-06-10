@@ -223,49 +223,51 @@ class Event extends React.Component {
             eventName += " @ " + location;
 
         return (
-            <Link className={classes.link} to={{pathname:`/event/${this.state.id}`, query:{
-                    eventName: name,
-                    description: description,
-                    date: date,
-                    people: invitations,
-                    accepted: accepted,
-                    location:location,
-                    token: token,
-                }}}>
+            <div>
+                <Link className={classes.link} to={{pathname:`/event/${this.state.id}`, query:{
+                        eventName: name,
+                        description: description,
+                        date: date,
+                        people: invitations,
+                        accepted: accepted,
+                        location:location,
+                        token: token,
+                    }}}>
 
-                <ListItem style={{backgroundColor: background}} button className={classes.listItem}>
+                    <ListItem style={{backgroundColor: background}} button className={classes.listItem}>
 
-                    <Card className={classes.card}>
-                        <CardContent className={classes.cardContent}>
-                            <div className={classes.imageDiv}>
+                        <Card className={classes.card}>
+                            <CardContent className={classes.cardContent}>
+                                <div className={classes.imageDiv}>
 
-                            </div>
-                            <div className={classesText}>
-                                <p className={classes.title}>{eventName}</p>
-                                <p className={classes.time}>
-                                    <Schedule viewBox="0 0 22 22" className={classes.icons}/> {time}
-                                </p>
-                                <div className={classes.users}>
-                                    {
-                                        people.join(', ')
-                                    }
                                 </div>
+                                <div className={classesText}>
+                                    <p className={classes.title}>{eventName}</p>
+                                    <p className={classes.time}>
+                                        <Schedule viewBox="0 0 22 22" className={classes.icons}/> {time}
+                                    </p>
+                                    <div className={classes.users}>
+                                        {
+                                            people.join(', ')
+                                        }
+                                    </div>
+                                </div>
+                            </CardContent>
+                            <hr style={{marginBottom: '11px'}} />
+                            <div className={classes.footer}>
+                                <p className={classes.date}>
+                                    <Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay}
+                                </p>
+                                {(accepted
+                                        ? <AcceptedButton text="Accepted" />
+                                        : (invited) ? <InvitedButton text="Invited" /> : ''
+                                )}
                             </div>
-                        </CardContent>
-                        <hr style={{marginBottom: '11px'}} />
-                        <div className={classes.footer}>
-                            <p className={classes.date}>
-                                <Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay}
-                            </p>
-                            {(accepted
-                                    ? <AcceptedButton text="Accepted" />
-                                    : (invited) ? <InvitedButton text="Invited" /> : ''
-                            )}
-                        </div>
-                    </Card>
+                        </Card>
 
-                </ListItem>
-            </Link>
+                    </ListItem>
+                </Link>
+            </div>
 
         );
     }
