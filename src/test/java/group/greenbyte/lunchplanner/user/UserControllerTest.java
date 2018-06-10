@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -460,14 +461,17 @@ public class UserControllerTest {
     // ------------------------- UPLOAD PICTURE -------------------------
 
     //TODO mockMultiPartFile
-    /*@Test
+    @Test
     @WithMockUser(username = userName)
     public void test1UploadPicture() throws Exception {
         MockMultipartFile image = new MockMultipartFile("image", "image.jpg", "image/jpg",
                 "<<jpg data>>".getBytes());
 
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/user/options/profile/picture/upload")
+                .file(image))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
 
-    }*/
+    }
 
 
 }

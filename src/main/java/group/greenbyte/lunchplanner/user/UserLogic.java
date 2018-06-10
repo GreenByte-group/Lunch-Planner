@@ -331,7 +331,7 @@ public class UserLogic {
 
                String contentType = imageFile.getContentType();
                String type = contentType.split("/")[0];
-               if (type.equalsIgnoreCase("image")) {
+               if (!type.equalsIgnoreCase("image")) {
                    throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "the uploaded file is not an image");
                }
 
@@ -347,13 +347,13 @@ public class UserLogic {
                if(!new File(absolutePath).exists()) {
                    new File(absolutePath).mkdir();
                }
-               //TODO file extension ?
                String fileName = userName;
-               String path = absolutePath + fileName;
+               String path = absolutePath + File.separator + fileName;
                File destination = new File(path);
+               String fileExtension = imageFile.getOriginalFilename().split("\\.")[1];
+               String pathForDb = relativePath + fileName + fileExtension;
                imageFile.transferTo(destination);
-
-               userDao.savePicturePath(userName, relativePath + fileName);
+               userDao.savePicturePath(userName, pathForDb);
 
 
            } catch(IOException | DatabaseException e){
