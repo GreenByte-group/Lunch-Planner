@@ -82,7 +82,7 @@ class App extends React.Component {
                 })
             });
         } catch(err) {
-            console.log('Init firebase failed: ', e);
+            console.log('Init firebase failed: ', err);
         }
     }
 
