@@ -1,9 +1,7 @@
 import React from 'react';
-import {Button, List, ListItem, Divider, withStyles, Drawer, IconButton, MenuItem, FormControlLabel, Switch, TextField, ListItemSecondaryAction} from '@material-ui/core';
+import {Button, List, ListItem, Divider, withStyles, Drawer, IconButton, MenuItem, FormControlLabel, Switch, TextField, ListItemSecondaryAction, DialogContent, DialogActions} from '@material-ui/core';
 import {Link} from "react-router-dom";
 import SearchIcon from '@material-ui/icons/Search';
-import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
-import DialogActions from "@material-ui/core/es/DialogActions/DialogActions";
 
 const styles =  theme => ({
     root:{
