@@ -211,6 +211,8 @@ class EventLocation extends React.Component {
         if(accepted)
             classesText = classes.textSelected;
 
+        let memberCounter = 0;
+
         return (
             <div >
                 <Link className={classes.link} to={{pathname:`/event/${this.state.id}`, query:{
@@ -228,16 +230,20 @@ class EventLocation extends React.Component {
                             <CardContent className={classes.cardContent}>
                                 <div className={classesText}>
                                     <p className={classes.title}> {time}</p>
-                                    <p className={classes.goingPeople}> {people.length} going</p>
+                                    <p className={classes.goingPeople}> {
+                                        (people[0] !== "") ?
+                                            people.length : 0
+                                    } going</p>
                                     <List className={classes.users}>
                                         <div className={classes.row}>
                                             {people.map((person)=>{
+                                                memberCounter++;
                                                 return (
-                                                    (people.length !== 0)
+                                                    (people.length !== 0 && person !== "" && memberCounter <= 4)
                                                         ?
                                                         <Avatar className={classes.memberAvatar}>
                                                             <span className={classes.memberAvatarTextLast}>
-                                                                {person.charAt(0)}
+                                                                {(memberCounter > 3) ? "+" + String(+ people.length-3) : person.charAt(0)}
                                                                 </span>
                                                         </Avatar>
                                                         : "");
