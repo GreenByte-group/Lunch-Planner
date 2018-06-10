@@ -8,4 +8,8 @@ import registerServiceWorker from './registerServiceWorker';
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
-registerServiceWorker();
+try {
+    registerServiceWorker();
+} catch (e) {
+    console.log('Register service worker failed: ', e);
+}
