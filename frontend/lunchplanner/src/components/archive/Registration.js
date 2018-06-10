@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import {Link, Redirect} from "react-router-dom";
+import {HOST} from "../../Config";
 
 class Registration extends React.Component {
 
@@ -27,7 +28,7 @@ class Registration extends React.Component {
 
     handleSubmit(event) {
         if(this.state.username && this.state.password && this.state.email) {
-            let url =  'http://localhost:8080/user';
+            let url =  HOST + '/user';
             axios.post(url, {userName: this.state.username, password: this.state.password, mail: this.state.email})
                 .then((response) => {
                     if(response.status === 201) {
