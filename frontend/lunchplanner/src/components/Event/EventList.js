@@ -62,12 +62,6 @@ class EventList extends React.Component {
             locations.push(events[i].location);
         }
 
-        if(this.state.sort === "date"){
-            events.sort(function(a,b) {return (a.startDate > b.startDate) ? 1 : ((b.startDate > a.startDate) ? -1 : 0);});
-        }else if(this.state.sort === "following"){
-            events.sort(function(a,b) {return (a.location > b.location) ? 1 : ((b.location > a.location) ? -1 : 0);});
-        }
-
         return (
             <div className={classes.root}>
                 <List className={classes.list}>
@@ -85,6 +79,7 @@ class EventList extends React.Component {
                         listValue.invitations.forEach((value) => {
                             if(value.userName === username) {
                                 invited = true;
+                                //joinedAndInvitedEvents.push(listValue);
                                 if(value.answer === 0) {
                                     accepted = true;
                                 }

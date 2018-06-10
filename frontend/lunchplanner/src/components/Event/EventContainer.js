@@ -7,6 +7,7 @@ import {Tabs, Tab, Typography} from '@material-ui/core';
 import {getEvents} from "./EventFunctions";
 import EventList from "./EventList";
 import LocationList from "./LocationList";
+import {getUsername} from "../authentication/LoginFunctions";
 
 
 function TabContainer({ children, dir }) {
@@ -70,6 +71,7 @@ class EventContainer extends React.Component {
         this.setState({
             search: this.props.search,
             events: this.props.events,
+            joinedAndIvitedEvents: [],
         });
 
         this.loadEvents(this.props.search);
@@ -102,10 +104,34 @@ class EventContainer extends React.Component {
             this.setState({
                 events: response.data,
             });
-            console.log(this.state.events);
+            this.sort();
         });
 
     }
+
+    sort(){
+        let events = this.state.events;
+        let joinedAndIvitedEvents = [];
+        events.forEach(function(listValue) {
+            let accepted = false;
+            let invited = false;
+            let username = getUsername();
+            listValue.invitations.forEach((value) => {
+                if (value.userName === username) {
+                    invited = true;
+                    console.log("listValue", listValue);
+                    console.log("value", value);
+                    joinedAndIvitedEvents.push(listValue);
+                    if (value.answer === 0) {
+                        accepted = true;
+                    }
+                }
+            });
+        });
+        this.setState({
+            joinedAndIvitedEvents: joinedAndIvitedEvents,
+        });
+    };
 
     handleChange = (event, value) => {
         this.setState({ value });
@@ -117,7 +143,6 @@ class EventContainer extends React.Component {
 
     render() {
         const { classes, theme } = this.props;
-
         if(needReload) {
             needReload = !needReload;
             this.loadEvents();
@@ -146,7 +171,7 @@ class EventContainer extends React.Component {
                 >
 
                     <TabContainer dir={theme.direction}>
-                        <EventList events={this.state.events} sort="personal"/>
+                        <EventList events={this.state.joinedAndIvitedEvents} sort="personal"/>
                     </TabContainer>
                     <TabContainer dir={theme.direction}>
                         <LocationList events={this.state.events} />
