@@ -20,6 +20,11 @@ const styles = {
     list: {
         padding: 0,
     },
+    day:{
+        marginLeft: 16,
+        marginTop: 10,
+        fontSize: 16,
+    },
 };
 
 const lightBackground = 'transparent';
@@ -67,6 +72,7 @@ class EventList extends React.Component {
 
         let isNotToday = true;
         let isNotTomorrow = true;
+        let isNotThisWeek = true;
 
         return (
             <div className={classes.root}>
@@ -102,23 +108,33 @@ class EventList extends React.Component {
                                              people={listValue.invitations}
                                              token={listValue.shareToken}
                         />;
-                        
+
                         return moment(listValue.startDate).isSame(moment(), 'day') && isNotToday
                             ?
                             <div>
-                                Today
+                                <p className={classes.day}>Today</p>
                                 {event}
                                 {isNotToday = false}
-                                {console.log(moment(listValue.startDate).diff(moment(), "days"))}
                             </div>:
-                            moment(listValue.startDate).diff(moment().format("DDD"), "day") === 1 && isNotTomorrow
+                            moment(listValue.startDate).isSame(moment(new Date()).add(1,'days'),'day') && isNotTomorrow
                                 ?
                                 <div>
-                                    {console.log(moment(listValue.startDate).diff(moment().format("DDD"), "day"))}
-                                    Tomorrow
+                                    <p className={classes.day}>Tomorrow</p>
                                     {event}
                                     {isNotTomorrow = false}
-                                </div> : <div>{event}</div>
+                                </div> :
+                                (moment(listValue.startDate).isSame(moment(new Date()).add(2,'days'),'day') ||
+                                moment(listValue.startDate).isSame(moment(new Date()).add(3,'days'),'day') ||
+                                moment(listValue.startDate).isSame(moment(new Date()).add(4,'days'),'day') ||
+                                moment(listValue.startDate).isSame(moment(new Date()).add(5,'days'),'day') ||
+                                moment(listValue.startDate).isSame(moment(new Date()).add(7,'days'),'day') ||
+                                moment(listValue.startDate).isSame(moment(new Date()).add(7,'days'),'day')) && isNotThisWeek
+                                    ?
+                                    <div>
+                                        <p className={classes.day}>This Week</p>
+                                        {event}
+                                        {isNotThisWeek = false}
+                                    </div> : <div>{event}</div>
                     })}
                 </List>
                 <Link to={{pathname:'/event/create'}}>
