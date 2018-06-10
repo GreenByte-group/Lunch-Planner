@@ -7,6 +7,8 @@ import {Switch, Typography, TextField, ExpansionPanel, ExpansionPanelSummary, Ex
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
 import MapIcon from '@material-ui/icons/Map'
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import {FormGroup, FormControlLabel, Slide} from '@material-ui/core';
 import {DatePicker, TimePicker} from 'material-ui-old';
 import PeopleIcon from '@material-ui/icons/People'
@@ -22,6 +24,7 @@ import {getHistory} from "../../utils/HistoryUtils";
 import {InputAdornment} from "@material-ui/core";
 import {createEvent} from "./EventFunctions";
 import GoogleSuggest from "../Map/GoogleSuggest";
+import Icon from "@material-ui/core/es/Icon/Icon";
 
 const styles = {
     appBar: {
@@ -73,6 +76,9 @@ const styles = {
         width: '60% !important',
         overflow: 'hidden',
         float: 'right'
+    },
+    visibilityIcon:{
+        color:'#D3D3D3',
     },
     datePicker: {
         width: '60% !important',
@@ -238,6 +244,11 @@ class CreateEventScreen extends React.Component {
     handleVisibility = name => event =>{
         this.setState({ [name]: event.target.checked });
     }
+    checkVisibility = () => {
+        if(this.state.visible){
+            return true;
+        }
+    }
     handleLocationChange= (location) => {
         this.setState({
             location: location,
@@ -266,17 +277,19 @@ class CreateEventScreen extends React.Component {
                             ? <p className={classes.error}>{error}</p>
                             : ""
                     )}
-                    <form noValidate autoComplete="on" >
+                    {/*<form noValidate autoComplete="on" >*/}
                        <div>
-                        <GoogleSuggest
-                            className={classes.searchboxField}
-                            id="location"
-                            label="Location"
-                            value={this.state.location}
-                            placeholder ="Add an Location ..."
-                            float="left"
-                            onChange={this.handleLocationChange}
-                        />
+
+                           <GoogleSuggest
+                               className={classes.searchboxField}
+                               id="location"
+                               label="Location"
+                               value={this.state.location}
+                               placeholder="Add an Location ..."
+                               float="left"
+                               onChange={this.handleLocationChange}
+                           />
+
                         <Link className={classes.mapIcon}
                               float="right"
                               to={{pathname: "/event/create/map", query: {
@@ -285,7 +298,7 @@ class CreateEventScreen extends React.Component {
                         >   <MapIcon className={classes.mapIcon}  to={{pathname: "/event/create/map"}} />
                         </Link>
                        </div>
-                    </form>
+                    {/*</form>*/}
                     <div>
                         <p className={classes.dateHeader}>Date</p><p className={classes.timeHeader}>Time</p>
                         <div className={classes.pickerWithIcon}>
@@ -310,7 +323,7 @@ class CreateEventScreen extends React.Component {
                     </div>
                     <ExpansionPanel>
                         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon color='primary' />}>
-                            <Typography className={classes.heading}>Invite & Change Visibility</Typography>
+                            <Typography className={classes.heading}>Invite Somebody & Enable Incognito Mode </Typography>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails>
                             <FormGroup row>
@@ -345,9 +358,12 @@ class CreateEventScreen extends React.Component {
                                             checked={this.state.visible}
                                             onChange={this.handleVisibility("visible")}
                                             value="visible"
+                                            icon={<VisibilityIcon className={classes.visibilityIcon}/>}
+                                            checkedIcon={<VisibilityOffIcon/>}
                                         />
                                     }
-                                    label="Only visible if invited"
+                                    label={"Make Event Secret"}
+
                                 />
                             </FormGroup>
                         </ExpansionPanelDetails>

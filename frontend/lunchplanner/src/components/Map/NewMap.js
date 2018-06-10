@@ -103,17 +103,7 @@ export class NewMap extends React.Component {
                     defaultZoom={2}
                     defaultCenter={{ lat: 40.7127753, lng: -74.0059728 }}
                 >
-
-                    <FusionTablesLayer
-                        url="http://googlemaps.github.io/js-v2-samples/ggeoxml/cta.kml"
-                        options={{
-                            query: {
-                                select: `Geocodable address`,
-                                from: `1mZ53Z70NsChnBMm-qEYmSDOvLXgrreLTkQUvvg`
-                            }
-                        }}
-                    />
-                    {props.isMarkerShown && <Marker setPosition={this.props.location.query. onClick={props.onMarkerClick} />}
+                    {props.isMarkerShown && <Marker setPosition={this.props.location.query.location.geometry.location} onClick={props.onMarkerClick} />}
                 </GoogleMap>
                 {console.log("RATATAT: "+props.instanceOf)}
             </div>
