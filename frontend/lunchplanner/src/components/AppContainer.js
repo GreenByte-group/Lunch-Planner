@@ -130,7 +130,6 @@ class AppContainer extends React.Component {
     };
 
     cancelSearch = () => {
-        console.log("cancelSearch")
         this.setState({
             openSearch: false,
             search: "",
