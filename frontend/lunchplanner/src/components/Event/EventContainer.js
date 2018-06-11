@@ -4,7 +4,10 @@ import {withStyles} from '@material-ui/core/styles';
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@material-ui/core/AppBar';
 import {Tabs, Tab, Typography} from '@material-ui/core';
-import EventList from "./Event/EventList";
+import {getEvents} from "./EventFunctions";
+import EventList from "./EventList";
+import LocationList from "./LocationList";
+import {getUsername} from "../authentication/LoginFunctions";
 
 
 function TabContainer({ children, dir }) {
@@ -19,6 +22,12 @@ TabContainer.propTypes = {
     children: PropTypes.node.isRequired,
     dir: PropTypes.string.isRequired,
 };
+
+export let needReload = false;
+
+export function eventListNeedReload() {
+    needReload = true;
+}
 
 const styles = theme => ({
     root: {
@@ -60,16 +69,66 @@ class EventContainer extends React.Component {
         this.state = {
             value: 0,
             search: props.search,
+            events: [],
         };
     }
 
+    componentDidMount() {
+        this.setState({
+            search: this.props.search,
+            joinedAndInvitedEvents: [],
+        });
+
+        this.loadEvents(this.props.search);
+    }
+
     componentWillReceiveProps(newProps) {
+        if(needReload) {
+            needReload = !needReload;
+            this.loadEvents();
+        }
         if(newProps.search !== this.state.search){
             this.setState({
                 search: newProps.search,
             });
+            this.loadEvents(newProps.search);
         }
     }
+
+    loadEvents(search) {
+        if(search === null || search === undefined)
+            search = this.state.search;
+
+        getEvents(search, (response) => {
+            this.setState({
+                events: response.data,
+            });
+            this.sort();
+        });
+
+    }
+
+    sort(){
+        let events = this.state.events;
+        let joinedAndIvitedEvents = [];
+        events.forEach(function(listValue) {
+            let accepted = false;
+            let invited = false;
+            let username = getUsername();
+            listValue.invitations.forEach((value) => {
+                if (value.userName === username) {
+                    invited = true;
+                    joinedAndIvitedEvents.push(listValue);
+                    if (value.answer === 0) {
+                        accepted = true;
+                    }
+                }
+            });
+        });
+        this.setState({
+            joinedAndInvitedEvents: joinedAndIvitedEvents,
+        });
+    };
 
     handleChange = (event, value) => {
         this.setState({ value });
@@ -81,7 +140,10 @@ class EventContainer extends React.Component {
 
     render() {
         const { classes, theme } = this.props;
-
+        if(needReload) {
+            needReload = !needReload;
+            this.loadEvents();
+        }
         return (
             <div className={classes.root}>
                 <AppBar position="relative" color="default" >
@@ -94,10 +156,10 @@ class EventContainer extends React.Component {
                         fullWidth
                     >
                         <Tab className={classes.tab} label="PERSONAL" />
-                        <Tab className={classes.tab} label="FOLLOWING" />
+                        <Tab className={classes.tab} label="PLACES" />
                         <Tab className={classes.tab} label="BY DATE" />
                     </Tabs>
-                </AppBar >
+                </AppBar>
                 <SwipeableViews
                     axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                     index={this.state.value}
@@ -106,12 +168,15 @@ class EventContainer extends React.Component {
                 >
 
                     <TabContainer dir={theme.direction}>
-                        <EventList className={classes.eventList} search={this.state.search}/>
+                        <EventList events={this.state.joinedAndInvitedEvents}/>
                     </TabContainer>
-                    <TabContainer dir={theme.direction}>Eventlist Following</TabContainer>
-                    <TabContainer dir={theme.direction}>Eventlist sort by date</TabContainer>
+                    <TabContainer dir={theme.direction}>
+                        <LocationList events={this.state.events} />
+                    </TabContainer>
+                    <TabContainer dir={theme.direction}>
+                        <EventList events={this.state.events} />
+                    </TabContainer>
                 </SwipeableViews>
-
             </div>
         );
     }

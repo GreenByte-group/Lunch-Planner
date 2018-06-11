@@ -19,8 +19,10 @@ import LunchPlanner from "./LunchPlanner";
 import SocialScreen from "./SocialScreen";
 import LocationScreen from "./LocationScreen";
 import NotificationsScreen from "./notification/NotificationsScreen";
+import {getEvents} from "./Event/EventFunctions";
 import {getNotificationOptions, sendOptions} from "./notification/NotificationFunctions";
 import moment from "moment";
+
 
 const styles = {
     flex: {
@@ -94,7 +96,7 @@ class AppContainer extends React.Component {
         this.state = {
             currentScreen: props.currentScreen,
             openSearch: false,
-            search: props.searchValue,
+            search: null,
 
             drawerOpen: false,
             username: getUsername(),
@@ -144,12 +146,17 @@ class AppContainer extends React.Component {
     };
 
     cancelSearch = () => {
-        this.setState({ openSearch: false });
+        this.setState({
+            openSearch: false,
+            search: "",
+        });
     };
 
     handleSearch = (search) => {
-        this.props.onHandleSearch(search);
-        this.setState({ openSearch: false });
+        this.setState({
+            openSearch: false,
+            search: search,
+        });
     };
 
     handleDrawerClick = () => {
@@ -193,7 +200,7 @@ class AppContainer extends React.Component {
 
         switch(component) {
             case 'event':
-                children = <LunchPlanner/>;
+                children = <LunchPlanner searchValue={this.state.search}/>;
                 title = "Events";
                 bottomNavigationValue = 1;
                 break;
