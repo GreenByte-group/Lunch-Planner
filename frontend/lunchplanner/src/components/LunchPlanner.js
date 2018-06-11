@@ -1,26 +1,34 @@
 import React from "react";
-import EventContainer from "./Event/EventContainer";
+import EventContainer, {needReload} from "./Event/EventContainer";
 import BottomNavigationBar from "./BottomNavigationBar";
 import {setAuthenticationHeader} from "./authentication/LoginFunctions";
 
 class LunchPlanner extends React.Component {
 
-    constructor() {
+    constructor(props) {
         super();
         this.state = {
-            search: null,
+            search: props.searchValue,
         };
-        this.handleSearch = this.handleSearch.bind(this);
         setAuthenticationHeader();
     }
 
-    handleSearch(search){
+    componentWillReceiveProps(newProps) {
+        if(newProps.search !== this.state.search){
+            this.setState({
+                search: newProps.searchValue,
+            });
+        }
+    }
+
+    componentDidMount() {
         this.setState({
-            search: search
+            search: this.props.searchValue,
         });
     }
 
     render() {
+        console.log("lunchplanner", this.state.search)
         return (
             <EventContainer style={{height: '100%'}} search={this.state.search}/>
         )

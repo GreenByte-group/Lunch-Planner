@@ -86,7 +86,7 @@ class Search extends React.Component {
     render() {
 
         const { classes } = this.props;
-        let teams = this.state.teams;
+        console.log("searcht",this.state.search)
         return (
 
             <Drawer

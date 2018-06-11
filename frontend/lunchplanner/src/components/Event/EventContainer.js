@@ -66,6 +66,7 @@ const styles = theme => ({
 class EventContainer extends React.Component {
     constructor(props) {
         super();
+        console.log("Eventcontainer", props.search)
         this.state = {
             value: 0,
             search: props.search,
@@ -76,7 +77,6 @@ class EventContainer extends React.Component {
     componentDidMount() {
         this.setState({
             search: this.props.search,
-            events: this.props.events,
             joinedAndIvitedEvents: [],
         });
 
@@ -94,12 +94,12 @@ class EventContainer extends React.Component {
             });
             this.loadEvents(newProps.search);
         }
-        if(newProps.events !== this.state.events){
+        /*if(newProps.events !== this.state.events){
             this.setState({
                 events: newProps.events,
             });
             this.loadEvents();
-        }
+        }*/
     }
 
     loadEvents(search) {
