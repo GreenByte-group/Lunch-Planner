@@ -12,6 +12,7 @@ import {FormControlLabel, FormHelperText, InputAdornment, Switch, InputLabel, Fo
 import {eventListNeedReload} from "../Event/EventContainer";
 import {createTeam, createTeamWithParent, getTeams} from "./TeamFunctions";
 import {setAuthenticationHeader} from "../authentication/LoginFunctions";
+import {teamListNeedReload} from "./TeamList";
 
 const styles = {
     button:{
@@ -91,8 +92,8 @@ class CreateTeamScreen extends React.Component {
             invitedUsers: params.get('invitedUsers') || [],
             invitedTeams: params.get('invitedTeams') || [],
             invitedTeamMember: params.get('teamMember') || [],
-            withParent: false,
-            parentTeam: "",
+            withParent: params.get('withParent') == 'true',
+            parentTeam: null,
             teams: [],
         };
 
@@ -148,8 +149,8 @@ class CreateTeamScreen extends React.Component {
             invitedUsers, !this.state.secret,
             (response) => {
                 if(response.status === 201) {
-                    eventListNeedReload();
-                    getHistory().push('/app/team?tab=1');
+                    teamListNeedReload();
+                    getHistory().push('/app/team');
                 } else {
                     this.setState({error: response.response.data});
                 }

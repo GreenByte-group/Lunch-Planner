@@ -25,6 +25,7 @@ import {
     replyToEvent
 } from "./EventFunctions";
 import ShareIcon from "@material-ui/icons/Share"
+import {loadComments} from "./Comments/CommentFunctions";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -238,6 +239,7 @@ class EventScreen extends React.Component {
             accepted: false,
             isShared : false,
             token: null,
+            comments: [],
         };
     }
 
@@ -304,6 +306,14 @@ class EventScreen extends React.Component {
                 this.loadEvent(eventId);
             }
         }
+
+        loadComments(eventId, (response) => {
+            if(response.status === 200) {
+                this.setState({
+                    comments: response.data,
+                })
+            }
+        })
     }
 
     parseUrl = () => {
@@ -348,7 +358,6 @@ class EventScreen extends React.Component {
             name: event.target.value,
         });
 
-        //TODO error func
         changeEventTitle(this.state.eventId, event.target.value, this.reloadEventsOnSuccess);
     };
 
@@ -498,11 +507,8 @@ class EventScreen extends React.Component {
             }
         });
 
-        console.log('people: ', people);
-        console.log('Invited: ', invited);
-        console.log('Username: ', username);
+        let countComments = this.state.comments.length;
 
-        //TODO anzahl kommentare
         return (
             <div>
                 <Dialog
@@ -551,7 +557,7 @@ class EventScreen extends React.Component {
                             <Link to={{pathname:`/app/event/${eventId}/comments`}}>
                                 <div className={classes.headerComment}>
                                 <CommentsIcon className={classes.commentIcon} />
-                                    <p className={classes.commentText}>Comments</p>
+                                    <p className={classes.commentText}>Comments ({countComments})</p>
                                 </div>
                             </Link>
                             {(iAmAdmin || isShared)

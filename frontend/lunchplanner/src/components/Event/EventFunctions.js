@@ -70,7 +70,6 @@ export function changeEventTime(eventId, time, responseFunc, errorFunc) {
 }
 
 export function createEvent(location, date, member, visible, responseFunc, errorFunc) {
-    //TODO description
     let momentDate = moment(date);
 
     let timeEnd = date.getTime();

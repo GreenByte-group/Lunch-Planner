@@ -37,6 +37,6 @@ public enum InvitationAnswer {
                 return "maybe";
         }
 
-        return "unknown"; //TODO can this be tested
+        return "unknown";
     }
 }

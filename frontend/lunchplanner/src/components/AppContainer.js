@@ -20,6 +20,9 @@ import SocialScreen from "./SocialScreen";
 import LocationScreen from "./LocationScreen";
 import NotificationsScreen from "./notification/NotificationsScreen";
 import {getEvents} from "./Event/EventFunctions";
+import {getNotificationOptions, sendOptions} from "./notification/NotificationFunctions";
+import moment from "moment";
+
 
 const styles = {
     flex: {
@@ -98,6 +101,8 @@ class AppContainer extends React.Component {
             drawerOpen: false,
             username: getUsername(),
             email: "",
+
+            noNotificationToday: false,
         };
         this.handleSearch = this.handleSearch.bind(this);
     }
@@ -107,6 +112,17 @@ class AppContainer extends React.Component {
             if(response.status === 200) {
                 this.setState({
                     email: response.data.eMail,
+                })
+            }
+        });
+
+        getNotificationOptions((response) => {
+            console.log('not: ', response.data.block_until);
+            let blockUntil = response.data.block_until;
+            let momentObject = moment(blockUntil);
+            if(momentObject.isAfter(moment())) {
+                this.setState({
+                    noNotificationToday: true,
                 })
             }
         })
@@ -153,6 +169,25 @@ class AppContainer extends React.Component {
         this.setState(prevState => ({
             drawerOpen: !prevState.drawerOpen,
         }));
+    };
+
+    handleNoNotification = () => {
+        let disableNotification = !this.state.noNotificationToday;
+
+        this.setState({
+            noNotificationToday: disableNotification,
+        });
+
+        if(disableNotification) {
+            let dateMoment = moment();
+            dateMoment.hour(23);
+            dateMoment.minute(59);
+            sendOptions({blockUntil: dateMoment.toDate()})
+        } else {
+            let dateMoment = moment();
+            dateMoment.subtract(1, 'minutes');
+            sendOptions({blockUntil: dateMoment.toDate()})
+        }
     };
 
     render() {
@@ -228,8 +263,8 @@ class AppContainer extends React.Component {
                                     <Switch
                                         float ="left"
                                         color = "primary"
-                                        // checked={this.state.visible}
-                                        // onChange={this.handleVisibility("visible")}
+                                        checked={this.state.noNotificationToday}
+                                        onChange={this.handleNoNotification}
                                         value="visible"
                                     />
                                 }
