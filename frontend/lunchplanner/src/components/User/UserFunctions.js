@@ -24,3 +24,11 @@ export function inviteExtern(eventId, responseFunc) {
     axios.get(url)
         .then(responseFunc);
 }
+
+export function updateEmail(email, responseFunc) {
+
+}
+
+export function updatePassword(password, responseFunc) {
+
+}

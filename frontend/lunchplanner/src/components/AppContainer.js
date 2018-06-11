@@ -21,6 +21,7 @@ import LocationScreen from "./LocationScreen";
 import NotificationsScreen from "./notification/NotificationsScreen";
 import {getNotificationOptions, sendOptions} from "./notification/NotificationFunctions";
 import moment from "moment";
+import UserEditScreen from "./User/UserEditScreen";
 
 const styles = {
     flex: {
@@ -46,6 +47,12 @@ const styles = {
         fontSize: 10,
         textAlign: "center",
         backgroundColor: "darkGrey",
+    },
+    noHover: {
+        color: 'black',
+        "&:hover": {
+            textDecoration: 'none',
+        },
     },
     avatar:{
         marginTop: 24,
@@ -211,6 +218,10 @@ class AppContainer extends React.Component {
                 children = <NotificationsScreen/>;
                 title = "Notifications";
                 break;
+            case 'user':
+                children = <UserEditScreen />;
+                title = "Your Profile";
+                break;
         }
 
         const drawer = (
@@ -219,10 +230,12 @@ class AppContainer extends React.Component {
                 role="button"
             >
                 <div className={classes.list}>
-                    <List className={classes.profile}>
-                        <Avatar alt={this.state.username} className={classes.avatar} >{this.state.username.charAt(0)}</Avatar>
-                        <p className={classes.avatarText}>{this.state.username} ● {this.state.email}</p>
-                    </List>
+                    <Link to="/app/user" className={classes.noHover}>
+                        <List className={classes.profile}>
+                            <Avatar alt={this.state.username} className={classes.avatar} >{this.state.username.charAt(0)}</Avatar>
+                            <p className={classes.avatarText}>{this.state.username} ● {this.state.email}</p>
+                        </List>
+                    </Link>
                     <Divider />
                     <List className ={classes.menu}>
                         <Link to="/app/location">
