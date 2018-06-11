@@ -49,7 +49,7 @@ export function sendOptions({blockAll, events, teams,
         data.stop_working = stopWorking;
 
     if(blockUntil !== undefined && blockUntil !== null)
-        data.blockUntil = blockUntil;
+        data.block_until = blockUntil;
 
     console.log("start: ", startWorking);
 

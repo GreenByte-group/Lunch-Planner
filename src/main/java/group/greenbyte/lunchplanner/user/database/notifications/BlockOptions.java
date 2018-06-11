@@ -54,6 +54,6 @@ public enum BlockOptions {
                 return "interval";
         }
 
-        return "unknown"; //TODO can this be tested
+        return "unknown";
     }
 }

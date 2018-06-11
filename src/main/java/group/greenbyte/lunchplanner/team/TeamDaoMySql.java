@@ -321,8 +321,20 @@ public class TeamDaoMySql implements TeamDao {
         }
     }
 
+    public boolean isTeamPublic(int teamId) throws DatabaseException {
+        Team team = getTeam(teamId);
+        if(team != null) {
+            return team.isPublic();
+        }
+
+        return false;
+    }
+
     @Override
     public boolean hasViewPrivileges(int teamId, String userName) throws DatabaseException {
+        if(isTeamPublic(teamId))
+            return true;
+
         try {
             String SQL = "SELECT count(*) FROM "  + TEAM_MEMBER_TABLE + " WHERE " +
                     TEAM_MEMBER_TEAM + " = ? AND " +

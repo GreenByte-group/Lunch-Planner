@@ -99,11 +99,9 @@ class NotificationListItem extends React.Component {
         console.log("Title: ", title);
 
         if(title !== 'read') {
-            getHistory().push(this.state.clickUrl);
+            getHistory().push("/app" + this.state.clickUrl);
             setNotificationRead(this.state.id);
         }
-        else
-            console.log('Clicked read');
     };
 
     notificationRead = () => {
