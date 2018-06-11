@@ -46,11 +46,14 @@ const styles = {
     },
     searchboxField: {
       marginTop:30,
-        width:"75%",
+        width:"55%",
         float: "left"
+
     },
     mapIcon:{
-        marginLeft:'15px'
+        marginLeft:'15px',
+        height:'10px',
+        width:'50%'
     },
     button:{
         fontSize: '16px',
@@ -278,7 +281,7 @@ class CreateEventScreen extends React.Component {
                             : ""
                     )}
                     {/*<form noValidate autoComplete="on" >*/}
-                       <div>
+                       <FormGroup row>
 
                            <GoogleSuggest
                                className={classes.searchboxField}
@@ -295,9 +298,9 @@ class CreateEventScreen extends React.Component {
                               to={{pathname: "/event/create/map", query: {
                                   location: this.state.location,}}}
                               location={ this.state.location}
-                        >   <MapIcon className={classes.mapIcon}  to={{pathname: "/event/create/map"}} />
+                        >   <MapIcon disabled={false} className={classes.mapIcon} />
                         </Link>
-                       </div>
+                       </FormGroup>
                     {/*</form>*/}
                     <div>
                         <p className={classes.dateHeader}>Date</p><p className={classes.timeHeader}>Time</p>
@@ -323,7 +326,7 @@ class CreateEventScreen extends React.Component {
                     </div>
                     <ExpansionPanel>
                         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon color='primary' />}>
-                            <Typography className={classes.heading}>Invite Somebody & Enable Incognito Mode </Typography>
+                            <Typography className={classes.heading}>Invite Somebody & Incognito Mode </Typography>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails>
                             <FormGroup row>

@@ -1,6 +1,5 @@
 import React from "react"
-import {Done} from "@material-ui/icons";
-import Today from "@material-ui/icons/DateRange"
+import {Done, HelpOutline} from "@material-ui/icons";
 import {withStyles} from "@material-ui/core";
 
 const styles = theme => ({
@@ -69,7 +68,7 @@ class AcceptedButton extends React.Component {
                         : ""
                 )}
                 {(invited)
-                    ? <Today style={styleButton} color="primary" className={classes.buttonInvited} />
+                    ? <HelpOutline style={styleButton} color="primary" className={classes.buttonInvited} />
                     : <Done style={styleButton} color="primary" className={classes.button} />
                 }
             </div>

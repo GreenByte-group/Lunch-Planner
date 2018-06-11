@@ -2,7 +2,7 @@ import React from   "react"
 import GoogleMapLoader from "react-google-maps-loader"
 import GooglePlacesSuggest from "react-google-places-suggest"
 
-const MY_API_KEY = "AIzaSyD5UW1KsLdDGY5CpBBe98Q5owmKdJ_P35g";
+const MY_API_KEY = "AIzaSyCOYsTeZ29UyBEHqYG39GXJIN1-rp1KayU";
 
 
 export class GoogleSuggest extends React.Component {
@@ -21,7 +21,7 @@ export class GoogleSuggest extends React.Component {
     }
 
     handleSelectSuggest = (geocodedPrediction, originalPrediction) => {
-        console.log(originalPrediction) // eslint-disable-line
+        console.log("hier"+geocodedPrediction.formatted_address) // eslint-disable-line
         this.setState({search: "", value: geocodedPrediction.formatted_address})
         this.state.onChange(geocodedPrediction);
     }
