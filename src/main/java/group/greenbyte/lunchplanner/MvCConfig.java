@@ -14,11 +14,11 @@ public class MvCConfig extends WebMvcConfigurerAdapter {
         registry.addMapping("/**").allowedMethods("PUT", "GET", "POST", "OPTIONS", "DELETE").allowedOrigins("*");
     }
 
-    @Bean(name = "multipartResolver")
-    public CommonsMultipartResolver getCommonsMultipartResolver() {
-        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-        multipartResolver.setMaxUploadSize(20971520);   // 20MB
-        multipartResolver.setMaxInMemorySize(1048576);  // 1MB
-        return multipartResolver;
-    }
+//    @Bean(name = "multipartResolver")
+//    public CommonsMultipartResolver getCommonsMultipartResolver() {
+//        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+//        multipartResolver.setMaxUploadSize(20971520);   // 20MB
+//        multipartResolver.setMaxInMemorySize(1048576);  // 1MB
+//        return multipartResolver;
+//    }
 }

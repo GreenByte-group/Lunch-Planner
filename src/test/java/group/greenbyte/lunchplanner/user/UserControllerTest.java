@@ -464,7 +464,7 @@ public class UserControllerTest {
     @Test
     @WithMockUser(username = userName)
     public void test1UploadPicture() throws Exception {
-        MockMultipartFile image = new MockMultipartFile("image", "image.jpg", "image/jpg",
+        MockMultipartFile image = new MockMultipartFile("file", "image.jpg", "image/jpg",
                 "<<jpg data>>".getBytes());
 
         mockMvc.perform(MockMvcRequestBuilders.multipart("/user/options/profile/picture/upload")
