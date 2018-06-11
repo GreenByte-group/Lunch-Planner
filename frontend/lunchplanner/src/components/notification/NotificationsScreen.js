@@ -3,15 +3,14 @@ import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@material-ui/core/AppBar';
-import Tabs, {Tab} from '@material-ui/core/Tabs';
+import {Tabs, Tab} from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
-import Appbar from "../Appbar";
 import Teamlist from "../Team/TeamList";
 import BottomNavigationBar from "../BottomNavigationBar";
-import {setAuthenticationHeader} from "../authentication/LoginFunctions";
+import {getUsername, setAuthenticationHeader} from "../authentication/LoginFunctions";
 import NotificationList from "./NotificationList";
 import NotificationSettings from "./NotificationSettings";
-
+import {getNotifications} from "./NotificationFunctions";
 
 function TabContainer({ children, dir }) {
     return (
@@ -64,16 +63,21 @@ class NotificationsScreen extends React.Component {
         super();
         this.state = {
             value: this.getTabValue(props),
+            notifications: [],
         };
 
         setAuthenticationHeader();
     }
 
     getTabValue(props) {
-        const params = new URLSearchParams(props.location.search);
-        let tab = params.get('tab');
-        if(tab != null && tab !== undefined) {
-            return tab;
+        if(props.location) {
+            const params = new URLSearchParams(props.location.search);
+            let tab = params.get('tab');
+            if (tab != null && tab !== undefined) {
+                return tab;
+            } else {
+                return 0;
+            }
         } else {
             return 0;
         }
@@ -102,7 +106,6 @@ class NotificationsScreen extends React.Component {
 
         return (
             <div className={classes.root}>
-                <Appbar currentScreen="Notifications"/>
                 <AppBar position="relative" color="default">
                     <Tabs
                         value={this.state.value}
@@ -130,7 +133,6 @@ class NotificationsScreen extends React.Component {
                         <NotificationSettings />
                     </TabContainer>
                 </SwipeableViews>
-                <BottomNavigationBar />
             </div>
         );
     }

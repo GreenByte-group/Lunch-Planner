@@ -36,6 +36,8 @@ const styles = theme => ({
         position: 'relative',
         height: '100%',
         overflowY: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
     },
     fab: {
         position: 'absolute',
@@ -52,9 +54,13 @@ const styles = theme => ({
         fontSize: '13px',
     },
     swipeViews: {
-        height: 'calc(100% - 48px)',
+        height: '100%',
         overflowY: 'auto',
-    }
+        maxWidth: '1024px',
+        width: '100%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+    },
 });
 
 class EventContainer extends React.Component {
@@ -169,16 +175,15 @@ class EventContainer extends React.Component {
                 >
 
                     <TabContainer dir={theme.direction}>
-                        <EventList events={this.state.joinedAndIvitedEvents} sort="personal"/>
+                        <EventList events={this.state.joinedAndIvitedEvents}  search={this.state.search}  sort="personal"/>
                     </TabContainer>
                     <TabContainer dir={theme.direction}>
                         <LocationList events={this.state.events} />
                     </TabContainer>
                     <TabContainer dir={theme.direction}>
-                        <EventList events={this.state.events} sort="date"/>
+                        <EventList events={this.state.events} search={this.state.search} sort="date"/>
                     </TabContainer>
                 </SwipeableViews>
-
             </div>
         );
     }

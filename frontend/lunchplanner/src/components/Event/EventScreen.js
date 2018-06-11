@@ -120,10 +120,9 @@ function Transition(props) {
             fontSize: '16px',
             fontFamily: 'Work Sans',
             color: "white",
-            position: "fixed",
             bottom: 0,
             width: "100%",
-            height: '56px',
+            minHeight: '56px',
             zIndex: '10000',
         },
         buttonInvitation: {
@@ -152,7 +151,6 @@ function Transition(props) {
         },
         overButton: {
             height: '100%',
-            marginBottom: '56px',
             overflowY: 'auto',
             display: 'flex',
             flexDirection: 'column',
@@ -161,6 +159,12 @@ function Transition(props) {
             float: 'left',
             marginRight: '5px',
             width: '17px',
+        },
+        image: {
+            minHeight: '152px',
+            width: '100%',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
         },
 
         // TIME AND DATE
@@ -397,7 +401,7 @@ class EventScreen extends React.Component {
 
     handleDecline = () => {
         this.sendAnswer('reject', () => {
-            getHistory().push("/event/");
+            getHistory().push("/app/event/");
         });
     };
 
@@ -503,10 +507,10 @@ class EventScreen extends React.Component {
             <div>
                 <Dialog
                     title={barTitle}
-                    closeUrl="/event"
-                    imageUrl="https://greenbyte.group/assets/images/logo.png"
+                    closeUrl="/app/event"
                 >
                     <div className={classes.overButton}>
+                        <div className={classes.image} style={{backgroundImage:"url(" + "https://greenbyte.group/assets/images/logo.png" + ")"}} />
                         <div className={classes.header}>
                             <div className={classes.headerText}>
                                 <p className={classes.fontSmall}>Created by {admin}</p>
@@ -544,7 +548,7 @@ class EventScreen extends React.Component {
                                         : <p className={classes.fontSmall}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
                                 }
                             </div>
-                            <Link to={{pathname:`/event/${eventId}/comments`}}>
+                            <Link to={{pathname:`/app/event/${eventId}/comments`}}>
                                 <div className={classes.headerComment}>
                                 <CommentsIcon className={classes.commentIcon} />
                                     <p className={classes.commentText}>Comments</p>
@@ -552,8 +556,8 @@ class EventScreen extends React.Component {
                             </Link>
                             {(iAmAdmin || isShared)
                                 ?
-                                <Link to={{pathname:`/event/${eventId}/share`, query: {
-                                        source: "/event/" + this.state.eventId}}}>
+                                <Link to={{pathname:`/app/event/${eventId}/share`, query: {
+                                        source: "/app/event/" + this.state.eventId}}}>
                                     <div className={classes.headerShare}>
                                         <ShareIcon className={classes.shareIcon}/>
                                         <p className={classes.shareText}>Share</p>
@@ -567,8 +571,8 @@ class EventScreen extends React.Component {
                             <p className={classes.invitaionsHeader}>Invited People ({people.length})</p>
                             {
                                 (iAmAdmin)
-                                    ? <Link to={{pathname: "/event/create/invite",  query: {
-                                                    source: "/event/" + this.state.eventId,
+                                    ? <Link to={{pathname: "/app/event/create/invite",  query: {
+                                                    source: "/app/event/" + this.state.eventId,
                                                     invitedUsers: people.map((value) => value.userName).join(','),
                                                 }}}>
                                         <div className={classes.addNewPeopleRoot}>
@@ -585,7 +589,7 @@ class EventScreen extends React.Component {
                             (accepted)
                                 ? <div>
                                     <ServiceList eventId={eventId} />
-                                    <Link className={classes.serviceListLink} to={{pathname:`/event/${eventId}/service`}}>
+                                    <Link className={classes.serviceListLink} to={{pathname:`/app/event/${eventId}/service`}}>
                                         <div className={classes.serviceList}>
                                             <ListIcon className={classes.serviceListIcon} />
                                             <p>Add a task</p>

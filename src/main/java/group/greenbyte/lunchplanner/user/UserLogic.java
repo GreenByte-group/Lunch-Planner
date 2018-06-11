@@ -10,6 +10,7 @@ import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.JwtService;
 import group.greenbyte.lunchplanner.user.database.User;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationDatabase;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
 import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 import group.greenbyte.lunchplanner.user.database.notifications.OptionsJson;
@@ -227,6 +228,28 @@ public class UserLogic {
     }
 
     /**
+     *
+     *
+     * @param username
+     * @param notificationId
+     * @param read
+     */
+    public void setNotificationRead(String username, int notificationId, boolean read) throws HttpRequestException {
+        try {
+            Notifications notification = userDao.getNotification(notificationId);
+            if(notification == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Notification with id " + notificationId + " not found");
+
+            if(!notification.getReceiverName().equals(username))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You don't have rights to access notification with id " + notificationId);
+
+            userDao.setNotificationRead(notificationId, read);
+        } catch (DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    /**
      * Get notification options for user
      *
      * @param userName receiver of the notifiction options
@@ -263,8 +286,8 @@ public class UserLogic {
      * @throws HttpRequestException
      */
     public void updateNotificationOptions(String userName, Boolean blockAll,
-                                            Date block_until, Boolean blockedForWork, String start_working,
-                                            String stop_working, Boolean eventsBlocked, Boolean teamsBlocked,
+                                            Date block_until, Boolean blockedForWork, Date start_working,
+                                            Date stop_working, Boolean eventsBlocked, Boolean teamsBlocked,
                                             Boolean subscriptionsBlocked) throws HttpRequestException {
 
         if(userName == null || userName.length() == 0)

@@ -224,15 +224,15 @@ class Event extends React.Component {
 
         return (
             <div>
-                <Link className={classes.link} to={{pathname:`/event/${this.state.id}`, query:{
-                        eventName: name,
-                        description: description,
-                        date: date,
-                        people: invitations,
-                        accepted: accepted,
-                        location:location,
-                        token: token,
-                    }}}>
+            <Link className={classes.link} to={{pathname:`/app/event/${this.state.id}`, query:{
+                    eventName: name,
+                    description: description,
+                    date: date,
+                    people: invitations,
+                    accepted: accepted,
+                    location:location,
+                    token: token,
+                }}}>
 
                     <ListItem style={{backgroundColor: background}} button className={classes.listItem}>
 

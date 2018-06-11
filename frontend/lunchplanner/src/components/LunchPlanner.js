@@ -23,11 +23,7 @@ class LunchPlanner extends React.Component {
 
     render() {
         return (
-            <div style={{height: '100%', display: 'flex', flexDirection: 'column'}}>
-                <Appbar currentScreen = "Events" onHandleSearch={this.handleSearch} searchValue={this.state.search}/>
-                <EventContainer style={{height: '100%'}} search={this.state.search}/>
-                <BottomNavigationBar />
-            </div>
+            <EventContainer style={{height: '100%'}} search={this.state.search}/>
         )
     }
 

@@ -37,10 +37,9 @@ const styles = {
         fontSize: '16px',
         fontFamily: 'Work Sans',
         color: "white",
-        position: "fixed",
         bottom: 0,
         width: "100%",
-        height: '56px',
+        minHeight: '56px',
         zIndex: '10000',
     },
     error: {
@@ -101,10 +100,6 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
     },
-};
-const buttonStyle = {
-    float: 'right',
-    marginBottom: '15px',
 };
 
 function Transition(props) {
@@ -176,7 +171,7 @@ class CreateEventScreen extends React.Component {
             (response) => {
                 if(response.status === 201) {
                     eventListNeedReload();
-                    getHistory().push('/event');
+                    getHistory().push('/app/event');
                 } else {
                     this.setState({error: response.response.data});
                 }
@@ -229,7 +224,7 @@ class CreateEventScreen extends React.Component {
         return (
             <Dialog
                 title="Create Event"closeIconAbsolute
-                closeUrl="/event"
+                closeUrl="/app/event"
                 paddingBottom={'48px'}
             >
                 <div className={classes.overButton}>
@@ -277,8 +272,8 @@ class CreateEventScreen extends React.Component {
                         <ExpansionPanelDetails>
                             <FormGroup row>
                                 <Link className={classes.inviteTextField}
-                                      to={{pathname: "/event/create/invite",  query: {
-                                        source: "/event/create",
+                                      to={{pathname: "/app/event/create/invite",  query: {
+                                        source: "/app/event/create",
                                         invitedUsers: this.state.invitedUsers,
                                     }}}>
                                     <TextField

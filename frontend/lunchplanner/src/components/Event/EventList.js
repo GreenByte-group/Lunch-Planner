@@ -10,6 +10,7 @@ import {getUsername} from "../authentication/LoginFunctions";
 import {getEvents} from "./EventFunctions";
 import {needReload} from "./EventContainer";
 import moment from "moment";
+import {getHistory} from "../../utils/HistoryUtils";
 
 const styles = {
     root: {
@@ -19,6 +20,7 @@ const styles = {
     },
     list: {
         padding: 0,
+        paddingBottom: '75px',
     },
     day:{
         marginLeft: 16,
@@ -137,9 +139,7 @@ class EventList extends React.Component {
                                     </div> : <div>{event}</div>
                     })}
                 </List>
-                <Link to={{pathname:'/event/create'}}>
-                    <FloatingActionButton />
-                </Link>
+                <FloatingActionButton onClick={() => getHistory().push('/app/event/create')} />
             </div>
 
         );

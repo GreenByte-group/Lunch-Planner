@@ -3,16 +3,22 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '../Dialog';
-import { Slide, TextField } from '@material-ui/core';
+import { Slide, TextField, MenuItem, Select } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import PeopleIcon from '@material-ui/icons/People'
 
 import {Link} from "react-router-dom";
 
 import {getHistory} from "../../utils/HistoryUtils";
+<<<<<<< HEAD
 import {FormControlLabel, FormHelperText, InputAdornment, Switch} from "@material-ui/core";
 import {eventListNeedReload} from "../Event/EventContainer";
 import {createTeam} from "./TeamFunctions";
+=======
+import {FormControlLabel, FormHelperText, InputAdornment, Switch, InputLabel, FormControl} from "@material-ui/core";
+import {eventListNeedReload} from "../Event/EventList";
+import {createTeam, createTeamWithParent, getTeams} from "./TeamFunctions";
+>>>>>>> developement
 import {setAuthenticationHeader} from "../authentication/LoginFunctions";
 
 const styles = {
@@ -20,10 +26,9 @@ const styles = {
         fontSize: '16px',
         fontFamily: 'Work Sans',
         color: "white",
-        position: "fixed",
         bottom: 0,
         width: "100%",
-        height: '56px',
+        minHeight: '56px',
         zIndex: '10000',
     },
     padding: {
@@ -50,13 +55,20 @@ const styles = {
         marginLeft: '24px',
     },
     overButton: {
-        height: 'calc(100% - 112px)',
+        height: '100%',
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
     },
     error: {
         color: 'red',
+    },
+    selectParent: {
+        width: '100%',
+    },
+    formControl: {
+        width: '100%',
+        marginTop: '15px',
     }
 };
 const buttonStyle = {
@@ -87,8 +99,23 @@ class CreateTeamScreen extends React.Component {
             invitedUsers: params.get('invitedUsers') || [],
             invitedTeams: params.get('invitedTeams') || [],
             invitedTeamMember: params.get('teamMember') || [],
+            withParent: false,
+            parentTeam: "",
+            teams: [],
         };
+
+        this.getTeams();
     }
+
+    getTeams = () => {
+        getTeams("", (response) => {
+            console.log('response: ', response);
+
+            this.setState({
+                teams: response.data,
+            })
+        })
+    };
 
     parseUrl = () => {
         const params = new URLSearchParams(this.props.location.search);
@@ -110,16 +137,27 @@ class CreateTeamScreen extends React.Component {
                 invitedTeamMember: params.get('teamMember'),
             });
         }
+
+        let withParent = params.get('withParent') == 'true';
+        console.log('with paretn: ', withParent);
+        console.log('with parent state: ', this.state.withParent);
+        if(withParent === true && this.state.withParent !== true) {
+            console.log('set with parent true');
+            this.setState({
+                withParent: true,
+            })
+        }
     };
 
     handleAccept = () => {
         let invitedUsers = this.state.invitedUsers + "," + this.state.invitedTeamMember;
 
-        createTeam(this.state.name, this.state.description, invitedUsers, !this.state.secret,
+        createTeamWithParent(this.state.name, this.state.description, this.state.parentTeam,
+            invitedUsers, !this.state.secret,
             (response) => {
                 if(response.status === 201) {
                     eventListNeedReload();
-                    getHistory().push('/social?tab=1');
+                    getHistory().push('/app/team?tab=1');
                 } else {
                     this.setState({error: response.response.data});
                 }
@@ -141,6 +179,11 @@ class CreateTeamScreen extends React.Component {
         });
     };
 
+    handleParentChange = (event) => {
+        console.log('parent selected: ', event.target.value);
+        this.setState({ parentTeam: event.target.value });
+    };
+
     render() {
         this.parseUrl();
         const { classes } = this.props;
@@ -149,7 +192,8 @@ class CreateTeamScreen extends React.Component {
         let invited = this.state.invitedUsers + "," + this.state.invitedTeams;
 
         let buttonEnabled = false;
-        if(this.state.name && (this.state.invitedUsers || this.state.invitedTeams))
+        if(this.state.name && (this.state.invitedUsers || this.state.invitedTeams)
+            && (!this.state.withParent || this.state.parentTeam))
             buttonEnabled = true;
 
         let switchEnabled = false;
@@ -160,7 +204,7 @@ class CreateTeamScreen extends React.Component {
         return (
             <Dialog
                 title="Create Team"closeIconAbsolute
-                closeUrl="/social?tab=1"
+                closeUrl="/app/team?tab=1"
             >
                 <div className={classes.overButton}>
                     {(error
@@ -168,9 +212,6 @@ class CreateTeamScreen extends React.Component {
                             : ""
                     )}
                     <div className={classes.padding}>
-                        <div className={classes.teamPicture}>
-
-                        </div>
                         <TextField
                             InputLabelProps={{
                                 shrink: true,
@@ -182,6 +223,28 @@ class CreateTeamScreen extends React.Component {
                             placeholder ="Your team's name"
                             onChange={this.handleChange}
                         />
+                        {
+                            (this.state.withParent)
+                                ? <form>
+                                    <FormControl className={classes.formControl}>
+                                        <InputLabel htmlFor="organisation">Choose organisation</InputLabel>
+                                        <Select
+                                            inputProps={{
+                                                name: 'Choose organisation',
+                                                id: 'organisation',
+                                            }}
+                                            value={this.state.parentTeam}
+                                            onChange={this.handleParentChange}
+                                            className={classes.selectParent}
+                                        >
+                                            {
+                                                this.state.teams.map((value) => <MenuItem value={value.teamId}>{value.teamName}</MenuItem>)
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                </form>
+                                : ''
+                        }
                         <TextField
                             InputLabelProps={{
                                 shrink: true,
@@ -199,8 +262,8 @@ class CreateTeamScreen extends React.Component {
 
                         <Link className={classes.inviteTextField}
                               style={{width: '100%'}}
-                              to={{pathname: "/team/create/invite",  query: {
-                                source: "/team/create",
+                              to={{pathname: "/app/team/create/invite",  query: {
+                                source: "/app/team/create",
                                 invitedUsers: this.state.invitedUsers,
                             }}}>
                             <TextField
