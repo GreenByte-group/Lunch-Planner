@@ -1,5 +1,4 @@
 import React from "react";
-import Appbar from "./Appbar";
 import EventContainer from "./Event/EventContainer";
 import BottomNavigationBar from "./BottomNavigationBar";
 import {setAuthenticationHeader} from "./authentication/LoginFunctions";
