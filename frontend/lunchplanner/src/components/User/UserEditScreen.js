@@ -60,6 +60,9 @@ const styles = theme => ({
         "&:hover": {
             backgroundColor: '#9cd556',
         }
+    },
+    error: {
+        color: 'red',
     }
 });
 
@@ -73,6 +76,7 @@ class UserEditScreen extends React.Component {
             showPassword: false,
             password: '',
             repeat: '',
+            emailError: null,
             passwordError: null,
         }
     }
@@ -86,16 +90,34 @@ class UserEditScreen extends React.Component {
     onSubmit = () => {
         if(this.state.email) {
             updateEmail(this.state.email, (response) => {
-
+                console.log(response);
+                if(response.status !== 204)
+                    this.setState({emailError: response.response.data})
+                else {
+                    this.setState({
+                        emailError: null,
+                        email: '',
+                    })
+                }
             });
         }
 
         if(this.state.password && this.state.password === this.state.repeat) {
             updatePassword(this.state.password, (response) => {
-
+                if(response.status !== 204)
+                    this.setState({passwordError: response.response.data})
+                else {
+                    this.setState({
+                        passwordError: null,
+                        password: '',
+                        repeat: '',
+                    })
+                }
             })
+        } else if (this.state.password !== this.state.repeat){
+            this.setState({passwordError: 'Passwords are different'})
         }
-    }
+    };
 
     render() {
         const { classes } = this.props;
@@ -111,6 +133,11 @@ class UserEditScreen extends React.Component {
                     </div>
                 </div>
                 <div className={classes.edit}>
+                    {
+                        (this.state.emailError)
+                            ? <p className={classes.error}>{this.state.emailError}</p>
+                            : ''
+                    }
                     {
                         (this.state.passwordError)
                             ? <p className={classes.error}>{this.state.passwordError}</p>
@@ -137,8 +164,8 @@ class UserEditScreen extends React.Component {
                             </div>
                             <div className={classes.editArea}>
                                 <TextField className={classes.textFieldMail}
-                                           type={this.state.showPassword ? 'text' : 'password'}
                                            label="Repeat password"
+                                           type="password"
                                            id="repeat"
                                            value={this.state.repeat}
                                            onChange={this.onChange}

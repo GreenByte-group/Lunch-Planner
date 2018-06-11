@@ -26,9 +26,27 @@ export function inviteExtern(eventId, responseFunc) {
 }
 
 export function updateEmail(email, responseFunc) {
+    let config = {
+        headers: {
+            'Content-Type': 'text/plain',
+        }
+    };
 
+    let url = HOST + "/user/options/profile/mail";
+    axios.put(url, email, config)
+        .then(responseFunc)
+        .catch(responseFunc);
 }
 
 export function updatePassword(password, responseFunc) {
+    let config = {
+        headers: {
+            'Content-Type': 'text/plain',
+        }
+    };
 
+    let url = HOST + "/user/options/profile/password";
+    axios.put(url, password, config)
+        .then(responseFunc)
+        .catch(responseFunc);
 }
