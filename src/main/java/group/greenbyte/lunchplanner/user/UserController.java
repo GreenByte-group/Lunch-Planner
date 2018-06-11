@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -68,6 +69,7 @@ public class UserController {
         return "";
     }
 
+    // --------------------- GET OR SEARCH USERS ---------------------
     /**
      *
      * @param toSearch searchword for Database to search for User/s
@@ -134,6 +136,8 @@ public class UserController {
         }
 
     }
+
+    // --------------------- SUBSCRIPTION ---------------------
 
     /**
      *
@@ -237,6 +241,8 @@ public class UserController {
         }
     }
 
+    // --------------------- NOTIFICATIONS ---------------------
+
      /**
      * @return the users notification options
      */
@@ -254,7 +260,14 @@ public class UserController {
                     .body(e.getErrorMessage());
         }
     }
-          
+
+    /**
+     * Update notification options
+     *
+     * @param options options that have been set by the user
+     * @param response response channel
+     * @return
+     */
     @RequestMapping(value = "/options/notifications/update", method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
@@ -273,6 +286,93 @@ public class UserController {
         }
     }
 
+    // --------------------- USER PROFILE ---------------------
+    /**
+     * Upload a profile picture
+     *
+     * @param imageFile image that is going to be saved
+     * @param response response channel
+     * @return error message or nothing
+     */
+    @RequestMapping(value = "/options/profile/picture/upload", method = RequestMethod.POST,
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String uploadProfilePicture(@RequestParam("imageFile") MultipartFile imageFile, HttpServletResponse response) {
+        try {
+            userLogic.uploadProfilePicture(SessionManager.getUserName(), imageFile);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            e.printStackTrace();
+            return e.getErrorMessage();
+        }
+        return "";
+    }
+
+    /**
+     *
+     * @return user profile picture
+     */
+    @RequestMapping(value = "/getProfilePicture", method = RequestMethod.GET,
+            produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public ResponseEntity getProfilePicture() {
+        try {
+            String picturePath = userLogic.getPicturePath(SessionManager.getUserName());
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(picturePath);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    /**
+     * Update user password
+     *
+     * @param password new password
+     * @param response response channel
+     * @return error message or nothing
+     */
+
+    @RequestMapping(value = "/options/profile/password", method = RequestMethod.PUT,
+            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String updateUserPassword(@RequestBody String password, HttpServletResponse response) {
+        try {
+            userLogic.updateUserPassword(SessionManager.getUserName(), password);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            e.printStackTrace();
+            return e.getErrorMessage();
+        }
+        return "";
+    }
+
+    /**
+     * Update user e-mail
+     *
+     * @param eMail new e-mail
+     * @param response response channel
+     * @return error message or nothing
+     */
+    @RequestMapping(value = "/options/profile/mail", method = RequestMethod.PUT,
+            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String updateUserEmail(@RequestBody String eMail, HttpServletResponse response) {
+        try {
+            userLogic.updateUserEmail(SessionManager.getUserName(), eMail);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        }catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            e.printStackTrace();
+            return e.getErrorMessage();
+        }
+        return "";
+    }
 
 //    /**
 //     *

@@ -28,6 +28,7 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_PASSWORD = "password";
     public static final String USER_TOKEN = "token";
     public static final String USER_FCM_TOKEN = "fcm_token";
+    public static final String USER_PICTURE = "profile_picture_url";
 
     public static final String USER_NOTIFICATION_TABLE = "notifications";
     public static final String USER_NOTIFICATION_ID = "notification_id";
@@ -293,6 +294,62 @@ public class UserDaoMySql implements UserDao {
           throw new DatabaseException(e);
       }
 
+    }
+
+    /**
+     * Put the hashed password into the database
+     *
+     * @param userName       user that updates their password
+     * @param hashedPassword new hashed password
+     * @throws DatabaseException
+     */
+    @Override
+    public void saveNewPassword(String userName, String hashedPassword) throws DatabaseException {
+
+        String SQL = "UPDATE " + USER_TABLE + " SET " + USER_PASSWORD + " = ? WHERE " + USER_NAME + " = ?";
+
+        try {
+            jdbcTemplate.update(SQL, hashedPassword, userName);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    /**
+     * Put the new e-mail into the database
+     *
+     * @param userName
+     * @param eMail
+     * @throws DatabaseException
+     */
+    @Override
+    public void saveNewEmail(String userName, String eMail) throws DatabaseException {
+
+        String SQL = " UPDATE " + USER_TABLE + " SET " + USER_MAIL + " = ? WHERE " + USER_NAME + " = ? ";
+
+        try {
+            jdbcTemplate.update(SQL, eMail, userName);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    /**
+     * Put the picture path into database
+     *
+     * @param userName
+     * @param picturePath relative path to the picture
+     * @throws DatabaseException
+     */
+    @Override
+    public void savePicturePath(String userName, String picturePath) throws DatabaseException {
+        String SQL = " UPDATE " + USER_TABLE + " SET " + USER_PICTURE + " = ? WHERE " + USER_NAME + " = ? ";
+
+        try {
+            jdbcTemplate.update(SQL, picturePath, userName);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
