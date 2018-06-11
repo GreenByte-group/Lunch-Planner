@@ -73,13 +73,13 @@ class LocationList extends React.Component {
         const { classes } = this.props;
         let events = this.state.events || [];
         let locations = [];
-
         // Sort events with location name
-        events.sort(function(a,b) {return (a.location > b.location) ? 1 : ((b.location > a.location) ? -1 : 0);});
+        events.sort(function(a,b) {return (a.location.toUpperCase() >= b.location.toUpperCase()) ? 1 : ((b.location.toUpperCase() > a.location.toUpperCase()) ? -1 : 0);});
         for(let i = 0; i < events.length; i++){
             locations.push(events[i].location);
         }
         let locationsUnique = [];
+
         if(locations.length !== 0) {
             //remove doubles
             locationsUnique = locations.filter((item, pos) => {

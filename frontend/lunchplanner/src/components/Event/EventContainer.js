@@ -119,8 +119,6 @@ class EventContainer extends React.Component {
             listValue.invitations.forEach((value) => {
                 if (value.userName === username) {
                     invited = true;
-                    console.log("listValue", listValue);
-                    console.log("value", value);
                     joinedAndIvitedEvents.push(listValue);
                     if (value.answer === 0) {
                         accepted = true;
