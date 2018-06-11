@@ -50,3 +50,19 @@ export function updatePassword(password, responseFunc) {
         .then(responseFunc)
         .catch(responseFunc);
 }
+
+export function updateProfilePicture(file, responseFunc) {
+    let config = {
+        headers:{
+            'Content-Type':'multipart/form-data'
+        }
+    };
+
+    const formData = new FormData();
+    formData.append('file',file);
+
+    let url = HOST + "/user/options/profile/picture/upload";
+    axios.post(url, formData, config)
+        .then(responseFunc)
+        .catch(responseFunc);
+}

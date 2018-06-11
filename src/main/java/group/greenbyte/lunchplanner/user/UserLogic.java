@@ -390,12 +390,12 @@ public class UserLogic {
                }
                String fileName = userName;
                String path = absolutePath + File.separator + fileName;
-               File destination = new File(path);
                String[] stringAfterPoint = imageFile.getOriginalFilename().split("\\.");
                String fileExtension = "";
                if(stringAfterPoint.length > 0)
                     fileExtension = stringAfterPoint[stringAfterPoint.length - 1];
-               String pathForDb = relativePath + fileName + fileExtension;
+               String pathForDb = relativePath + fileName + "." + fileExtension;
+               File destination = new File(path + "." + fileExtension);
                imageFile.transferTo(destination);
                userDao.savePicturePath(userName, pathForDb);
 

@@ -2,7 +2,7 @@ import React from 'react';
 import {withStyles} from "@material-ui/core/styles/index";
 import {TextField, FormControl, InputLabel, Input, Button} from "@material-ui/core";
 import {getUsername} from "../authentication/LoginFunctions";
-import {updateEmail, updatePassword} from "./UserFunctions";
+import {updateEmail, updatePassword, updateProfilePicture} from "./UserFunctions";
 
 const styles = theme => ({
     root: {
@@ -78,6 +78,7 @@ class UserEditScreen extends React.Component {
             repeat: '',
             emailError: null,
             passwordError: null,
+            pathImage: null,
         }
     }
 
@@ -87,7 +88,21 @@ class UserEditScreen extends React.Component {
         })
     };
 
+    onProfile = (event) => {
+        let fileList = event.target.files;
+        //fileList.item(0);
+        this.setState({
+            pathImage: fileList.item(0),
+        })
+    };
+
     onSubmit = () => {
+        if(this.state.pathImage) {
+            updateProfilePicture(this.state.pathImage, (response) => {
+                console.log(response);
+            })
+        }
+
         if(this.state.email) {
             updateEmail(this.state.email, (response) => {
                 console.log(response);
@@ -124,8 +139,11 @@ class UserEditScreen extends React.Component {
 
         return (
             <div className={classes.root}>
+                <input type="file" accept="image/*" id="file" onChange={this.onProfile} />
                 <div className={classes.pictureName}>
-                    <div className={classes.profilePicture}>
+                    <div
+                        className={classes.profilePicture}
+                    >
 
                     </div>
                     <div className={classes.username}>
