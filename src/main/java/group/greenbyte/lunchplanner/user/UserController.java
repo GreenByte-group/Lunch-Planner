@@ -282,7 +282,7 @@ public class UserController {
     @RequestMapping(value = "/options/profile/picture/upload", method = RequestMethod.POST,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
-    public String uploadProfilePicture(@RequestParam("imageFile") MultipartFile imageFile, HttpServletResponse response) {
+    public String uploadProfilePicture(@RequestBody MultipartFile imageFile, HttpServletResponse response) {
         try {
             userLogic.uploadProfilePicture(SessionManager.getUserName(), imageFile);
             response.setStatus(HttpServletResponse.SC_CREATED);
