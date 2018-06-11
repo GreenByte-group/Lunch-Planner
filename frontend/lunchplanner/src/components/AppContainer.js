@@ -130,17 +130,18 @@ class AppContainer extends React.Component {
     };
 
     cancelSearch = () => {
-        this.setState({ openSearch: false });
+        console.log("cancelSearch")
+        this.setState({
+            openSearch: false,
+            search: "",
+        });
     };
 
     handleSearch = (search) => {
-        console.log("handlesearch");
-        console.log(search);
         this.setState({
             openSearch: false,
             search: search,
         });
-        console.log("this.state.search",this.state.search);
     };
 
     handleDrawerClick = () => {
@@ -159,14 +160,12 @@ class AppContainer extends React.Component {
         const { classes } = this.props;
 
         let component = this.props.match.params.component;
-        console.log(component)
         let children;
         let title;
         let bottomNavigationValue = -1;
 
         switch(component) {
             case 'event':
-                console.log(this.state.search);
                 children = <LunchPlanner searchValue={this.state.search}/>;
                 title = "Events";
                 bottomNavigationValue = 1;

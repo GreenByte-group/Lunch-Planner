@@ -28,7 +28,6 @@ class LunchPlanner extends React.Component {
     }
 
     render() {
-        console.log("lunchplanner", this.state.search)
         return (
             <EventContainer style={{height: '100%'}} search={this.state.search}/>
         )

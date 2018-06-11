@@ -38,18 +38,11 @@ class EventList extends React.Component {
         super();
         this.state = {
             events: props.events,
-            search:props.search,
             sort: props.sort,
         }
-        //this.handleToday = this.handleToday.bind(this);
     }
 
     componentWillReceiveProps(newProps) {
-        if(newProps.search !== this.state.search){
-            this.setState({
-                search: newProps.search,
-            });
-        }
         if(newProps.events !== this.state.events){
             this.setState({
                 events: newProps.events,
@@ -63,8 +56,6 @@ class EventList extends React.Component {
         const { classes } = this.props;
         let events = this.state.events || [];
         let showLightBackground = true;
-        let sortByDate = false;
-        let sortByFollowing = false;
         let locations = [];
         events.sort(function(a,b) {return (a.startDate > b.startDate) ? 1 : ((b.startDate > a.startDate) ? -1 : 0);});
 

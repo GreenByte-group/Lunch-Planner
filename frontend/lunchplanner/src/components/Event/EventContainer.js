@@ -66,7 +66,6 @@ const styles = theme => ({
 class EventContainer extends React.Component {
     constructor(props) {
         super();
-        console.log("Eventcontainer", props.search)
         this.state = {
             value: 0,
             search: props.search,
@@ -77,7 +76,7 @@ class EventContainer extends React.Component {
     componentDidMount() {
         this.setState({
             search: this.props.search,
-            joinedAndIvitedEvents: [],
+            joinedAndInvitedEvents: [],
         });
 
         this.loadEvents(this.props.search);
@@ -94,12 +93,6 @@ class EventContainer extends React.Component {
             });
             this.loadEvents(newProps.search);
         }
-        /*if(newProps.events !== this.state.events){
-            this.setState({
-                events: newProps.events,
-            });
-            this.loadEvents();
-        }*/
     }
 
     loadEvents(search) {
@@ -133,7 +126,7 @@ class EventContainer extends React.Component {
             });
         });
         this.setState({
-            joinedAndIvitedEvents: joinedAndIvitedEvents,
+            joinedAndInvitedEvents: joinedAndIvitedEvents,
         });
     };
 
@@ -166,7 +159,7 @@ class EventContainer extends React.Component {
                         <Tab className={classes.tab} label="PLACES" />
                         <Tab className={classes.tab} label="BY DATE" />
                     </Tabs>
-                </AppBar >
+                </AppBar>
                 <SwipeableViews
                     axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                     index={this.state.value}
@@ -175,13 +168,13 @@ class EventContainer extends React.Component {
                 >
 
                     <TabContainer dir={theme.direction}>
-                        <EventList events={this.state.joinedAndIvitedEvents}  search={this.state.search}  sort="personal"/>
+                        <EventList events={this.state.joinedAndInvitedEvents}/>
                     </TabContainer>
                     <TabContainer dir={theme.direction}>
                         <LocationList events={this.state.events} />
                     </TabContainer>
                     <TabContainer dir={theme.direction}>
-                        <EventList events={this.state.events} search={this.state.search} sort="date"/>
+                        <EventList events={this.state.events} />
                     </TabContainer>
                 </SwipeableViews>
             </div>
