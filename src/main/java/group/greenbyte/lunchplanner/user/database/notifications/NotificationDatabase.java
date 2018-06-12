@@ -1,4 +1,4 @@
-package group.greenbyte.lunchplanner.user.database;
+package group.greenbyte.lunchplanner.user.database.notifications;
 
 import java.util.Date;
 
@@ -8,10 +8,11 @@ public class NotificationDatabase {
     private Date date;
     private String titel;
     private String message;
-    private String receiver;
+    private String userName;
     private String builder;
     private String link;
     private String picture;
+    private boolean isRead;
 
     public Notifications getNotification(){
         Notifications notification = new Notifications();
@@ -20,9 +21,10 @@ public class NotificationDatabase {
         notification.setLink(this.link);
         notification.setMessage(this.message);
         notification.setPicture(this.picture);
-        notification.setReceiverName(this.receiver);
+        notification.setReceiverName(this.userName);
         notification.setNotificationId(this.notificationId);
         notification.setDate(this.date);
+        notification.setIsRead(this.isRead);
 
         return notification;
     }
@@ -35,8 +37,8 @@ public class NotificationDatabase {
         this.message = message;
     }
 
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public void setBuilder(String builder) {
@@ -61,5 +63,9 @@ public class NotificationDatabase {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public void setIsRead(boolean isRead) {
+        this.isRead = isRead;
     }
 }

@@ -1,11 +1,18 @@
 import React from "react";
-import {List, TextField, withStyles} from "@material-ui/core";
-import {getUsername, setAuthenticationHeader} from "../../authentication/Authentication";
+import {Send} from "@material-ui/icons";
+import {List, TextField, withStyles, IconButton, CircularProgress} from "@material-ui/core";
+import {getUsername, setAuthenticationHeader} from "../../authentication/LoginFunctions";
 import Comment from "./Comment";
 import Dialog from "../../Dialog";
 import {loadComments, sendComment} from "./CommentFunctions";
 
 const styles = {
+    root: {
+        display: 'flex',
+        flexDirection: 'column',
+        maxHeight: '100%',
+        overflowY: 'auto',
+    },
     list: {
         padding: '0px',
         overflowY: 'auto',
@@ -13,18 +20,30 @@ const styles = {
     },
     textField: {
         zIndex: '10003',
-        width: '100%',
         padding: '16px',
         fontSize: '16px',
         lineHeight: '24px',
+        width: '100%',
+    },
+    iconButtonSend: {
+        alignSelf: 'center',
+    },
+    iconSend: {
+
     },
     formComment: {
         backgroundColor: 'white',
-        zIndex: '10003',
-        position: 'fixed',
-        bottom: 0,
         width: '100%',
         boxShadow: '0 -10px 15px 0 rgba(0,0,0,0.05)',
+        display: 'flex',
+        flexDirection: 'row',
+    },
+    progress:{
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: "auto",
+        marginBottom: "auto",
+        display: "block",
     },
 };
 
@@ -39,6 +58,7 @@ class Comments extends React.Component {
             eventId: props.match.params.eventId,
             comments: [],
             newComment: "",
+            loading: true,
         }
 
         this.loadComments();
@@ -54,12 +74,16 @@ class Comments extends React.Component {
     }
 
     loadComments(eventId) {
+        this.setState({
+            loading: true,
+        });
         if(eventId == null || eventId === undefined)
             eventId = this.state.eventId;
 
         loadComments(eventId, (response) => {
             this.setState({
                 comments: response.data,
+                loading: false,
             })
         });
     }
@@ -77,50 +101,65 @@ class Comments extends React.Component {
     };
 
     onSubmit = () => {
+        this.setState({
+            newComment: "",
+        });
 
         sendComment(this.state.eventId, this.state.newComment,
             (response) => {
                 this.loadComments();
+                this.setState({
+                    newComment: "",
+                })
         });
     };
 
     render() {
         const {classes} = this.props;
         const comments = this.state.comments;
+        let loading = this.state.loading;
 
         return (
             <div>
+                {loading ? <CircularProgress className={classes.progress} color="secondary"/>
+                    :
                 <Dialog
                     title={"Comments (" + comments.length + ")"}
-                    closeUrl={"/event/" + this.state.eventId}
+                    closeUrl={"/app/event/" + this.state.eventId}
                 >
-                    <List className={classes.list}>
-                        {comments.map((listValue) => {
-                            return (
-                                <Comment
-                                    text={listValue.commentText}
-                                    date={listValue.date}
-                                    creater={listValue.userName}
-                                />
-                            )
-                        })}
-                    </List>
-                    <form
-                        className={classes.formComment}
-                        noValidate autoComplete="on"
-                    >
-                        <TextField
-                            className={classes.textField}
-                            id="textFieldComment"
-                            value={this.state.newComment}
-                            onChange={this.textFieldChanged}
-                            onKeyDown={this.keyPress}
-                            placeholder ="Write a comment ..."
-                            multiline
-                            rows="6"
-                        />
-                    </form>
+                    <div className={classes.root}>
+                        <List className={classes.list}>
+                            {comments.map((listValue) => {
+                                return (
+                                    <Comment
+                                        text={listValue.commentText}
+                                        date={listValue.date}
+                                        creater={listValue.userName}
+                                    />
+                                )
+                            })}
+                        </List>
+                        <form
+                            className={classes.formComment}
+                            noValidate autoComplete="on"
+                        >
+                            <TextField
+                                className={classes.textField}
+                                id="textFieldComment"
+                                value={this.state.newComment}
+                                onChange={this.textFieldChanged}
+                                onKeyDown={this.keyPress}
+                                placeholder ="Write a comment ..."
+                                multiline
+                                rows="6"
+                            />
+                            <IconButton onClick={this.onSubmit} className={classes.iconButtonSend}>
+                                <Send className={classes.iconSend} />
+                            </IconButton>
+                        </form>
+                    </div>
                 </Dialog>
+                }
             </div>
         )
     }

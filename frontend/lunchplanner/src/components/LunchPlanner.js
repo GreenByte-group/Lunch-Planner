@@ -1,24 +1,35 @@
 import React from "react";
-import Appbar from "./Appbar";
-import EventContainer from "./EventContainer";
+import EventContainer, {needReload} from "./Event/EventContainer";
 import BottomNavigationBar from "./BottomNavigationBar";
-import {setAuthenticationHeader} from "./authentication/Authentication";
+import {setAuthenticationHeader} from "./authentication/LoginFunctions";
 
 class LunchPlanner extends React.Component {
 
-    constructor() {
+    constructor(props) {
         super();
-
+        this.state = {
+            search: props.searchValue,
+        };
         setAuthenticationHeader();
+    }
+
+    componentWillReceiveProps(newProps) {
+        if(newProps.search !== this.state.search){
+            this.setState({
+                search: newProps.searchValue,
+            });
+        }
+    }
+
+    componentDidMount() {
+        this.setState({
+            search: this.props.searchValue,
+        });
     }
 
     render() {
         return (
-            <div style={{height: '100%', display: 'flex', flexDirection: 'column'}}>
-                <Appbar currentScreen = "Events" />
-                <EventContainer style={{height: '100%'}} />
-                <BottomNavigationBar />
-            </div>
+            <EventContainer style={{height: '100%'}} search={this.state.search}/>
         )
     }
 

@@ -1,5 +1,7 @@
 import React from 'react';
 import {ListItem, withStyles} from "@material-ui/core";
+import {getHistory} from "../../utils/HistoryUtils";
+import {setNotificationRead} from "./NotificationFunctions";
 
 const styles = {
     listItem: {
@@ -30,10 +32,13 @@ const styles = {
     read: {
         backgroundColor: '#F29B26',
         borderRadius: '50%',
-        height: '8px',
-        width: '8px',
+        height: '10px',
+        width: '10px',
         position: 'absolute',
         right: '16px',
+        "&:hover": {
+            backgroundColor: '#00b1ff',
+        }
     }
 };
 
@@ -47,11 +52,13 @@ class NotificationListItem extends React.Component {
             description: props.description,
             icon: props.icon,
             read: props.read,
+            clickUrl: props.clickUrl,
+            id: props.id,
         }
     }
 
     componentWillReceiveProps(newProps) {
-        let title, description, icon, read;
+        let title, description, icon, read, clickUrl, id;
 
         if(newProps.title && newProps.title !== this.state.title) {
             title = newProps.title;
@@ -65,8 +72,14 @@ class NotificationListItem extends React.Component {
         if(newProps.read !== undefined && newProps.read !== this.state.read) {
             read = newProps.read;
         }
+        if(newProps.clickUrl !== undefined && newProps.clickUrl !== this.state.clickUrl) {
+            clickUrl = newProps.clickUrl;
+        }
+        if(newProps.id !== undefined && newProps.id !== this.state.id) {
+            id = newProps.id;
+        }
 
-        if(title || description || icon || read !== undefined) {
+        if(title || description || icon || id || clickUrl || read !== undefined) {
             if(read === undefined)
                 read = this.state.read;
 
@@ -75,12 +88,31 @@ class NotificationListItem extends React.Component {
                 description: description || this.state.description,
                 icon: icon || this.state.icon,
                 read: read,
+                clickUrl: clickUrl || this.state.clickUrl,
+                id: id || this.state.id,
             })
         }
     }
 
     clickHandler = (event) => {
-        //TODO notification click
+        let title = event.target.title;
+        console.log("Title: ", title);
+
+        if(title !== 'read') {
+            getHistory().push("/app" + this.state.clickUrl);
+            setNotificationRead(this.state.id);
+        }
+    };
+
+    notificationRead = () => {
+        setNotificationRead(this.state.id, (response) => {
+            if(response.status === 204) {
+                this.setState({
+                    read: true,
+                })
+                //TODO update notifications lsit
+            }
+        })
     };
 
     render() {
@@ -95,7 +127,7 @@ class NotificationListItem extends React.Component {
                 </div>
                 {
                     (!this.state.read)
-                        ? <div className={classes.read}></div>
+                        ? <div onClick={this.notificationRead} className={classes.read} title={'read'}></div>
                         : ''
                 }
             </ListItem>

@@ -1,6 +1,8 @@
 // Give the service worker access to Firebase Messaging.
 // Note that you can only use Firebase Messaging here, other Firebase libraries
 // are not available in the service worker.
+const FRONTEND_HOST = "https://lunchplanner.greenbyte.group";
+
 importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
 
@@ -16,39 +18,35 @@ const messaging = firebase.messaging();
 
 messaging.setBackgroundMessageHandler((payload) => {
     console.log('[firebase-messaging-sw.js] Received background message ', payload);
-    //TODO background notifications
-    let notificationTitle = 'Background Message Title';
+
+    let notificationTitle = payload.data.title;
     let notificationOptions = {
-        body: 'Background Message body.',
-        icon: '/firebase-logo.png'
+        body: payload.data.body,
+        icon: payload.data.icon,
+        tag: FRONTEND_HOST + '/app' + payload.data.tag,
     };
 
-    return self.registration.showNotification();
+    return self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
 self.addEventListener('notificationclick', function(event) {
-    if (!event.action) {
-        // Was a normal notification click
-        console.log('Notification Click: ', event);
-        return;
-    }
-
-    switch (event.action) {
-        case 'coffee-action':
-            console.log('User ❤️️\'s coffee.');
-            break;
-        case 'doughnut-action':
-            console.log('User ❤️️\'s doughnuts.');
-            break;
-        case 'gramophone-action':
-            console.log('User ❤️️\'s music.');
-            break;
-        case 'atom-action':
-            console.log('User ❤️️\'s science.');
-            break;
-        default:
-            console.log(`Unknown action clicked: '${event.action}'`);
-            break;
-    }
+    let url = event.notification.tag;//.click_action;
+    console.log("url: ", url);
+    console.log("Event: ");
+    console.log("tag: ", event.notification.tag);
+    event.notification.close(); // Android needs explicit close.
+    // This looks to see if the current is already open and
+    // focuses if it is
+    event.waitUntil(clients.matchAll({
+        type: "window"
+    }).then(function(clientList) {
+        for (let i = 0; i < clientList.length; i++) {
+            let client = clientList[i];
+            if (client.url === url && 'focus' in client)
+                return client.focus();
+        }
+        if (clients.openWindow)
+            return clients.openWindow(url);
+    }));
 });
 

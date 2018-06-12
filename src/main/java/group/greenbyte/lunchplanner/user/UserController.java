@@ -2,14 +2,17 @@ package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.SessionManager;
-import group.greenbyte.lunchplanner.user.database.Notifications;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
+import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 import group.greenbyte.lunchplanner.user.database.User;
+import group.greenbyte.lunchplanner.user.database.notifications.OptionsJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -66,6 +69,7 @@ public class UserController {
         return "";
     }
 
+    // --------------------- GET OR SEARCH USERS ---------------------
     /**
      *
      * @param toSearch searchword for Database to search for User/s
@@ -133,6 +137,8 @@ public class UserController {
 
     }
 
+    // --------------------- SUBSCRIPTION ---------------------
+
     /**
      *
      * @return a List of all notifications
@@ -154,7 +160,219 @@ public class UserController {
         }
     }
 
+    @RequestMapping(value = "/notification/{id}", method = RequestMethod.POST)
+    public ResponseEntity setNotificationRead(@PathVariable("id") int notificationId) {
+        try {
+            userLogic.setNotificationRead(SessionManager.getUserName(), notificationId, true);
+        } catch(HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
 
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("");
+    }
+
+
+    /**
+     * TODO:
+     * get a list of all subscriber of a location
+     * @param location
+     * @return
+     */
+    @RequestMapping(value ="/subscribe/{location}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getSubscriber(@PathVariable("location") String location) {
+        try {
+            List<User> toReturn =  userLogic.getSubscriber("location");
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(toReturn);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    /**
+     * An user subscribe a location
+     * @param username who subscribe
+     * @param location that the user subscribe
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "subscribe/{username}", method = RequestMethod.POST)
+    public String subscribe(@PathVariable("username") String username, @RequestBody String location,
+                             HttpServletResponse response) {
+        try {
+            userLogic.subscribe(username, location);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+        return "";
+    }
+
+
+  /**
+     * TODO:
+     * get a list of all subscribed locations of an user
+     * @param username
+     * @return a list of all subscribed locations of an user
+     */
+    @RequestMapping(value ="/subscribe/{username}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getSubscribedLocations(@PathVariable("username") String username) {
+        try {
+            List<String> toReturn = userLogic.getSubscribedLocations(username);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(toReturn);
+        }catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    // --------------------- NOTIFICATIONS ---------------------
+
+     /**
+     * @return the users notification options
+     */
+    @RequestMapping(value = "/options/notifications", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+        public ResponseEntity getNotificationOptions() {
+        try {
+            NotificationOptions notificationOptions = userLogic.getNotificationOptions(SessionManager.getUserName());
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(notificationOptions);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    /**
+     * Update notification options
+     *
+     * @param options options that have been set by the user
+     * @param response response channel
+     * @return
+     */
+    @RequestMapping(value = "/options/notifications/update", method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String updateNotificationOptions(@RequestBody OptionsJson options, HttpServletResponse response){
+        try {
+            userLogic.updateNotificationOptions(SessionManager.getUserName(), options.getBlockAll(),
+                    options.getBlock_until(), options.getBlockedForWork(), options.getStart_working(), options.getStop_working(),
+                    options.getEventsBlocked(),options.getTeamsBlocked(),options.getSubscriptionsBlocked());
+
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            return "";
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            e.printStackTrace();
+            return e.getErrorMessage();
+        }
+    }
+
+    // --------------------- USER PROFILE ---------------------
+    /**
+     * Upload a profile picture
+     *
+     * @param imageFile image that is going to be saved
+     * @param response response channel
+     * @return error message or nothing
+     */
+    @RequestMapping(value = "/options/profile/picture/upload", method = RequestMethod.POST,
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String uploadProfilePicture(@RequestParam("file") MultipartFile imageFile, HttpServletResponse response) {
+        try {
+            userLogic.uploadProfilePicture(SessionManager.getUserName(), imageFile);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            e.printStackTrace();
+            return e.getErrorMessage();
+        }
+        return "";
+    }
+
+    /**
+     *
+     * @return user profile picture
+     */
+    @RequestMapping(value = "/getProfilePicture/{username}", method = RequestMethod.GET,
+            produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public ResponseEntity getProfilePicture(@PathVariable("username") String username) {
+        try {
+            String picturePath = userLogic.getPicturePath(username);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(picturePath);
+        } catch (HttpRequestException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
+    /**
+     * Update user password
+     *
+     * @param password new password
+     * @param response response channel
+     * @return error message or nothing
+     */
+
+    @RequestMapping(value = "/options/profile/password", method = RequestMethod.PUT,
+            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String updateUserPassword(@RequestBody String password, HttpServletResponse response) {
+        try {
+            userLogic.updateUserPassword(SessionManager.getUserName(), password);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            e.printStackTrace();
+            return e.getErrorMessage();
+        }
+        return "";
+    }
+
+    /**
+     * Update user e-mail
+     *
+     * @param eMail new e-mail
+     * @param response response channel
+     * @return error message or nothing
+     */
+    @RequestMapping(value = "/options/profile/mail", method = RequestMethod.PUT,
+            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String updateUserEmail(@RequestBody String eMail, HttpServletResponse response) {
+        try {
+            userLogic.updateUserEmail(SessionManager.getUserName(), eMail);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        }catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            e.printStackTrace();
+            return e.getErrorMessage();
+        }
+        return "";
+    }
 
 //    /**
 //     *

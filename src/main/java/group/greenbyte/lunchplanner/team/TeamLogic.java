@@ -3,8 +3,10 @@ package group.greenbyte.lunchplanner.team;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.team.database.Team;
+import group.greenbyte.lunchplanner.user.UserDao;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import group.greenbyte.lunchplanner.user.database.User;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class TeamLogic {
     private TeamDao teamdao;
 
     private UserLogic userLogic;
+
+    private UserDao userDao;
     /**
      *
      * @param userName userName that is logged in
@@ -30,14 +34,14 @@ public class TeamLogic {
      * @throws HttpRequestException when teamName, userName, description not valid
      * or an Database error happens
      */
-    int createTeamWithParent(String userName, int parent, String teamName, String description) throws HttpRequestException {
+    int createTeamWithParent(String userName, int parent, String teamName, String description, boolean isPublic) throws HttpRequestException {
         checkParams(userName, teamName, description);
 
         try {
             if(!hasViewPrivileges(userName, parent))
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "No Privileges to acces parent team: " + parent);
 
-            return teamdao.insertTeamWithParent(teamName, description, userName, parent);
+            return teamdao.insertTeamWithParent(teamName, description, userName, isPublic, parent);
         } catch(DatabaseException d){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), d.getMessage());
         }
@@ -52,11 +56,11 @@ public class TeamLogic {
      * @throws HttpRequestException when teamName, userName, description not valid
      * or an Database error happens
      */
-    int createTeamWithoutParent(String userName, String teamName, String description) throws HttpRequestException {
+    int createTeamWithoutParent(String userName, String teamName, String description, boolean isPublic) throws HttpRequestException {
         checkParams(userName, teamName, description);
 
         try {
-            return teamdao.insertTeam(teamName, description, userName);
+            return teamdao.insertTeam(teamName, description, userName, isPublic);
         } catch(DatabaseException d){
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), d.getMessage());
         }
@@ -110,7 +114,72 @@ public class TeamLogic {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
 
-        userLogic.sendInvitation(username, userToInvite);
+        //TODO picture
+        User user = userLogic.getUser(userToInvite);
+        //set notification information
+        String title = "Team invitation";
+        String description = String.format("%s invited you to join their team", username);
+        String linkToClick = "/team/" + teamId;
+
+        //save notification
+        userLogic.saveNotification(userToInvite,title,description,username,linkToClick, "");
+
+        //send a notification to userToInvite
+        NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToInvite);
+        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
+            try {
+                userLogic.sendNotification(user.getFcmToken(), userToInvite, title, description,linkToClick, "");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Remove a team member from a team
+     *
+     * @param userName user that is going to be removed
+     * @param teamId id of the team
+     * @throws DatabaseException
+     */
+    public void removeTeamMember(String userName,String userToRemove, int teamId) throws HttpRequestException {
+
+        if(!isValidName(userName))
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximun length" + User.MAX_USERNAME_LENGTH + ", minimum length 1");
+        if(!isValidName(userToRemove))
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username of removed user is not valid, maximun length" + User.MAX_USERNAME_LENGTH + ", minimum length 1");
+
+
+        try{
+            if(!hasAdminPrivileges(teamId, userName))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have write access to this team");
+
+            teamdao.removeTeamMember(userToRemove, teamId);
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
+        //TODO picture
+        //TODO write own method for each entity?
+        User user = userLogic.getUser(userToRemove);
+        Team team = getTeam(userName, teamId);
+        //set notification information
+        String title = "You have been removed from a team";
+        String description = String.format("%s removed you from team %s", userName, team.getTeamName());
+        String linkToClick = "/team/" + teamId;
+
+        //save notification
+        userLogic.saveNotification(userToRemove,title,description,userName,linkToClick, "");
+
+        //send a notification to userToInvite
+        NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToRemove);
+        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
+            try {
+                userLogic.sendNotification(user.getFcmToken(), userToRemove, title, description,linkToClick, "");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -278,4 +347,8 @@ public class TeamLogic {
         this.userLogic = userLogic;
     }
 
+    @Autowired
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
 }

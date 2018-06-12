@@ -1,13 +1,14 @@
 import PropTypes from "prop-types";
+import Loadable from "react-loading-overlay";
 import {withStyles} from "@material-ui/core/styles/index";
 import React from 'react';
 import Dialog from "../Dialog";
-import {Button, Slide, Divider} from "@material-ui/core";
-import {getUsername, setAuthenticationHeader} from "../authentication/Authentication";
+import {Button, Slide, Divider, CircularProgress} from "@material-ui/core";
+import {getUsername, setAuthenticationHeader} from "../authentication/LoginFunctions";
 import {getHistory} from "../../utils/HistoryUtils"
 import {Https as SecretIcon} from "@material-ui/icons";
 import UserList from "../User/UserList";
-import {getTeam, replyToTeam, changeTeamDescription,changeTeamName} from "./TeamFunctions";
+import {getTeam, replyToTeam, changeTeamDescription, changeTeamName, removeUserFromTeam} from "./TeamFunctions";
 import {teamListNeedReload} from "./TeamList";
 import TextFieldEditing from "../editing/TextFieldEditing";
 import axios from "axios";
@@ -54,10 +55,9 @@ const styles = {
         fontSize: '16px',
         fontFamily: 'Work Sans',
         color: "white",
-        position: "fixed",
         bottom: 0,
         width: "100%",
-        height: '56px',
+        minHeight: '56px',
         zIndex: '10000',
     },
     buttonInvitation: {
@@ -130,7 +130,6 @@ const styles = {
     },
     overButton: {
         height: '100%',
-        marginBottom: '56px',
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
@@ -165,6 +164,7 @@ class TeamScreen extends React.Component {
             name:"",
             description: "",
             people:[],
+            loading: true,
         };
 
     }
@@ -192,6 +192,7 @@ class TeamScreen extends React.Component {
                 name: teamName,
                 description: description,
                 people: people,
+                loading: false,
             })
 
         } else {
@@ -232,6 +233,9 @@ class TeamScreen extends React.Component {
     };
 
     loadTeam = (teamId) => {
+        this.setState({
+            loading: true,
+        });
         if(!teamId)
             teamId = this.state.teamId;
 
@@ -241,13 +245,13 @@ class TeamScreen extends React.Component {
                 name: response.data.teamName,
                 description: response.data.description,
                 people: response.data.invitations,
-
+                loading: false,
             });
         })
     };
 
     handleLeave = () => {
-        getHistory().push("/social?tab=1");
+        getHistory().push("/app/team?tab=1");
         let people = this.state.people;
         let index = people.indexOf(getUsername());
         people.splice(index, 1);
@@ -270,7 +274,6 @@ class TeamScreen extends React.Component {
             name: event.target.value,
         });
 
-        //TODO error func
         changeTeamName(this.state.teamId, event.target.value, this.reloadTeamsOnSuccess);
     };
 
@@ -279,7 +282,6 @@ class TeamScreen extends React.Component {
             description: event.target.value,
         });
 
-        //TODO error func
         changeTeamDescription(this.state.teamId, event.target.value, this.reloadTeamsOnSuccess);
     };
 
@@ -287,6 +289,16 @@ class TeamScreen extends React.Component {
         if(response.status === 204) {
             teamListNeedReload();
         }
+    };
+
+    clickRemove = (username) => {
+        let people = this.state.people;
+        people = people.filter(listValue => listValue.userName !== username)
+        this.setState({
+            people: people,
+        });
+
+        removeUserFromTeam(this.state.teamId, username, this.reloadTeamsOnSuccess)
     };
 
     render() {
@@ -297,6 +309,7 @@ class TeamScreen extends React.Component {
         let people = this.state.people;
         let iAmAdmin = false;
         let userName = getUsername();
+        let loading = this.state.loading;
 
         if(people.length !== 0) {
             this.parseUrl();
@@ -330,11 +343,18 @@ class TeamScreen extends React.Component {
             }
         });
 
+        let clickRemove;
+        if(iAmAdmin)
+            clickRemove = this.clickRemove;
+
         return (
-            <div>
+            <div >
+                {loading ?
+                        <CircularProgress className={classes.progress} color="secondary"/>
+                    :
                 <Dialog
                     title={name}
-                    closeUrl="/social?tab=1"
+                    closeUrl="/app/team?tab=1"
                 >
                     <div className={classes.overButton}>
                         <div className={classes.content}>
@@ -359,8 +379,8 @@ class TeamScreen extends React.Component {
                                 <p className={classes.invitaionsHeader}> Team Member ({people.length})</p>
                                 {
                                     (iAmAdmin)
-                                        ? <Link to={{pathname: "/team/create/invite",  query: {
-                                                source: "/team/" + this.state.teamId,
+                                        ? <Link to={{pathname: `/app/team/${this.state.teamId}/invite`,  query: {
+                                                source: "/app/team/" + this.state.teamId,
                                                 invitedUsers: people.map((value) => value.userName).join(','),
                                             }}}>
                                             <div className={classes.addNewPeopleRoot}>
@@ -371,10 +391,11 @@ class TeamScreen extends React.Component {
                                         : ''
                                 }
                                 <UserList
-                                    selectedUsers={selectedUsers}
-                                    othersInvited={true}
+                                    selectedUsers={people.map(value => value.userName)}
+                                    othersInvited={false}
                                     selectable={false}
                                     users={people}
+                                    clickRemove={clickRemove}
                                 />
                             </div>
                         </div>
@@ -385,7 +406,7 @@ class TeamScreen extends React.Component {
                     className={classes.button}>
                     {buttonText}
                 </Button>
-                </Dialog>
+                </Dialog>}
             </div>
         );
     }

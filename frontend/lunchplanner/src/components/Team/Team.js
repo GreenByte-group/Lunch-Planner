@@ -2,6 +2,7 @@ import React from "react"
 import {withStyles, ListItem, Avatar, IconButton} from "@material-ui/core";
 import {Link} from "react-router-dom";
 import TeamIcon from  "@material-ui/icons/Create";
+import {getProfilePicturePath} from "../User/UserFunctions";
 
 const styles = {
     listItem: {
@@ -38,15 +39,12 @@ const styles = {
     memberAvatar: {
         height: '24px',
         width: '24px',
-        border: '1px solid white',
+        // border: '1px solid white',
     },
-    memberAvatarText: {
-        fontSize:'10px',
-        marginLeft: '-8px',
-    },
-    memberAvatarTextLast: {
-        marginLeft: '0px',
-        fontSize: '10px',
+    memberPicture: {
+        height: '100%',
+        width: '100%',
+        objectFit: 'cover',
     },
     icons: {
         width: '13px',
@@ -74,7 +72,16 @@ class Team extends React.Component {
     constructor(props) {
         super();
         let invitations = props.member;
-        let people = invitations.map(value => value.userName).join(', ');
+        let people = invitations.map(value => {
+            getProfilePicturePath(value.userName, (response) => {
+                let stateId = "pic" + value.userName.replace(/\s/g, '');
+                this.setState({
+                    [stateId]: response.data,
+                })
+            });
+            return value.userName
+        }).join(', ');
+
         this.state = {
             name:  props.name,
             id: props.id,
@@ -82,7 +89,7 @@ class Team extends React.Component {
             current: true,
             selected: props.selected || false,
             selectable: props.selectable || false,
-        }
+        };
     }
 
     componentWillReceiveProps(newProps) {
@@ -124,23 +131,21 @@ class Team extends React.Component {
         people = people.split(',');
         people = people.map((value) => value.trim());
 
+
         return (
-            <Link to={{pathname:`/team/${this.state.id}`}}>
+            <Link to={{pathname:`/app/team/${this.state.id}`}}>
                 <ListItem style={{backgroundColor: background}} button className={classes.listItem}>
                     <div className={classes.text}>
                         <div className={classes.row}>
                             {
                                 people.map((person, index) =>{
+                                    let imageId = "pic" + person.replace(/\s/g, '');
+                                    let url = this.state[imageId];
                                     return(
                                         <div className={classes.member}>
-                                            {(index === people.length - 1)
-                                                ?
-                                                <Avatar className={classes.memberAvatar}><span
-                                                    className={classes.memberAvatarTextLast}>{person.charAt(0)}</span></Avatar>
-                                                :
-                                                <Avatar className={classes.memberAvatar}><span
-                                                    className={classes.memberAvatarText}>{person.charAt(0)}</span></Avatar>
-                                            }
+                                                <Avatar className={classes.memberAvatar}>
+                                                    <img className={classes.memberPicture} src={url} />
+                                                </Avatar>
                                         </div>)
 
                                 })
@@ -148,9 +153,9 @@ class Team extends React.Component {
                        </div>
                         <p className={classes.title}>{name}</p>
                     </div>
-                    <IconButton>
-                        <TeamIcon className={classes.icon} color="primary" />
-                    </IconButton>
+                    {/*<IconButton>*/}
+                        {/*<TeamIcon className={classes.icon} color="primary" />*/}
+                    {/*</IconButton>*/}
                 </ListItem>
             </Link>
 

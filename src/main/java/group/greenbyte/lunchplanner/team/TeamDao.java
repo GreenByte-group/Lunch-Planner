@@ -16,7 +16,7 @@ public interface TeamDao {
      * @return returns the teamId created by the database
      * @throws DatabaseException
      */
-    int insertTeam(String teamName, String description, String adminName) throws DatabaseException;
+    int insertTeam(String teamName, String description, String adminName, boolean isPublic) throws DatabaseException;
 
     /**
      *
@@ -27,7 +27,7 @@ public interface TeamDao {
      * @return returns the teamId created by the database
      * @throws DatabaseException
      */
-    int insertTeamWithParent(String teamName, String description, String adminName, int parent) throws DatabaseException;
+    int insertTeamWithParent(String teamName, String description, String adminName, boolean isPublic, int parent) throws DatabaseException;
 
 
     /**
@@ -151,4 +151,13 @@ public interface TeamDao {
      * @param description new description of the team
      */
     void updateDescription(int teamId, String description) throws DatabaseException;
+
+    /**
+     * Remove a team member from database
+     *
+     * @param userToRemove user that is going to be deleted from database
+     * @param teamId id of the team
+     * @throws DatabaseException
+     */
+    void removeTeamMember(String userToRemove, int teamId) throws DatabaseException;
 }

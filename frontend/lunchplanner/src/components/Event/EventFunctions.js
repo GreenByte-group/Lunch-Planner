@@ -70,7 +70,6 @@ export function changeEventTime(eventId, time, responseFunc, errorFunc) {
 }
 
 export function createEvent(location, date, member, visible, responseFunc, errorFunc) {
-    //TODO description
     let momentDate = moment(date);
 
     let timeEnd = date.getTime();
@@ -86,7 +85,6 @@ export function createEvent(location, date, member, visible, responseFunc, error
 }
 
 export function inviteMemberToEvent(eventId, member, responseFunc, errorFunc) {
-    console.log("member: ", member);
     if(member && member instanceof Array)
 
     member.forEach((oneMember) => {
@@ -94,7 +92,8 @@ export function inviteMemberToEvent(eventId, member, responseFunc, errorFunc) {
         axios.post(url)
             .then((response) => {
                 if(response.status === 201)
-                    responseFunc(oneMember)
+                    if(responseFunc)
+                        responseFunc(oneMember)
             })
     });
 }

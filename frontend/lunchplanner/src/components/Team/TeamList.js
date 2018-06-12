@@ -1,21 +1,29 @@
 import React from "react"
 
-import {HOST} from "../../Config"
 import Team from "./Team";
-import List from "@material-ui/core/List";
+import {List, CircularProgress} from "@material-ui/core/";
+import {People, TagFaces} from "@material-ui/icons";
 import {withStyles} from "@material-ui/core/styles/index";
-import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
-import {setAuthenticationHeader} from "../authentication/Authentication";
+import {setAuthenticationHeader} from "../authentication/LoginFunctions";
 import {getTeams} from "./TeamFunctions";
+import {getHistory} from "../../utils/HistoryUtils";
 
 const styles = {
     root: {
+        //width: 1500,,
         height: '100%',
-        overflow: 'hidden',
+        overflowX: 'hidden',
+        overflowY: 'auto',
+       // position: 'absolute',
+        //display: 'flex',
     },
     list: {
         padding: 0,
+    },
+    progress:{
+        marginLeft: '50%',
+        marginTop: "50%",
     },
 };
 
@@ -33,6 +41,7 @@ class TeamList extends React.Component {
         this.state = {
             teams: [],
             search:null,
+            loading: true,
         }
     }
 
@@ -41,29 +50,58 @@ class TeamList extends React.Component {
             search: this.props.search,
         });
 
+        this.getTeams();
+    }
+
+    getTeams = () => {
         getTeams(this.props.search,
             (response) => {
                 this.setState({
                     teams: response.data,
+                    loading: false,
                 })
             });
+    };
+
+    componentWillReceiveProps(newProps) {
+        if(needReload) {
+            needReload = !needReload;
+            this.getTeams();
+        }
     }
 
     render() {
+        if(needReload) {
+            needReload = !needReload;
+            this.getTeams();
+        }
+        let loading = this.state.loading;
+
         const { classes } = this.props;
         let teams = this.state.teams;
         return (
             <div className={classes.root}>
-                <List className={classes.list}>
-                    {teams.map((listValue)=>{
-                        return <Team name={listValue.teamName}
-                                      id={listValue.teamId}
-                                     member={listValue.invitations}
-                        />;
-                    })}
-                </List>
-                <Link to="/team/create"><FloatingActionButton /></Link>
-            </div>
+                {loading ? <CircularProgress className={classes.progress} color="secondary"/>
+                    :
+                        <div >
+                            <List className={classes.list}>
+                                {teams.map((listValue)=>{
+                                    return <Team name={listValue.teamName}
+                                                 id={listValue.teamId}
+                                                 member={listValue.invitations}
+                                    />;
+                                })}
+                            </List>
+                            <FloatingActionButton
+                                actions={
+                                    [
+                                        {icon: <People />, text: 'Work team', onClick: () => getHistory().push("/app/team/create?withParent=true") },
+                                        {icon: <TagFaces />, text: 'Social group', onClick: () => getHistory().push("/app/team/create?withParent=false") }
+                                    ]
+                                }
+                            />
+                        </div>}
+                    </div>
 
         );
     }

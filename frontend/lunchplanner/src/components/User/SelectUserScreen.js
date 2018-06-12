@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {withStyles, Tab, Slide, Tabs, Typography} from '@material-ui/core';
+import {withStyles, Tab, Slide, Tabs, Typography, CircularProgress} from '@material-ui/core';
 import FloatingActionButton from "../FloatingActionButton";
 import {getHistory} from "../../utils/HistoryUtils";
 import Dialog from "../Dialog";
@@ -9,6 +9,7 @@ import SwipeableViews from 'react-swipeable-views';
 import TeamInvitationList from "../Team/TeamInvitationList";
 import {getUsers} from "./UserFunctions";
 import {getTeams} from "../Team/TeamFunctions";
+import {getUsername} from "../authentication/LoginFunctions";
 
 const styles = theme =>({
     root: {
@@ -20,6 +21,13 @@ const styles = theme =>({
     },
     flex: {
         flex: 1,
+    },
+    progress:{
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: "auto",
+        marginBottom: "auto",
+        display: "block",
     },
 });
 
@@ -65,6 +73,7 @@ class SelectUserScreen extends React.Component {
             value: 0,
             teams:[],
             selectedTeams: arrayTeams || [],
+            loading: true,
         };
     }
 
@@ -74,21 +83,32 @@ class SelectUserScreen extends React.Component {
     }
 
     updateUsers(search) {
+        this.setState({
+            loading: true,
+        });
         getUsers(search,
             (response) => {
+                let users = response.data;
+                users = users.filter(element => element.userName !== getUsername());
+
                 this.setState({
                     search: search,
-                    users: response.data,
+                    users: users,
+                    loading: false
                 })
             })
     }
 
     updateTeams(search) {
+        this.setState({
+            loading: true,
+        });
         getTeams(search,
             (response) => {
                 this.setState({
                     search: search,
                     teams: response.data,
+                    loading: false
                 })
             });
     }
@@ -138,6 +158,7 @@ class SelectUserScreen extends React.Component {
     render() {
         const { classes, theme} = this.props;
         let users = this.state.users;
+        let loading = this.state.loading;
 
         // Title for appbar
         let countSelected = this.state.selectedUsers.length + this.state.selectedTeams.length;
@@ -161,43 +182,50 @@ class SelectUserScreen extends React.Component {
         />);
 
         return (
-            <Dialog
-                zIndex={10001}
-                title={textTitle}
-                onSearch={this.searchChanged}
-            >
-                <Tabs
-                    value={this.state.value}
-                    onChange={this.handleChange}
-                    indicatorColor="secondary"
-                    textColor="secondary"
-                    centered
-                    fullWidth
-                >
-                    <Tab className={classes.tab} label="ALL" />
-                    <Tab className={classes.tab} label="PEOPLE" />
-                    <Tab className={classes.tab} label="TEAMS" />
-                </Tabs>
-                <SwipeableViews
-                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                    index={this.state.value}
-                    onChangeIndex={this.handleChangeIndex}
-                >
+            <div>
+                {loading ? <CircularProgress className={classes.progress} color="secondary"/>
+                :
+                    <Dialog
+                        zIndex={10001}
+                        title={textTitle}
+                        onSearch={this.searchChanged}
+                    >
+                        <Tabs
+                            value={this.state.value}
+                            onChange={this.handleChange}
+                            indicatorColor="secondary"
+                            textColor="secondary"
+                            centered
+                            fullWidth
+                        >
+                            <Tab className={classes.tab} label="ALL" />
+                            <Tab className={classes.tab} label="PEOPLE" />
+                            <Tab className={classes.tab} label="TEAMS" />
+                        </Tabs>
+                        <SwipeableViews
+                            axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                            index={this.state.value}
+                            onChangeIndex={this.handleChangeIndex}
+                        >
 
-                    <TabContainer dir={theme.direction}>
-                        {userlist}
-                        {teamlist}
-                    </TabContainer>
-                    <TabContainer dir={theme.direction}>
-                        {userlist}
-                    </TabContainer>
-                    <TabContainer dir={theme.direction}>
-                        {teamlist}
-                    </TabContainer>
-                </SwipeableViews>
+                            <TabContainer dir={theme.direction}>
+                                {userlist}
+                                {teamlist}
+                            </TabContainer>
+                            <TabContainer dir={theme.direction}>
+                                {userlist}
+                            </TabContainer>
+                            <TabContainer dir={theme.direction}>
+                                {teamlist}
+                            </TabContainer>
+                        </SwipeableViews>
 
-                <FloatingActionButton onClick={this.handleSend} icon="done"/>
-            </Dialog>
+                        <FloatingActionButton onClick={this.handleSend} icon="done"/>
+                    </Dialog>
+                }
+
+            </div>
+
         );
     }
 }

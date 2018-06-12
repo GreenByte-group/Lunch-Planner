@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from "prop-types";
 import Login from "./Login"
 import Register from "./Registration"
-import {Tabs,  Tab } from '@material-ui/core';
+import {Tabs,  Tab ,CircularProgress} from '@material-ui/core';
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
@@ -10,27 +10,9 @@ import { withStyles } from '@material-ui/core/styles';
 import axios from "axios";
 import {HOST, TOKEN, USERNAME} from "../../Config";
 
-export function setAuthenticationHeader() {
-    let token = localStorage.getItem(TOKEN);
-
-    axios.interceptors.request.use(function(config) {
-        if ( token != null ) {
-            config.headers.Authorization = token;
-        }
-
-        return config;
-    }, function(err) {
-        return Promise.reject(err);
-    });
-}
-
-export function getUsername() {
-    return localStorage.getItem(USERNAME) || "please login again";
-}
-
 function TabContainer({ children, dir }) {
     return (
-        <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
+        <Typography component="div" dir={dir} style={{ padding: 0, height: '100%' }}>
             {children}
         </Typography>
     );
@@ -43,8 +25,20 @@ TabContainer.propTypes = {
 
 const styles = theme => ({
     root: {
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
         backgroundColor: theme.palette.background.paper,
         //width: 500,
+    },
+    fullHeight: {
+        height: '100%',
+    },
+    swipeableViews: {
+        height: '100%',
+    },
+    tabContainer: {
+        height: '100%',
     },
 });
 
@@ -108,14 +102,15 @@ class Authentication extends React.Component {
                     </Tabs>
                 </AppBar>
                 <SwipeableViews
+                    className={classes.swipeableViews}
                     axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                     index={this.state.value}
                     onChangeIndex={this.handleChangeIndex}
                 >
-                    <TabContainer dir={theme.direction}>
-                        <Register/>
+                    <TabContainer className={classes.tabContainer} dir={theme.direction}>
+                        <Register className={classes.fullHeight}/>
                     </TabContainer>
-                    <TabContainer dir={theme.direction}>
+                    <TabContainer className={classes.tabContainer} dir={theme.direction}>
                         <Login/>
                     </TabContainer>
                 </SwipeableViews>

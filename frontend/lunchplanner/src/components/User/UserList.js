@@ -21,6 +21,7 @@ class UserList extends React.Component {
             selectable: props.selectable || false,
             onSelectionChanged: props.onSelectionChanged,
             othersInvited: props.othersInvited || false,
+            clickRemove: props.clickRemove,
         };
     }
 
@@ -38,6 +39,12 @@ class UserList extends React.Component {
             users = newProps.users;
             this.setState({
                 users: users,
+            });
+        }
+
+        if(newProps.clickRemove && newProps.clickRemove !== this.state.clickRemove) {
+            this.setState({
+                clickRemove: newProps.clickRemove,
             });
         }
     }
@@ -73,8 +80,10 @@ class UserList extends React.Component {
                 {users.map((listValue) => {
                     return <User selectable={this.state.selectable}
                                  selected={selectedUsers.includes(listValue.userName)}
+                                 invited={othersInvited}
                                  username={listValue.userName}
                                  onClick={this.clickHandler}
+                                 clickRemove={this.state.clickRemove}
                     />;
 
                 })}

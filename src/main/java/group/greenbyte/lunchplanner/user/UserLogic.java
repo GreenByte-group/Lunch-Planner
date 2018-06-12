@@ -9,23 +9,25 @@ import com.google.firebase.messaging.Message;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.JwtService;
-import group.greenbyte.lunchplanner.security.SessionManager;
-import group.greenbyte.lunchplanner.user.database.Notifications;
 import group.greenbyte.lunchplanner.user.database.User;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationDatabase;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
+import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
+import group.greenbyte.lunchplanner.user.database.notifications.OptionsJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Service
@@ -34,6 +36,11 @@ public class UserLogic {
     private final JwtService jwtService;
 
     private static final Pattern REGEX_MAIL = Pattern.compile("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
+
+    @Autowired
+    private HttpServletRequest request;
+    //private ServletContext context;
+
 
     // This variable will be set over the setter Method by java spring
     private UserDao userDao;
@@ -119,7 +126,6 @@ public class UserLogic {
         }
     }
 
-
     /**
      *
      * @param searchword String for searching the Database
@@ -133,8 +139,6 @@ public class UserLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
     }
-
-
 
     /**
      *
@@ -168,27 +172,36 @@ public class UserLogic {
         //ToDO send notfication to user
     }
 
+    public void saveNotification(String creator, String title, String description, String receiver, String linkToClick, String picturePath) throws HttpRequestException {
+        //save notification
+        try {
+            userDao.saveNotificationIntoDatabase(receiver,title,description,creator,linkToClick, picturePath);
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
     public void sendNotification(String fcmToken, String receiver, String title, String description, String linkToClick, String picturePath) throws FirebaseMessagingException,HttpRequestException {
         if(!fcmInitialized) {
             try {
                 initNotifications();
-                userDao.saveNotificationIntoDatabase(receiver,title,description,SessionManager.getUserName(),linkToClick, picturePath);
-
-            } catch (DatabaseException|IOException e) {
-                throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
+
+        System.out.println("FCM token null");
+        if(fcmToken == null)
+            return;
 
         // See documentation on defining a message payload.
         Message message = Message.builder()
                 .putData("title", title)
                 .putData("body", description)
-                .putData("click_action", linkToClick)
-                .putData("picture", picturePath)
+                .putData("tag", linkToClick)
+                .putData("icon", "https://greenbyte.group/assets/images/logo.png")
                 .setToken(fcmToken)
                 .build();
-
-
 
         // Send a message to the device corresponding to the provided
         // registration token.
@@ -219,6 +232,252 @@ public class UserLogic {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
 
+    }
+
+    /**
+     *
+     *
+     * @param username
+     * @param notificationId
+     * @param read
+     */
+    public void setNotificationRead(String username, int notificationId, boolean read) throws HttpRequestException {
+        try {
+            Notifications notification = userDao.getNotification(notificationId);
+            if(notification == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Notification with id " + notificationId + " not found");
+
+            if(!notification.getReceiverName().equals(username))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You don't have rights to access notification with id " + notificationId);
+
+            userDao.setNotificationRead(notificationId, read);
+        } catch (DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    /**
+     * Get notification options for user
+     *
+     * @param userName receiver of the notifiction options
+     * @return
+     * @throws HttpRequestException
+     */
+    public NotificationOptions getNotificationOptions(String userName) throws HttpRequestException {
+        if(userName == null || userName.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
+
+        if(userName.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
+
+        try {
+            return userDao.getNotificationOptions(userName);
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
+    }
+
+    /**
+     * Update notification options
+     *
+     * @param userName
+     * @param blockAll
+     * @param block_until
+     * @param blockedForWork
+     * @param start_working
+     * @param stop_working
+     * @param eventsBlocked
+     * @param teamsBlocked
+     * @param subscriptionsBlocked
+     * @throws HttpRequestException
+     */
+    public void updateNotificationOptions(String userName, Boolean blockAll,
+                                            Date block_until, Boolean blockedForWork, Date start_working,
+                                            Date stop_working, Boolean eventsBlocked, Boolean teamsBlocked,
+                                            Boolean subscriptionsBlocked) throws HttpRequestException {
+
+        if(userName == null || userName.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
+
+        if(userName.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
+
+
+
+        Map<String, Object> map = new HashMap<>();
+
+        if(blockAll!=null)
+            map.put("block_all",blockAll);
+
+        if(block_until!=null) {
+            map.put("block_until", block_until);
+        }
+
+        if(blockedForWork!=null)
+            map.put("blocked_for_work",blockedForWork);
+
+        if(start_working!=null) {
+            try {
+                int minutes = OptionsJson.getMinutesFromDate(start_working);
+                map.put("start_working", minutes);
+            } catch (NumberFormatException ignored) {}
+        }
+
+        if(stop_working!=null) {
+            try {
+                int minutes = OptionsJson.getMinutesFromDate(stop_working);
+                map.put("stop_working", minutes);
+            } catch (NumberFormatException ignored) {}
+        }
+
+        if(eventsBlocked!=null)
+            map.put("events_blocked",eventsBlocked);
+
+        if(teamsBlocked!=null)
+            map.put("teams_blocked",teamsBlocked);
+
+        if(subscriptionsBlocked!=null)
+            map.put("subscriptions_blocked",subscriptionsBlocked);
+
+        if(map.size() == 0)
+            return;
+
+        try {
+            userDao.updateNotificationOptions(userName,map);
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
+    }
+
+    // --------------------- USER PROFILE ---------------------
+    /**
+     * Update profile picture
+     *
+     * @param userName user that wants to update their picture
+     * @param imageFile path of the picture
+     * @throws HttpRequestException
+     */
+    public void uploadProfilePicture(String userName, MultipartFile imageFile) throws HttpRequestException {
+
+        if(userName == null || userName.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
+
+        if(userName.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
+
+        if(!imageFile.isEmpty()) {
+           try{
+
+               String contentType = imageFile.getContentType();
+               String type = contentType.split("/")[0];
+               if (!type.equalsIgnoreCase("image")) {
+                   throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "the uploaded file is not an image");
+               }
+
+               String relativePath = "/profilePictures/";
+
+               /*with servletContext
+               String absolutePath = context.getRealPath(relativePath);*/
+
+               //the path changes in a different context
+               String absolutePath = request.getServletContext().getRealPath(relativePath);
+
+               //create a new directory if it doesn't exist
+               if(!new File(absolutePath).exists()) {
+                   new File(absolutePath).mkdir();
+               }
+               String fileName = userName;
+               String path = absolutePath + File.separator + fileName;
+               String[] stringAfterPoint = imageFile.getOriginalFilename().split("\\.");
+               String fileExtension = "";
+               if(stringAfterPoint.length > 0)
+                    fileExtension = stringAfterPoint[stringAfterPoint.length - 1];
+               String pathForDb = relativePath + fileName + "." + fileExtension;
+               File destination = new File(path + "." + fileExtension);
+               imageFile.transferTo(destination);
+               userDao.savePicturePath(userName, pathForDb);
+
+
+           } catch(IOException | DatabaseException e){
+               throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+           }
+
+        } else {
+            //TODO geht das?
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "uploaded file is empty");
+        }
+    }
+
+    /**
+     * Get the relative picture path
+     *
+     * @param userName user
+     * @return absolute picture path
+     */
+    public String getPicturePath(String userName) throws HttpRequestException {
+        if(userName == null || userName.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
+
+        if(userName.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
+
+        try {
+            return userDao.getUser(userName).getProfilePictureUrl();
+//            String absolutePath = request.getServletContext().getRealPath(path);
+//            return absolutePath;
+        } catch (DatabaseException e) {
+            throw new HttpRequestException (HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    /**
+     * Update user password
+     *
+     * @param userName user that wants to update their password
+     * @param password
+     * @throws HttpRequestException
+     */
+    public void updateUserPassword(String userName, String password) throws HttpRequestException {
+        if(userName == null || userName.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
+
+        if(userName.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
+
+        if(password == null || password.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "password is empty");
+
+        try {
+            userDao.saveNewPassword(userName, SecurityHelper.hashPassword(password));
+        } catch(DatabaseException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
+    }
+
+    public void updateUserEmail(String userName, String mail) throws HttpRequestException {
+        if(userName == null || userName.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
+
+        if(userName.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
+
+        if(mail == null || mail.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "mail is empty");
+
+        if(mail.length() > User.MAX_MAIL_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "mail is too long");
+
+        if(!REGEX_MAIL.matcher(mail).matches())
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "mail is not valid");
+
+        try {
+            userDao.saveNewEmail(userName, mail);
+        } catch (DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
 
 
     }
@@ -242,4 +501,37 @@ public class UserLogic {
         this.userDao = userDao;
     }
 
+    // --------------------- SUBSCRIBE ----------------------
+
+    public  List<String> getSubscribedLocations(String subscriber) throws HttpRequestException{
+        if(subscriber == null || subscriber.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "subscriber name is empty");
+
+        if(subscriber.length() > User.MAX_USERNAME_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "subscriber name is too long");
+
+        try {
+            return userDao.getSubscribedLocations(subscriber);
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    public List<User> getSubscriber(String location) throws HttpRequestException{
+        if(location == null || location.length() == 0)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "location is empty");
+        try {
+            return userDao.getSubscriber(location);
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    public void subscribe(String subscriber, String location) throws HttpRequestException{
+        try {
+            userDao.subscribe(subscriber, location);
+        } catch (DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
 }

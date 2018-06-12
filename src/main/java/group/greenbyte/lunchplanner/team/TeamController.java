@@ -127,9 +127,9 @@ public class TeamController {
             int teamId;
 
             if(teamjson.getParent()!= null) {
-                teamId = teamlogic.createTeamWithParent(SessionManager.getUserName(), teamjson.getParent(), teamjson.getTeamName(), teamjson.getDescription());
+                teamId = teamlogic.createTeamWithParent(SessionManager.getUserName(), teamjson.getParent(), teamjson.getTeamName(), teamjson.getDescription(), teamjson.isVisible());
             }else{
-                teamId = teamlogic.createTeamWithoutParent(SessionManager.getUserName(),teamjson.getTeamName(), teamjson.getDescription());
+                teamId = teamlogic.createTeamWithoutParent(SessionManager.getUserName(),teamjson.getTeamName(), teamjson.getDescription(), teamjson.isVisible());
             }
 
             response.setStatus(HttpServletResponse.SC_CREATED);
@@ -161,6 +161,28 @@ public class TeamController {
             return e.getErrorMessage();
         }
 
+        return "";
+    }
+
+    /**
+     * Remove a team member from a team
+     *
+     * @param userToRemove user that is going to be removed
+     * @param teamId id of the team
+     * @param response response channel
+     * @return
+     */
+    @RequestMapping(value = "/{userToRemove}/team/{teamId}/remove", method = RequestMethod.DELETE,
+            produces = MediaType.TEXT_PLAIN_VALUE )
+    @ResponseBody
+    public String removeTeamMember(@PathVariable("userToRemove") String userToRemove, @PathVariable ("teamId") int teamId, HttpServletResponse response) {
+        try {
+            teamlogic.removeTeamMember(SessionManager.getUserName(), userToRemove, teamId);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
         return "";
     }
 

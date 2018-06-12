@@ -1,10 +1,12 @@
 package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import group.greenbyte.lunchplanner.user.database.Notifications;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
+import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 import group.greenbyte.lunchplanner.user.database.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserDao {
 
@@ -71,4 +73,69 @@ public interface UserDao {
      */
     void  saveNotificationIntoDatabase(String receiver, String title, String description
                                         ,String builder, String linkToClick, String picturePath) throws DatabaseException;
+
+
+    Notifications getNotification(int notificationId) throws DatabaseException;
+
+    void setNotificationRead(int notificationId, boolean read) throws DatabaseException;
+
+    /**
+     * Gets notification options of a user
+     * @param userName
+     * @return
+     * @throws DatabaseException
+     */
+    List<String> getSubscribedLocations(String userName) throws DatabaseException;
+
+    /**
+     *
+     * @param location
+     * @return
+     * @throws DatabaseException
+     */
+    List<User> getSubscriber(String location) throws DatabaseException;
+
+    /**
+     *
+     * @param userName
+     * @param location
+     * @throws DatabaseException
+     */
+    void subscribe(String userName, String location) throws DatabaseException;
+    NotificationOptions getNotificationOptions(String userName) throws DatabaseException;
+
+    /**
+     * Update notification options for user
+     * @param userName user that updates his options
+     * @param map contains column names and option values
+     * @throws DatabaseException
+     */
+    void updateNotificationOptions(String userName,Map<String,Object> map) throws DatabaseException;
+
+    /**
+     * Put the hashed password into the database
+     *
+     * @param userName user that updates their password
+     * @param hashedPassword new hashed password
+     * @throws DatabaseException
+     */
+    void saveNewPassword(String userName, String hashedPassword) throws DatabaseException;
+
+    /**
+     * Put the new e-mail into the database
+     *
+     * @param userName
+     * @param eMail
+     * @throws DatabaseException
+     */
+    void saveNewEmail(String userName, String eMail) throws DatabaseException;
+
+    /**
+     * Put the picture path into database
+     *
+     * @param userName
+     * @param picturePath relative path to the picture
+     * @throws DatabaseException
+     */
+    void savePicturePath(String userName, String picturePath) throws DatabaseException;
 }

@@ -331,7 +331,6 @@ public class EventController {
     @ResponseBody
     public ResponseEntity getService(@PathVariable("eventId") int eventId) {
         try{
-            //TODO permission
             List<BringService> serviceList = eventLogic.getService(SessionManager.getUserName(), eventId);
 
             return ResponseEntity

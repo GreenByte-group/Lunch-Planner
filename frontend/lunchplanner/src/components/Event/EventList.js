@@ -6,8 +6,11 @@ import List from "@material-ui/core/List";
 import {withStyles} from "@material-ui/core/styles/index";
 import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
-import {getUsername} from "../authentication/Authentication";
+import {getUsername} from "../authentication/LoginFunctions";
 import {getEvents} from "./EventFunctions";
+import {needReload} from "./EventContainer";
+import moment from "moment";
+import {getHistory} from "../../utils/HistoryUtils";
 
 const styles = {
     root: {
@@ -17,14 +20,14 @@ const styles = {
     },
     list: {
         padding: 0,
+        paddingBottom: '75px',
+    },
+    day:{
+        marginLeft: 16,
+        marginTop: 10,
+        fontSize: 16,
     },
 };
-
-export let needReload = false;
-
-export function eventListNeedReload() {
-    needReload = true;
-}
 
 const lightBackground = 'transparent';
 const darkerBackground = '#03030305';
@@ -34,46 +37,35 @@ class EventList extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            events: [],
-            search:null,
+            events: props.events,
+            sort: props.sort,
         }
-    }
-
-    componentDidMount() {
-        this.setState({
-            search: this.props.search,
-        });
-
-        this.loadEvents(this.props.search);
     }
 
     componentWillReceiveProps(newProps) {
-        if(needReload) {
-            needReload = !needReload;
-            this.loadEvents();
+        if(newProps.events !== this.state.events){
+            this.setState({
+                events: newProps.events,
+            });
         }
     }
 
-    loadEvents(search) {
-        if(search === null || search === undefined)
-            search = this.state.search;
 
-        getEvents(search, (response) => {
-            this.setState({
-                events: response.data,
-            })
-        });
-    }
 
     render() {
         const { classes } = this.props;
-        let events = this.state.events;
+        let events = this.state.events || [];
         let showLightBackground = true;
+        let locations = [];
+        events.sort(function(a,b) {return (a.startDate > b.startDate) ? 1 : ((b.startDate > a.startDate) ? -1 : 0);});
 
-        if(needReload) {
-            needReload = !needReload;
-            this.loadEvents();
+        for(let i = 0; i < events.length; i++){
+            locations.push(events[i].location);
         }
+
+        let isNotToday = true;
+        let isNotTomorrow = true;
+        let isNotThisWeek = true;
 
         return (
             <div className={classes.root}>
@@ -97,25 +89,48 @@ class EventList extends React.Component {
                                 }
                             }
                         });
-
-                        return <Event name={listValue.eventName}
-                                      key={'Event' + listValue.eventId}
-                                      id={listValue.eventId}
-                                      description={listValue.eventDescription}
-                                      location={listValue.location}
-                                      date={listValue.startDate}
-                                      background={background}
-                                      accepted={accepted}
-                                      invited={invited}
-                                      people={listValue.invitations}
-                                      location={listValue.location}
-                                      token={listValue.shareToken}
+                        const event = <Event name={listValue.eventName}
+                                             key={'Event' + listValue.eventId}
+                                             id={listValue.eventId}
+                                             description={listValue.eventDescription}
+                                             location={listValue.location}
+                                             date={listValue.startDate}
+                                             background={background}
+                                             accepted={accepted}
+                                             invited={invited}
+                                             people={listValue.invitations}
+                                             token={listValue.shareToken}
                         />;
+
+                        return moment(listValue.startDate).isSame(moment(), 'day') && isNotToday
+                            ?
+                            <div>
+                                <p className={classes.day}>Today</p>
+                                {event}
+                                {isNotToday = false}
+                            </div>:
+                            moment(listValue.startDate).isSame(moment(new Date()).add(1,'days'),'day') && isNotTomorrow
+                                ?
+                                <div>
+                                    <p className={classes.day}>Tomorrow</p>
+                                    {event}
+                                    {isNotTomorrow = false}
+                                </div> :
+                                (moment(listValue.startDate).isSame(moment(new Date()).add(2,'days'),'day') ||
+                                moment(listValue.startDate).isSame(moment(new Date()).add(3,'days'),'day') ||
+                                moment(listValue.startDate).isSame(moment(new Date()).add(4,'days'),'day') ||
+                                moment(listValue.startDate).isSame(moment(new Date()).add(5,'days'),'day') ||
+                                moment(listValue.startDate).isSame(moment(new Date()).add(7,'days'),'day') ||
+                                moment(listValue.startDate).isSame(moment(new Date()).add(7,'days'),'day')) && isNotThisWeek
+                                    ?
+                                    <div>
+                                        <p className={classes.day}>This Week</p>
+                                        {event}
+                                        {isNotThisWeek = false}
+                                    </div> : <div>{event}</div>
                     })}
                 </List>
-                <Link to={{pathname:'/event/create'}}>
-                    <FloatingActionButton />
-                </Link>
+                <FloatingActionButton onClick={() => getHistory().push('/app/event/create')} />
             </div>
 
         );

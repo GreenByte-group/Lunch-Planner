@@ -2,12 +2,18 @@ import React from 'react';
 import {withStyles} from "@material-ui/core/styles/index";
 import SwitchSettingsItem from "../settings/SwitchSettingsItem";
 import {List} from "@material-ui/core";
+import {getNotificationOptions, sendOptions} from "./NotificationFunctions";
+import TimeSettingsItem from "../settings/TimeSettingsItem";
 
 const styles = {
     list: {
         height: '100%',
         padding: '0px',
         margin: '0px',
+        width: '100%',
+        maxWidth: '1024px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
     },
     hr: {
         margin: '0px 0',
@@ -21,18 +27,43 @@ class NotificationSettings extends React.Component {
 
         this.state = {
             blockAll: false,
-            newEvent: true,
-            eventInvitation: true,
-            social: true,
-            teamInvitation: true,
-        }
+            events: true,
+            teams: true,
+            subscriptions: true,
+            blockedForWork: false,
+            startWorking: undefined,
+            stopWorking: undefined,
+            blockUntil: undefined,
+        };
+
+        this.getSettings();
+    }
+
+    getSettings() {
+        getNotificationOptions((response) => {
+            if(response.status === 200) {
+                this.setState({
+                    blockAll: response.data.blockAll,
+                    events: !response.data.eventsBlocked,
+                    teams: !response.data.teamsBlocked,
+                    subscriptions: !response.data.subscriptionsBlocked,
+                    blockedForWork: !response.data.blockedForWork,
+                    startWorking: (response.data.start_working) ?new Date(response.data.start_working) : undefined,
+                    stopWorking: (response.data.stop_working) ? new Date(response.data.stop_working) : undefined,
+                    blockUntil: (response.data.blockUntil) ?new Date(response.data.blockUntil) : undefined,
+                })
+            }
+        })
     }
 
     switchClicked = (id, value) => {
-        //TODO send to server
         this.setState({
             [id]: value,
         });
+
+        console.log('send options changed');
+
+        sendOptions({[id]: value});
     };
 
     render() {
@@ -50,37 +81,55 @@ class NotificationSettings extends React.Component {
                 />
                 <hr className={classes.hr} />
                 <SwitchSettingsItem
-                    id='newEvent'
-                    title='New events'
-                    description="New Events created by followed."
+                    id='events'
+                    title='Events'
+                    description="Show Notifications for events."
                     enabled={!this.state.blockAll}
-                    value={this.state.newEvent}
+                    value={this.state.events}
                     onClick={this.switchClicked}
                 />
                 <SwitchSettingsItem
-                    id='eventInvitation'
-                    title='Event invitations'
-                    description="Invitations for events."
+                    id='teams'
+                    title='Teams'
+                    description="Show Notifications for teams."
                     enabled={!this.state.blockAll}
-                    value={this.state.eventInvitation}
+                    value={this.state.teams}
                     onClick={this.switchClicked}
                 />
                 <SwitchSettingsItem
-                    id='teamInvitation'
-                    title='Team invitations'
-                    description="Invitations for teams."
+                    id='subscriptions'
+                    title='Subscriptions'
+                    description="Get Notifications from subscribed locations"
                     enabled={!this.state.blockAll}
-                    value={this.state.teamInvitation}
+                    value={this.state.subscriptions}
                     onClick={this.switchClicked}
                 />
+                <hr className={classes.hr} />
                 <SwitchSettingsItem
-                    id='social'
-                    title='Social Activity'
-                    description={"What your \"folowing\" are doing."}
+                    id='blockedForWork'
+                    title='Enable working time'
+                    description="Only receive notifications in your working time"
                     enabled={!this.state.blockAll}
-                    value={this.state.social}
+                    value={this.state.blockedForWork}
                     onClick={this.switchClicked}
                 />
+                <TimeSettingsItem
+                    id='startWorking'
+                    title='Begin of working time'
+                    // description="Only receive notifications in your working time"
+                    enabled={this.state.blockedForWork}
+                    value={this.state.startWorking}
+                    onChange={this.switchClicked}
+                />
+                <TimeSettingsItem
+                    id='stopWorking'
+                    title='End of working time'
+                    // description="Only receive notifications in your working time"
+                    enabled={this.state.blockedForWork}
+                    value={this.state.stopWorking}
+                    onChange={this.switchClicked}
+                />
+                <hr className={classes.hr} />
             </List>
         )
     }

@@ -4,15 +4,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.EventInvitation;
 import group.greenbyte.lunchplanner.team.database.TeamMember;
+import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
+import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-public class User {
+public class User implements Serializable {
 
     static final public int MAX_USERNAME_LENGTH = 50;
     static final public int MAX_MAIL_LENGTH = 50;
@@ -51,6 +54,15 @@ public class User {
 
     @OneToMany (mappedBy = "receiver")
     private List<Notifications> notification = new ArrayList<>();
+
+
+    @OneToMany (mappedBy = "subscriber", cascade = CascadeType.ALL)
+    private List<Subscribe> locations = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade =  CascadeType.ALL,
+            mappedBy = "user")
+    private NotificationOptions notificationOptions;
 
     public String getUserName() {
         return userName;
@@ -121,5 +133,16 @@ public class User {
 
     public void setNotification(List<Notifications> notification) {
         this.notification = notification;
+    }
+
+
+    //public List<String> getLocations(){return locations; }
+
+    public NotificationOptions getNotificationOptions() {
+        return notificationOptions;
+    }
+
+    public void setNotificationOptions(NotificationOptions notificationOptions) {
+        this.notificationOptions = notificationOptions;
     }
 }

@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import {withStyles} from "@material-ui/core/styles/index";
 import React from 'react';
-import {Slide} from '@material-ui/core';
+import {Slide,CircularProgress} from '@material-ui/core';
 import {Link} from "react-router-dom";
 import {Today, Schedule, MyLocation, Add} from "@material-ui/icons/";
 import ListIcon from "@material-ui/icons/Assignment"
@@ -11,9 +11,9 @@ import CommentsIcon from '@material-ui/icons/Message';
 import UserList from "../User/UserList";
 import {Button} from "@material-ui/core";
 import ServiceList from "./ServiceList/ServiceList";
-import {getUsername} from "../authentication/Authentication";
+import {getUsername} from "../authentication/LoginFunctions";
 import InvitationButton from "./InvitationButton";
-import {eventListNeedReload} from "./EventList";
+import {eventListNeedReload} from "./EventContainer";
 import {getHistory} from "../../utils/HistoryUtils";
 import TextFieldEditing from "../editing/TextFieldEditing";
 import {DatePicker, TimePicker} from "material-ui-old";
@@ -25,6 +25,7 @@ import {
     replyToEvent
 } from "./EventFunctions";
 import ShareIcon from "@material-ui/icons/Share"
+import {loadComments} from "./Comments/CommentFunctions";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -120,10 +121,9 @@ function Transition(props) {
             fontSize: '16px',
             fontFamily: 'Work Sans',
             color: "white",
-            position: "fixed",
             bottom: 0,
             width: "100%",
-            height: '56px',
+            minHeight: '56px',
             zIndex: '10000',
         },
         buttonInvitation: {
@@ -152,7 +152,6 @@ function Transition(props) {
         },
         overButton: {
             height: '100%',
-            marginBottom: '56px',
             overflowY: 'auto',
             display: 'flex',
             flexDirection: 'column',
@@ -161,6 +160,12 @@ function Transition(props) {
             float: 'left',
             marginRight: '5px',
             width: '17px',
+        },
+        image: {
+            minHeight: '152px',
+            width: '100%',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
         },
 
         // TIME AND DATE
@@ -234,6 +239,8 @@ class EventScreen extends React.Component {
             accepted: false,
             isShared : false,
             token: null,
+            comments: [],
+            loading: true,
         };
     }
 
@@ -242,62 +249,74 @@ class EventScreen extends React.Component {
 
         token = this.props.match.params.securityToken;
 
-        getEventExtern(token, (response) => {
-            this.setState({
-                eventId: response.data.eventId,
-                name: response.data.eventName,
-                location: response.data.location,
-                date: new Date(response.data.startDate),
-                description: response.data.eventDescription,
-                people: response.data.invitations,
-                token:response.data.shareToken,
-                isShared: true,
-            });
-        });
-
-        eventId = this.props.match.params.eventId;
-        if(this.props.location.query) {
-            if (this.props.location.query.eventName) {
-                eventName = String(this.props.location.query.eventName);
-            }
-            if (this.props.location.query.description) {
-                description = String(this.props.location.query.description);
-            }
-            if (this.props.location.query.date) {
-                date = this.props.location.query.date;
-            }
-            if (this.props.location.query.people) {
-                people = this.props.location.query.people;
-            }
-            if (this.props.location.query.accepted) {
-                accepted = Boolean(this.props.location.query.accepted);
-            }
-            if (this.props.location.query.location) {
-                location = String(this.props.location.query.location);
-            }
-            if (this.props.location.query.token) {
-                token = String(this.props.location.query.token);
-            }
-
-            this.setState({
-                eventId: eventId,
-                name: eventName,
-                description: description,
-                date: new Date(date),
-                people: people,
-                accepted: accepted,
-                location: location,
-                token: token,
-            });
-            if(this.state.token !== null){
+        if(token) {
+            getEventExtern(token, (response) => {
                 this.setState({
+                    eventId: response.data.eventId,
+                    name: response.data.eventName,
+                    location: response.data.location,
+                    date: new Date(response.data.startDate),
+                    description: response.data.eventDescription,
+                    people: response.data.invitations,
+                    token: response.data.shareToken,
                     isShared: true,
+                    loading: false,
                 });
-            }
+            });
         } else {
-            this.loadEvent(eventId);
+
+            eventId = this.props.match.params.eventId;
+            if (this.props.location.query) {
+                if (this.props.location.query.eventName) {
+                    eventName = String(this.props.location.query.eventName);
+                }
+                if (this.props.location.query.description) {
+                    description = String(this.props.location.query.description);
+                }
+                if (this.props.location.query.date) {
+                    date = this.props.location.query.date;
+                }
+                if (this.props.location.query.people) {
+                    people = this.props.location.query.people;
+                }
+                if (this.props.location.query.accepted) {
+                    accepted = Boolean(this.props.location.query.accepted);
+                }
+                if (this.props.location.query.location) {
+                    location = String(this.props.location.query.location);
+                }
+                if (this.props.location.query.token) {
+                    token = String(this.props.location.query.token);
+                }
+
+                this.setState({
+                    eventId: eventId,
+                    name: eventName,
+                    description: description,
+                    date: new Date(date),
+                    people: people,
+                    accepted: accepted,
+                    location: location,
+                    token: token,
+                    loading: false,
+                });
+                if (this.state.token !== null) {
+                    this.setState({
+                        isShared: true,
+                    });
+                }
+            } else {
+                this.loadEvent(eventId);
+            }
         }
 
+        loadComments(eventId, (response) => {
+            if(response.status === 200) {
+                this.setState({
+                    comments: response.data,
+                })
+            }
+        })
     }
 
     parseUrl = () => {
@@ -342,7 +361,6 @@ class EventScreen extends React.Component {
             name: event.target.value,
         });
 
-        //TODO error func
         changeEventTitle(this.state.eventId, event.target.value, this.reloadEventsOnSuccess);
     };
 
@@ -372,6 +390,9 @@ class EventScreen extends React.Component {
     };
 
     loadEvent = (eventId) => {
+        this.setState({
+            loading: true,
+        });
         if(!eventId)
             eventId = this.state.eventId;
 
@@ -384,8 +405,9 @@ class EventScreen extends React.Component {
                 people: response.data.invitations,
                 date: new Date(response.data.startDate),
                 token: response.data.shareToken,
+                loading: false,
             })
-        })
+        });
         if(this.state.token !== null){
             this.setState({
                 isShared: true,
@@ -395,7 +417,7 @@ class EventScreen extends React.Component {
 
     handleDecline = () => {
         this.sendAnswer('reject', () => {
-            getHistory().push("/event/");
+            getHistory().push("/app/event/");
         });
     };
 
@@ -437,6 +459,7 @@ class EventScreen extends React.Component {
         let people = this.state.people;
         let eventId = this.state.eventId;
         let isShared = this.state.isShared;
+        let loading =  this.state.loading;
 
         if(people.length !== 0) {
             this.parseUrl();
@@ -492,15 +515,19 @@ class EventScreen extends React.Component {
             }
         });
 
-        //TODO anzahl kommentare
+        let countComments = this.state.comments.length;
+
         return (
             <div>
+                {loading ?
+                    <CircularProgress className={classes.progress} color="secondary"/>
+                    :
                 <Dialog
                     title={barTitle}
-                    closeUrl="/event"
-                    imageUrl="https://greenbyte.group/assets/images/logo.png"
+                    closeUrl="/app/event"
                 >
                     <div className={classes.overButton}>
+                        <div className={classes.image} style={{backgroundImage:"url(" + "https://greenbyte.group/assets/images/logo.png" + ")"}} />
                         <div className={classes.header}>
                             <div className={classes.headerText}>
                                 <p className={classes.fontSmall}>Created by {admin}</p>
@@ -538,20 +565,16 @@ class EventScreen extends React.Component {
                                         : <p className={classes.fontSmall}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
                                 }
                             </div>
-                            {
-                                (invited)
-                                    ? ''
-                                    :   <Link to={{pathname:`/event/${eventId}/comments`}}>
-                                            <div className={classes.headerComment}>
-                                            <CommentsIcon className={classes.commentIcon} />
-                                                <p className={classes.commentText}>Comments</p>
-                                            </div>
-                                        </Link>
-                            }
+                            <Link to={{pathname:`/app/event/${eventId}/comments`}}>
+                                <div className={classes.headerComment}>
+                                <CommentsIcon className={classes.commentIcon} />
+                                    <p className={classes.commentText}>Comments ({countComments})</p>
+                                </div>
+                            </Link>
                             {(iAmAdmin || isShared)
                                 ?
-                                <Link to={{pathname:`/event/${eventId}/share`, query: {
-                                        source: "/event/" + this.state.eventId}}}>
+                                <Link to={{pathname:`/app/event/${eventId}/share`, query: {
+                                        source: "/app/event/" + this.state.eventId}}}>
                                     <div className={classes.headerShare}>
                                         <ShareIcon className={classes.shareIcon}/>
                                         <p className={classes.shareText}>Share</p>
@@ -565,8 +588,8 @@ class EventScreen extends React.Component {
                             <p className={classes.invitaionsHeader}>Invited People ({people.length})</p>
                             {
                                 (iAmAdmin)
-                                    ? <Link to={{pathname: "/event/create/invite",  query: {
-                                                    source: "/event/" + this.state.eventId,
+                                    ? <Link to={{pathname: `/app/event/${eventId}/invite`,  query: {
+                                                    source: "/app/event/" + this.state.eventId,
                                                     invitedUsers: people.map((value) => value.userName).join(','),
                                                 }}}>
                                         <div className={classes.addNewPeopleRoot}>
@@ -580,17 +603,17 @@ class EventScreen extends React.Component {
                         </div>
 
                         {
-                            (invited)
-                                ? ''
-                                : <div>
+                            (accepted)
+                                ? <div>
                                     <ServiceList eventId={eventId} />
-                                    <Link className={classes.serviceListLink} to={{pathname:`/event/${eventId}/service`}}>
+                                    <Link className={classes.serviceListLink} to={{pathname:`/app/event/${eventId}/service`}}>
                                         <div className={classes.serviceList}>
                                             <ListIcon className={classes.serviceListIcon} />
                                             <p>Add a task</p>
                                         </div>
                                     </Link>
                                 </div>
+                                : ''
                         }
                     </div>
                     {
@@ -600,7 +623,7 @@ class EventScreen extends React.Component {
                                 {buttonText}
                             </Button>
                     }
-                </Dialog>
+                </Dialog>}
             </div>
         );
     }

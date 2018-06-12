@@ -1,4 +1,6 @@
-package group.greenbyte.lunchplanner.user.database;
+package group.greenbyte.lunchplanner.user.database.notifications;
+
+import group.greenbyte.lunchplanner.user.database.User;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -20,6 +22,7 @@ public class Notifications {
     private String builder;
     private String link;
     private String picture;
+    private boolean isRead;
 
     @Transient
     private String receiverName;
@@ -93,5 +96,17 @@ public class Notifications {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setIsRead(boolean read) {
+        this.isRead = read;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
     }
 }

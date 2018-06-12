@@ -2,6 +2,8 @@ import React from 'react';
 import {withStyles} from "@material-ui/core/styles/index";
 import {List, ListSubheader} from "@material-ui/core";
 import NotificationListItem from "./NotificationListItem";
+import {getNotifications, setNotificationRead} from "./NotificationFunctions";
+import {getUsername} from "../authentication/LoginFunctions";
 
 const styles = {
     list: {
@@ -14,13 +16,27 @@ const styles = {
         padding: 0,
     },
     subheader: {
-        backgroundColor: 'white',
         padding: '8px 16px',
         lineHeight: '24px',
         fontWeight: 500,
         fontSize: '16px',
         color: 'rgba(46,46,46,0.87)',
-        borderTop: '1px solid #D2D2D2;'
+        boxShadow: '0px 2px 5px -4px black',
+        backgroundColor: '#f8f8f8',
+    },
+    clearAll: {
+        float: 'right',
+        "&:hover": {
+            cursor: 'pointer',
+            textDecoration: 'underline',
+        }
+    },
+    maxWidth: {
+        display: 'block',
+        width: '100%',
+        maxWidth: '1024px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
     },
 };
 
@@ -37,36 +53,41 @@ class NotificationList extends React.Component {
     }
 
     componentDidMount() {
-        let notifications =  [
-            {title: 'title', description: 'description', icon: 'https://greenbyte.group/assets/images/logo.png', read: false},
-            {title: 'title', description: 'description', icon: 'https://greenbyte.group/assets/images/logo.png', read: false},
-            {title: 'title', description: 'description', icon: 'https://greenbyte.group/assets/images/logo.png', read: true},
-            {title: 'title', description: 'description', icon: 'https://greenbyte.group/assets/images/logo.png', read: true},
-            {title: 'title', description: 'description', icon: 'https://greenbyte.group/assets/images/logo.png', read: true},
-            {title: 'title', description: 'description', icon: 'https://greenbyte.group/assets/images/logo.png', read: true},
-            {title: 'title', description: 'description', icon: 'https://greenbyte.group/assets/images/logo.png', read: true},
-            {title: 'title', description: 'description', icon: 'https://greenbyte.group/assets/images/logo.png', read: true},
-            {title: 'title', description: 'description', icon: 'https://greenbyte.group/assets/images/logo.png', read: true}
-        ];
+        this.loadNotifications();
+    }
 
-        let notificationsRead = [];
-        let notificationsUnread = [];
+    loadNotifications() {
+        getNotifications((response) => {
+            if(response.status === 200) {
+                let notifications = response.data;
+                let notificationsRead = [];
+                let notificationsUnread = [];
+                notifications.forEach((value) => {
+                    if (value.read)
+                        notificationsRead.push(value);
+                    else
+                        notificationsUnread.push(value);
+                });
 
-        notifications.forEach((item) => {
-            if(item.read) {
-                notificationsRead.push(item);
-            } else {
-                notificationsUnread.push(item);
+                this.setState({
+                    notifications: notifications,
+                    notificationsRead: notificationsRead,
+                    notificationsUnread: notificationsUnread,
+                })
             }
         });
-
-        //TODO Abruf der notifications
-        this.setState({
-            notifications: notifications,
-            notificationsRead: notificationsRead,
-            notificationsUnread: notificationsUnread,
-        });
     }
+
+    clearAll = () => {
+        this.state.notificationsUnread.forEach((value) => {
+            setNotificationRead(value.notificationId);
+        });
+
+        this.setState({
+            notificationsUnread: [],
+            notificationsRead: this.state.notificationsRead.concat(this.state.notificationsUnread),
+        })
+    };
 
     render() {
         const {classes} = this.props;
@@ -79,38 +100,46 @@ class NotificationList extends React.Component {
                     <ul className={classes.ul}>
                         {
                             (notificationsUnread)
-                                ? <ListSubheader className={classes.subheader}>Uncleared ({notificationsUnread.length})</ListSubheader>
+                                ? <ListSubheader className={classes.subheader}><span className={classes.maxWidth}> Uncleared ({notificationsUnread.length}) <span onClick={this.clearAll} className={classes.clearAll}>clear all</span></span></ListSubheader>
                                 : ''
                         }
+                        <div className={classes.maxWidth}>
                         {
                             notificationsUnread.map((listValue) => {
                                 return <NotificationListItem
-                                    title={listValue.title}
-                                    description={listValue.description}
-                                    icon={listValue.icon}
+                                    title={listValue.titel}
+                                    description={listValue.message}
+                                    icon={listValue.picture}
                                     read={listValue.read}
+                                    clickUrl={listValue.link}
+                                    id={listValue.notificationId}
                                 />
                             })
                         }
+                        </div>
                     </ul>
                 </li>
                 <li key='section-cleared'>
                     <ul className={classes.ul}>
                         {
                             (notificationsRead)
-                                ? <ListSubheader className={classes.subheader}>Cleared</ListSubheader>
+                                ? <ListSubheader className={classes.subheader}><span className={classes.maxWidth}>Cleared</span></ListSubheader>
                                 : ''
                         }
+                        <div className={classes.maxWidth}>
                         {
                             notificationsRead.map((listValue) => {
                                 return <NotificationListItem
-                                    title={listValue.title}
-                                    description={listValue.description}
-                                    icon={listValue.icon}
+                                    title={listValue.titel}
+                                    description={listValue.message}
+                                    icon={listValue.picture}
                                     read={listValue.read}
+                                    clickUrl={listValue.link}
+                                    id={listValue.notificationId}
                                 />
                             })
                         }
+                        </div>
                     </ul>
                 </li>
 

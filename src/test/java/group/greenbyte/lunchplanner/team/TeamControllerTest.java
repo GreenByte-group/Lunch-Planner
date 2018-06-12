@@ -387,4 +387,56 @@ public class TeamControllerTest {
                 MockMvcRequestBuilders.get("/team/search/" + searchWord))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
+
+    // ------------------ REMOVE MEMBER -------------------------
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test1RemoveTeamMember() throws Exception {
+        String userToRemove = createUserIfNotExists(userLogic, createString(1));
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/team/" + userToRemove + "/team/" + teamId + "/remove"))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test2RemoveTeamMemberMaxUserName() throws Exception {
+
+        String userToRemove = createUserIfNotExists(userLogic, createString(50));
+
+        MvcResult result = mockMvc.perform(
+                MockMvcRequestBuilders.delete("/team/" + userToRemove + "/team/" + teamId + "/remove"))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE))
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+    }
+
+    @Test
+    @WithMockUser(username = userName)
+    public void test3RemoveTeamMemberUserNameTooLong() throws Exception {
+
+        String userToRemove = createUserIfNotExists(userLogic, createString(51));
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/team/" + userToRemove + "/team/" + teamId + "/remove"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE));
+
+    }
+
+    @Test(expected = AssertionError.class)
+    @WithMockUser(username = userName)
+    public void test4RemoveTeamMemberEmptyUserName() throws Exception {
+        String userToRemove = "";
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/team/" + userToRemove + "/team/" + teamId + "/remove"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN_VALUE));
+
+    }
 }

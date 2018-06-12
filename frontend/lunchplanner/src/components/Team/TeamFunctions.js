@@ -26,9 +26,19 @@ export function getTeam(teamId, responseFunc) {
 }
 
 export function createTeam(name, description, member, visible, responseFunc, errorFunc) {
-    //TODO send description
+    createTeamWithParent(name,description, null, member, visible, responseFunc, errorFunc);
+}
+
+export function createTeamWithParent(name, description, parent, member, visible, responseFunc, errorFunc) {
     let url =  HOST + '/team';
-    axios.post(url, {teamName: name, description: description, visible: visible})
+    let data;
+    if(parent !== null) {
+        data = {teamName: name, description: description, visible: visible, parent: parent};
+    } else {
+        data = {teamName: name, description: description, visible: visible}
+    }
+
+    axios.post(url, data)
         .then((response) => {
             if(response.status === 201) {
                 inviteMember(response.data, member);
@@ -49,6 +59,12 @@ export function inviteMember(teamId, member) {
                 })
         });
     }
+}
+
+export function removeUserFromTeam(teamdId, username, responseFunc) {
+    let url = HOST + '/team/' + username + "/team/" + teamdId + "/remove";
+    axios.delete(url)
+        .then(responseFunc);
 }
 
 export function replyToTeam(teamId, answer, responseFunc) {

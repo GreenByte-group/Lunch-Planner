@@ -1,7 +1,7 @@
-import firebase from "firebase";
+import * as firebase from "firebase";
 import axios from 'axios';
 import {HOST} from "../../Config";
-import {setAuthenticationHeader} from "../authentication/Authentication";
+import {setAuthenticationHeader} from "../authentication/LoginFunctions";
 
 const config = {
     apiKey: "AIzaSyDyuySWwkXgZDrLnO0gX9bmGpR7XAHnngE",
@@ -77,6 +77,7 @@ function getToken(response, error) {
         }
     }).catch((err) => {
         token = false;
+        console.log(err);
         error('Could not retrieve token from fcm');
     });
 }
