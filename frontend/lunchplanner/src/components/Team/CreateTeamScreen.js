@@ -6,12 +6,10 @@ import Dialog from '../Dialog';
 import { Slide, TextField, MenuItem, Select } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import PeopleIcon from '@material-ui/icons/People'
-
-import {Link} from "react-router-dom";
-
 import {getHistory} from "../../utils/HistoryUtils";
+import {Link} from "react-router-dom";
 import {FormControlLabel, FormHelperText, InputAdornment, Switch, InputLabel, FormControl} from "@material-ui/core";
-import {eventListNeedReload} from "../Event/EventList";
+import {eventListNeedReload} from "../Event/EventContainer";
 import {createTeam, createTeamWithParent, getTeams} from "./TeamFunctions";
 import {setAuthenticationHeader} from "../authentication/LoginFunctions";
 import {teamListNeedReload} from "./TeamList";
@@ -131,6 +129,16 @@ class CreateTeamScreen extends React.Component {
             this.setState({
                 invitedTeamMember: params.get('teamMember'),
             });
+        }
+
+        let withParent = params.get('withParent') == 'true';
+        console.log('with parent: ', withParent);
+        console.log('with parent state: ', this.state.withParent);
+        if(withParent === true && this.state.withParent !== true) {
+            console.log('set with parent true');
+            this.setState({
+                withParent: true,
+            })
         }
     };
 

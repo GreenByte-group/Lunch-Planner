@@ -1,6 +1,6 @@
 import React from "react"
 import moment from "moment"
-import {Card, CardContent, ListItem, withStyles} from "@material-ui/core";
+import {Card, CardContent, ListItem, withStyles, Avatar, List} from "@material-ui/core";
 import {Schedule, Today} from "@material-ui/icons";
 import AcceptedButton from "./AcceptedButton";
 import InvitedButton from "./InvitedButton";
@@ -8,15 +8,16 @@ import {Link} from "react-router-dom";
 
 const styles = {
     card: {
-        width: '100%',
+        width: '122px',
         '&:hover': {
             textDecoration: 'none',
         },
+        height: '88px',
     },
     link: {
-      '&:hover': {
-          textDecoration: 'none',
-      }
+        '&:hover': {
+            textDecoration: 'none',
+        }
     },
     listItem: {
         padding: '7px 16px',
@@ -29,25 +30,31 @@ const styles = {
         fontSize: '16px',
         lineHeight: '24px',
         marginBottom: '0px',
+        display: 'table',
+        marginLeft: 'auto',
+        marginRight: 'auto',
     },
-    date: {
-        marginLeft: '16px',
+    text:{
+        marginBottom: '0px',
+        display: 'table',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        color: "black",
+    },
+    textSelected: {
+        marginBottom: '0px',
+        display: 'table',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        color: '#75A045',
+    },
+    goingPeople:{
         fontFamily: "Work Sans",
         fontSize: '11px',
-        lineHeight: '20px',
-        marginBottom: '0px',
-        width: 'auto',
-        float: 'left',
-        color: 'black',
-    },
-    time : {
-        fontFamily: "Work Sans",
-        fontSize: '14px',
-        lineHeight: '20px',
-        marginBottom: '0px',
-        marginTop: '5px',
-        width: 'auto',
-        float: 'left',
+        lineHeight: '11px',
+        display: 'table',
+        marginLeft: 'auto',
+        marginRight: 'auto',
     },
     users: {
         fontFamily: "Work Sans",
@@ -55,40 +62,29 @@ const styles = {
         lineHeight: '20px',
         marginBottom: '0px',
         color: '#A4A4A4',
-        float: 'right',
+        float: 'left',
     },
     icons: {
         width: '13px',
         height: 'auto',
     },
-    text: {
-        width: 'auto',
-        color: 'black',
-        marginLeft: '72px',
-    },
-    textSelected: {
-        width: 'auto',
-        color: '#75A045',
-        marginLeft: '72px',
-    },
-    imageDiv: {
-        width: '48px',
-        height: '48px',
-        borderRadius: '50%',
-        border: '1px black solid',
-        float: 'left',
-    },
     cardContent: {
-        width: '100%',
-        float: 'none',
+        display: 'table',
+        marginLeft: 'auto',
+        marginRight: 'auto',
     },
-    footer: {
-        width: '100%',
-        float: 'none',
-    }
+    memberAvatar:{
+        marginRight: 5,
+        width: 16,
+        height: 16,
+    },
+    row: {
+        display: 'flex',
+        justifyContent: 'center',
+    },
 };
 
-class Event extends React.Component {
+class EventLocation extends React.Component {
 
     constructor(props) {
         super();
@@ -197,7 +193,6 @@ class Event extends React.Component {
     render() {
         const {classes} = this.props;
 
-        const background = this.state.background;
         let accepted= this.state.accepted;
         let invited = this.state.invited;
 
@@ -210,67 +205,60 @@ class Event extends React.Component {
         let invitations = this.state.invitations;
         let location = this.state.location;
         let token = this.state.token;
-
         people = people.split(',');
         people = people.map((value) => value.trim());
-
         let classesText = classes.text;
         if(accepted)
             classesText = classes.textSelected;
 
-        let eventName = name;
-        if(name !== location)
-            eventName += " @ " + location;
+        let memberCounter = 0;
 
         return (
-            <div>
-            <Link className={classes.link} to={{pathname:`/app/event/${this.state.id}`, query:{
-                    eventName: name,
-                    description: description,
-                    date: date,
-                    people: invitations,
-                    accepted: accepted,
-                    location:location,
-                    token: token,
-                }}}>
+            <div >
+                <Link className={classes.link} to={{pathname:`/event/${this.state.id}`, query:{
+                        eventName: name,
+                        description: description,
+                        date: date,
+                        people: invitations,
+                        accepted: accepted,
+                        location:location,
+                        token: token,
+                    }}}>
 
-                    <ListItem style={{backgroundColor: background}} button className={classes.listItem}>
-
+                    <div className={classes.listItem}>
                         <Card className={classes.card}>
                             <CardContent className={classes.cardContent}>
-                                <div className={classes.imageDiv}>
-
-                                </div>
                                 <div className={classesText}>
-                                    <p className={classes.title}>{eventName}</p>
-                                    <p className={classes.time}>
-                                        <Schedule viewBox="0 0 22 22" className={classes.icons}/> {time}
-                                    </p>
-                                    <div className={classes.users}>
-                                        {
-                                            people.join(', ')
-                                        }
-                                    </div>
+                                    <p className={classes.title}> {time}</p>
+                                    <p className={classes.goingPeople}> {
+                                        (people[0] !== "") ?
+                                            people.length : 0
+                                    } going</p>
+                                    <List className={classes.users}>
+                                        <div className={classes.row}>
+                                            {people.map((person)=>{
+                                                memberCounter++;
+                                                return (
+                                                    (people.length !== 0 && person !== "" && memberCounter <= 4)
+                                                        ?
+                                                        <Avatar className={classes.memberAvatar}>
+                                                            <span className={classes.memberAvatarTextLast}>
+                                                                {(memberCounter > 3) ? "+" + String(+ people.length-3) : person.charAt(0)}
+                                                                </span>
+                                                        </Avatar>
+                                                        : "");
+                                            })}
+                                        </div>
+                                    </List>
                                 </div>
                             </CardContent>
-                            <hr style={{marginBottom: '11px'}} />
-                            <div className={classes.footer}>
-                                <p className={classes.date}>
-                                    <Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay}
-                                </p>
-                                {(accepted
-                                        ? <AcceptedButton text="Accepted" />
-                                        : (invited) ? <InvitedButton text="Invited" /> : ''
-                                )}
-                            </div>
                         </Card>
 
-                    </ListItem>
+                    </div>
                 </Link>
             </div>
-
         );
     }
 }
 
-export default withStyles(styles)(Event);
+export default withStyles(styles)(EventLocation);

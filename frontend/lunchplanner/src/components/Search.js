@@ -20,7 +20,6 @@ const styles =  theme => ({
     },
     icon:{
         float: "right",
-        marginRight: 20,
     },
     textField: {
         marginBottom: 30,
@@ -86,7 +85,6 @@ class Search extends React.Component {
     render() {
 
         const { classes } = this.props;
-        let teams = this.state.teams;
         return (
 
             <Drawer
