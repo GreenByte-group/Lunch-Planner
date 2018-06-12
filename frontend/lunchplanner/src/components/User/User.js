@@ -45,7 +45,7 @@ const styles = {
     },
     profilePicture: {
         float: 'left',
-        border: '1px black solid',
+        // border: '1px black solid',
         borderRadius: '50%',
         height: '32px',
         width: '32px',

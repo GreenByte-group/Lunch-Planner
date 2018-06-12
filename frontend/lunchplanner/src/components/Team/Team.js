@@ -39,7 +39,7 @@ const styles = {
     memberAvatar: {
         height: '24px',
         width: '24px',
-        border: '1px solid white',
+        // border: '1px solid white',
     },
     memberPicture: {
         height: '100%',
