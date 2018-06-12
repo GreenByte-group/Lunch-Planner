@@ -424,9 +424,9 @@ public class UserLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
 
         try {
-            String path = userDao.getUser(userName).getProfilePictureUrl();
-            String absolutePath = request.getServletContext().getRealPath(path);
-            return absolutePath;
+            return userDao.getUser(userName).getProfilePictureUrl();
+//            String absolutePath = request.getServletContext().getRealPath(path);
+//            return absolutePath;
         } catch (DatabaseException e) {
             throw new HttpRequestException (HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }

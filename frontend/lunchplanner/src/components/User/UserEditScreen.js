@@ -1,8 +1,10 @@
 import React from 'react';
 import {withStyles} from "@material-ui/core/styles/index";
 import {TextField, FormControl, InputLabel, Input, Button} from "@material-ui/core";
+import {Edit} from "@material-ui/icons";
 import {getUsername} from "../authentication/LoginFunctions";
-import {updateEmail, updatePassword, updateProfilePicture} from "./UserFunctions";
+import {getProfilePicturePath, getUser, updateEmail, updatePassword, updateProfilePicture} from "./UserFunctions";
+import {HOST} from "../../Config";
 
 const styles = theme => ({
     root: {
@@ -29,17 +31,53 @@ const styles = theme => ({
         border: '1px solid black',
         borderRadius: '50%',
         float: 'left',
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        overflow: 'hidden',
+    },
+    profilePictureImg: {
+        objectFit: 'cover',
+        width: '100%',
+        height: '100%',
+    },
+    editIconWrapper: {
+        width: '200px',
+        height: '200px',
+        borderRadius: '50%',
+        position: 'absolute',
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        transition: 'background-color 0.5s',
+        "&:hover": {
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            cursor: 'pointer',
+        }
+    },
+    editIcon: {
+        width: '30px',
+        height: '30px',
+        position: 'absolute',
+        marginLeft: '85px',
+        marginTop: '85px',
+        color: 'white',
     },
     username: {
         marginLeft: '25px',
         fontSize: '20px',
         fontWeight: 600,
     },
+    input: {
+        display: 'none !important',
+    },
+    inputLabel: {
+        height: '200px',
+        width: '200px',
+        margin: 0,
+        padding: 0,
+    },
     edit: {
         marginTop: '20px',
         display: 'flex',
         flexDirection: 'column',
-
     },
     editArea: {
         display: 'flex',
@@ -52,6 +90,7 @@ const styles = theme => ({
     textFieldMail: {
         marginLeft: '5px',
         width: '100%',
+        maxWidth: '300px',
     },
     button: {
         boxShadow: '0px 1px 5px 0px rgba(0, 0, 0, 0.2),0px 2px 2px 0px rgba(0, 0, 0, 0.14),0px 3px 1px -2px rgba(0, 0, 0, 0.12)',
@@ -79,7 +118,20 @@ class UserEditScreen extends React.Component {
             emailError: null,
             passwordError: null,
             pathImage: null,
-        }
+            pathProfilePicture: "",
+        };
+
+        this.getUser();
+    }
+
+    getUser = () => {
+        getUser(getUsername(), (response) => {
+            console.log('data', response.data);
+            this.setState({
+                pathProfilePicture: response.data.profilePictureUrl,
+                email: response.data.eMail,
+            })
+        })
     }
 
     onChange = (value) => {
@@ -137,14 +189,29 @@ class UserEditScreen extends React.Component {
     render() {
         const { classes } = this.props;
 
+        let url;
+        if(this.state.pathImage) {
+            console.log('Profile picture', this.state.pathImage);
+            url = URL.createObjectURL(this.state.pathImage)
+        } else {
+            url = HOST + this.state.pathProfilePicture;
+        }
+
         return (
             <div className={classes.root}>
-                <input type="file" accept="image/*" id="file" onChange={this.onProfile} />
-                <div className={classes.pictureName}>
+                <div  className={classes.pictureName}>
                     <div
+                        ref="image-pane"
                         className={classes.profilePicture}
                     >
+                        <label htmlFor="file" className={classes.inputLabel}>
+                            <div className={classes.editIconWrapper} >
+                                <Edit className={classes.editIcon} />
+                            </div>
 
+                            <img src={url} className={classes.profilePictureImg} />
+                        </label>
+                        <input className={classes.input} type="file" accept="image/*" id="file" onChange={this.onProfile} />
                     </div>
                     <div className={classes.username}>
                         {getUsername()}
