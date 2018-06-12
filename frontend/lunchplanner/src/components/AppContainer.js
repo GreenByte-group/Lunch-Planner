@@ -328,13 +328,17 @@ class AppContainer extends React.Component {
                                 {title}
                             </Typography>
                             <div color="inherit">
-                                <IconButton  className={classes.search}>
-                                    <SearchIcon onClick={this.showSearch}/>
-                                    {this.state.openSearch ?
+                                {
+                                    this.state.openSearch === false ?
+                                            <IconButton  className={classes.search}>
+                                                <SearchIcon onClick={this.showSearch}/>
+                                            </IconButton> : ""
+                                }
+                                {this.state.openSearch ?
                                         <Search open={this.state.openSearch} handleCancel={this.cancelSearch} handleSearch={this.handleSearch} search={this.state.search}/> :
                                         ""
                                     }
-                                </IconButton>
+
                             </div>
                         </Toolbar>
                     </AppBar>
