@@ -24,13 +24,15 @@ export class GoogleSuggest extends React.Component {
     }
 
     handleSelectSuggest = (geocodedPrediction, originalPrediction) => {
-        console.log("hier"+geocodedPrediction.formatted_address) // eslint-disable-line
         this.setState({search: "", value: geocodedPrediction.formatted_address})
         this.state.onChange(geocodedPrediction);
     }
 
     render() {
-        const {search, value} = this.state
+        const {search, value} = this.state;
+
+        console.log('google succest render');
+
         return (
             <GoogleMapLoader
                 style={{width: '200px'}}
@@ -50,7 +52,7 @@ export class GoogleSuggest extends React.Component {
                             }}
                             // Optional props
                             onSelectSuggest={this.handleSelectSuggest}
-                            textNoResults="No restult found" // null or "" if you want to disable the no results item
+                            textNoResults="No result found" // null or "" if you want to disable the no results item
                             customRender={prediction => (
                                 <div className="customWrapper">
                                     {prediction

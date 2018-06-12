@@ -308,7 +308,7 @@ class CreateEventScreen extends React.Component {
 
                             <Link className={classes.mapIcon}
                                   float="right"
-                                  to={{pathname: "/event/create/map", query: {
+                                  to={{pathname: "/app/event/create/map", query: {
                                       location: this.state.location,}}}
                                   location={ this.state.location}
                             >
