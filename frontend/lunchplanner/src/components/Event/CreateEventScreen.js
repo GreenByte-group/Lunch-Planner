@@ -45,15 +45,16 @@ const styles = {
         float: "left"
     },
     searchboxField: {
-      marginTop:30,
+        marginTop:30,
         width:"55%",
         float: "left"
 
     },
     mapIcon:{
-        marginLeft:'15px',
-        height:'10px',
-        width:'50%'
+        margin:'0 15px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
     },
     button:{
         fontSize: '16px',
@@ -74,11 +75,6 @@ const styles = {
     pickerWithIcon: {
         width: '50%',
         float: 'left',
-    },
-    mapIcon: {
-        width: '60% !important',
-        overflow: 'hidden',
-        float: 'right'
     },
     visibilityIcon:{
         color:'#D3D3D3',
@@ -265,8 +261,6 @@ class CreateEventScreen extends React.Component {
         this.setState({
             location: location,
         });
-        console.log("Location: ", location);
-        console.info("längengrad: "+location.l)
     }
 
     render() {
@@ -290,25 +284,42 @@ class CreateEventScreen extends React.Component {
                             : ""
                     )}
                     {/*<form noValidate autoComplete="on" >*/}
-                       <FormGroup row>
+                       <FormGroup row
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            flexWrap: 'nowrap',
+                        }}
+                       >
 
-                           <GoogleSuggest
-                               className={classes.searchboxField}
-                               id="location"
-                               label="Location"
-                               value={this.state.location}
-                               placeholder="Add an Location ..."
-                               float="left"
-                               onChange={this.handleLocationChange}
-                           />
+                            <div
+                                style={{
+                                    width: 'calc(100% - 150px)',
+                                    float: 'left',
 
-                        <Link className={classes.mapIcon}
-                              float="right"
-                              to={{pathname: "/event/create/map", query: {
-                                  location: this.state.location,}}}
-                              location={ this.state.location}
-                        >   <MapIcon disabled={false} className={classes.mapIcon} />
-                        </Link>
+                                }}
+                            >
+                               <GoogleSuggest
+                                   className={classes.searchboxField}
+                                   id="location"
+                                   label="Location"
+                                   value={this.state.location}
+                                   placeholder="Add an Location ..."
+                                   float="left"
+                                   onChange={this.handleLocationChange}
+                               />
+                           </div>
+
+                            <Link className={classes.mapIcon}
+                                  float="right"
+                                  to={{pathname: "/event/create/map", query: {
+                                      location: this.state.location,}}}
+                                  location={ this.state.location}
+                            >
+                                <MapIcon disabled={false} className={classes.mapIcon} />
+                                <span>View on Map</span>
+                            </Link>
                        </FormGroup>
                     {/*</form>*/}
                     <div>

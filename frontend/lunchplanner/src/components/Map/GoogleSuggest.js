@@ -4,6 +4,9 @@ import GooglePlacesSuggest from "react-google-places-suggest"
 
 const MY_API_KEY = "AIzaSyCOYsTeZ29UyBEHqYG39GXJIN1-rp1KayU";
 
+const styles = {
+
+}
 
 export class GoogleSuggest extends React.Component {
 
@@ -30,6 +33,7 @@ export class GoogleSuggest extends React.Component {
         const {search, value} = this.state
         return (
             <GoogleMapLoader
+                style={{width: '200px'}}
                 params={{
                     key: MY_API_KEY,
                     libraries: "places,geocode",
@@ -37,6 +41,7 @@ export class GoogleSuggest extends React.Component {
                 render={googleMaps =>
                     googleMaps && (
                         <GooglePlacesSuggest
+                            style={{width: '200px'}}
                             googleMaps={googleMaps}
                             autocompletionRequest={{
                                 input: search,
@@ -45,12 +50,12 @@ export class GoogleSuggest extends React.Component {
                             }}
                             // Optional props
                             onSelectSuggest={this.handleSelectSuggest}
-                            textNoResults="My custom no results text" // null or "" if you want to disable the no results item
+                            textNoResults="No restult found" // null or "" if you want to disable the no results item
                             customRender={prediction => (
                                 <div className="customWrapper">
                                     {prediction
                                         ? prediction.description
-                                        : "My custom no results text"}
+                                        : "No result found"}
                                 </div>
                             )}
                         >
@@ -59,7 +64,7 @@ export class GoogleSuggest extends React.Component {
                                 type="text"
                                 value={value}
                                 label="Location"
-                                style={{marginTop: 30, marginBottom:30, marginLeft: 20, width: "50%"}}
+                                style={{marginTop: 30, marginBottom:30, marginLeft: 20, width: "100%", maxWidth: "400px"}}
                                 placeholder="Search a location"
                                 onChange={this.handleInputChange}
                             />

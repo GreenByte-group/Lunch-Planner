@@ -1,16 +1,13 @@
 import React from "react"
 import { compose, withProps, lifecycle } from "recompose"
-import { withScriptjs, withGoogleMap, GoogleMap, Marker, Searchbox, FusionTablesLayer, Geocoder, Places} from "react-google-maps"
+import { withScriptjs, withGoogleMap, GoogleMap, Marker} from "react-google-maps"
 import Dialog from '../Dialog';
-import GoogleSuggest from '../Map/GoogleSuggest'
-
-
 
 const MyMapComponent = compose(
     withProps({
         googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyCOYsTeZ29UyBEHqYG39GXJIN1-rp1KayU",
         loadingElement: <div style={{ height: `80%` }} />,
-        containerElement: <div style={{ height: `600px` }} />,
+        containerElement: <div style={{ height: `100%` }} />,
         mapElement: <div style={{ height: `100%` }} />,
     }),
     withScriptjs,
@@ -18,105 +15,70 @@ const MyMapComponent = compose(
 )((props) =>
     <div>
         <GoogleMap
-            defaultZoom={1}
-            defaultCenter={{ lat: 40.7127753, lng: -74.0059728 }}
+            defaultZoom={17}
+            defaultCenter={{ lat: parseFloat(props.lat), lng: parseFloat(props.lng) }}
         >
-            {/*{{lat: parseFloat(props.location.location.lat), lng: parseFloat(props.location.location.lng)}}*/}
-            <Marker getCursor={this.cursorChecken}
-                    defaultPosition = {{lat: parseFloat(props.location.location.lat), lng: parseFloat(props.location.location.lng)}}/>
-            {/*{props.isMarkerShown && <Marker clickable={false} setPosition={{lat: parseFloat(props.location.location.lat), lng: parseFloat(props.location.location.lng)}}  onClick={props.onMarkerClick} />}*/}
+            {
+                (props.isMarkerShown)
+                    ? <Marker
+                        clickable={false}
+                        position={{lat: parseFloat(props.lat), lng: parseFloat(props.lng)}}
+                        onClick={props.onMarkerClick}
+                    />
+                    : ''
+            }
+
         </GoogleMap>
-        {console.log(props.location.location.lat)}
     </div>
 )
 
 export class NewMap extends React.Component {
 
-    cursorChecken = () => {
-        console.log("KSOIJ")
-    }
-    state = {
-        isMarkerShown: false,
-        open: true,
-        lat: -34.397,
-        lng: 150.644,
-        locationId: 0,
-        open: true,
-        name:"",
-        description: "",
-        place:{
-            placeId: null,
-            location:""
-        }
-    }
-
     constructor(props) {
         super();
-        // console.log(props.location.query.location.geometry)
 
-        let kooridnaten = props.location.query.location.geometry.location.lat+"";
-        console.log(kooridnaten)
-        this.state = {
-            isMarkerShown:false,
-            open:true,
-            locationId:props.location.query.location.place_id,
-            name:props.location.query.location.formatted_address,
-            description:props.location.query.location.types[0]+
-                        props.location.query.location.types[1],
-            place: {
-                placeId:  props.location.query.location.place_id,
-                location:  props.location.query,
-                // lat: props.location.query.location.geometry.location.lat,
-                // lng: props.location.query.location.geometry.location.lng
+        if(props.location.query && props.location.query.location && props.location.query.location.geometry) {
+            let location = props.location.query.location;
 
+            console.log('lat: ', location.geometry.location.lat());
+            console.log('lat: ', location.geometry.location.lng());
+
+            this.state = {
+                isMarkerShown: true,
+                open: true,
+                lat: location.geometry.location.lat(),
+                lng: location.geometry.location.lng(),
+            };
+        } else {
+            this.state = {
+                isMarkerShown: false,
+                open: true,
+                lat: 49.4874592,
+                lng: 8.466039499999965,
             }
         }
-        console.log("description: "+this.state.description)
-        console.log("LocationId: "+this.state.locationId)
-        console.log("name: "+this.state.name)
-        console.log("place: "+this.state.place)
-        console.log("lat: "+this.state.place.lat)
-
-
-    }
-
-
-    componentDidMount() {
-        this.delayedShowMarker()
-        console.log(this.state.place.location.location.geometry.location)
-        var myLatlng = {lat: this.state.place.lat,
-                        lng: this.state.place.lng};
-
-
-
-
-
-    }
-
-    delayedShowMarker = () => {
-        setTimeout(() => {
-            this.setState({ isMarkerShown: true })
-        }, 1)
     }
 
     handleMarkerClick = () => {
-        this.setState({ isMarkerShown: false })
-        this.delayedShowMarker()
-    }
+        console.log('Marker click');
+    };
 
-    getCoordinates = () => {
-        let lng = this.state.place.lng
-        console.log(lng)
-    }
     render() {
-        console.log(this.state.place.location.location.geometry.location)
+        let lat = this.state.lat || 49.4874592;
+        let lng = this.state.lng || 8.466039499999965;
+        let showMarker = this.state.isMarkerShown && this.state.lat && this.state.lng;
+
+        console.log('render newmap');
+
         return (
-            <Dialog>
+            <Dialog
+
+            >
                 <MyMapComponent
-                    isMarkerShown={this.state.isMarkerShown}
+                    isMarkerShown={showMarker}
                     onMarkerClick={this.handleMarkerClick}
-                    location_id={this.state.locationId}
-                    location={this.state.place.location.location.geometry}
+                    lat={lat}
+                    lng={lng}
                 />
             </Dialog>
         )
