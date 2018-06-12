@@ -95,6 +95,7 @@ class CreateTeamScreen extends React.Component {
             withParent: params.get('withParent') == 'true',
             parentTeam: null,
             teams: [],
+            loading: true,
         };
 
         this.getTeams();
@@ -102,12 +103,11 @@ class CreateTeamScreen extends React.Component {
 
     getTeams = () => {
         getTeams("", (response) => {
-            console.log('response: ', response);
-
             this.setState({
                 teams: response.data,
-            })
-        })
+                loading: false,
+            });
+        });
     };
 
     parseUrl = () => {
@@ -151,8 +151,14 @@ class CreateTeamScreen extends React.Component {
                 if(response.status === 201) {
                     teamListNeedReload();
                     getHistory().push('/app/team');
+                    this.setState({
+                        loading: false
+                    });
                 } else {
-                    this.setState({error: response.response.data});
+                    this.setState({
+                        error: response.response.data,
+                        loading: false
+                    });
                 }
             },
             (error) => {
