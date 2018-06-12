@@ -360,6 +360,7 @@ public class UserDaoMySql implements UserDao {
         parameters.put(USER_NAME, userName);
         parameters.put(USER_MAIL, mail);
         parameters.put(USER_PASSWORD, password);
+        parameters.put(USER_PICTURE, "/profilePictures/default.jpg");
 
         try {
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
