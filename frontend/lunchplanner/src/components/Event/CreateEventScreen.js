@@ -143,6 +143,7 @@ function Transition(props) {
 }
 
 
+
 class CreateEventScreen extends React.Component {
 
     constructor(props) {
@@ -243,6 +244,14 @@ class CreateEventScreen extends React.Component {
     handleTime = (event, date) => {
         this.setState({ date: date });
     }
+    ischDesMehr = (invited) => {
+        if(this.state.invitedUsers.length> 40){
+            return " more than 3 people invited"
+        }else{
+            return invited;
+        }
+
+    };
 
     handleVisibility = name => event =>{
         this.setState({ [name]: event.target.checked });
@@ -264,7 +273,7 @@ class CreateEventScreen extends React.Component {
         this.parseUrl();
         const { classes } = this.props;
         const error = this.state.error;
-        let invited = this.state.invitedUsers + "," + this.state.invitedTeams;
+        let invited =this.state.invitedUsers + "," + this.state.invitedTeams;
         let buttonEnabled = false;
         if(this.state.location)
             buttonEnabled = true;
@@ -342,7 +351,8 @@ class CreateEventScreen extends React.Component {
                                         id="invitation"
                                         label="Participants"
                                         placeholder ="Invite People"
-                                        value={invited}
+                                        value={this.ischDesMehr(invited)}
+                                        // onChange={this.ischDesMehr}
                                         fullWidth
                                         InputProps={{
                                             startAdornment: <InputAdornment position="start"><PeopleIcon/></InputAdornment>,
@@ -352,6 +362,7 @@ class CreateEventScreen extends React.Component {
                                         }}
                                     />
                                 </Link>
+
 
                                 <FormControlLabel
                                     control={

@@ -19,20 +19,11 @@ const MyMapComponent = compose(
     <div>
         <GoogleMap
             defaultZoom={1}
-
             defaultCenter={{ lat: 40.7127753, lng: -74.0059728 }}
         >
-
-            {/*<FusionTablesLayer*/}
-                {/*url="http://googlemaps.github.io/js-v2-samples/ggeoxml/cta.kml"*/}
-                {/*options={{*/}
-                    {/*query: {*/}
-                        {/*select: `Geocodable address`,*/}
-                        {/*from: `1mZ53Z70NsChnBMm-qEYmSDOvLXgrreLTkQUvvg`*/}
-                    {/*}*/}
-                {/*}}*/}
-            {/*/>*/}
-            <Marker position ={{lat: parseFloat(props.location.location.lat), lng: parseFloat(props.location.location.lng)}}/>
+            {/*{{lat: parseFloat(props.location.location.lat), lng: parseFloat(props.location.location.lng)}}*/}
+            <Marker getCursor={this.cursorChecken}
+                    defaultPosition = {{lat: parseFloat(props.location.location.lat), lng: parseFloat(props.location.location.lng)}}/>
             {/*{props.isMarkerShown && <Marker clickable={false} setPosition={{lat: parseFloat(props.location.location.lat), lng: parseFloat(props.location.location.lng)}}  onClick={props.onMarkerClick} />}*/}
         </GoogleMap>
         {console.log(props.location.location.lat)}
@@ -41,6 +32,9 @@ const MyMapComponent = compose(
 
 export class NewMap extends React.Component {
 
+    cursorChecken = () => {
+        console.log("KSOIJ")
+    }
     state = {
         isMarkerShown: false,
         open: true,
@@ -60,15 +54,17 @@ export class NewMap extends React.Component {
         super();
         // console.log(props.location.query.location.geometry)
 
+        let kooridnaten = props.location.query.location.geometry.location.lat+"";
+        console.log(kooridnaten)
         this.state = {
             isMarkerShown:false,
             open:true,
-            // locationId:props.location.query.location.place_id,
-            // name:props.location.query.location.formatted_address,
-            // description:props.location.query.location.types[0]+
-            //             props.location.query.location.types[1],
+            locationId:props.location.query.location.place_id,
+            name:props.location.query.location.formatted_address,
+            description:props.location.query.location.types[0]+
+                        props.location.query.location.types[1],
             place: {
-                // placeId:  props.location.query.location.place_id,
+                placeId:  props.location.query.location.place_id,
                 location:  props.location.query,
                 // lat: props.location.query.location.geometry.location.lat,
                 // lng: props.location.query.location.geometry.location.lng

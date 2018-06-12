@@ -75,5 +75,4 @@ class AcceptedButton extends React.Component {
         )
     }
 }
-
 export default withStyles(styles)(AcceptedButton);
