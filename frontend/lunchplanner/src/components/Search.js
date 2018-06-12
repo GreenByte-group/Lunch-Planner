@@ -5,18 +5,16 @@ import SearchIcon from '@material-ui/icons/Search';
 const styles =  theme => ({
     icon:{
         float: "right",
-        marginRight: 24,
         color: "white"
     },
     textField: {
         width: '90%',
         color: "white",
-        marginLeft: 5,
     },
-    row:{
-        float: 'left',
-        display: 'inline-flex',
-        justifyContent: 'center',
+    root:{
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'row',
     }
 });
 class Search extends React.Component {
@@ -70,14 +68,14 @@ class Search extends React.Component {
         const { classes } = this.props;
         let open = this.state.open;
         return (
-            <div className={classes.row}>
+            <div className={classes.root}>
                 {open ? <TextField
                     id="Search"
                     defaultValue={this.state.search}
                     className={classes.textField}
                     onChange={this.handleChange('search')}
                     margin="normal"
-                    /> : ""}
+                    /> : <p>{this.state.search}</p>}
                 <IconButton>
                     <SearchIcon className={classes.icon} onClick={this.searchForEvents}/>
                 </IconButton>
