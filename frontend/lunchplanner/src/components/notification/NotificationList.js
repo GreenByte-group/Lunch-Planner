@@ -30,7 +30,14 @@ const styles = {
             cursor: 'pointer',
             textDecoration: 'underline',
         }
-    }
+    },
+    maxWidth: {
+        display: 'block',
+        width: '100%',
+        maxWidth: '1024px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+    },
 };
 
 class NotificationList extends React.Component {
@@ -93,9 +100,10 @@ class NotificationList extends React.Component {
                     <ul className={classes.ul}>
                         {
                             (notificationsUnread)
-                                ? <ListSubheader className={classes.subheader}>Uncleared ({notificationsUnread.length}) <span onClick={this.clearAll} className={classes.clearAll}>clear all</span></ListSubheader>
+                                ? <ListSubheader className={classes.subheader}><span className={classes.maxWidth}> Uncleared ({notificationsUnread.length}) <span onClick={this.clearAll} className={classes.clearAll}>clear all</span></span></ListSubheader>
                                 : ''
                         }
+                        <div className={classes.maxWidth}>
                         {
                             notificationsUnread.map((listValue) => {
                                 return <NotificationListItem
@@ -108,15 +116,17 @@ class NotificationList extends React.Component {
                                 />
                             })
                         }
+                        </div>
                     </ul>
                 </li>
                 <li key='section-cleared'>
                     <ul className={classes.ul}>
                         {
                             (notificationsRead)
-                                ? <ListSubheader className={classes.subheader}>Cleared</ListSubheader>
+                                ? <ListSubheader className={classes.subheader}><span className={classes.maxWidth}>Cleared</span></ListSubheader>
                                 : ''
                         }
+                        <div className={classes.maxWidth}>
                         {
                             notificationsRead.map((listValue) => {
                                 return <NotificationListItem
@@ -129,6 +139,7 @@ class NotificationList extends React.Component {
                                 />
                             })
                         }
+                        </div>
                     </ul>
                 </li>
 

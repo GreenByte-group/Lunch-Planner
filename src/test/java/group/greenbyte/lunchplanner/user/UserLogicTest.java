@@ -6,15 +6,17 @@ import group.greenbyte.lunchplanner.user.database.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static group.greenbyte.lunchplanner.Utils.createString;
 import static group.greenbyte.lunchplanner.user.Utils.createUserIfNotExists;
@@ -246,12 +248,16 @@ public class UserLogicTest {
                 false, null, null, null, null, null);
     }
 
-    @Test (expected = HttpRequestException.class)
-    public void test5UpdateNotificationOptionsBlockUntilInThePast() throws Exception {
-        Date until = new Date(System.currentTimeMillis() - 10000);
+    // ------------- UPDATE NOTIFICATION OPTIONS ------------------
+
+    @Test
+    public void test1UploadPicture() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("image", "image.jpg", "image/jpg",
+                "<<jpg data>>".getBytes());
+
         String userName = createUserIfNotExists(userLogic, createString(50));
-        userLogic.updateNotificationOptions(userName,false, until,
-                false, null, null, null, null, null);
+        MultipartFile img = file;
+        userLogic.uploadProfilePicture(userName, img);
 
     }
 }
