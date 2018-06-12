@@ -13,10 +13,32 @@ import LoginIcon from '@material-ui/icons/ExitToApp';
 const styles = theme => ({
     root: {
         display: 'flex',
-        flexWrap: 'wrap',
+        flexDirection: 'column',
+        height: '100%',
+        maxWidth: '600px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        flex: '0 1 auto',
+    },
+    description: {
+        fontSize: '16px',
+        lineHeight: '24px',
+        textAlign: 'center',
+        margin: '20px',
+    },
+    content: {
+        justifyContent: 'space-between',
+        flexGrow: 1,
+        padding: '0 5px',
+    },
+    button: {
+        height: '56px',
+        width: '100%',
+        color: 'white',
+        fontSize: '15px',
     },
     margin: {
-        margin: theme.spacing.unit,
+        margin: '10px 0px',
     },
     withoutLabel: {
         marginTop: theme.spacing.unit * 3,
@@ -93,53 +115,61 @@ class Login extends React.Component {
             return <Redirect to={from} />;
         }
 
+        let disabled = true;
+        if(this.state.username && this.state.password)
+            disabled = false;
+
         return (
             <div className={classes.root}>
-                {(error
-                        ? <div>{error}</div>
-                        : ""
-                )}
+                <div className={classes.content}>
+                    {(error
+                            ? <div>{error}</div>
+                            : ""
+                    )}
+                    <p className={classes.description}>
+                        Welcome back. <br/> Please type in your account info!
+                    </p>
+                    <FormControl
+                        fullWidth
+                        className={classes.margin}
+                        aria-describedby="weight-helper-text"
+                    >
+                        <Input
+                            id="username"
+                            placeholder="Username"
+                            value={this.state.username}
+                            onChange={this.handleInputChange}
+                            inputProps={{
+                                'aria-label': 'Username',
+                            }}
 
-                <FormControl
-                    fullWidth
-                    className={classes.margin}
-                    aria-describedby="weight-helper-text"
-                >
-                    <Input
-                        id="username"
-                        placeholder="Username"
-                        value={this.state.username}
-                        onChange={this.handleInputChange}
-                        inputProps={{
-                            'aria-label': 'Username',
-                        }}
-
-                    />
-                </FormControl>
-                <FormControl
-                    fullWidth
-                    className={classes.margin}
-                >
-                    <InputLabel htmlFor="adornment-password">Password</InputLabel>
-                    <Input
-                        id="password"
-                        type={this.state.showPassword ? 'text' : 'password'}
-                        value={this.state.password}
-                        onChange={this.handleInputChange}
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <IconButton
-                                    aria-label="Toggle password visibility"
-                                    onClick={this.handleClickShowPassword}
-                                    onMouseDown={this.handleMouseDownPassword}
-                                >
-                                    {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
-                            </InputAdornment>
-                        }
-                    />
-                </FormControl>
-                <Button fullWidth variant="raised" color="secondary" className={classes.button} onClick={this.handleSubmit}>
+                        />
+                    </FormControl>
+                    <FormControl
+                        fullWidth
+                        className={classes.margin}
+                    >
+                        <InputLabel htmlFor="adornment-password">Password</InputLabel>
+                        <Input
+                            id="password"
+                            type={this.state.showPassword ? 'text' : 'password'}
+                            value={this.state.password}
+                            onChange={this.handleInputChange}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="Toggle password visibility"
+                                        onClick={this.handleClickShowPassword}
+                                        onMouseDown={this.handleMouseDownPassword}
+                                    >
+                                        {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                    </FormControl>
+                </div>
+                <Button disabled={disabled} fullWidth variant="raised" color="secondary" className={classes.button} onClick={this.handleSubmit}>
                     <LoginIcon color={"#FFFFF"}/>LOGIN
                 </Button>
             </div>
