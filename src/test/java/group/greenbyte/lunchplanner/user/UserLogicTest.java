@@ -248,15 +248,6 @@ public class UserLogicTest {
                 false, null, null, null, null, null);
     }
 
-    @Test (expected = HttpRequestException.class)
-    public void test5UpdateNotificationOptionsBlockUntilInThePast() throws Exception {
-        Date until = new Date(System.currentTimeMillis() - 10000);
-        String userName = createUserIfNotExists(userLogic, createString(50));
-        userLogic.updateNotificationOptions(userName,false, until,
-                false, null, null, null, null, null);
-
-    }
-
     // ------------- UPDATE NOTIFICATION OPTIONS ------------------
 
     @Test
