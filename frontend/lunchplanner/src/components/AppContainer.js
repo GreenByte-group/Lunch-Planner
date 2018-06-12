@@ -23,6 +23,7 @@ import {getEvents} from "./Event/EventFunctions";
 import {getNotificationOptions, sendOptions} from "./notification/NotificationFunctions";
 import moment from "moment";
 import UserEditScreen from "./User/UserEditScreen";
+import {HOST} from "../Config";
 
 
 const styles = {
@@ -78,6 +79,7 @@ const styles = {
         position: 'relative',
     },
     mainContent: {
+        overflow: 'hidden',
         height: '100vh',
         width: '100%',
         display: 'flex',
@@ -129,7 +131,7 @@ class AppContainer extends React.Component {
             if(response.status === 200) {
                 this.setState({
                     email: response.data.eMail,
-                    profilePicture: response.data.profilePictureUrl,
+                    profilePicture: HOST + response.data.profilePictureUrl,
                 })
             }
         });
