@@ -1,39 +1,21 @@
 import React from 'react';
-import {Button, List, ListItem, Divider, withStyles, Drawer, IconButton, MenuItem, FormControlLabel, Switch, TextField, ListItemSecondaryAction} from '@material-ui/core';
-import {Link} from "react-router-dom";
+import {withStyles,IconButton, TextField,} from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
-import DialogActions from "@material-ui/core/es/DialogActions/DialogActions";
 
 const styles =  theme => ({
-    root:{
-        height: 100,
-        width: "max-content",
-    },
-    list: {
-        width: "100%",
-        color:"white",
-        height: 50,
-    },
-    listItem: {
-        width: '100%',
-    },
     icon:{
         float: "right",
+        color: "white"
     },
     textField: {
-        marginBottom: 30,
-        width: 300,
+        width: '90%',
+        color: "white",
     },
-    menu: {
-        width: 200,
-    },
-    input: {
-        display: 'none',
-    },
-    button: {
-        margin: theme.spacing.unit,
-    },
+    root:{
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'row',
+    }
 });
 class Search extends React.Component {
 
@@ -83,50 +65,21 @@ class Search extends React.Component {
         this.props.handleSearch(this.state.search);
     };
     render() {
-
         const { classes } = this.props;
+        let open = this.state.open;
         return (
-
-            <Drawer
-                open={this.state.open}
-                onClose={this.handleClose}
-                anchor='top'
-            >
-                <DialogContent >
-                    <div className={classes.list}>
-                        <List className ={classes.menu}>
-                            <ListItem
-                                dense
-                                className={classes.listItem}>
-                                <form noValidate autoComplete="on" >
-                                    <TextField
-                                        id="Search"
-                                        label="Search"
-                                        defaultValue={this.state.search}
-                                        className={classes.textField}
-                                        onChange={this.handleChange('search')}
-                                        margin="normal"
-                                    />
-                                </form>
-                                <IconButton>
-                                    <SearchIcon className={classes.icon} onClick={this.searchForEvents}/>
-                                </IconButton>
-
-                            </ListItem>
-                        </List>
-                    </div>
-                </DialogContent>
-                <DialogActions>
-                    <Button variant="contained" color="secondary" className={classes.button} onClick={this.handleCancel}>
-                        Cancel
-                    </Button>
-                    <Link to={{pathname:'/app/event/create'}}>
-                        <Button variant="contained" color="secondary" className={classes.button}>
-                            Create Event
-                        </Button>
-                    </Link>
-                </DialogActions>
-            </Drawer>
+            <div className={classes.root}>
+                {open ? <TextField
+                    id="Search"
+                    defaultValue={this.state.search}
+                    className={classes.textField}
+                    onChange={this.handleChange('search')}
+                    margin="normal"
+                    /> : <p>{this.state.search}</p>}
+                <IconButton>
+                    <SearchIcon className={classes.icon} onClick={this.searchForEvents}/>
+                </IconButton>
+            </div>
         );
     }
 }

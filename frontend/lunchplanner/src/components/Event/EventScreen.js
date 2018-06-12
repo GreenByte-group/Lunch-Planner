@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import {withStyles} from "@material-ui/core/styles/index";
 import React from 'react';
-import {Slide} from '@material-ui/core';
+import {Slide,CircularProgress} from '@material-ui/core';
 import {Link} from "react-router-dom";
 import {Today, Schedule, MyLocation, Add} from "@material-ui/icons/";
 import ListIcon from "@material-ui/icons/Assignment"
@@ -240,6 +240,7 @@ class EventScreen extends React.Component {
             isShared : false,
             token: null,
             comments: [],
+            loading: true,
         };
     }
 
@@ -259,6 +260,7 @@ class EventScreen extends React.Component {
                     people: response.data.invitations,
                     token: response.data.shareToken,
                     isShared: true,
+                    loading: false,
                 });
             });
         } else {
@@ -296,6 +298,7 @@ class EventScreen extends React.Component {
                     accepted: accepted,
                     location: location,
                     token: token,
+                    loading: false,
                 });
                 if (this.state.token !== null) {
                     this.setState({
@@ -387,6 +390,9 @@ class EventScreen extends React.Component {
     };
 
     loadEvent = (eventId) => {
+        this.setState({
+            loading: true,
+        });
         if(!eventId)
             eventId = this.state.eventId;
 
@@ -399,8 +405,9 @@ class EventScreen extends React.Component {
                 people: response.data.invitations,
                 date: new Date(response.data.startDate),
                 token: response.data.shareToken,
+                loading: false,
             })
-        })
+        });
         if(this.state.token !== null){
             this.setState({
                 isShared: true,
@@ -452,6 +459,7 @@ class EventScreen extends React.Component {
         let people = this.state.people;
         let eventId = this.state.eventId;
         let isShared = this.state.isShared;
+        let loading =  this.state.loading;
 
         if(people.length !== 0) {
             this.parseUrl();
@@ -511,6 +519,9 @@ class EventScreen extends React.Component {
 
         return (
             <div>
+                {loading ?
+                    <CircularProgress className={classes.progress} color="secondary"/>
+                    :
                 <Dialog
                     title={barTitle}
                     closeUrl="/app/event"
@@ -577,7 +588,7 @@ class EventScreen extends React.Component {
                             <p className={classes.invitaionsHeader}>Invited People ({people.length})</p>
                             {
                                 (iAmAdmin)
-                                    ? <Link to={{pathname: "/app/event/create/invite",  query: {
+                                    ? <Link to={{pathname: `/app/event/${eventId}/invite`,  query: {
                                                     source: "/app/event/" + this.state.eventId,
                                                     invitedUsers: people.map((value) => value.userName).join(','),
                                                 }}}>
@@ -612,7 +623,7 @@ class EventScreen extends React.Component {
                                 {buttonText}
                             </Button>
                     }
-                </Dialog>
+                </Dialog>}
             </div>
         );
     }

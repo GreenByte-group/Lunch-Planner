@@ -215,7 +215,7 @@ class EventLocation extends React.Component {
 
         return (
             <div >
-                <Link className={classes.link} to={{pathname:`/event/${this.state.id}`, query:{
+                <Link className={classes.link} to={{pathname:`/app/event/${this.state.id}`, query:{
                         eventName: name,
                         description: description,
                         date: date,

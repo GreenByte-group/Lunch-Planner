@@ -1,8 +1,9 @@
 import PropTypes from "prop-types";
+import Loadable from "react-loading-overlay";
 import {withStyles} from "@material-ui/core/styles/index";
 import React from 'react';
 import Dialog from "../Dialog";
-import {Button, Slide, Divider} from "@material-ui/core";
+import {Button, Slide, Divider, CircularProgress} from "@material-ui/core";
 import {getUsername, setAuthenticationHeader} from "../authentication/LoginFunctions";
 import {getHistory} from "../../utils/HistoryUtils"
 import {Https as SecretIcon} from "@material-ui/icons";
@@ -163,6 +164,7 @@ class TeamScreen extends React.Component {
             name:"",
             description: "",
             people:[],
+            loading: true,
         };
 
     }
@@ -190,6 +192,7 @@ class TeamScreen extends React.Component {
                 name: teamName,
                 description: description,
                 people: people,
+                loading: false,
             })
 
         } else {
@@ -230,6 +233,9 @@ class TeamScreen extends React.Component {
     };
 
     loadTeam = (teamId) => {
+        this.setState({
+            loading: true,
+        });
         if(!teamId)
             teamId = this.state.teamId;
 
@@ -239,7 +245,7 @@ class TeamScreen extends React.Component {
                 name: response.data.teamName,
                 description: response.data.description,
                 people: response.data.invitations,
-
+                loading: false,
             });
         })
     };
@@ -303,6 +309,7 @@ class TeamScreen extends React.Component {
         let people = this.state.people;
         let iAmAdmin = false;
         let userName = getUsername();
+        let loading = this.state.loading;
 
         if(people.length !== 0) {
             this.parseUrl();
@@ -341,7 +348,10 @@ class TeamScreen extends React.Component {
             clickRemove = this.clickRemove;
 
         return (
-            <div>
+            <div >
+                {loading ?
+                        <CircularProgress className={classes.progress} color="secondary"/>
+                    :
                 <Dialog
                     title={name}
                     closeUrl="/app/team?tab=1"
@@ -369,7 +379,7 @@ class TeamScreen extends React.Component {
                                 <p className={classes.invitaionsHeader}> Team Member ({people.length})</p>
                                 {
                                     (iAmAdmin)
-                                        ? <Link to={{pathname: "/app/team/create/invite",  query: {
+                                        ? <Link to={{pathname: `/app/team/${this.state.teamId}/invite`,  query: {
                                                 source: "/app/team/" + this.state.teamId,
                                                 invitedUsers: people.map((value) => value.userName).join(','),
                                             }}}>
@@ -396,7 +406,7 @@ class TeamScreen extends React.Component {
                     className={classes.button}>
                     {buttonText}
                 </Button>
-                </Dialog>
+                </Dialog>}
             </div>
         );
     }

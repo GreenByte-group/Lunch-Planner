@@ -4,7 +4,7 @@ import {Redirect} from "react-router-dom";
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
-import {Input, InputLabel, InputAdornment } from '@material-ui/core';
+import {Input, InputLabel, InputAdornment} from '@material-ui/core';
 import { FormControl, } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';

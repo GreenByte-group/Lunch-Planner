@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Search from "./Search";
 import SearchIcon from '@material-ui/icons/Search';
-import {Button, MenuItem, List, Divider, withStyles, FormControlLabel, Switch, Drawer, Avatar, Hidden} from '@material-ui/core'
+import {Button, MenuItem, List, Divider, withStyles, FormControlLabel,TextField, Switch, Drawer, Avatar, Hidden} from '@material-ui/core'
 import {Place, LocalDining, Group, NotificationsNone, ExitToApp, Settings, Menu} from '@material-ui/icons'
 
 import {Link} from "react-router-dom";
@@ -359,13 +359,17 @@ class AppContainer extends React.Component {
                                 {title}
                             </Typography>
                             <div color="inherit">
-                                <IconButton  className={classes.search}>
-                                    <SearchIcon onClick={this.showSearch}/>
-                                    {this.state.openSearch ?
+                                {
+                                    this.state.openSearch === false ?
+                                            <IconButton  className={classes.search}>
+                                                <SearchIcon onClick={this.showSearch}/>
+                                            </IconButton> : ""
+                                }
+                                {this.state.openSearch ?
                                         <Search open={this.state.openSearch} handleCancel={this.cancelSearch} handleSearch={this.handleSearch} search={this.state.search}/> :
                                         ""
                                     }
-                                </IconButton>
+
                             </div>
                         </Toolbar>
                     </AppBar>

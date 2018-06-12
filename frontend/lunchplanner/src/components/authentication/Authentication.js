@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from "prop-types";
 import Login from "./Login"
 import Register from "./Registration"
-import {Tabs,  Tab } from '@material-ui/core';
+import {Tabs,  Tab ,CircularProgress} from '@material-ui/core';
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
