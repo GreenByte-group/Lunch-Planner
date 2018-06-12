@@ -12,12 +12,9 @@ import {getHistory} from "../../utils/HistoryUtils";
 const styles = {
     root: {
         //width: 1500,,
-        position: 'relative',
         height: '100%',
+        overflowX: 'hidden',
         overflowY: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
     },
     list: {
         padding: 0,

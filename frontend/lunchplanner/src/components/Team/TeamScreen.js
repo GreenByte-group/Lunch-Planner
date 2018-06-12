@@ -348,7 +348,7 @@ class TeamScreen extends React.Component {
             clickRemove = this.clickRemove;
 
         return (
-            <div>
+            <div >
                 {loading ?
                         <CircularProgress className={classes.progress} color="secondary"/>
                     :

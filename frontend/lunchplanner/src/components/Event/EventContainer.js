@@ -166,7 +166,7 @@ class EventContainer extends React.Component {
                 {loading ?
                     <CircularProgress className={classes.progress} color="secondary"/>
                     :
-                    <div>
+                    <div className={classes.root}>
                         <AppBar position="relative" color="default" >
                             <Tabs
                                 value={this.state.value}
