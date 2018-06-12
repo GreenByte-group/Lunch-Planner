@@ -369,7 +369,7 @@ class TeamScreen extends React.Component {
                                 <p className={classes.invitaionsHeader}> Team Member ({people.length})</p>
                                 {
                                     (iAmAdmin)
-                                        ? <Link to={{pathname: "/app/team/create/invite",  query: {
+                                        ? <Link to={{pathname: `/app/team/${this.state.teamId}/invite`,  query: {
                                                 source: "/app/team/" + this.state.teamId,
                                                 invitedUsers: people.map((value) => value.userName).join(','),
                                             }}}>

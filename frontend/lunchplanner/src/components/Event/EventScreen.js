@@ -577,7 +577,7 @@ class EventScreen extends React.Component {
                             <p className={classes.invitaionsHeader}>Invited People ({people.length})</p>
                             {
                                 (iAmAdmin)
-                                    ? <Link to={{pathname: "/app/event/create/invite",  query: {
+                                    ? <Link to={{pathname: `/app/event/${eventId}/invite`,  query: {
                                                     source: "/app/event/" + this.state.eventId,
                                                     invitedUsers: people.map((value) => value.userName).join(','),
                                                 }}}>
