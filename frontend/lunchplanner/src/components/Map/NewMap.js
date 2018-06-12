@@ -88,9 +88,6 @@ export class NewMap extends React.Component {
                         lng: this.state.place.lng};
 
 
-
-
-
     }
 
     delayedShowMarker = () => {
