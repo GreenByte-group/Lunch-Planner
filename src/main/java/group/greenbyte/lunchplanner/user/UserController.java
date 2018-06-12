@@ -313,12 +313,12 @@ public class UserController {
      *
      * @return user profile picture
      */
-    @RequestMapping(value = "/getProfilePicture", method = RequestMethod.GET,
+    @RequestMapping(value = "/getProfilePicture/{username}", method = RequestMethod.GET,
             produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
-    public ResponseEntity getProfilePicture() {
+    public ResponseEntity getProfilePicture(@PathVariable("username") String username) {
         try {
-            String picturePath = userLogic.getPicturePath(SessionManager.getUserName());
+            String picturePath = userLogic.getPicturePath(username);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(picturePath);

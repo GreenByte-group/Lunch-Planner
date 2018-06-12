@@ -67,8 +67,8 @@ export function updateProfilePicture(file, responseFunc) {
         .catch(responseFunc);
 }
 
-export function getProfilePicturePath(responseFunc) {
-    let url = HOST + "/user/getProfilePicture";
+export function getProfilePicturePath(username, responseFunc) {
+    let url = HOST + "/user/getProfilePicture/" + username;
     axios.get(url)
         .then(responseFunc);
 }
