@@ -82,11 +82,9 @@ public class EventController {
             consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public String updateEventName(@RequestBody String newEventName, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
-
         try {
             eventLogic.updateEventName(SessionManager.getUserName(),eventId,newEventName);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-
             return "";
         }catch(HttpRequestException e){
             response.setStatus(e.getStatusCode());
@@ -95,6 +93,7 @@ public class EventController {
     }
 
     /**
+     * Updates the event with the new location in database
      *
      * @param location new location of event to updte in Database
      * @param eventId id the updated event
@@ -107,7 +106,6 @@ public class EventController {
         try {
             eventLogic.updateEventLocation(SessionManager.getUserName(),eventId,location);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-
             return "";
         }catch(HttpRequestException e){
             response.setStatus(e.getStatusCode());

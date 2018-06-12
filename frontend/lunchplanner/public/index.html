@@ -8,7 +8,7 @@
           content="default-src 'self' http://localhost:8080 https://greenbyte.group https://lunchplanner.greenbyte.group https://lunchplanner-api.greenbyte.group blob:;
           worker-src 'self' http://localhost:3000;
           connect-src 'self' http://localhost:8080/ http://localhost:3000 ws://localhost:3000;
-          script-src 'self' 'unsafe-inline' http://code.jquery.com/ https://www.gstatic.com https://fonts.googleapis.com/;
+          script-src 'self' 'unsafe-inline' http://code.jquery.com/ https://www.gstatic.com https://fonts.googleapis.com/ https://maps.googleapis.com;
           style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/ https://maxcdn.bootstrapcdn.com;
           font-src https://fonts.googleapis.com/ https://fonts.gstatic.com https://maxcdn.bootstrapcdn.com" >
 
@@ -26,6 +26,8 @@
         firebase.initializeApp(config);
     </script>
 
+    <!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxwL_2v8uEcq3ItG-gNI21NnSWgekJGNs" ></script>-->
+    <!--<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5UW1KsLdDGY5CpBBe98Q5owmKdJ_P35gAIzaSyCOYsTeZ29UyBEHqYG39GXJIN1-rp1KayU -->
     <!--
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/

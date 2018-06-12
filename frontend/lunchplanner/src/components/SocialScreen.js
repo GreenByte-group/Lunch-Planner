@@ -14,7 +14,6 @@ function TabContainer({ children, dir }) {
         </Typography>
     );
 }
-
 TabContainer.propTypes = {
     children: PropTypes.node.isRequired,
     dir: PropTypes.string.isRequired,

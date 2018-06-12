@@ -6,6 +6,9 @@ import Dialog from '../Dialog';
 import {Switch, Typography, TextField, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails} from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
+import MapIcon from '@material-ui/icons/Map'
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import {FormGroup, FormControlLabel, Slide} from '@material-ui/core';
 import {DatePicker, TimePicker} from 'material-ui-old';
 import PeopleIcon from '@material-ui/icons/People'
@@ -20,6 +23,8 @@ import moment from "moment";
 import {getHistory} from "../../utils/HistoryUtils";
 import {InputAdornment} from "@material-ui/core";
 import {createEvent} from "./EventFunctions";
+import GoogleSuggest from "../Map/GoogleSuggest";
+import Icon from "@material-ui/core/es/Icon/Icon";
 
 const styles = {
     appBar: {
@@ -31,7 +36,25 @@ const styles = {
     textField: {
         marginBottom:30,
         marginLeft: 20,
-        width: "90%",
+        width: "60%",
+    },
+    searchfield: {
+        marginBottom:30,
+        marginLeft:20,
+        width:"100%",
+        float: "left"
+    },
+    searchboxField: {
+        marginTop:30,
+        width:"55%",
+        float: "left"
+
+    },
+    mapIcon:{
+        margin:'0 15px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
     },
     button:{
         fontSize: '16px',
@@ -51,6 +74,9 @@ const styles = {
     pickerWithIcon: {
         width: '50%',
         float: 'left',
+    },
+    visibilityIcon:{
+        color:'#D3D3D3',
     },
     datePicker: {
         width: '60% !important',
@@ -91,6 +117,7 @@ const styles = {
         float: 'left',
         color: '#A4A4A4',
     },
+
     inviteTextField: {
         width: '100%',
     },
@@ -105,6 +132,7 @@ const styles = {
 function Transition(props) {
     return <Slide direction="up" {...props} />;
 }
+
 
 
 class CreateEventScreen extends React.Component {
@@ -207,16 +235,34 @@ class CreateEventScreen extends React.Component {
     handleTime = (event, date) => {
         this.setState({ date: date });
     }
+    ischDesMehr = (invited) => {
+        if(this.state.invitedUsers.length> 40){
+            return " more than 3 people invited"
+        }else{
+            return invited;
+        }
+
+    };
 
     handleVisibility = name => event =>{
         this.setState({ [name]: event.target.checked });
+    }
+    checkVisibility = () => {
+        if(this.state.visible){
+            return true;
+        }
+    }
+    handleLocationChange= (location) => {
+        this.setState({
+            location: location,
+        });
     }
 
     render() {
         this.parseUrl();
         const { classes } = this.props;
         const error = this.state.error;
-        let invited = this.state.invitedUsers + "," + this.state.invitedTeams;
+        let invited =this.state.invitedUsers + "," + this.state.invitedTeams;
         let buttonEnabled = false;
         if(this.state.location)
             buttonEnabled = true;
@@ -232,17 +278,45 @@ class CreateEventScreen extends React.Component {
                             ? <p className={classes.error}>{error}</p>
                             : ""
                     )}
-                    <form className={classes.container} noValidate autoComplete="on" >
-                        <TextField
-                            id="location"
-                            label="Location"
-                            value={this.state.location}
-                            className={classes.textField}
-                            placeholder ="Add an Location ..."
-                            onChange={this.handleChange}
-                            margin="normal"
-                        />
-                    </form>
+                    {/*<form noValidate autoComplete="on" >*/}
+                       <FormGroup row
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            flexWrap: 'nowrap',
+                        }}
+                       >
+
+                            <div
+                                style={{
+                                    width: 'calc(100% - 150px)',
+                                    float: 'left',
+
+                                }}
+                            >
+                               <GoogleSuggest
+                                   className={classes.searchboxField}
+                                   id="location"
+                                   label="Location"
+                                   value={this.state.location}
+                                   placeholder="Add an Location ..."
+                                   float="left"
+                                   onChange={this.handleLocationChange}
+                               />
+                           </div>
+
+                            <Link className={classes.mapIcon}
+                                  float="right"
+                                  to={{pathname: "/app/event/create/map", query: {
+                                      location: this.state.location,}}}
+                                  location={ this.state.location}
+                            >
+                                <MapIcon disabled={false} className={classes.mapIcon} />
+                                <span>View on Map</span>
+                            </Link>
+                       </FormGroup>
+                    {/*</form>*/}
                     <div>
                         <p className={classes.dateHeader}>Date</p><p className={classes.timeHeader}>Time</p>
                         <div className={classes.pickerWithIcon}>
@@ -267,7 +341,7 @@ class CreateEventScreen extends React.Component {
                     </div>
                     <ExpansionPanel>
                         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon color='primary' />}>
-                            <Typography className={classes.heading}>Invite & Change Visibility</Typography>
+                            <Typography className={classes.heading}>Invite Somebody & Incognito Mode </Typography>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails>
                             <FormGroup row>
@@ -283,7 +357,8 @@ class CreateEventScreen extends React.Component {
                                         id="invitation"
                                         label="Participants"
                                         placeholder ="Invite People"
-                                        value={invited}
+                                        value={this.ischDesMehr(invited)}
+                                        // onChange={this.ischDesMehr}
                                         fullWidth
                                         InputProps={{
                                             startAdornment: <InputAdornment position="start"><PeopleIcon/></InputAdornment>,
@@ -294,6 +369,7 @@ class CreateEventScreen extends React.Component {
                                     />
                                 </Link>
 
+
                                 <FormControlLabel
                                     control={
                                         <Switch
@@ -302,9 +378,12 @@ class CreateEventScreen extends React.Component {
                                             checked={this.state.visible}
                                             onChange={this.handleVisibility("visible")}
                                             value="visible"
+                                            icon={<VisibilityIcon className={classes.visibilityIcon}/>}
+                                            checkedIcon={<VisibilityOffIcon/>}
                                         />
                                     }
-                                    label="Only visible if invited"
+                                    label={"Make Event Secret"}
+
                                 />
                             </FormGroup>
                         </ExpansionPanelDetails>
