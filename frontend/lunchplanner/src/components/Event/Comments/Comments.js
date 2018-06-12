@@ -1,6 +1,6 @@
 import React from "react";
 import {Send} from "@material-ui/icons";
-import {List, TextField, withStyles, IconButton} from "@material-ui/core";
+import {List, TextField, withStyles, IconButton, CircularProgress} from "@material-ui/core";
 import {getUsername, setAuthenticationHeader} from "../../authentication/LoginFunctions";
 import Comment from "./Comment";
 import Dialog from "../../Dialog";
@@ -38,6 +38,13 @@ const styles = {
         display: 'flex',
         flexDirection: 'row',
     },
+    progress:{
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: "auto",
+        marginBottom: "auto",
+        display: "block",
+    },
 };
 
 class Comments extends React.Component {
@@ -51,6 +58,7 @@ class Comments extends React.Component {
             eventId: props.match.params.eventId,
             comments: [],
             newComment: "",
+            loading: true,
         }
 
         this.loadComments();
@@ -66,12 +74,16 @@ class Comments extends React.Component {
     }
 
     loadComments(eventId) {
+        this.setState({
+            loading: true,
+        });
         if(eventId == null || eventId === undefined)
             eventId = this.state.eventId;
 
         loadComments(eventId, (response) => {
             this.setState({
                 comments: response.data,
+                loading: false,
             })
         });
     }
@@ -105,9 +117,12 @@ class Comments extends React.Component {
     render() {
         const {classes} = this.props;
         const comments = this.state.comments;
+        let loading = this.state.loading;
 
         return (
             <div>
+                {loading ? <CircularProgress className={classes.progress} color="secondary"/>
+                    :
                 <Dialog
                     title={"Comments (" + comments.length + ")"}
                     closeUrl={"/app/event/" + this.state.eventId}
@@ -144,6 +159,7 @@ class Comments extends React.Component {
                         </form>
                     </div>
                 </Dialog>
+                }
             </div>
         )
     }

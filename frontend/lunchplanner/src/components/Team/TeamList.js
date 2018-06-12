@@ -15,16 +15,15 @@ const styles = {
         height: '100%',
         overflowX: 'hidden',
         overflowY: 'auto',
+       // position: 'absolute',
+        //display: 'flex',
     },
     list: {
         padding: 0,
     },
     progress:{
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        marginTop: "auto",
-        marginBottom: "auto",
-        display: "block",
+        marginLeft: '50%',
+        marginTop: "50%",
     },
 };
 
