@@ -1,7 +1,7 @@
 import React from "react"
 
 import Team from "./Team";
-import List from "@material-ui/core/List";
+import {List, CircularProgress} from "@material-ui/core/";
 import {People, TagFaces} from "@material-ui/icons";
 import {withStyles} from "@material-ui/core/styles/index";
 import FloatingActionButton from "../FloatingActionButton";
@@ -11,11 +11,23 @@ import {getHistory} from "../../utils/HistoryUtils";
 
 const styles = {
     root: {
+        //width: 1500,,
+        position: 'relative',
         height: '100%',
+        overflowY: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
         overflow: 'hidden',
     },
     list: {
         padding: 0,
+    },
+    progress:{
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: "auto",
+        marginBottom: "auto",
+        display: "block",
     },
 };
 
@@ -33,6 +45,7 @@ class TeamList extends React.Component {
         this.state = {
             teams: [],
             search:null,
+            loading: true,
         }
     }
 
@@ -49,6 +62,7 @@ class TeamList extends React.Component {
             (response) => {
                 this.setState({
                     teams: response.data,
+                    loading: false,
                 })
             });
     };
@@ -65,28 +79,33 @@ class TeamList extends React.Component {
             needReload = !needReload;
             this.getTeams();
         }
+        let loading = this.state.loading;
 
         const { classes } = this.props;
         let teams = this.state.teams;
         return (
             <div className={classes.root}>
-                <List className={classes.list}>
-                    {teams.map((listValue)=>{
-                        return <Team name={listValue.teamName}
-                                      id={listValue.teamId}
-                                     member={listValue.invitations}
-                        />;
-                    })}
-                </List>
-                <FloatingActionButton
-                    actions={
-                        [
-                            {icon: <People />, text: 'Work team', onClick: () => getHistory().push("/app/team/create?withParent=true") },
-                            {icon: <TagFaces />, text: 'Social group', onClick: () => getHistory().push("/app/team/create?withParent=false") }
-                        ]
-                    }
-                />
-            </div>
+                {loading ? <CircularProgress className={classes.progress} color="secondary"/>
+                    :
+                        <div >
+                            <List className={classes.list}>
+                                {teams.map((listValue)=>{
+                                    return <Team name={listValue.teamName}
+                                                 id={listValue.teamId}
+                                                 member={listValue.invitations}
+                                    />;
+                                })}
+                            </List>
+                            <FloatingActionButton
+                                actions={
+                                    [
+                                        {icon: <People />, text: 'Work team', onClick: () => getHistory().push("/app/team/create?withParent=true") },
+                                        {icon: <TagFaces />, text: 'Social group', onClick: () => getHistory().push("/app/team/create?withParent=false") }
+                                    ]
+                                }
+                            />
+                        </div>}
+                    </div>
 
         );
     }
