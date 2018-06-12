@@ -5,6 +5,7 @@ import {Edit} from "@material-ui/icons";
 import {getUsername} from "../authentication/LoginFunctions";
 import {getProfilePicturePath, getUser, updateEmail, updatePassword, updateProfilePicture} from "./UserFunctions";
 import {HOST} from "../../Config";
+import {userNeedReload} from "../AppContainer";
 
 const styles = theme => ({
     root: {
@@ -151,6 +152,7 @@ class UserEditScreen extends React.Component {
     onSubmit = () => {
         if(this.state.pathImage) {
             updateProfilePicture(this.state.pathImage, (response) => {
+                userNeedReload();
                 console.log(response);
             })
         }
@@ -158,9 +160,10 @@ class UserEditScreen extends React.Component {
         if(this.state.email) {
             updateEmail(this.state.email, (response) => {
                 console.log(response);
-                if(response.status !== 204)
+                if(response.status !== 204) {
                     this.setState({emailError: response.response.data})
-                else {
+                    userNeedReload();
+                } else {
                     this.setState({
                         emailError: null,
                         email: '',
@@ -171,9 +174,9 @@ class UserEditScreen extends React.Component {
 
         if(this.state.password && this.state.password === this.state.repeat) {
             updatePassword(this.state.password, (response) => {
-                if(response.status !== 204)
+                if(response.status !== 204) {
                     this.setState({passwordError: response.response.data})
-                else {
+                } else {
                     this.setState({
                         passwordError: null,
                         password: '',
