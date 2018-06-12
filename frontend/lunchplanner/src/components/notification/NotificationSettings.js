@@ -10,6 +10,10 @@ const styles = {
         height: '100%',
         padding: '0px',
         margin: '0px',
+        width: '100%',
+        maxWidth: '1024px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
     },
     hr: {
         margin: '0px 0',

@@ -104,7 +104,7 @@ public class OptionsJson implements Serializable {
         cal.setTime(date);
         int minutes = 0;
         minutes += cal.get(Calendar.HOUR_OF_DAY) * 60;
-        minutes += cal.get(Calendar.MINUTE) * 60;
+        minutes += cal.get(Calendar.MINUTE);
 
         return minutes;
     }

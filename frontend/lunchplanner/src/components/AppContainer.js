@@ -22,6 +22,8 @@ import NotificationsScreen from "./notification/NotificationsScreen";
 import {getEvents} from "./Event/EventFunctions";
 import {getNotificationOptions, sendOptions} from "./notification/NotificationFunctions";
 import moment from "moment";
+import UserEditScreen from "./User/UserEditScreen";
+import {HOST} from "../Config";
 
 
 const styles = {
@@ -49,13 +51,18 @@ const styles = {
         textAlign: "center",
         backgroundColor: "darkGrey",
     },
+    noHover: {
+        color: 'black',
+        "&:hover": {
+            textDecoration: 'none',
+        },
+    },
     avatar:{
-        marginTop: 24,
-        marginLeft: 24,
-        width: 64,
-        height: 64,
+        width: '64px',
+        height: '64px',
         marginBottom: 15,
-
+        objectFit: 'cover',
+        borderRadius: '50%',
     },
     icon:{
         marginRight: 20,
@@ -72,6 +79,7 @@ const styles = {
         position: 'relative',
     },
     mainContent: {
+        overflow: 'hidden',
         height: '100vh',
         width: '100%',
         display: 'flex',
@@ -89,6 +97,12 @@ const styles = {
     },
 };
 
+export let needReload = false;
+
+export function userNeedReload() {
+    needReload = true;
+}
+
 class AppContainer extends React.Component {
 
     constructor(props) {
@@ -101,6 +115,7 @@ class AppContainer extends React.Component {
             drawerOpen: false,
             username: getUsername(),
             email: "",
+            profilePicture: '',
 
             noNotificationToday: false,
         };
@@ -108,10 +123,15 @@ class AppContainer extends React.Component {
     }
 
     componentDidMount() {
+        this.getData();
+    }
+
+    getData = () => {
         getUser(getUsername(), (response) => {
             if(response.status === 200) {
                 this.setState({
                     email: response.data.eMail,
+                    profilePicture: HOST + response.data.profilePictureUrl,
                 })
             }
         });
@@ -126,7 +146,7 @@ class AppContainer extends React.Component {
                 })
             }
         })
-    }
+    };
 
     signOut = () => {
         doLogout();
@@ -134,6 +154,11 @@ class AppContainer extends React.Component {
     };
 
     componentWillReceiveProps(newProps) {
+        if(needReload) {
+            needReload = false;
+            this.getData();
+        }
+
         if(newProps.searchValue !== this.state.search){
             this.setState({
                 search: newProps.searchValue,
@@ -218,6 +243,10 @@ class AppContainer extends React.Component {
                 children = <NotificationsScreen/>;
                 title = "Notifications";
                 break;
+            case 'user':
+                children = <UserEditScreen />;
+                title = "Your Profile";
+                break;
         }
 
         const drawer = (
@@ -226,10 +255,12 @@ class AppContainer extends React.Component {
                 role="button"
             >
                 <div className={classes.list}>
-                    <List className={classes.profile}>
-                        <Avatar alt={this.state.username} className={classes.avatar} >{this.state.username.charAt(0)}</Avatar>
-                        <p className={classes.avatarText}>{this.state.username} ● {this.state.email}</p>
-                    </List>
+                    <Link to="/app/user" className={classes.noHover}>
+                        <List className={classes.profile}>
+                            <img alt={this.state.username} className={classes.avatar} src={this.state.profilePicture} />
+                            <p className={classes.avatarText}>{this.state.username} ● {this.state.email}</p>
+                        </List>
+                    </Link>
                     <Divider />
                     <List className ={classes.menu}>
                         <Link to="/app/location">

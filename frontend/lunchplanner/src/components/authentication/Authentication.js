@@ -12,7 +12,7 @@ import {HOST, TOKEN, USERNAME} from "../../Config";
 
 function TabContainer({ children, dir }) {
     return (
-        <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
+        <Typography component="div" dir={dir} style={{ padding: 0, height: '100%' }}>
             {children}
         </Typography>
     );
@@ -25,8 +25,20 @@ TabContainer.propTypes = {
 
 const styles = theme => ({
     root: {
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
         backgroundColor: theme.palette.background.paper,
         //width: 500,
+    },
+    fullHeight: {
+        height: '100%',
+    },
+    swipeableViews: {
+        height: '100%',
+    },
+    tabContainer: {
+        height: '100%',
     },
 });
 
@@ -90,14 +102,15 @@ class Authentication extends React.Component {
                     </Tabs>
                 </AppBar>
                 <SwipeableViews
+                    className={classes.swipeableViews}
                     axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                     index={this.state.value}
                     onChangeIndex={this.handleChangeIndex}
                 >
-                    <TabContainer dir={theme.direction}>
-                        <Register/>
+                    <TabContainer className={classes.tabContainer} dir={theme.direction}>
+                        <Register className={classes.fullHeight}/>
                     </TabContainer>
-                    <TabContainer dir={theme.direction}>
+                    <TabContainer className={classes.tabContainer} dir={theme.direction}>
                         <Login/>
                     </TabContainer>
                 </SwipeableViews>

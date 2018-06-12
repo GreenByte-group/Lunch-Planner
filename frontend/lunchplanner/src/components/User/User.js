@@ -2,6 +2,7 @@ import React from "react"
 import {withStyles, ListItem, IconButton} from "@material-ui/core";
 import {Close} from "@material-ui/icons"
 import AcceptedButton from "../Event/AcceptedButton";
+import {getProfilePicturePath} from "./UserFunctions";
 
 const styles = {
     listItem: {
@@ -44,10 +45,16 @@ const styles = {
     },
     profilePicture: {
         float: 'left',
-        border: '1px black solid',
+        // border: '1px black solid',
         borderRadius: '50%',
         height: '32px',
         width: '32px',
+        overflow: 'hidden',
+    },
+    profilePictureImg: {
+        objectFit: 'cover',
+        width: '100%',
+        height: '100%',
     },
     iconButtonRemove: {
         marginLeft: '7px',
@@ -68,7 +75,10 @@ class Event extends React.Component {
             username: props.username,
             selectable: props.selectable || false,
             clickRemove: props.clickRemove,
+            profilePicturePath: '',
         };
+
+        this.getUserImage(props.username);
     }
 
     componentWillReceiveProps(newProps) {
@@ -76,6 +86,7 @@ class Event extends React.Component {
             this.setState ({
                 username: newProps.username,
             });
+            this.getUserImage(newProps.username);
         }
 
         if(newProps.selected !== undefined && newProps.selected !== null && newProps.selected !== this.state.selected) {
@@ -90,6 +101,14 @@ class Event extends React.Component {
             });
         }
     }
+
+    getUserImage = (username) => {
+        getProfilePicturePath(username, (response) => {
+            this.setState({
+                profilePicturePath: response.data,
+            })
+        })
+    };
 
     clickHandler = () => {
         if(this.state.selectable) {
@@ -120,8 +139,9 @@ class Event extends React.Component {
         return (
             <ListItem button className={listClasses} onClick={this.clickHandler}>
                 <div className={classes.content}>
-                    {/*TODO picture*/}
-                    <div className={classes.profilePicture}></div>
+                    <div className={classes.profilePicture}>
+                        <img className={classes.profilePictureImg} src={this.state.profilePicturePath} />
+                    </div>
                     <div className={classes.text}>
                         <span className={classes.username}>{username}</span>
                     </div>
