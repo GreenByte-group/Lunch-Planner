@@ -3,6 +3,7 @@ package group.greenbyte.lunchplanner.team;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.team.database.Team;
+import group.greenbyte.lunchplanner.team.database.TeamMemberDataForReturn;
 import group.greenbyte.lunchplanner.user.UserDao;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import group.greenbyte.lunchplanner.user.database.User;
@@ -322,13 +323,50 @@ public class TeamLogic {
         if(!isValidName(userName))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + User.MAX_USERNAME_LENGTH + ", minimum length 1");
         try {
+            if(!hasViewPrivileges(teamId, userName))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this team");
+
             if(teamdao.getTeam(teamId) == null)
                 throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + teamId + ", was not found");
 
-            teamdao.leave(userName, teamId);
+            if(hasAdminPrivileges(teamId, userName)) {
+                List<TeamMemberDataForReturn> memberList = teamdao.getInvitations(teamId);
+                //if there is only one member left then the team gets automatically deleted
+                if(memberList.size() == 1) {
+                    teamdao.leave(userName, teamId);
+                    teamdao.deleteTeam(teamId);
+
+                }else if(amountOfAdmins(memberList) == 1) {
+                    for(TeamMemberDataForReturn m : memberList) {
+                        if(m.isAdmin() == false) {
+                            teamdao.changeUserToAdmin(teamId, m.getUserName());
+                            break;
+                        }
+                    }
+                    teamdao.leave(userName, teamId);
+                }
+            } else {
+                teamdao.leave(userName, teamId);
+            }
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
+    }
+
+    /**
+     * Count admins in a team
+     *
+     * @param members
+     * @return the amount of admins that a team has
+     */
+    private int amountOfAdmins(List<TeamMemberDataForReturn> members) {
+        int countAdmins = 0;
+
+        for(TeamMemberDataForReturn member : members) {
+                if(member.isAdmin())
+                    countAdmins++;
+        }
+        return countAdmins;
     }
 
     private boolean isValidName(String name){

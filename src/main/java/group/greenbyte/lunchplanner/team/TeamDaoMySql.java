@@ -229,6 +229,23 @@ public class TeamDaoMySql implements TeamDao {
         }
     }
 
+    /**
+     * Delete a team
+     *
+     * @param teamId id of the team
+     * @throws DatabaseException
+     */
+    @Override
+    public void deleteTeam(int teamId) throws DatabaseException {
+        String SQL = "DELETE FROM " + TEAM_TABLE + " WHERE " + TEAM_ID + " = ? ";
+
+        try {
+            jdbcTemplate.update(SQL, teamId);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
     @Override
     public void leave(String username, int teamId) throws DatabaseException {
         String SQL = "DELETE FROM " + TEAM_MEMBER_TABLE + " WHERE " + TEAM_MEMBER_USER + " = ? AND "
