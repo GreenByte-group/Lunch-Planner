@@ -251,12 +251,6 @@ class TeamScreen extends React.Component {
         })
     };
 
-    reloadTeamsOnSuccess = (response) => {
-        if(response.status === 204) {
-            teamListNeedReload();
-        }
-    };
-
     handleLeave = () => {
         getHistory().push("/app/team?tab=1");
         let people = this.state.people;
