@@ -232,7 +232,7 @@ public class TeamController {
      * @return
      */
     @RequestMapping(value = "/{teamId}/join", method = RequestMethod.POST,
-            consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+            produces = MediaType.TEXT_PLAIN_VALUE)
     public String joinPublicTeam(@PathVariable("teamId") int teamId, HttpServletResponse response) {
         try {
             teamlogic.joinPublicTeam(SessionManager.getUserName(), teamId);
