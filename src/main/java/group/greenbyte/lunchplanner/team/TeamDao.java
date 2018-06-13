@@ -160,4 +160,12 @@ public interface TeamDao {
      * @throws DatabaseException
      */
     void removeTeamMember(String userToRemove, int teamId) throws DatabaseException;
+
+    /**
+     * Delete a team
+     *
+     * @param teamId id of the team
+     * @throws DatabaseException
+     */
+    void deleteTeam(int teamId) throws DatabaseException;
 }
