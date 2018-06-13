@@ -7,6 +7,7 @@ import {Button, Slide, Divider, CircularProgress} from "@material-ui/core";
 import {getUsername, setAuthenticationHeader} from "../authentication/LoginFunctions";
 import {getHistory} from "../../utils/HistoryUtils"
 import {Https as SecretIcon} from "@material-ui/icons";
+import {Public as PublicIcon} from "@material-ui/icons";
 import UserList from "../User/UserList";
 import {
     getTeam,
@@ -172,6 +173,7 @@ class TeamScreen extends React.Component {
             description: "",
             people:[],
             loading: true,
+            isPublic: false,
         };
 
     }
@@ -253,6 +255,7 @@ class TeamScreen extends React.Component {
                 description: response.data.description,
                 people: response.data.invitations,
                 loading: false,
+                isPublic: response.data.public,
             });
         })
     };
@@ -338,6 +341,8 @@ class TeamScreen extends React.Component {
         let iAmAdmin = false;
         let userName = getUsername();
         let loading = this.state.loading;
+        let isPublic = this.state.isPublic;
+        console.log("isPublic", isPublic);
 
         if(people.length !== 0) {
             this.parseUrl();
@@ -399,9 +404,20 @@ class TeamScreen extends React.Component {
                                     <TextFieldEditing rowsMax="3" onChange={this.onDescriptionChanged} value={description} editable={iAmAdmin} className={classes.description}  multiline/>
                                 </div>
                             </div>
+
                             <div className={classes.secretTeam}>
-                                <SecretIcon/>
-                                <p className={classes.secretTeamText}>Secret team. Only you can see the activity of this team.</p>
+                                {isPublic ?
+                                    <div>
+                                        <PublicIcon/>
+                                        <p className={classes.secretTeamText}>Public team. All people can see the activity of this team.</p>
+                                    </div>
+                                :
+                                    <div>
+                                        <SecretIcon/>
+                                        <p className={classes.secretTeamText}>Secret team. Only you can see the activity of this team.</p>
+                                    </div>
+                                }
+
                             </div>
                             <Divider className={classes.divider} />
 
