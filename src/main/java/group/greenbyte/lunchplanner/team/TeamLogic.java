@@ -353,6 +353,35 @@ public class TeamLogic {
     }
 
     /**
+     * Join a public team
+     *
+     * @param userName user that wants to join the team
+     * @param teamId id of the team
+     * @throws HttpRequestException
+     */
+    public void joinPublicTeam(String userName, int teamId) throws HttpRequestException {
+        if(!isValidName(userName))
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + User.MAX_USERNAME_LENGTH + ", minimum length 1");
+
+        try {
+            Team team = teamdao.getTeam(teamId);
+            if(team == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + teamId + ", was not found");
+
+            if(team.isPublic() == false)
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "Team is not public!");
+
+            teamdao.addUserToTeam(teamId, userName);
+
+        } catch(DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
+
+
+    }
+
+    /**
      * Count admins in a team
      *
      * @param members
