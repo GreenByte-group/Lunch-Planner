@@ -3,6 +3,7 @@ package group.greenbyte.lunchplanner.team;
 import group.greenbyte.lunchplanner.AppConfig;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.team.database.Team;
+import group.greenbyte.lunchplanner.team.database.TeamMemberDataForReturn;
 import group.greenbyte.lunchplanner.user.UserLogic;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,6 +40,9 @@ public class TeamLogicTest {
     private TeamLogic teamLogic;
 
     @Autowired
+    private TeamDao teamDao;
+
+    @Autowired
     private UserLogic userLogic;
 
     private String userName;
@@ -66,7 +70,9 @@ public class TeamLogicTest {
         String teamName = "A";
         String description = "";
 
-        teamLogic.createTeamWithParent(userName, parent, teamName, description, true);
+        int id = teamLogic.createTeamWithParent(userName, parent, teamName, description, true);
+        Team t = teamLogic.getTeam(userName,id);
+        Assert.assertTrue(t.isPublic());
     }
 
     @Test
@@ -427,6 +433,42 @@ public class TeamLogicTest {
         String userToInvite = createUserIfNotExists(userLogic, createString(50));
 
         teamLogic.removeTeamMember(userName, userToInvite, parent);
+    }
+
+    // ------------------------- LEAVE ------------------------------
+
+    @Test
+    public void test1LeaveTeamGetsDeletedIfThereIsOnlyOneMemberLeft() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(50));
+        int teamId = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
+
+
+        teamLogic.leave(userName, teamId);
+        if(teamDao.getTeam(teamId) != null)
+            Assert.fail("Team didn't get deleted!");
+    }
+
+    @Test
+    public void test2LeaveTeamRandomUserGetsAdminRole() throws Exception {
+        String userName = createUserIfNotExists(userLogic, createString(50));
+        int teamId = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
+        String teamMember = createUserIfNotExists(userLogic, createString(50));
+        teamDao.addUserToTeam(teamId, teamMember);
+
+        teamLogic.leave(userName, teamId);
+
+        List<TeamMemberDataForReturn> members = teamDao.getInvitations(teamId);
+        if(members.size() == 1) {
+            TeamMemberDataForReturn member = members.get(0);
+            if(!member.isAdmin()) {
+                Assert.fail("Passing the Admin role to a random user didn't work");
+            }
+        } else {
+            Assert.fail(" User didn't leave the team ");
+        }
+
+
+
     }
 
 }

@@ -1,10 +1,6 @@
 package group.greenbyte.lunchplanner.team.database;
 
-import group.greenbyte.lunchplanner.event.database.Event;
-import group.greenbyte.lunchplanner.event.database.EventTeamVisible;
-
 import javax.persistence.*;
-import javax.print.DocFlavor;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,9 +37,6 @@ public class Team {
     @Transient
     private Set<TeamMemberDataForReturn> invitations = new HashSet<>();
 
-    public Team() {
-        isPublic = false;
-    }
 
     public Integer getTeamId() {
         return teamId;
@@ -57,7 +50,7 @@ public class Team {
         return isPublic;
     }
 
-    public void setPublic(boolean aPublic) {
+    public void setIsPublic(boolean aPublic) {
         isPublic = aPublic;
     }
 

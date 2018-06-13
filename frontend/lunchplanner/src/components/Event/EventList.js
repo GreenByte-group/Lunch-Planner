@@ -4,11 +4,8 @@ import {HOST} from "../../Config"
 import Event from "./Event";
 import List from "@material-ui/core/List";
 import {withStyles} from "@material-ui/core/styles/index";
-import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
 import {getUsername} from "../authentication/LoginFunctions";
-import {getEvents} from "./EventFunctions";
-import {needReload} from "./EventContainer";
 import moment from "moment";
 import {getHistory} from "../../utils/HistoryUtils";
 
@@ -127,7 +124,12 @@ class EventList extends React.Component {
                                         <p className={classes.day}>This Week</p>
                                         {event}
                                         {isNotThisWeek = false}
-                                    </div> : <div>{event}</div>
+                                    </div>
+                                    :
+                                    <div>
+                                        <p className={classes.day}>Later</p>
+                                        {event}
+                                    </div>
                     })}
                 </List>
                 <FloatingActionButton onClick={() => getHistory().push('/app/event/create')} />

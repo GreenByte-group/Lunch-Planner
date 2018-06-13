@@ -17,6 +17,7 @@ import {HOST} from "../../Config";
 import {Link} from "react-router-dom";
 import {Add} from "@material-ui/icons";
 import {inviteMemberToTeam} from "./TeamFunctions";
+import {eventListNeedReload} from "../Event/EventContainer";
 
 
 function Transition(props) {
@@ -263,10 +264,9 @@ class TeamScreen extends React.Component {
 
     sendAnswer = () => {
         let url = HOST + '/team/' + this.state.teamId + '/leave';
+        teamListNeedReload();
         axios.delete(url)
-            .then(() => {
-                teamListNeedReload();
-            })
+            .then();
     };
 
     onTitleChanged = (event) => {

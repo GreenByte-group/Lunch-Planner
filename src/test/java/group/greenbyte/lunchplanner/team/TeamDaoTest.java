@@ -164,6 +164,10 @@ public class TeamDaoTest {
 
     @Test
     public void test1GetTeam() throws Exception {
+        String adminName = createUserIfNotExists(userLogic, createString(50));
+        String teamName = createString(50);
+        String description = createString(1000);
+        teamDao.insertTeam(teamName, description, adminName, true);
         Team team = teamDao.getTeam(teamId);
         Assert.assertEquals(teamName, team.getTeamName());
         Assert.assertEquals(description, team.getDescription());
