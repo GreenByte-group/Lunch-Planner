@@ -54,7 +54,5 @@ public class TeamJson implements Serializable {
         this.description = description;
     }
 
-    public boolean isVisible() {
-        return visible;
-    }
+    public boolean isVisible() {return visible; }
 }

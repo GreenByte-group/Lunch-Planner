@@ -79,6 +79,7 @@ class TeamList extends React.Component {
 
         const { classes } = this.props;
         let teams = this.state.teams;
+        console.log(teams);
         return (
             <div className={classes.root}>
                 {loading ? <CircularProgress className={classes.progress} color="secondary"/>

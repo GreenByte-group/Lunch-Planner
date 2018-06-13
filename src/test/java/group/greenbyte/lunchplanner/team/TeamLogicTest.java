@@ -66,7 +66,9 @@ public class TeamLogicTest {
         String teamName = "A";
         String description = "";
 
-        teamLogic.createTeamWithParent(userName, parent, teamName, description, true);
+        int id = teamLogic.createTeamWithParent(userName, parent, teamName, description, true);
+        Team t = teamLogic.getTeam(userName,id);
+        Assert.assertTrue(t.isPublic());
     }
 
     @Test
