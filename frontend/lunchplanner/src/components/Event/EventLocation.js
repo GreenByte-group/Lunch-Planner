@@ -1,10 +1,13 @@
 import React from "react"
 import moment from "moment"
-import {Card, CardContent, ListItem, withStyles, Avatar, List} from "@material-ui/core";
+import {Card, CardContent, ListItem, withStyles, Avatar, List, Button} from "@material-ui/core";
 import {Schedule, Today} from "@material-ui/icons";
 import AcceptedButton from "./AcceptedButton";
 import InvitedButton from "./InvitedButton";
 import {Link} from "react-router-dom";
+import {getHistory} from "../../utils/HistoryUtils";
+import {eventListNeedReload} from "./EventContainer";
+import {replyToEvent} from "./EventFunctions";
 
 const styles = {
     card: {
@@ -12,7 +15,13 @@ const styles = {
         '&:hover': {
             textDecoration: 'none',
         },
-        height: '88px',
+    },
+    cardContent: {
+        display: 'flex',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        flexDirection: 'column',
+        paddingBottom: '5px !important',
     },
     link: {
         '&:hover': {
@@ -67,11 +76,6 @@ const styles = {
     icons: {
         width: '13px',
         height: 'auto',
-    },
-    cardContent: {
-        display: 'table',
-        marginLeft: 'auto',
-        marginRight: 'auto',
     },
     memberAvatar:{
         marginRight: 5,
@@ -190,6 +194,18 @@ class EventLocation extends React.Component {
         }
     }
 
+    onJoinLeaveClick = () => {
+        if(this.state.accepted) {
+            replyToEvent(this.state.id, 'reject', () => {
+                eventListNeedReload();
+            });
+        } else {
+            replyToEvent(this.state.id, 'accept', () => {
+                eventListNeedReload();
+            });
+        }
+    };
+
     render() {
         const {classes} = this.props;
 
@@ -210,6 +226,10 @@ class EventLocation extends React.Component {
         let classesText = classes.text;
         if(accepted)
             classesText = classes.textSelected;
+
+        let textJoin = 'join';
+        if(accepted)
+            textJoin = 'leave';
 
         let memberCounter = 0;
 
@@ -250,6 +270,9 @@ class EventLocation extends React.Component {
                                             })}
                                         </div>
                                     </List>
+                                </div>
+                                <div className={classes.joinButtonContainer}>
+                                    <Button onClick={this.onJoinLeaveClick}>{textJoin}</Button>
                                 </div>
                             </CardContent>
                         </Card>
