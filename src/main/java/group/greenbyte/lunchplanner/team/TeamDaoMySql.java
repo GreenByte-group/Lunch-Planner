@@ -139,7 +139,7 @@ public class TeamDaoMySql implements TeamDao {
                     new BeanPropertyRowMapper<>(TeamDatabase.class),
                     "%" + searchword + "%",
                     "%" + searchword + "%",
-                    0);
+                    1);
 
             List<Team> teamsReturn = new ArrayList<>(teams.size());
             for(TeamDatabase teamDatabase: teams) {
