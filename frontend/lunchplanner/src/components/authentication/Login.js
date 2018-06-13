@@ -90,7 +90,8 @@ class Login extends React.Component {
             }
         });
 
-        event.preventDefault();
+        if(event)
+            event.preventDefault();
     }
 
     handleChange = prop => event => {
@@ -103,6 +104,12 @@ class Login extends React.Component {
 
     handleClickShowPassword = () => {
         this.setState({ showPassword: !this.state.showPassword });
+    };
+
+    keyPress = (e) => {
+        if(e.keyCode === 13){
+            this.handleSubmit();
+        }
     };
 
     render() {
@@ -155,6 +162,7 @@ class Login extends React.Component {
                             type={this.state.showPassword ? 'text' : 'password'}
                             value={this.state.password}
                             onChange={this.handleInputChange}
+                            onKeyDown={this.keyPress}
                             endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton

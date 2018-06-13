@@ -86,6 +86,12 @@ class Registration extends React.Component {
         });
     }
 
+    keyPress = (e) => {
+        if(e.keyCode === 13){
+            this.handleSubmit();
+        }
+    };
+
     handleSubmit(event) {
         if(this.state.username && this.state.password && this.state.email) {
             register(this.state.username, this.state.email, this.state.password,
@@ -112,7 +118,8 @@ class Registration extends React.Component {
             })
         }
 
-        event.preventDefault();
+        if(event)
+            event.preventDefault();
     }
 
     render() {
@@ -123,9 +130,6 @@ class Registration extends React.Component {
         if(this.state.username && this.state.password && this.state.email && this.state.checkbox) {
             disabled = false;
         }
-
-        console.log('state: ', this.state);
-        console.log('disabled: ', disabled);
 
         return (
             <div className={classes.root}>
