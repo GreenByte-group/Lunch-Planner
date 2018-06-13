@@ -113,6 +113,7 @@ class App extends React.Component {
                             <PrivateRoute path="/app/team/:teamId(\d+)" component={TeamScreen} />
                             <PrivateRoute path="/app/team/:teamId(\d+)/invite" component={SelectUserScreen} />
                             <PrivateRoute path="/app/event/create" component={CreateEventScreen} />
+                            <PrivateRoute path="/app/event/create/map" component={NewMap} />
                             <PrivateRoute path="/app/event/create/invite" component={SelectUserScreen} />
                             <PrivateRoute path="/app/event/:eventId(\d+)/invite" component={SelectUserScreen} />
                             <PrivateRoute path="/app/event/:eventId(\d+)" component={EventScreen} />

@@ -74,6 +74,7 @@ export function createEvent(location, date, member, visible, responseFunc, error
 
     let timeEnd = date.getTime();
     let url =  HOST + '/event';
+    console.log('location: ', location);
     axios.post(url, {name: location, description: "", location : location, timeStart: date, visible: visible})
         .then((response) => {
             if(response.status === 201) {
