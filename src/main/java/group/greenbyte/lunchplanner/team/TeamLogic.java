@@ -58,7 +58,6 @@ public class TeamLogic {
      */
     int createTeamWithoutParent(String userName, String teamName, String description, boolean isPublic) throws HttpRequestException {
         checkParams(userName, teamName, description);
-
         try {
             return teamdao.insertTeam(teamName, description, userName, isPublic);
         } catch(DatabaseException d){

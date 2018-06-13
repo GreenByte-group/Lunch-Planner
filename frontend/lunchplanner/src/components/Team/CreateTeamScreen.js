@@ -88,7 +88,7 @@ class CreateTeamScreen extends React.Component {
             error: "",
             name: "",
             description: "",
-            secret: false,
+            secret: true,
             invitedUsers: params.get('invitedUsers') || [],
             invitedTeams: params.get('invitedTeams') || [],
             invitedTeamMember: params.get('teamMember') || [],
@@ -144,10 +144,11 @@ class CreateTeamScreen extends React.Component {
 
     handleAccept = () => {
         let invitedUsers = this.state.invitedUsers + "," + this.state.invitedTeamMember;
-
+        console.log( "secret",this.state.secret);
         createTeamWithParent(this.state.name, this.state.description, this.state.parentTeam,
             invitedUsers, !this.state.secret,
             (response) => {
+            console.log(!this.state.secret);
                 if(response.status === 201) {
                     teamListNeedReload();
                     getHistory().push('/app/team');
@@ -169,6 +170,7 @@ class CreateTeamScreen extends React.Component {
 
     handleVisibility = name => event =>{
         this.setState({ [name]: event.target.checked });
+        console.log("secret",this.state.secret)
     };
 
     handleChange = (event) => {
@@ -300,7 +302,7 @@ class CreateTeamScreen extends React.Component {
                         <FormHelperText
                             style={{margin: 0}}
                         >
-                            Only visible to invited members.
+                            If not secret, the team is visible for all users
                         </FormHelperText>
                     </div>
                 </div>

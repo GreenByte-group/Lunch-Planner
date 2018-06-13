@@ -1,10 +1,5 @@
 package group.greenbyte.lunchplanner.team.database;
 
-import group.greenbyte.lunchplanner.event.database.EventTeamVisible;
-
-import javax.persistence.*;
-import java.util.Set;
-
 public class TeamDatabase {
 
     private int teamId;
@@ -24,7 +19,7 @@ public class TeamDatabase {
         Team team = new Team();
         team.setTeamName(teamName);
         team.setDescription(description);
-        team.setPublic(isPublic);
+        team.setIsPublic(isPublic);
         team.setTeamId(teamId);
 
         return team;
@@ -42,7 +37,7 @@ public class TeamDatabase {
         return isPublic;
     }
 
-    public void setPublic(boolean aPublic) {
+    public void setIsPublic(boolean aPublic) {
         isPublic = aPublic;
     }
 
