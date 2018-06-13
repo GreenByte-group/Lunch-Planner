@@ -8,13 +8,22 @@ import {getUsername, setAuthenticationHeader} from "../authentication/LoginFunct
 import {getHistory} from "../../utils/HistoryUtils"
 import {Https as SecretIcon} from "@material-ui/icons";
 import UserList from "../User/UserList";
-import {getTeam, changeTeamDescription, changeTeamName, removeUserFromTeam, inviteMemberToTeam} from "./TeamFunctions";
+import {
+    getTeam,
+    changeTeamDescription,
+    changeTeamName,
+    removeUserFromTeam,
+    inviteMemberToTeam,
+    joinTeam,
+    leaveTeam
+} from "./TeamFunctions";
 import {teamListNeedReload} from "./TeamList";
 import TextFieldEditing from "../editing/TextFieldEditing";
 import axios from "axios";
 import {HOST} from "../../Config";
 import {Link} from "react-router-dom";
 import {Add} from "@material-ui/icons";
+import {eventListNeedReload} from "../Event/EventContainer";
 
 
 function Transition(props) {
@@ -256,18 +265,35 @@ class TeamScreen extends React.Component {
         this.setState({
            people: people,
         });
-        this.sendAnswer();
+        this.sendAnswer("leave");
     };
 
-    sendAnswer = () => {
-        let url = HOST + '/team/' + this.state.teamId + '/leave';
-        let config = {
-            headers: {
-                'Content-Type': 'text/plain',
-            }
-        };
-        axios.delete(url,config)
-            .then(this.reloadTeamsOnSuccess);
+    handleJoin = () => {
+        console.log("handleJoin")
+        getHistory().push("/app/team");
+        let people = this.state.people;
+        people.push(getUsername());
+        this.setState({
+            people: people,
+        });
+        this.sendAnswer("join");
+    };
+
+    sendAnswer = (answer) => {
+        console.log(answer)
+        if(answer === "leave"){
+            console.log(answer)
+            leaveTeam(this.state.teamId, () => {
+                teamListNeedReload();
+            })
+        }else if(answer === "join"){
+            console.log(answer)
+            joinTeam(this.state.teamId, () => {
+                this.loadTeam(this.state.teamId);
+                teamListNeedReload();
+            })
+        }
+
     };
 
     onTitleChanged = (event) => {
@@ -338,10 +364,12 @@ class TeamScreen extends React.Component {
         let selectedUsers = [];
         let buttonText = "Join Team";
         let username = getUsername();
+        let isInTeam = false;
 
         people.forEach((listValue) => {
             if(listValue.userName === username) {
                 buttonText = "Leave Team";
+                isInTeam = true;
             }
         });
 
@@ -402,12 +430,22 @@ class TeamScreen extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <Button variant="raised"
-                    color="secondary"
-                    onClick={this.handleLeave}
-                    className={classes.button}>
-                    {buttonText}
-                </Button>
+                    {isInTeam?
+                        <Button variant="raised"
+                                        color="secondary"
+                                        onClick={this.handleLeave}
+                                        className={classes.button}>
+                        {buttonText}
+                    </Button>
+                    :
+                        <Button variant="raised"
+                                color="secondary"
+                                onClick={this.handleJoin}
+                                className={classes.button}>
+                            {buttonText}
+                        </Button>
+                    }
+
                 </Dialog>}
             </div>
         );
