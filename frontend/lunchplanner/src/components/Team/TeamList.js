@@ -63,7 +63,6 @@ class TeamList extends React.Component {
     loadTeams(search){
         getTeams(this.props.search,
             (response) => {
-            console.log("teams")
                 this.setState({
                     teams: response.data,
                     loading: false,
