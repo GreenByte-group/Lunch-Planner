@@ -65,26 +65,30 @@ class App extends React.Component {
 
         setHistory(createHistory(props));
 
-        init(() => {
-            console.log('notificaton: success');
-        }, (error) => {
-            console.log('notificaton: error: ', error);
-        }, (message) => {
-            console.log('notificaton: message: ', message);
-            let notificationTitle = message.data.title;
-            let notificationOptions = {
-                body: message.data.body,
-                icon: message.data.icon,
-                tag: message.data.tag,
-                click_action: message.data.tag,
-            };
+        try {
+            init(() => {
+                console.log('notificaton: success');
+            }, (error) => {
+                console.log('notificaton: error: ', error);
+            }, (message) => {
+                console.log('notificaton: message: ', message);
+                let notificationTitle = message.data.title;
+                let notificationOptions = {
+                    body: message.data.body,
+                    icon: message.data.icon,
+                    tag: message.data.tag,
+                    click_action: message.data.tag,
+                };
 
-            let notification = new Notification(notificationTitle, notificationOptions);
-            notification.addEventListener('click', (event) => {
-                console.log('click', event);
-                getHistory().push("/app" + event.target.tag);
-            })
-        });
+                let notification = new Notification(notificationTitle, notificationOptions);
+                notification.addEventListener('click', (event) => {
+                    console.log('click', event);
+                    getHistory().push("/app" + event.target.tag);
+                })
+            });
+        } catch(e) {
+            console.log('init failed: ', e);
+        }
     }
 
     render() {
