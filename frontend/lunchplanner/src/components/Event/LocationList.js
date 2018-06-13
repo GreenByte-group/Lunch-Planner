@@ -149,7 +149,7 @@ class LocationList extends React.Component {
                     })
                     }
                 </List>
-                <Link to={{pathname:'/event/create'}}>
+                <Link to={{pathname:'/app/event/create'}}>
                     <FloatingActionButton />
                 </Link>
             </div>);
