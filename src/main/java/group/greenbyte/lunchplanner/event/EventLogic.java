@@ -128,6 +128,21 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Location is too long, maximum length: " + Event.MAX_LOCATION_LENGTH);
 
         try {
+            //check if there is an event with the same name and start date
+            List<Event> events = eventDao.getAllEvents();
+
+            for (Event event : events) {
+                if (event.getEventName().equals(eventName) && timeStart.compareTo(event.getStartDate()) == 0) {
+                    List<EventInvitationDataForReturn> eventInvitations = eventDao.getInvitations(event.getEventId());
+                    for (EventInvitationDataForReturn eventInvitation : eventInvitations) {
+                        //TODO test if same location too?
+                        if (eventInvitation.getUserName().equals(userName) && eventInvitation.isAdmin()) {
+                            throw new HttpRequestException(HttpStatus.NOT_ACCEPTABLE.value(), "You already created an event with the same name and start date");
+                        }
+                    }
+                }
+            }
+
             Integer eventId = eventDao.insertEvent(userName, eventName, eventDescription, location, timeStart, visible)
                     .getEventId();
 

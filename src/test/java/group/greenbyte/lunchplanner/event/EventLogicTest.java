@@ -185,6 +185,12 @@ public class EventLogicTest {
                 new Date(timeStart));
     }
 
+    @Test(expected = HttpRequestException.class)
+    public void test9createEventDuplicates() throws Exception {
+        eventLogic.createEvent(userName, eventName, eventDescription, location, new Date(eventTimeStart + 100000));
+        eventLogic.createEvent(userName, eventName, eventDescription, location, new Date(eventTimeStart + 100000));
+    }
+
     // ------------------ GET ONE EVENT -------------------
     @Test
     public void test1GetEvent() throws Exception {
