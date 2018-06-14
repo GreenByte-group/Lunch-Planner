@@ -1,15 +1,7 @@
 import * as firebase from "firebase";
 import {setAuthenticationHeader} from "../authentication/LoginFunctions";
 import {sendTokenToServer} from "./NotificationFunctions";
-
-const config = {
-    apiKey: "AIzaSyDyuySWwkXgZDrLnO0gX9bmGpR7XAHnngE",
-    authDomain: "lunch-planner-ac676.firebaseapp.com",
-    databaseURL: "https://lunch-planner-ac676.firebaseio.com",
-    projectId: "lunch-planner-ac676",
-    storageBucket: "lunch-planner-ac676.appspot.com",
-    messagingSenderId: "573276863547"
-};
+import {configFirebase, publicKey} from '../../Config';
 
 // Retrieve Firebase Messaging object.
 let messaging;
@@ -26,12 +18,12 @@ export function init(success, error, onMessage) {
     setAuthenticationHeader();
 
     // Initialize Firebase
-    firebase.initializeApp(config);
+    firebase.initializeApp(configFirebase);
 
     messaging = firebase.messaging();
 
     // Add the public key generated from the console here.
-    messaging.usePublicVapidKey("BFnHe7da5hcIYsv_Eno8pY6ws4wBWh7iqJAFTHAvWe4gZ8Qs59JBH9tL0YRI_IZOjzhaND0UY3DhAu5yeaWxn4c");
+    messaging.usePublicVapidKey(publicKey);
 
     // Callback fired if Instance ID token is updated.
     messaging.onTokenRefresh(() => {
