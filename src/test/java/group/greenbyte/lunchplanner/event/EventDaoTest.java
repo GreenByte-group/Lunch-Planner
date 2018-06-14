@@ -78,7 +78,7 @@ public class EventDaoTest {
 
     @Test
     public void test1insertEventLongDescription() throws Exception {
-        String eventName = createString(50);
+        String eventName = createString(255);
         String description = createString(1000);
         long timeStart = System.currentTimeMillis() + 10000;
         long timeEnd = timeStart + 10000;
@@ -102,7 +102,7 @@ public class EventDaoTest {
     @Test(expected = DatabaseException.class)
     public void test2insertEventTooLongUserName() throws Exception {
         String userName = createString(51);
-        String eventName = createString(50);
+        String eventName = createString(255);
         String description = "";
 
         long timeStart = System.currentTimeMillis() + 10000;
@@ -114,7 +114,7 @@ public class EventDaoTest {
     @Test(expected = DatabaseException.class)
     public void test3insertEventTooLongEventName() throws Exception {
         String userName = createString(50);
-        String eventName = createString(51);
+        String eventName = createString(256);
         String description = "";
         long timeStart = System.currentTimeMillis() + 10000;
 
@@ -125,7 +125,7 @@ public class EventDaoTest {
     @Test(expected = DatabaseException.class)
     public void test4insertEventTooLongDescription() throws Exception {
         String userName = createString(50);
-        String eventName = createString(50);
+        String eventName = createString(255);
         String description = createString(1001);
         long timeStart = System.currentTimeMillis() + 10000;
         long timeEnd = timeStart + 10000;
@@ -139,7 +139,7 @@ public class EventDaoTest {
     // Event name
     @Test
     public void updateEventName() throws Exception {
-        String eventName = createString(50);
+        String eventName = createString(255);
 
         eventDao.updateEventName(eventId, eventName);
 
@@ -150,7 +150,7 @@ public class EventDaoTest {
 
     @Test(expected = DatabaseException.class)
     public void updateEventNameTooLong() throws Exception {
-        String eventName = createString(51);
+        String eventName = createString(256);
 
         eventDao.updateEventName(eventId, eventName);
     }
@@ -262,13 +262,13 @@ public class EventDaoTest {
     //all public
     @Test
     public void test1SearchPublicEventsShouldBeZero() throws Exception {
-        String searchWord = createString(50);
+        String searchWord = createString(255);
         List<Event> events = eventDao.findPublicEvents(searchWord);
         Assert.assertEquals(0, events.size());
     }
     @Test
     public void test2SearchPublicEvents() throws Exception {
-        String newEventName = createString(50);
+        String newEventName = createString(255);
         int publicEventId = createEvent(eventLogic, userName, newEventName, eventDescription, location, new Date(eventTimeStart));
         setEventPublic(eventDao, publicEventId);
         String searchWord = newEventName;
@@ -281,7 +281,7 @@ public class EventDaoTest {
     public void test1SearchForTeam() throws Exception {
         int teamId = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
 
-        String newEventName = createString(50);
+        String newEventName = createString(255);
         int newEventId = createEvent(eventLogic, userName, newEventName, createString(50), location, new Date(eventTimeStart));
         eventDao.addTeamToEvent(newEventId, teamId);
 
@@ -292,13 +292,10 @@ public class EventDaoTest {
     @Test
     public void test1SearchForTeam2() throws Exception {
         int teamId = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
-        int teamId2 = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
 
-        String newEventName = createString(50);
+        String newEventName = createString(255);
         int newEventId = createEvent(eventLogic, userName, newEventName, createString(50), location, new Date(eventTimeStart));
-        int newEventId2 = createEvent(eventLogic, userName, newEventName, createString(50), location, new Date(eventTimeStart));
         eventDao.addTeamToEvent(newEventId, teamId);
-        eventDao.addTeamToEvent(newEventId2, teamId2);
 
         List<Event> events = eventDao.findEventsForTeam(teamId, newEventName);
         Assert.assertEquals(1, events.size());
