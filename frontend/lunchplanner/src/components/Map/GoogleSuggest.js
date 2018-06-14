@@ -28,7 +28,11 @@ export class GoogleSuggest extends React.Component {
             search: "",
             value: props.value,
             onChange: props.onChange,
-        }
+        };
+    }
+
+    componentDidMount() {
+        this.handleSelect(this.props.value);
     }
 
     handleChange = (address) => {
@@ -52,6 +56,8 @@ export class GoogleSuggest extends React.Component {
     render() {
         const {classes} = this.props;
         const {search, value} = this.state;
+
+        console.log('state', this.state);
 
         return (
             <div
