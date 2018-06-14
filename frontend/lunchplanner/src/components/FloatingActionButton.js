@@ -89,7 +89,8 @@ class FloatingActionButton extends React.Component {
                 showActions: !this.state.showActions,
             });
         } else {
-            this.props.onClick();
+            if(this.props.onClick)
+                this.props.onClick();
         }
     };
 
