@@ -39,6 +39,7 @@ export class NewMap extends React.Component {
     constructor(props) {
         super();
 
+        console.log('query', props.location.query);
         if(props.location.query && props.location.query.lat && props.location.query.lng) {
             this.state = {
                 isMarkerShown: true,
@@ -74,8 +75,8 @@ export class NewMap extends React.Component {
            navigator.geolocation.getCurrentPosition(
                position => {
                    this.setState({
-                       lat: position.coords.latitude,
-                       lng: position.coords.longitude
+                       defaultLat: position.coords.latitude,
+                       defaultLng: position.coords.longitude
                    });
                },
                error => console.log(error)
@@ -85,11 +86,11 @@ export class NewMap extends React.Component {
 
 
     render() {
-        let lat = this.state.lat || 49.4874592;
-        let lng = this.state.lng || 8.466039499999965;
-        let showMarker = this.state.isMarkerShown && this.state.lat && this.state.lng;
+        let lat = this.state.lat || this.state.defaultLat || 49.4874592;
+        let lng = this.state.lng || this.state.defaultLng || 8.466039499999965;
+        let showMarker = !!(this.state.isMarkerShown && this.state.lat && this.state.lng);
 
-        console.log('render newmap:');
+        console.log('render newmap show:', showMarker);
 
         return (
             <Dialog
