@@ -143,6 +143,8 @@ class CreateEventScreen extends React.Component {
         super();
         const params = new URLSearchParams(props.location.search);
 
+        console.log('location: ', params.get('location'));
+
         let defaultDate = moment().add(30, 'm').toDate();
 
         this.state = {
@@ -153,10 +155,9 @@ class CreateEventScreen extends React.Component {
             invitedUsers: params.get('invitedUsers') || [],
             invitedTeams: params.get('invitedTeams') || [],
             invitedTeamMember: params.get('teamMember') || [],
-            location: params.get('location') || "",
             error: "",
             privateLocation: false,
-            locationText: '',
+            locationText: params.get('location') || "",
         };
     }
 
@@ -256,15 +257,11 @@ class CreateEventScreen extends React.Component {
     };
 
     handleLocationChange= (location) => {
+        console.log('handle location change');
+
         this.setState({
             locationText: location,
         });
-    };
-
-    privateLocationChange = (event) => {
-        this.setState({
-            locationText: event.target.value,
-        })
     };
 
     render() {
@@ -304,7 +301,7 @@ class CreateEventScreen extends React.Component {
                                     className={classes.searchboxField}
                                     id="location"
                                     label="Location"
-                                    value={this.state.location}
+                                    value={this.state.locationText}
                                     placeholder="Add an Location ..."
                                     float="left"
                                     onChange={this.handleLocationChange}

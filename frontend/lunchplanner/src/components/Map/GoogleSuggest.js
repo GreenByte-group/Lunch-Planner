@@ -1,6 +1,4 @@
 import React from   "react"
-import GoogleMapLoader from "react-google-maps-loader"
-import GooglePlacesSuggest from "react-google-places-suggest"
 import { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete'
 import PlacesAutocomplete from 'react-places-autocomplete'
 import {Input, withStyles} from "@material-ui/core"
@@ -28,7 +26,7 @@ export class GoogleSuggest extends React.Component {
         super();
         this.state = {
             search: "",
-            value: "",
+            value: props.value,
             onChange: props.onChange,
         }
     }
@@ -80,6 +78,7 @@ export class GoogleSuggest extends React.Component {
                                     className: 'location-search-input'
                                 })}
                                 fullWidth
+                                defaultValue={this.state.value}
                             />
                             <div className="autocomplete-dropdown-container">
                                 {suggestions.map(suggestion => {
