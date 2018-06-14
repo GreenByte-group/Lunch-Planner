@@ -210,7 +210,7 @@ public class TeamController {
      *
      * @return nothing or an error message
      */
-    @RequestMapping(value = "/{teamId}/description", method = RequestMethod.PUT,
+    @RequestMapping(value = "/{teamId}/description", method = RequestMethod.POST,
             consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     public String updateDescription(@PathVariable("teamId") int teamId, @RequestBody String description, HttpServletResponse response) {
         try {
@@ -221,6 +221,26 @@ public class TeamController {
             return e.getErrorMessage();
         }
 
+        return "";
+    }
+
+    /**
+     * Join a public team
+     *
+     * @param teamId id of the public team
+     * @param response response channel
+     * @return
+     */
+    @RequestMapping(value = "/{teamId}/join", method = RequestMethod.POST,
+            produces = MediaType.TEXT_PLAIN_VALUE)
+    public String joinPublicTeam(@PathVariable("teamId") int teamId, HttpServletResponse response) {
+        try {
+            teamlogic.joinPublicTeam(SessionManager.getUserName(), teamId);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch(HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
         return "";
     }
 

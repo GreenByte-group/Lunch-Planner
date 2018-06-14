@@ -9,7 +9,6 @@ import PeopleIcon from '@material-ui/icons/People'
 import {getHistory} from "../../utils/HistoryUtils";
 import {Link} from "react-router-dom";
 import {FormControlLabel, FormHelperText, InputAdornment, Switch, InputLabel, FormControl} from "@material-ui/core";
-import {eventListNeedReload} from "../Event/EventContainer";
 import {createTeam, createTeamWithParent, getTeams} from "./TeamFunctions";
 import {setAuthenticationHeader} from "../authentication/LoginFunctions";
 import {teamListNeedReload} from "./TeamList";

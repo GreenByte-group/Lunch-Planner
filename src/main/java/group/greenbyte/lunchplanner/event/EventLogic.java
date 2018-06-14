@@ -128,6 +128,21 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Location is too long, maximum length: " + Event.MAX_LOCATION_LENGTH);
 
         try {
+            //check if there is an event with the same name and start date
+            List<Event> events = eventDao.getAllEvents();
+
+            for (Event event : events) {
+                if (event.getEventName().equals(eventName) && timeStart.compareTo(event.getStartDate()) == 0) {
+                    List<EventInvitationDataForReturn> eventInvitations = eventDao.getInvitations(event.getEventId());
+                    for (EventInvitationDataForReturn eventInvitation : eventInvitations) {
+                        //TODO test if same location too?
+                        if (eventInvitation.getUserName().equals(userName) && eventInvitation.isAdmin()) {
+                            throw new HttpRequestException(HttpStatus.NOT_ACCEPTABLE.value(), "You already created an event with the same name and start date");
+                        }
+                    }
+                }
+            }
+
             Integer eventId = eventDao.insertEvent(userName, eventName, eventDescription, location, timeStart, visible)
                     .getEventId();
 
@@ -478,10 +493,13 @@ public class EventLogic {
                 throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + eventId + "was not found");
 
 
-
-            if(!hasUserPrivileges(eventId, userName))
-                if(!hasAdminPrivileges(eventId, userName))
+            // if the user doesn't have rights to access an event, they can only comment if the event is public.
+            if(!hasUserPrivileges(eventId, userName)) {
+                Event e = getEvent(userName, eventId);
+                if(!e.isPublic()) {
                     throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");
+                }
+            }
 
             eventDao.putCommentForEvent(userName,eventId, comment);
 

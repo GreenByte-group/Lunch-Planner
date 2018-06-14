@@ -39,17 +39,12 @@ export class NewMap extends React.Component {
     constructor(props) {
         super();
 
-        if(props.location.query && props.location.query.location && props.location.query.location.geometry) {
-            let location = props.location.query.location;
-
-            console.log('lat: ', location.geometry.location.lat());
-            console.log('lat: ', location.geometry.location.lng());
-
+        if(props.location.query && props.location.query.lat && props.location.query.lng) {
             this.state = {
                 isMarkerShown: true,
                 open: true,
-                lat: location.geometry.location.lat(),
-                lng: location.geometry.location.lng(),
+                lat: props.location.query.lat,
+                lng: props.location.query.lng,
             };
         } else {
             this.state = {

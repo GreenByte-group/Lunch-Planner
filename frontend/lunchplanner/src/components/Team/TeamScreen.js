@@ -8,16 +8,13 @@ import {getUsername, setAuthenticationHeader} from "../authentication/LoginFunct
 import {getHistory} from "../../utils/HistoryUtils"
 import {Https as SecretIcon} from "@material-ui/icons";
 import UserList from "../User/UserList";
-import {getTeam, replyToTeam, changeTeamDescription, changeTeamName, removeUserFromTeam} from "./TeamFunctions";
+import {getTeam, changeTeamDescription, changeTeamName, removeUserFromTeam, inviteMemberToTeam} from "./TeamFunctions";
 import {teamListNeedReload} from "./TeamList";
 import TextFieldEditing from "../editing/TextFieldEditing";
 import axios from "axios";
 import {HOST} from "../../Config";
-
 import {Link} from "react-router-dom";
 import {Add} from "@material-ui/icons";
-import {inviteMemberToTeam} from "./TeamFunctions";
-import {eventListNeedReload} from "../Event/EventContainer";
 
 
 function Transition(props) {
@@ -252,7 +249,7 @@ class TeamScreen extends React.Component {
     };
 
     handleLeave = () => {
-        getHistory().push("/app/team?tab=1");
+        getHistory().push("/app/team");
         let people = this.state.people;
         let index = people.indexOf(getUsername());
         people.splice(index, 1);
@@ -264,9 +261,13 @@ class TeamScreen extends React.Component {
 
     sendAnswer = () => {
         let url = HOST + '/team/' + this.state.teamId + '/leave';
-        teamListNeedReload();
-        axios.delete(url)
-            .then();
+        let config = {
+            headers: {
+                'Content-Type': 'text/plain',
+            }
+        };
+        axios.delete(url,config)
+            .then(this.reloadTeamsOnSuccess);
     };
 
     onTitleChanged = (event) => {
@@ -286,6 +287,7 @@ class TeamScreen extends React.Component {
     };
 
     reloadTeamsOnSuccess = (response) => {
+        console.log("reload", response.status)
         if(response.status === 204) {
             teamListNeedReload();
         }
@@ -354,7 +356,7 @@ class TeamScreen extends React.Component {
                     :
                 <Dialog
                     title={name}
-                    closeUrl="/app/team?tab=1"
+                    closeUrl="/app/team"
                 >
                     <div className={classes.overButton}>
                         <div className={classes.content}>
