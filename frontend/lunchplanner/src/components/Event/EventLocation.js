@@ -1,11 +1,7 @@
 import React from "react"
 import moment from "moment"
-import {Card, CardContent, ListItem, withStyles, Avatar, List, Button} from "@material-ui/core";
-import {Schedule, Today} from "@material-ui/icons";
-import AcceptedButton from "./AcceptedButton";
-import InvitedButton from "./InvitedButton";
+import {Card, CardContent, ListItem, withStyles, Avatar, List, Button, CardActions} from "@material-ui/core";
 import {Link} from "react-router-dom";
-import {getHistory} from "../../utils/HistoryUtils";
 import {eventListNeedReload} from "./EventContainer";
 import {replyToEvent} from "./EventFunctions";
 
@@ -85,6 +81,10 @@ const styles = {
     row: {
         display: 'flex',
         justifyContent: 'center',
+    },
+    joinButton: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
     },
 };
 
@@ -198,10 +198,16 @@ class EventLocation extends React.Component {
         if(this.state.accepted) {
             replyToEvent(this.state.id, 'reject', () => {
                 eventListNeedReload();
+                this.setState({
+                    accepted: false,
+                })
             });
         } else {
             replyToEvent(this.state.id, 'accept', () => {
                 eventListNeedReload();
+                this.setState({
+                    accepted: true,
+                })
             });
         }
     };
@@ -234,19 +240,18 @@ class EventLocation extends React.Component {
         let memberCounter = 0;
 
         return (
-            <div >
-                <Link className={classes.link} to={{pathname:`/app/event/${this.state.id}`, query:{
-                        eventName: name,
-                        description: description,
-                        date: date,
-                        people: invitations,
-                        accepted: accepted,
-                        location:location,
-                        token: token,
-                    }}}>
-
-                    <div className={classes.listItem}>
-                        <Card className={classes.card}>
+            <div>
+                <div className={classes.listItem}>
+                    <Card className={classes.card}>
+                        <Link className={classes.link} to={{pathname:`/app/event/${this.state.id}`, query:{
+                                eventName: name,
+                                description: description,
+                                date: date,
+                                people: invitations,
+                                accepted: accepted,
+                                location:location,
+                                token: token,
+                            }}}>
                             <CardContent className={classes.cardContent}>
                                 <div className={classesText}>
                                     <p className={classes.title}> {time}</p>
@@ -271,14 +276,14 @@ class EventLocation extends React.Component {
                                         </div>
                                     </List>
                                 </div>
-                                <div className={classes.joinButtonContainer}>
-                                    <Button onClick={this.onJoinLeaveClick}>{textJoin}</Button>
-                                </div>
                             </CardContent>
-                        </Card>
+                        </Link>
+                        <CardActions className={classes.joinButtonContainer}>
+                            <Button className={classes.joinButton} onClick={this.onJoinLeaveClick}>{textJoin}</Button>
+                        </CardActions>
+                    </Card>
 
-                    </div>
-                </Link>
+                </div>
             </div>
         );
     }
