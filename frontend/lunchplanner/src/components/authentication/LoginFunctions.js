@@ -63,12 +63,3 @@ export function doLogin(username, password, responseFunc) {
         })
     }
 }
-
-export function doLogout() {
-    localStorage.removeItem(TOKEN);
-    authentication.isAuthenticated = false;
-    return {
-        type: "IS_NOT_AUTHENTICATED",
-        payload: ''
-    }
-}

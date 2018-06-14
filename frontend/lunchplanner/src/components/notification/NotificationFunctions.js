@@ -61,3 +61,11 @@ export function sendOptions({blockAll, events, teams,
     axios.put(url, data)
         .then(responseFunc)
 }
+
+export function sendTokenToServer(tokenToSend) {
+    let url = HOST + "/user/fcm";
+    axios.post(url, {fcmToken: tokenToSend})
+        .then((response) => {
+        }).catch((error) => {
+    })
+}

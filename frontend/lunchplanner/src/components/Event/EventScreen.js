@@ -527,7 +527,7 @@ class EventScreen extends React.Component {
                     closeUrl="/app/event"
                 >
                     <div className={classes.overButton}>
-                        <div className={classes.image} style={{backgroundImage:"url(" + "https://greenbyte.group/assets/images/logo.png" + ")"}} />
+                        {/*<div className={classes.image} style={{backgroundImage:"url(" + "https://greenbyte.group/assets/images/logo.png" + ")"}} />*/}
                         <div className={classes.header}>
                             <div className={classes.headerText}>
                                 <p className={classes.fontSmall}>Created by {admin}</p>
