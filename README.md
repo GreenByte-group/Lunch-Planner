@@ -37,7 +37,8 @@ backend-server and `FRONTEND_HOST` to the url of your frontend-server.
 #### Notifications
 Push Notifications are send with [Firebase-Cloud-Messaging](https://firebase.google.com/docs/cloud-messaging/).
 To get this work you have to create you an developer account and follow [this](https://firebase.google.com/docs/web/setup)
-instruction to update the fields `configFirebase` and `publicKey` in `src/Config.js`.
+instruction to update the fields `configFirebase` and `publicKey` in `src/Config.js`.   
+Once you have created a Firebase console project and downloaded a JSON file with your service account credentials, save this file as `lunchplanner-private-fcm-config.json` in `src/main/resources`.
 
 #### Content Security Policy
 The frontend is with csp-meta-tags secured to prevent Cross-Side-Scripting. Update this meta-tag
