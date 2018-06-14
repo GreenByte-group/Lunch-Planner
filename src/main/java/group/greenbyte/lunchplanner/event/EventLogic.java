@@ -493,10 +493,13 @@ public class EventLogic {
                 throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + eventId + "was not found");
 
 
-
-            if(!hasUserPrivileges(eventId, userName))
-                if(!hasAdminPrivileges(eventId, userName))
+            // if the user doesn't have rights to access an event, they can only comment if the event is public.
+            if(!hasUserPrivileges(eventId, userName)) {
+                Event e = getEvent(userName, eventId);
+                if(!e.isPublic()) {
                     throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");
+                }
+            }
 
             eventDao.putCommentForEvent(userName,eventId, comment);
 
