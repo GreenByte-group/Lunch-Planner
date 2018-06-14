@@ -1,7 +1,6 @@
 import * as firebase from "firebase";
-import axios from 'axios';
-import {HOST} from "../../Config";
 import {setAuthenticationHeader} from "../authentication/LoginFunctions";
+import {sendTokenToServer} from "./NotificationFunctions";
 
 const config = {
     apiKey: "AIzaSyDyuySWwkXgZDrLnO0gX9bmGpR7XAHnngE",
@@ -14,8 +13,6 @@ const config = {
 
 // Retrieve Firebase Messaging object.
 let messaging;
-
-let token;
 
 let permissionGranted = false;
 
@@ -71,25 +68,11 @@ function getToken(response, error) {
             sendTokenToServer(currentToken);
             response(currentToken);
         } else {
-            token = false;
             permissionGranted = false;
             error('Permission denied');
         }
     }).catch((err) => {
-        token = false;
         console.log(err);
         error('Could not retrieve token from fcm');
     });
-}
-
-function sendTokenToServer(tokenToSend) {
-    token = false;
-
-    let url = HOST + "/user/fcm";
-    axios.post(url, {fcmToken: tokenToSend})
-        .then((response) => {
-        }).catch((error) => {
-    })
-
-    token = tokenToSend;
 }

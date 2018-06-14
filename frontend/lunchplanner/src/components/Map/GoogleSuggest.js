@@ -28,7 +28,11 @@ export class GoogleSuggest extends React.Component {
             search: "",
             value: props.value,
             onChange: props.onChange,
-        }
+        };
+    }
+
+    componentDidMount() {
+        this.handleSelect(this.state.value);
     }
 
     handleChange = (address) => {
@@ -39,7 +43,10 @@ export class GoogleSuggest extends React.Component {
     handleSelect = (address) => {
         this.handleChange(address);
         geocodeByAddress(address)
-            .then(results => getLatLng(results[0]))
+            .then(results => {
+                console.log('result: ', results);
+                return getLatLng(results[0])
+            })
             .then(latLng => {
                 this.setState({
                     lat: latLng.lat,

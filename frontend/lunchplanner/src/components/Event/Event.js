@@ -69,7 +69,6 @@ const styles = {
     textSelected: {
         width: 'auto',
         color: '#75A045',
-        marginLeft: '72px',
     },
     imageDiv: {
         width: '48px',
@@ -238,9 +237,6 @@ class Event extends React.Component {
 
                         <Card className={classes.card}>
                             <CardContent className={classes.cardContent}>
-                                <div className={classes.imageDiv}>
-
-                                </div>
                                 <div className={classesText}>
                                     <p className={classes.title}>{eventName}</p>
                                     <p className={classes.time}>
