@@ -1,26 +1,21 @@
 import React from "react"
 
-import {HOST} from "../../Config"
 import Event from "./EventLocation";
 import List from "@material-ui/core/List";
-import {withStyles} from "@material-ui/core/styles/index";
+import {withStyles, Button} from "@material-ui/core";
 import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
 import {getUsername} from "../authentication/LoginFunctions";
-import {getEvents} from "./EventFunctions";
-import {needReload} from "./EventContainer";
 import Divider from "@material-ui/core/es/Divider/Divider";
 import GPSIcon from "@material-ui/icons/GpsFixed";
 import ListItem from "@material-ui/core/es/ListItem/ListItem";
-import ListItemText from "@material-ui/core/es/ListItemText/ListItemText";
-import ListItemSecondaryAction from "@material-ui/core/es/ListItemSecondaryAction/ListItemSecondaryAction";
-import ListItemIcon from "@material-ui/core/es/ListItemIcon/ListItemIcon";
-import ListSubheader from "@material-ui/core/es/ListSubheader/ListSubheader";
+import {getHistory} from "../../utils/HistoryUtils";
 
 const styles = {
     root: {
         height: '100%',
         fontSize: 16,
+        overflowX: 'auto',
     },
     list: {
         padding: 0,
@@ -31,14 +26,22 @@ const styles = {
     },
     locationText:{
         fontSize: 16,
-        marginTop: 15,
-        marginLeft: 24,
         fontFamily: "Work Sans",
+        marginTop: '5px',
+        whiteSpace: 'nowrap',
+        marginLeft: '5px',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+    },
+    locationAction: {
+        fontSize: 16,
+        fontFamily: "Work Sans",
+        color: '#f29b26',
+        width: '130px',
+        padding: 0,
+        marginTop: '-5px',
     },
     icon:{
-        float: "right",
-        marginTop:-23,
-        marginRight: 24,
         color: "#1EA185",
     },
 };
@@ -67,14 +70,31 @@ class LocationList extends React.Component {
         }
     }
 
-
-
     render() {
         const { classes } = this.props;
         let events = this.state.events || [];
         let locations = [];
         // Sort events with location name
-        events.sort(function(a,b) {return (a.location.toUpperCase() >= b.location.toUpperCase()) ? 1 : ((b.location.toUpperCase() > a.location.toUpperCase()) ? -1 : 0);});
+        events.sort((a,b) => {
+            let aLocation = a.location.toUpperCase();
+            let bLocation = b.location.toUpperCase();
+            let atime = a.startDate;
+            let btime = b.startDate;
+
+            if (aLocation > bLocation)
+                return 1;
+            else if (aLocation < bLocation)
+                return -1;
+            else {
+                if (atime > btime)
+                    return 1;
+                else if (atime < btime)
+                    return -1;
+                else
+                    return 0;
+            }
+        });
+
         for(let i = 0; i < events.length; i++){
             locations.push(events[i].location);
         }
@@ -91,12 +111,45 @@ class LocationList extends React.Component {
             <div className={classes.root}>
                 <List className={classes.list}>
                     {locationsUnique.map((value) => {
+
+                        let createEvent = () => {
+                            getHistory().push("/app/event/create?location=" + value);
+                        };
+
                         let counter = 0;
                         return(
                             <div>
-                                <p className={classes.locationText}>{value}</p>
-                                <GPSIcon className={classes.icon}/>
-                                <ListItem>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        marginLeft: '18px',
+                                        marginTop: '18px',
+                                        marginRight: '18px',
+                                        justifyContent: 'space-between',
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            width: 'calc(100% - 130px)',
+                                            display: 'flex',
+                                            overflow: 'hidden',
+                                        }}
+                                    >
+                                        <GPSIcon className={classes.icon}/>
+                                        <p className={classes.locationText}>{value}</p>
+                                    </div>
+                                    <Button
+                                        size="small"
+                                        className={classes.locationAction}
+                                        onClick={createEvent}
+                                    >
+                                        add event
+                                    </Button>
+                                </div>
+                                <ListItem
+                                    style={{overflowX: 'auto'}}
+                                >
                                     {events.map(function(listValue){
                                         if(value === locations[counter]){
                                             isSameLocation = true;
@@ -116,11 +169,11 @@ class LocationList extends React.Component {
                                             }
                                         });
 
-                                        return (
-                                            <div>
-                                                <div className={classes.row}>
-                                                    {isSameLocation ?
-                                                        (<div>
+                                        if(isSameLocation)
+                                            return (
+                                                <div>
+                                                    <div className={classes.row}>
+                                                        <div>
                                                             <div className={classes.row}>
                                                                 <Event name={listValue.eventName}
                                                                        key={'Event' + listValue.eventId}
@@ -134,13 +187,12 @@ class LocationList extends React.Component {
                                                                        token={listValue.shareToken}
                                                                 />
                                                             </div>
-                                                        </div>)
-                                                        :
-                                                       ""
-                                                    }
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        );
+                                            );
+
+                                        return '';
                                     })}
 
                                 </ListItem>
