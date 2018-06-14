@@ -8,8 +8,8 @@ public class Event {
 
     static final public int MAX_USERNAME_LENGHT = 50;
     static final public int MAX_DESCRITION_LENGTH = 1000;
-    static final public int MAX_EVENTNAME_LENGTH = 50;
-    static final public int MAX_SEARCHWORD_LENGTH = 50;
+    static final public int MAX_EVENTNAME_LENGTH = 255;
+    static final public int MAX_SEARCHWORD_LENGTH = 255;
     static final public int MAX_COMMENT_LENGTH = 100;
     static final public int MAX_LOCATION_LENGTH = 255;
 

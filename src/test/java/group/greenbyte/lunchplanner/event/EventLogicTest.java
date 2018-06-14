@@ -82,7 +82,7 @@ public class EventLogicTest {
 
     @Test
     public void test1createEventNoDescription() throws Exception{
-        String eventName = createString(50);
+        String eventName = createString(255);
         String description = "";
         long timeStart = System.currentTimeMillis() + 10000;
 
@@ -93,7 +93,7 @@ public class EventLogicTest {
 
     @Test
     public void test2createEventLongDescription() throws Exception {
-        String eventName = createString(50);
+        String eventName = createString(255);
         String description = createString(1000);
         long timeStart = System.currentTimeMillis() + 10000;
 
@@ -104,7 +104,7 @@ public class EventLogicTest {
     @Test(expected = HttpRequestException.class)
     public void test3createEventEmptyUserName() throws Exception {
         String userName = "";
-        String eventName = createString(50);
+        String eventName = createString(255);
         String description = "";
         long timeStart = System.currentTimeMillis() + 10000;
 
@@ -115,7 +115,7 @@ public class EventLogicTest {
     @Test(expected = HttpRequestException.class)
     public void test4createEventTooLongUserName() throws Exception {
         String userName = createString(51);
-        String eventName = createString(50);
+        String eventName = createString(255);
         String description = "";
         long timeStart = System.currentTimeMillis() + 10000;
 
@@ -135,7 +135,7 @@ public class EventLogicTest {
 
     @Test(expected = HttpRequestException.class)
     public void test6createEventTooLongEventName() throws Exception {
-        String eventName = createString(51);
+        String eventName = createString(256);
         String description = "";
         long timeStart = System.currentTimeMillis() + 10000;
 
@@ -145,7 +145,7 @@ public class EventLogicTest {
 
     @Test(expected = HttpRequestException.class)
     public void test7createEventTooLongDescription() throws Exception {
-        String eventName = createString(50);
+        String eventName = createString(255);
         String description = createString(1001);
         long timeStart = System.currentTimeMillis() + 10000;
 
@@ -155,7 +155,7 @@ public class EventLogicTest {
 
     @Test(expected = HttpRequestException.class)
     public void test8createEventTimeStartTooEarly() throws Exception {
-        String eventName = createString(50);
+        String eventName = createString(255);
         String description = "";
         long timeStart = System.currentTimeMillis() - 10000;
 
@@ -165,7 +165,7 @@ public class EventLogicTest {
 
     @Test(expected = HttpRequestException.class)
     public void test8createEventLocationEmpty() throws Exception {
-        String eventName = createString(50);
+        String eventName = createString(255);
         String description = "";
         long timeStart = System.currentTimeMillis() + 10000;
         String location = " ";
@@ -176,13 +176,19 @@ public class EventLogicTest {
 
     @Test(expected = HttpRequestException.class)
     public void test8createEventLocationTooLong() throws Exception {
-        String eventName = createString(50);
+        String eventName = createString(255);
         String description = "";
         long timeStart = System.currentTimeMillis() + 10000;
         String location = createString(256);
 
         int result = eventLogic.createEvent(userName, eventName, description, location,
                 new Date(timeStart));
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test9createEventDuplicates() throws Exception {
+        eventLogic.createEvent(userName, eventName, eventDescription, location, new Date(eventTimeStart + 100000));
+        eventLogic.createEvent(userName, eventName, eventDescription, location, new Date(eventTimeStart + 100000));
     }
 
     // ------------------ GET ONE EVENT -------------------
@@ -248,14 +254,14 @@ public class EventLogicTest {
 
     @Test(expected = HttpRequestException.class)
     public void updateEventNameTooLong() throws Exception {
-        String eventName = createString(51);
+        String eventName = createString(256);
 
         eventLogic.updateEventName(userName, eventId, eventName);
     }
 
     @Test(expected = HttpRequestException.class)
     public void updateEventNameOnNotExistingEvent() throws Exception {
-        String eventName = createString(50);
+        String eventName = createString(255);
 
         eventLogic.updateEventName(userName, 10000, eventName);
     }
@@ -532,7 +538,7 @@ public class EventLogicTest {
     public void test2searchEventForUserSearchwordAndUsernameFitIn() throws Exception{
 
         String username = createString(50);
-        String searchword = createString(50);
+        String searchword = createString(255);
 
         eventLogic.searchEventsForUser(username,searchword);
 
@@ -573,7 +579,7 @@ public class EventLogicTest {
     public void test6searchEventForUserSearchwordIsToOLong() throws Exception{
 
         String username = createString(50);
-        String searchword = createString(51);
+        String searchword = createString(256);
 
         eventLogic.searchEventsForUser(username,searchword);
 
