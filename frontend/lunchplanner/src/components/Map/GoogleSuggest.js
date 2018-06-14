@@ -57,8 +57,6 @@ export class GoogleSuggest extends React.Component {
         const {classes} = this.props;
         const {search, value} = this.state;
 
-        console.log('state', this.state);
-
         return (
             <div
                 style={{
