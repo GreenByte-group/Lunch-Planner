@@ -32,7 +32,7 @@ export class GoogleSuggest extends React.Component {
     }
 
     componentDidMount() {
-        this.handleSelect(this.state.value);
+        this.handleSelect(this.props.value);
     }
 
     handleChange = (address) => {
