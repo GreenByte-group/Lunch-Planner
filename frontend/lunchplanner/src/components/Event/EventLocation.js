@@ -188,12 +188,14 @@ class EventLocation extends React.Component {
                         people += ', ' + value.userName;
                     }
 
-                    getProfilePicturePath(value.userName, (response) => {
-                        let stateId = "pic" + value.userName.replace(/\s/g, '');
-                        this.setState({
-                            [stateId]: response.data,
-                        })
-                    });
+                    let stateId = "pic" + value.userName.replace(/\s/g, '');
+                    if(!this.state[stateId]) {
+                        getProfilePicturePath(value.userName, (response) => {
+                            this.setState({
+                                [stateId]: response.data,
+                            })
+                        });
+                    }
                 }
             });
 
