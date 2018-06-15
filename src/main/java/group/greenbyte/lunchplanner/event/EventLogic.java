@@ -135,6 +135,35 @@ public class EventLogic {
 
             scheduleDeleteEvent(eventId);
 
+            //only send notifications if the created event is visible for everyone
+            if(visible) {
+
+                //set notification information
+                User user = userLogic.getUser(userName);
+                String picturePath = user.getProfilePictureUrl();
+                List<User> users = userLogic.getSubscriber(location);
+                String title = "Event created in " + location;
+                String description = String.format("%s created an event in your subscribed location", userName);
+                String linkToClick = "/event/" + eventId;
+
+
+                for (User subscriber : users) {
+                    //save notification
+                    userLogic.saveNotification(subscriber.getUserName(), title, description, userName, linkToClick, picturePath);
+
+                    //send a notification to subscriber 
+                    NotificationOptions notificationOptions = userLogic.getNotificationOptions(subscriber.getUserName());
+                    if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isSubscriptionsBlocked())) {
+                        try {
+                            userLogic.sendNotification(user.getFcmToken(), subscriber.getUserName(), title, description, linkToClick, "");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }
+
             return eventId;
         }catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
