@@ -8,13 +8,15 @@ import DoneIcon from '@material-ui/icons/Done';
 import Button from "@material-ui/core/es/Button/Button";
 import {Link} from "react-router-dom";
 import {getHistory} from "../../utils/HistoryUtils";
+import FloatingActionButton from "../FloatingActionButton";
 
 let MyMapComponent = compose(
     withProps({
         googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyA9g1HmDqPm-H4jF-SUMPAWAEkJRbwnsSw",
-        loadingElement: <div  style={{ height: `80%` }} />,
-        containerElement: <div  style={{ height: `80%` }} />,
-        mapElement: <div  style={{ height: `100%` }} />,
+        loadingElement: <div  style={{ height: `calc(100% - 56px)` }}/>,
+        containerElement: <div  style={{ height: `calc(100% - 56px)` }}/>,
+        mapElement: <div  style={{ height: `100%` }}/>
+
     }),
     withScriptjs,
     withGoogleMap
@@ -100,9 +102,16 @@ export class NewMap extends React.Component {
     }
 
     setLocation = () => {
-        console.log(this.state.lat, this.state.lng, this.state.placeId)
-       this.state.onLocationChange(this.state.lat, this.state.lng, this.state.placeId);
-        getHistory().push(this.props.location.query.source);
+        if(this.state.isMarkerShown){
+            console.log(this.state.lat, this.state.lng, this.state.placeId)
+            this.state.onLocationChange(this.state.lat, this.state.lng, this.state.placeId);
+            getHistory().push(this.props.location.query.source);
+        }else{
+            console.log("AAAAAA")
+        }
+       //  console.log(this.state.lat, this.state.lng, this.state.placeId)
+       // this.state.onLocationChange(this.state.lat, this.state.lng, this.state.placeId);
+       //  getHistory().push(this.props.location.query.source);
     };
 
     render() {
@@ -114,14 +123,6 @@ export class NewMap extends React.Component {
 
         return (
             <Dialog>
-                {/*<Link to={{pathname: "/app/event/create", query: {*/}
-                    {/*source: "/app/event/create/map",*/}
-                        {/*location: this.state,*/}
-                    {/*}}}>*/}
-                <Button onClick={this.setLocation}>
-                    <DoneIcon color='green'/>
-                </Button>
-                {/*</Link>*/}
                 <MyMapComponent
                     isMarkerShown={showMarker}
                     onMarkerClick={this.handleMarkerClick}
@@ -129,6 +130,7 @@ export class NewMap extends React.Component {
                     lat={lat}
                     lng={lng}
                 />
+                <FloatingActionButton onClick={this.setLocation} icon="done" styleRoot={{marginLeft: 'calc(100% - 56px - 15px - 50px)'}}/>
             </Dialog>
         )
     }

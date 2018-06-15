@@ -44,19 +44,17 @@ export class GoogleSuggest extends React.Component {
 
     setLocationChange = (lat, lng, placeId) => {
         if(placeId == undefined || this.state.placeId == null){
-        //     this.setState({
-        //         address: "Type Address In ..."
-        //     })
             const geocode = new Geocode
            .fromLatLng(lat, lng, MY_API_KEY)
                .then((results) =>
-               {console.log(results)
+               {
                     this.setState({
-                        address: results[0].formatted_address,
-                    });
+                        address: results.results[0].formatted_address
                     })
+                   console.log(this.state.address)
+                   this.state.onChange(this.state.address)
+               })
         }else{
-            geocodeByAddress();
             geocodeByPlaceId(placeId)
                 .then((results) =>
                 {
@@ -143,7 +141,7 @@ export class GoogleSuggest extends React.Component {
 
                 >
                     <MapIcon disabled={false} className={classes.mapIcon} />
-                    <span>View on Map</span>
+                    <span>Search on Map</span>
                 </Link>
             </div>
         )

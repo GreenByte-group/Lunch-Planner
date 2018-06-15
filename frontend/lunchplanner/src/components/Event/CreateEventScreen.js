@@ -259,10 +259,11 @@ class CreateEventScreen extends React.Component {
     };
 
     handleLocationChange= (location) => {
-        console.log('handle location change');
+
         this.setState({
             locationText: location,
         });
+        console.log(location);
     };
 
     render() {
