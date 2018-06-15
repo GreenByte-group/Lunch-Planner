@@ -182,7 +182,7 @@ public class UserController {
      * @param location
      * @return
      */
-    @RequestMapping(value ="/subscribe/{location}", method = RequestMethod.GET,
+    @RequestMapping(value ="/subscribe/location/{location}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity getSubscriber(@PathVariable("location") String location) {
@@ -205,11 +205,31 @@ public class UserController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "subscribe/{username}", method = RequestMethod.POST)
+    @RequestMapping(value = "/subscribe/{username}", method = RequestMethod.POST)
     public String subscribe(@PathVariable("username") String username, @RequestBody String location,
                              HttpServletResponse response) {
         try {
             userLogic.subscribe(username, location);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+        return "";
+    }
+
+    /**
+     * An user unsubscribe a location
+     * @param username who subscribe
+     * @param location that the user subscribe
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/subscribe/{username}", method = RequestMethod.DELETE)
+    public String unsubscribe(@PathVariable("username") String username, @RequestBody String location,
+                            HttpServletResponse response) {
+        try {
+            userLogic.unsubscribe(username, location);
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());

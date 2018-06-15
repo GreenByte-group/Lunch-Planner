@@ -534,4 +534,12 @@ public class UserLogic {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
     }
+
+    public void unsubscribe(String subscriber, String location) throws HttpRequestException{
+        try {
+            userDao.unsubscribe(subscriber, location);
+        } catch (DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
 }

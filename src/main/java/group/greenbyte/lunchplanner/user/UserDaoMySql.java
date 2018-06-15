@@ -246,7 +246,17 @@ public class UserDaoMySql implements UserDao {
         }
     }
 
+    @Override
+    public void unsubscribe(String subscriber, String location) throws DatabaseException {
+        try {
+            String SQL_DELETE = "DELETE FROM " + USER_SUBSCRIBE_TABLE + " WHERE " + USER_SUBSCRIBE_LOCATION + " = ? AND "
+                    + USER_SUBSCRIBE_SUBSCRIBER + " = ?";
 
+            jdbcTemplate.update(SQL_DELETE, location, subscriber);
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
 
     @Override
     public NotificationOptions getNotificationOptions(String userName) throws DatabaseException {

@@ -72,3 +72,21 @@ export function getProfilePicturePath(username, responseFunc) {
     axios.get(url)
         .then(responseFunc);
 }
+
+export function subscribe(username, location, responseFunc) {
+    let url = HOST + "/user/subscribe/" + username;
+    axios.post(url)
+        .then(responseFunc);
+}
+
+export function unsubscribe(username, location, responseFunc) {
+    let url = HOST + "/user/subscribe/" + username;
+    axios.delete(url)
+        .then(responseFunc);
+}
+
+export function getSubscribedLocations(username, responseFunc) {
+    let url = HOST + "/user/subscribe/" + username;
+    axios.get(url)
+        .then(responseFunc);
+}
