@@ -257,11 +257,11 @@ class CreateEventScreen extends React.Component {
     };
 
     handleLocationChange= (location) => {
-        console.log('handle location change');
 
         this.setState({
             locationText: location,
         });
+        console.log(location);
     };
 
     render() {
@@ -270,6 +270,7 @@ class CreateEventScreen extends React.Component {
         const error = this.state.error;
         let invited =this.state.invitedUsers + "," + this.state.invitedTeams;
         let buttonEnabled = false;
+        console.log(this.state.locationText)
         if(this.state.locationText)
             buttonEnabled = true;
 
@@ -350,7 +351,6 @@ class CreateEventScreen extends React.Component {
                                         label="Participants"
                                         placeholder ="Invite People"
                                         value={this.ischDesMehr(invited)}
-                                        // onChange={this.ischDesMehr}
                                         fullWidth
                                         InputProps={{
                                             startAdornment: <InputAdornment position="start"><PeopleIcon/></InputAdornment>,
