@@ -9,7 +9,7 @@ let MyMapComponent = compose(
     withProps({
         googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyCOYsTeZ29UyBEHqYG39GXJIN1-rp1KayU",
         loadingElement: <div style={{ height: `80%` }} />,
-        containerElement: <div style={{ height: `100%` }} />,
+        containerElement: <div style={{ height: `100vh` }} />,
         mapElement: <div style={{ height: `100%` }} />,
     }),
     withScriptjs,
