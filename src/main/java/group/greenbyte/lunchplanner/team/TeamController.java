@@ -191,7 +191,7 @@ public class TeamController {
      *
      * @return nothing or an error message
      */
-    @RequestMapping(value = "/{teamId}/name", method = RequestMethod.PUT,
+    @RequestMapping(value = "/{teamId}/name", method = RequestMethod.POST,
             consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     public String updateName(@PathVariable("teamId") int teamId, @RequestBody String name, HttpServletResponse response) {
         try {

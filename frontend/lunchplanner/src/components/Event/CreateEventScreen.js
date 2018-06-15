@@ -143,8 +143,6 @@ class CreateEventScreen extends React.Component {
         super();
         const params = new URLSearchParams(props.location.search);
 
-        console.log('location: ', params.get('location'));
-
         let defaultDate = moment().add(30, 'm').toDate();
 
         this.state = {
@@ -158,7 +156,7 @@ class CreateEventScreen extends React.Component {
             error: "",
             privateLocation: false,
             locationText: params.get('location') || "",
-            locationId: null,
+            locationId: params.get('locationId') || null,
         };
         //TODO location Id
     }

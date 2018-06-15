@@ -6,9 +6,8 @@ import {withStyles, Button} from "@material-ui/core";
 import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
 import {getUsername} from "../authentication/LoginFunctions";
-import Divider from "@material-ui/core/es/Divider/Divider";
+import { Divider, ListItem} from "@material-ui/core";
 import GPSIcon from "@material-ui/icons/GpsFixed";
-import ListItem from "@material-ui/core/es/ListItem/ListItem";
 import {getHistory} from "../../utils/HistoryUtils";
 
 const styles = {

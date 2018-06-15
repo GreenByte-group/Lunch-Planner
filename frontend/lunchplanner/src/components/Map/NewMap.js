@@ -16,7 +16,6 @@ let MyMapComponent = compose(
         loadingElement: <div  style={{ height: `calc(100% - 56px)` }}/>,
         containerElement: <div  style={{ height: `calc(100% - 56px)` }}/>,
         mapElement: <div  style={{ height: `100%` }}/>
-
     }),
     withScriptjs,
     withGoogleMap
