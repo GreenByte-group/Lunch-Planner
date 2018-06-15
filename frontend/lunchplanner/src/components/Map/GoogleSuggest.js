@@ -30,7 +30,11 @@ export class GoogleSuggest extends React.Component {
             search: "",
             value: props.value,
             onChange: props.onChange,
-        }
+        };
+    }
+
+    componentDidMount() {
+        this.handleSelect(this.props.value);
     }
 
     handleChange = (address) => {
