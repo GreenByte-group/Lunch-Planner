@@ -6,6 +6,8 @@ import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerC
 import { AddLocation, LocationOff } from "@material-ui/icons"
 import {getUsername} from "../authentication/LoginFunctions";
 import {getSubscribedLocations, subscribe, unsubscribe} from "../User/UserFunctions";
+import {Link} from "react-router-dom";
+import {getHistory} from "../../utils/HistoryUtils";
 
 const style = {
     linkSubscribe: {
@@ -63,6 +65,9 @@ let SubscribeMapComponent = compose(
                                                                 : <a href='#'
                                                                      onClick={() => props.onMarkerToggleSubscribe(value.key)}><AddLocation/> subscribe</a>
                                                         }
+                                                        <br />
+                                                        <a href='#'
+                                                           onClick={() => props.onCreateEvent(value.key)}>Create an event for this location</a>
                                                     </div>
                                                 </InfoWindow>
                                                 : ''
@@ -139,6 +144,7 @@ export class SubscribeMap extends React.Component {
                             lng: lng,
                             subscribed: true,
                             isOpen: false,
+                            location: result[0].formatted_address,
                         });
 
                         this.setState({
@@ -148,6 +154,25 @@ export class SubscribeMap extends React.Component {
                     })
                     .catch(error => console.error('Error', error));
             })
+        })
+    };
+
+    onCreateEvent = (locationId) => {
+        let sub = this.state.subscriptions;
+
+        sub.forEach((value) => {
+            if(value.key === locationId) {
+                if(value.location)
+                    getHistory().push("/app/event/create?location=" + value.location + "&locationId=" + value.key);
+                else {
+                    geocodeByPlaceId(value.key)
+                        .then((result) => {
+                            let address = result[0].formatted_address;
+                            if(address)
+                                getHistory().push("/app/event/create?location=" + address + "&locationId=" + value.key);
+                        })
+                }
+            }
         })
     };
 
@@ -193,6 +218,8 @@ export class SubscribeMap extends React.Component {
         if(!event.placeId)
             return ;
 
+        console.log('click', event);
+
         let subscriptions = this.state.subscriptions;
 
         subscriptions.push({
@@ -231,6 +258,7 @@ export class SubscribeMap extends React.Component {
                 onMapClick={this.onMapClick}
                 onMarkerToggle={this.handleMarkerClick}
                 onMarkerToggleSubscribe={this.handleMarkerSubscribe}
+                onCreateEvent={this.onCreateEvent}
                 subscriptions={this.state.subscriptions}
                 clicked={this.state.clicked}
                 myLat={this.state.myLat}
