@@ -73,8 +73,8 @@ class Team extends React.Component {
         super();
         let invitations = props.member;
         let people = invitations.map(value => {
+            let stateId = "pic" + value.userName.replace(/\s/g, '');
             getProfilePicturePath(value.userName, (response) => {
-                let stateId = "pic" + value.userName.replace(/\s/g, '');
                 this.setState({
                     [stateId]: response.data,
                 })

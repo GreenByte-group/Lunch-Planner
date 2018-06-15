@@ -103,11 +103,13 @@ class Event extends React.Component {
     }
 
     getUserImage = (username) => {
-        getProfilePicturePath(username, (response) => {
-            this.setState({
-                profilePicturePath: response.data,
+        if(!this.state.profilePicturePath) {
+            getProfilePicturePath(username, (response) => {
+                this.setState({
+                    profilePicturePath: response.data,
+                })
             })
-        })
+        }
     };
 
     clickHandler = () => {

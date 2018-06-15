@@ -21,11 +21,21 @@ public class EventJson implements Serializable {
         this.visible = visible;
     }
 
+    public EventJson(String name, String description, String location, Date timeStart, boolean visible, String locationId) {
+        this.name = name;
+        this.description = description;
+        this.timeStart = timeStart;
+        this.location = location;
+        this.visible = visible;
+        this.locationId = locationId;
+    }
+
     private String name;
     private String description;
     private Date timeStart;
     private String location;
     private boolean visible;
+    private String locationId;
 
     public String getName() {
         return name;
@@ -65,5 +75,13 @@ public class EventJson implements Serializable {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public String getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(String locationId) {
+        this.locationId = locationId;
     }
 }

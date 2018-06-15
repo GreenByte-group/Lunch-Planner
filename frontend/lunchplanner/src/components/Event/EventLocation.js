@@ -4,6 +4,7 @@ import {Card, CardContent, ListItem, withStyles, Avatar, List, Button, CardActio
 import {Link} from "react-router-dom";
 import {eventListNeedReload} from "./EventContainer";
 import {replyToEvent} from "./EventFunctions";
+import {getProfilePicturePath} from "../User/UserFunctions";
 
 const styles = {
     card: {
@@ -179,14 +180,25 @@ class EventLocation extends React.Component {
 
             let first = true;
             invitations.forEach(value => {
-                if(value.answer === 0)
-                    if(first) {
+                if(value.answer === 0) {
+                    if (first) {
                         people += value.userName;
                         first = false;
                     } else {
                         people += ', ' + value.userName;
                     }
+
+                    let stateId = "pic" + value.userName.replace(/\s/g, '');
+                    if(!this.state[stateId]) {
+                        getProfilePicturePath(value.userName, (response) => {
+                            this.setState({
+                                [stateId]: response.data,
+                            })
+                        });
+                    }
+                }
             });
+
             this.setState({
                 invitations: invitations,
                 people: people,
@@ -227,11 +239,12 @@ class EventLocation extends React.Component {
         let invitations = this.state.invitations;
         let location = this.state.location;
         let token = this.state.token;
-        people = people.split(',');
-        people = people.map((value) => value.trim());
         let classesText = classes.text;
         if(accepted)
             classesText = classes.textSelected;
+
+        people = people.split(',');
+        people = people.map((value) => value.trim());
 
         let textJoin = 'join';
         if(accepted)
@@ -254,7 +267,8 @@ class EventLocation extends React.Component {
                             }}}>
                             <CardContent className={classes.cardContent}>
                                 <div className={classesText}>
-                                    <p className={classes.title}> {time}</p>
+                                    <p className={classes.title}>{monthDay}</p>
+                                    <p className={classes.title}>{time}</p>
                                     <p className={classes.goingPeople}> {
                                         (people[0] !== "") ?
                                             people.length : 0
@@ -263,15 +277,15 @@ class EventLocation extends React.Component {
                                         <div className={classes.row}>
                                             {people.map((person)=>{
                                                 memberCounter++;
-                                                return (
-                                                    (people.length !== 0 && person !== "" && memberCounter <= 4)
-                                                        ?
+                                                let imageId = "pic" + String(person).replace(/\s/g, '');
+                                                let url = this.state[imageId];
+                                                if(person !== "" && memberCounter <= 4) {
+                                                    return(
                                                         <Avatar className={classes.memberAvatar}>
-                                                            <span className={classes.memberAvatarTextLast}>
-                                                                {(memberCounter > 3) ? "+" + String(+ people.length-3) : person.charAt(0)}
-                                                                </span>
+                                                            <img className={classes.memberPicture} src={url}/>
                                                         </Avatar>
-                                                        : "");
+                                                    )
+                                                }
                                             })}
                                         </div>
                                     </List>

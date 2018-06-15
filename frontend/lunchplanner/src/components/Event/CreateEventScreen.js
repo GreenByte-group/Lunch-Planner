@@ -158,7 +158,9 @@ class CreateEventScreen extends React.Component {
             error: "",
             privateLocation: false,
             locationText: params.get('location') || "",
+            locationId: null,
         };
+        //TODO location Id
     }
 
     parseUrl = () => {
@@ -202,7 +204,7 @@ class CreateEventScreen extends React.Component {
 
         let location = this.state.locationText;
 
-        createEvent(this.state.locationText, this.state.date, invitedUsersArray, !this.state.visible,
+        createEvent(this.state.locationText, this.state.date, invitedUsersArray, !this.state.visible, this.state.locationId,
             (response) => {
                 if(response.status === 201) {
                     eventListNeedReload();

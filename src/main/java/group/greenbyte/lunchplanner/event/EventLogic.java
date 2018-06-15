@@ -88,21 +88,8 @@ public class EventLogic {
         return createEvent(userName, eventName, eventDescription, location, timeStart, false);
     }
 
-    /**
-     * Create an event. At least the eventName and a location or timeStart is needed
-     *
-     * @param userName userName that is logged in
-     * @param eventName name of the new event, not null
-     * @param eventDescription description of the new event
-     * @param location id of the used location
-     * @param timeStart time when the event starts
-     * @return the id of the new event
-     * @throws HttpRequestException when location and timeStart not valid or eventName has no value
-     * or an Database error happens
-     */
     int createEvent(String userName, String eventName, String eventDescription,
-                    String location, Date timeStart, boolean visible) throws HttpRequestException{
-
+                    String location, Date timeStart, boolean visible, String locationId) throws HttpRequestException{
         if(userName == null || userName.length()==0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is empty");
 
@@ -143,15 +130,68 @@ public class EventLogic {
                 }
             }
 
-            Integer eventId = eventDao.insertEvent(userName, eventName, eventDescription, location, timeStart, visible)
+            Integer eventId = eventDao.insertEvent(userName, eventName, eventDescription, location, timeStart, visible, locationId)
                     .getEventId();
 
             scheduleDeleteEvent(eventId);
+
+            //only send notifications if the created event is visible for everyone
+            if(visible) {
+
+                //set notification information
+                User eventCreator = userLogic.getUser(userName);
+                String picturePath = eventCreator.getProfilePictureUrl();
+                List<User> users = userLogic.getSubscriber(location);
+                String title = "Event created in " + location;
+                String description = String.format("%s created an event in your subscribed location", userName);
+                String linkToClick = "/event/" + eventId;
+
+                /*
+                the user that created an event in a specific location could be a subscriber too and
+                shouldn't get a notification
+                */
+                users.remove(eventCreator);
+
+
+                for (User subscriber : users) {
+                    //save notification
+                    userLogic.saveNotification(subscriber.getUserName(), title, description, userName, linkToClick, picturePath);
+
+                    //send a notification to subscriber
+                    NotificationOptions notificationOptions = userLogic.getNotificationOptions(subscriber.getUserName());
+                    if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isSubscriptionsBlocked())) {
+                        try {
+                            userLogic.sendNotification(user.getFcmToken(), subscriber.getUserName(), title, description, linkToClick, "");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }
 
             return eventId;
         }catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
+    }
+
+    /**
+     * Create an event. At least the eventName and a location or timeStart is needed
+     *
+     * @param userName userName that is logged in
+     * @param eventName name of the new event, not null
+     * @param eventDescription description of the new event
+     * @param location id of the used location
+     * @param timeStart time when the event starts
+     * @return the id of the new event
+     * @throws HttpRequestException when location and timeStart not valid or eventName has no value
+     * or an Database error happens
+     */
+    int createEvent(String userName, String eventName, String eventDescription,
+                    String location, Date timeStart, boolean visible) throws HttpRequestException{
+
+        return createEvent(userName, eventName, eventDescription, location, timeStart, visible, null);
     }
 
     /**

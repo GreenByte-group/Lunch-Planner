@@ -69,13 +69,17 @@ export function changeEventTime(eventId, time, responseFunc, errorFunc) {
         .catch(errorFunc)
 }
 
-export function createEvent(location, date, member, visible, responseFunc, errorFunc) {
+export function createEvent(location, date, member, visible, locationId, responseFunc, errorFunc) {
     let momentDate = moment(date);
 
     let timeEnd = date.getTime();
     let url =  HOST + '/event';
-    console.log('location: ', location);
-    axios.post(url, {name: location, description: "", location : location, timeStart: date, visible: visible})
+
+    let data = {name: location, description: "", location : location, timeStart: date, visible: visible};
+    if(locationId)
+        data.push(locationId);
+
+    axios.post(url, data)
         .then((response) => {
             if(response.status === 201) {
                 inviteMemberToEvent(response.data, member);

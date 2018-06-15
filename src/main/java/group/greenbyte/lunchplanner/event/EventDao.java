@@ -28,6 +28,14 @@ public interface EventDao {
                       String description,
                       String location,
                       Date timeStart,
+                      boolean isPublic,
+                      String locationId) throws DatabaseException;
+
+    Event insertEvent(String userName,
+                      String eventName,
+                      String description,
+                      String location,
+                      Date timeStart,
                       boolean isPublic) throws DatabaseException;
 
     void deleteInvitationsForEvent(int eventId) throws DatabaseException;

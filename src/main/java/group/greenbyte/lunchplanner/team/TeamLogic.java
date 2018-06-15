@@ -326,7 +326,7 @@ public class TeamLogic {
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this team");
 
             if(teamdao.getTeam(teamId) == null)
-                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + teamId + ", was not found");
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Team with team-id: " + teamId + ", was not found");
 
             if(hasAdminPrivileges(teamId, userName)) {
                 List<TeamMemberDataForReturn> memberList = teamdao.getInvitations(teamId);
