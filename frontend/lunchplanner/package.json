@@ -21,7 +21,7 @@
     "react-copy-to-clipboard": "^5.0.1",
     "react-datepicker": "^1.4.1",
     "react-dom": "^16.2.0",
-    "react-geocode": "^0.0.9",
+    "react-geocode": "^0.0.8",
     "react-google-maps": "latest",
     "react-google-maps-loader": "^4.2.2",
     "react-google-places": "latest",

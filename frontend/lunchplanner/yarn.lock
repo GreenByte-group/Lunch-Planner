@@ -6501,9 +6501,9 @@ react-event-listener@^0.6.0:
     prop-types "^15.6.0"
     warning "^3.0.0"
 
-react-geocode@^0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/react-geocode/-/react-geocode-0.0.9.tgz#e2c805a680e6809330715aa506c8a2bcf411a41c"
+react-geocode@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/react-geocode/-/react-geocode-0.0.8.tgz#07e23f064f7e13fe5b803665037b4ed99b63e1a9"
 
 react-google-maps-loader@^4.2.2:
   version "4.2.2"
