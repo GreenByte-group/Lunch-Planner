@@ -161,7 +161,7 @@ public class EventLogic {
                     NotificationOptions notificationOptions = userLogic.getNotificationOptions(subscriber.getUserName());
                     if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isSubscriptionsBlocked())) {
                         try {
-                            userLogic.sendNotification(user.getFcmToken(), subscriber.getUserName(), title, description, linkToClick, "");
+                            userLogic.sendNotification(subscriber.getFcmToken(), subscriber.getUserName(), title, description, linkToClick, picturePath);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
