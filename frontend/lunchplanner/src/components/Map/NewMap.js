@@ -4,13 +4,17 @@ import { withScriptjs, withGoogleMap, GoogleMap, Marker} from "react-google-maps
 import Dialog from '../Dialog';
 import {getLatLng} from "react-places-autocomplete";
 import {geolocated} from 'react-geolocated';
+import DoneIcon from '@material-ui/icons/Done';
+import Button from "@material-ui/core/es/Button/Button";
+import {Link} from "react-router-dom";
+import {getHistory} from "../../utils/HistoryUtils";
 
 let MyMapComponent = compose(
     withProps({
-        googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyCOYsTeZ29UyBEHqYG39GXJIN1-rp1KayU",
-        loadingElement: <div style={{ height: `80%` }} />,
-        containerElement: <div style={{ height: `100%` }} />,
-        mapElement: <div style={{ height: `100%` }} />,
+        googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyA9g1HmDqPm-H4jF-SUMPAWAEkJRbwnsSw",
+        loadingElement: <div  style={{ height: `80%` }} />,
+        containerElement: <div  style={{ height: `80%` }} />,
+        mapElement: <div  style={{ height: `100%` }} />,
     }),
     withScriptjs,
     withGoogleMap
@@ -44,15 +48,19 @@ export class NewMap extends React.Component {
             this.state = {
                 isMarkerShown: true,
                 open: true,
+                placeId: props.location.query.locationChange,
                 lat: props.location.query.lat,
                 lng: props.location.query.lng,
+                onLocationChange: props.location.query.locationChange,
             };
         } else {
             this.state = {
                 isMarkerShown: false,
                 open: true,
+                placeId: null,
                 lat: null,
                 lng: null,
+                onLocationChange: props.location.query.locationChange,
             }
         }
     }
@@ -60,30 +68,42 @@ export class NewMap extends React.Component {
     handleMarkerClick = () => {
         console.log('Marker click');
     };
+
     onMapClick = (event) => {
+        console.log(event)
         this.setState({
             isMarkerShown: true,
             lat: event.latLng.lat(),
             lng: event.latLng.lng(),
+            placeId: event.placeId,
         })
         console.log("new Lat: "+this.state.lat+"\n"+"new Lng: "+this.state.lng);
-        console.log("event: ",event)
+        console.log("event: ",this.state.place_id)
         this.render();
     };
+
 
     componentWillMount() {
            navigator.geolocation.getCurrentPosition(
                position => {
                    this.setState({
                        defaultLat: position.coords.latitude,
-                       defaultLng: position.coords.longitude
+                       defaultLng: position.coords.longitude,
                    });
                },
                error => console.log(error)
            );
+           this.setState({
+              placeId:null
+           });
 
     }
 
+    setLocation = () => {
+        console.log(this.state.lat, this.state.lng, this.state.placeId)
+       this.state.onLocationChange(this.state.lat, this.state.lng, this.state.placeId);
+        getHistory().push(this.props.location.query.source);
+    };
 
     render() {
         let lat = this.state.lat || this.state.defaultLat || 49.4874592;
@@ -93,8 +113,15 @@ export class NewMap extends React.Component {
         console.log('render newmap show:', showMarker);
 
         return (
-            <Dialog
-            >
+            <Dialog>
+                {/*<Link to={{pathname: "/app/event/create", query: {*/}
+                    {/*source: "/app/event/create/map",*/}
+                        {/*location: this.state,*/}
+                    {/*}}}>*/}
+                <Button onClick={this.setLocation}>
+                    <DoneIcon color='green'/>
+                </Button>
+                {/*</Link>*/}
                 <MyMapComponent
                     isMarkerShown={showMarker}
                     onMarkerClick={this.handleMarkerClick}
@@ -106,5 +133,4 @@ export class NewMap extends React.Component {
         )
     }
 }
-
 export default NewMap;

@@ -153,6 +153,10 @@ query-string@^5.0.1:
     object-assign "^4.1.0"
     strict-uri-encode "^1.0.0"
 
+react-geocode@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/react-geocode/-/react-geocode-0.0.9.tgz#e2c805a680e6809330715aa506c8a2bcf411a41c"
+
 react-google-maps-loader@^4.2.2:
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/react-google-maps-loader/-/react-google-maps-loader-4.2.2.tgz#176dfa7c153c3c03657d5b780c767a16cd20179f"
