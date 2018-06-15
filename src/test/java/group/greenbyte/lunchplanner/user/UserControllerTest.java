@@ -215,7 +215,7 @@ public class UserControllerTest {
     public void test1Subscribe() throws Exception {
         String location = "TestLocationFromGoogle";
         mockMvc.perform(
-                post("/user/subscribe/" + userName).contentType(MediaType.APPLICATION_JSON).
+                post("/user/subscribe/" + userName).contentType(MediaType.TEXT_PLAIN_VALUE).
                         content("{\"location\":\"" + location + "\"}"))
                 .andExpect(status().isCreated());
     }
