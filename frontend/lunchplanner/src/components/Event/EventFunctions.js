@@ -77,7 +77,7 @@ export function createEvent(location, date, member, visible, locationId, respons
 
     let data = {name: location, description: "", location : location, timeStart: date, visible: visible};
     if(locationId)
-        data.push(locationId);
+        data = {name: location, description: "", location : location, timeStart: date, visible: visible, locationId: locationId};
 
     axios.post(url, data)
         .then((response) => {
