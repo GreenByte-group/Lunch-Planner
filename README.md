@@ -61,7 +61,12 @@ and change to the created folder
 cd Lunch-Planner
 ```
 
-If you are lazy just run `./install.js`
+If you are lazy just run 
+```
+chmod +x install.js
+chmod +x gradlew
+./install.js
+```
 
 Or you build and start the servers yourself.
 ## Backend
@@ -70,6 +75,7 @@ changing the value of the field `server.port`
    
 You can build the backend with gradle. Just run
 ```
+chmod +x gradlew
 ./gradlew build
 ```
 A executable jar is no in `build/libs` and can be executed with 
