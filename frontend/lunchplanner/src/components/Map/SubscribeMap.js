@@ -1,5 +1,5 @@
 import React from "react"
-import {compose, withProps, lifecycle, withState} from "recompose"
+import {compose, withProps} from "recompose"
 import {withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow} from "react-google-maps"
 import { geocodeByPlaceId } from 'react-places-autocomplete'
 import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerClusterer"
@@ -25,6 +25,7 @@ let SubscribeMapComponent = compose(
     withScriptjs,
     withGoogleMap
 )((props) => {
+    console.log('render', props.subscriptions);
     return (
         <div>
             <GoogleMap
@@ -40,7 +41,9 @@ let SubscribeMapComponent = compose(
                 >
                     {
                         props.subscriptions.map((value) => {
-                            if(value.isOpen || value.subscribed)
+                            console.log('in render:', value);
+                            if(value.isOpen || value.subscribed) {
+                                console.log('erstelle marker', value);
                                 return (
                                     <Marker
                                         key={value.key}
@@ -53,11 +56,13 @@ let SubscribeMapComponent = compose(
                                                 ?
                                                 <InfoWindow onCloseClick={() => props.onMarkerToggle(value.key)}>
                                                     <div>
-                                                    {
-                                                        (value.subscribed)
-                                                            ? <a href='#' onClick={() => props.onMarkerToggleSubscribe(value.key)}><LocationOff/> unsubscribe</a>
-                                                            : <a href='#' onClick={() => props.onMarkerToggleSubscribe(value.key)}><AddLocation/> subscribe</a>
-                                                    }
+                                                        {
+                                                            (value.subscribed)
+                                                                ? <a href='#'
+                                                                     onClick={() => props.onMarkerToggleSubscribe(value.key)}><LocationOff/> unsubscribe</a>
+                                                                : <a href='#'
+                                                                     onClick={() => props.onMarkerToggleSubscribe(value.key)}><AddLocation/> subscribe</a>
+                                                        }
                                                     </div>
                                                 </InfoWindow>
                                                 : ''
@@ -65,7 +70,7 @@ let SubscribeMapComponent = compose(
 
                                     </Marker>
                                 );
-                            else
+                            } else
                                 return '';
                         })
                     }
@@ -101,27 +106,6 @@ export class SubscribeMap extends React.Component {
             myLng: 8.466039499999965,
             clicked: false,
         };
-
-        getSubscribedLocations(getUsername(), (response) => {
-            let array = response.data;
-            let subscriptions = [];
-            array.forEach((location) => {
-                geocodeByPlaceId(location)
-                    .then((result) => {
-                        console.log('geocode result: ', result);
-                        //TODO geocode result
-                        let lat = 0;
-                        let lng = 0;
-                        subscriptions.push({
-                            key: location,
-                            lat: lat,
-                            lng: lng,
-                            subscribed: true,
-                            isOpen: false,
-                        })
-                    });
-            })
-        })
     };
 
     componentWillMount() {
@@ -134,10 +118,40 @@ export class SubscribeMap extends React.Component {
             },
             error => console.log(error)
         );
+
+        this.loadSubscriptions();
+    };
+
+    loadSubscriptions = () => {
+        getSubscribedLocations(getUsername(), (response) => {
+            let array = response.data;
+
+            array.forEach((location) => {
+                geocodeByPlaceId(location)
+                    .then((result) => {
+                        let lat = result[0].geometry.location.lat();
+                        let lng = result[0].geometry.location.lng();
+                        let subscriptions = this.state.subscriptions;
+
+                        subscriptions.push({
+                            key: location,
+                            lat: lat,
+                            lng: lng,
+                            subscribed: true,
+                            isOpen: false,
+                        });
+
+                        this.setState({
+                            subscriptions: subscriptions,
+                            clicked: !this.state.clicked,
+                        })
+                    })
+                    .catch(error => console.error('Error', error));
+            })
+        })
     };
 
     handleMarkerClick = (marker) => {
-        console.log('markerToggle');
 
         let subscriptions = this.state.subscriptions;
         subscriptions.forEach((value) => {
@@ -145,6 +159,8 @@ export class SubscribeMap extends React.Component {
                 value.isOpen = !value.isOpen;
             }
         });
+
+        subscriptions = subscriptions.filter((value) => value.isOpen || value.subscribed);
 
         this.setState({
             subscriptions: subscriptions,
@@ -183,6 +199,7 @@ export class SubscribeMap extends React.Component {
             lat: event.latLng.lat(),
             lng: event.latLng.lng(),
             key: event.placeId,
+            subscribed: false,
             isOpen: true,
         });
 

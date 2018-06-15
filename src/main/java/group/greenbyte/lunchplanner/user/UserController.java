@@ -205,7 +205,8 @@ public class UserController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/subscribe/{username}", method = RequestMethod.POST)
+    @RequestMapping(value = "/subscribe/{username}", method = RequestMethod.POST,
+                consumes = MediaType.TEXT_PLAIN_VALUE)
     public String subscribe(@PathVariable("username") String username, @RequestBody String location,
                              HttpServletResponse response) {
         try {
@@ -225,7 +226,8 @@ public class UserController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/subscribe/{username}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/subscribe/delete/{username}", method = RequestMethod.POST,
+            consumes = MediaType.TEXT_PLAIN_VALUE)
     public String unsubscribe(@PathVariable("username") String username, @RequestBody String location,
                             HttpServletResponse response) {
         try {

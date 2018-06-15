@@ -7,11 +7,14 @@ import java.io.Serializable;
 public class Subscribe implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer subscribeId;
+
     @OneToOne
     @JoinColumn(name = "userName")
     private User subscriber;
 
-    @Id
+    @Column(name = "location")
     private String location;
 
     @Transient
