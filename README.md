@@ -34,6 +34,9 @@ When you clone the repo it will not work out of the box. You need to set some pa
 Open the file `frontend/lunchplanner/src/Config.js` and change `HOST` to the url of your 
 backend-server and `FRONTEND_HOST` to the url of your frontend-server.
 
+#### Database
+Change in `src/main/resources/application.properties` the fields `spring.datasource.url` `spring.datasource.username` `spring.datasource.password` and apply `src/main/resources/quart-table.sql` to your database.
+
 #### Notifications
 Push Notifications are send with [Firebase-Cloud-Messaging](https://firebase.google.com/docs/cloud-messaging/).
 To get this work you have to create you an developer account and follow [this](https://firebase.google.com/docs/web/setup)
