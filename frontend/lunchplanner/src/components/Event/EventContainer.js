@@ -27,7 +27,12 @@ export let needReload = false;
 
 export function eventListNeedReload() {
     needReload = true;
+
+    if(functionToFire)
+        functionToFire();
 }
+
+let functionToFire;
 
 const styles = theme => ({
     root: {
@@ -80,6 +85,12 @@ class EventContainer extends React.Component {
             loading: true,
             completed: 0,
         };
+
+        functionToFire = () => {
+            this.setState({
+                loading: true,
+            })
+        }
     }
 
     componentDidMount() {
@@ -164,8 +175,13 @@ class EventContainer extends React.Component {
 
             <div className={classes.root}>
                 {loading ?
-                    <CircularProgress className={classes.progress} color="secondary"/>
-                    :
+                    (this.state.events.length === 0) ?
+                        <CircularProgress className={classes.progress} color="secondary"/>
+                        : <CircularProgress style={{position: 'absolute', zIndex: 10000, top: 'calc(50% - 20px)', left: 'calc(50% - 20px)'}} className={classes.progress} color="secondary"/>
+                    : ''
+                }
+
+                {this.state.events.length !== 0 ?
                     <div className={classes.root}>
                         <AppBar position="relative" color="default" >
                             <Tabs
@@ -198,7 +214,10 @@ class EventContainer extends React.Component {
                                 <EventList events={this.state.events} />
                             </TabContainer>
                         </SwipeableViews>
-                    </div>}
+                    </div>
+
+                    : ''
+                }
             </div>
 
         );

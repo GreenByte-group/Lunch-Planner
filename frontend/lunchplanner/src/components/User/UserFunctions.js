@@ -72,3 +72,33 @@ export function getProfilePicturePath(username, responseFunc) {
     axios.get(url)
         .then(responseFunc);
 }
+
+export function subscribe(username, location, responseFunc) {
+    let config = {
+        headers: {
+            'Content-Type': 'text/plain',
+        }
+    };
+
+    let url = HOST + "/user/subscribe/" + username;
+    axios.post(url, location, config)
+        .then(responseFunc);
+}
+
+export function unsubscribe(username, location, responseFunc) {
+    let config = {
+        headers: {
+            'Content-Type': 'text/plain',
+        }
+    };
+
+    let url = HOST + "/user/subscribe/delete/" + username;
+    axios.post(url, location, config)
+        .then(responseFunc);
+}
+
+export function getSubscribedLocations(username, responseFunc) {
+    let url = HOST + "/user/subscribe/" + username;
+    axios.get(url)
+        .then(responseFunc);
+}

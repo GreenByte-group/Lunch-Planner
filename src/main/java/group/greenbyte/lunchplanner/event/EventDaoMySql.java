@@ -44,6 +44,7 @@ public class EventDaoMySql implements EventDao {
     private static final String EVENT_IS_PUBLIC = "is_public";
     private static final String EVENT_LOCATION = "location";
     private static final String EVENT_SHARETOKEN = "share_token";
+    private static final String EVENT_LOCATION_ID = "location_id";
 
     private static final String EVENT_TEAM_TABLE = "event_team_visible";
     private static final String EVENT_TEAM_TEAM = "team_id";
@@ -57,7 +58,7 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
-    public Event insertEvent(String userName, String eventName, String description, String location, Date timeStart, boolean isPublic) throws DatabaseException {
+    public Event insertEvent(String userName, String eventName, String description, String location, Date timeStart, boolean isPublic, String locationId) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(EVENT_TABLE).usingGeneratedKeyColumns(EVENT_ID);
         Map<String, Object> parameters = new HashMap<>();
@@ -66,6 +67,7 @@ public class EventDaoMySql implements EventDao {
         parameters.put(EVENT_START_DATE, timeStart);
         parameters.put(EVENT_IS_PUBLIC, isPublic);
         parameters.put(EVENT_LOCATION, location);
+        parameters.put(EVENT_LOCATION_ID, locationId);
 
         try {
             Number key = simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
@@ -76,6 +78,11 @@ public class EventDaoMySql implements EventDao {
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
+    }
+
+    @Override
+    public Event insertEvent(String userName, String eventName, String description, String location, Date timeStart, boolean isPublic) throws DatabaseException {
+        return insertEvent(userName, eventName, description, location, timeStart, isPublic);
     }
 
     @Override
