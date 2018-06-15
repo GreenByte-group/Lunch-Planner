@@ -139,19 +139,25 @@ public class EventLogic {
             if(visible) {
 
                 //set notification information
-                User user = userLogic.getUser(userName);
-                String picturePath = user.getProfilePictureUrl();
+                User eventCreator = userLogic.getUser(userName);
+                String picturePath = eventCreator.getProfilePictureUrl();
                 List<User> users = userLogic.getSubscriber(location);
                 String title = "Event created in " + location;
                 String description = String.format("%s created an event in your subscribed location", userName);
                 String linkToClick = "/event/" + eventId;
+
+                /*
+                the user that created an event in a specific location could be a subscriber too and
+                shouldn't get a notification
+                */
+                users.remove(eventCreator);
 
 
                 for (User subscriber : users) {
                     //save notification
                     userLogic.saveNotification(subscriber.getUserName(), title, description, userName, linkToClick, picturePath);
 
-                    //send a notification to subscriber 
+                    //send a notification to subscriber
                     NotificationOptions notificationOptions = userLogic.getNotificationOptions(subscriber.getUserName());
                     if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isSubscriptionsBlocked())) {
                         try {
