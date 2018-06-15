@@ -6,7 +6,6 @@ import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerC
 import { AddLocation, LocationOff } from "@material-ui/icons"
 import {getUsername} from "../authentication/LoginFunctions";
 import {getSubscribedLocations, subscribe, unsubscribe} from "../User/UserFunctions";
-import {Link} from "react-router-dom";
 import {getHistory} from "../../utils/HistoryUtils";
 
 const style = {

@@ -43,9 +43,9 @@ export class GoogleSuggest extends React.Component {
     };
 
     setLocationChange = (lat, lng, placeId) => {
-        if(placeId == undefined || this.state.placeId == null){
-            const geocode = new Geocode
-           .fromLatLng(lat, lng, MY_API_KEY)
+        if(placeId === undefined || this.state.placeId == null){
+            Geocode.setApiKey(MY_API_KEY);
+            Geocode.fromLatLng(lat, lng)
                .then((results) =>
                {
                     this.setState({

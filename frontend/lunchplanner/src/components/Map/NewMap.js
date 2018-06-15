@@ -1,12 +1,7 @@
 import React from "react"
-import { compose, withProps, lifecycle } from "recompose"
+import { compose, withProps } from "recompose"
 import { withScriptjs, withGoogleMap, GoogleMap, Marker} from "react-google-maps"
 import Dialog from '../Dialog';
-import {getLatLng} from "react-places-autocomplete";
-import {geolocated} from 'react-geolocated';
-import DoneIcon from '@material-ui/icons/Done';
-import Button from "@material-ui/core/es/Button/Button";
-import {Link} from "react-router-dom";
 import {getHistory} from "../../utils/HistoryUtils";
 import FloatingActionButton from "../FloatingActionButton";
 
