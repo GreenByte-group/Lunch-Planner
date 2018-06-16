@@ -127,7 +127,6 @@ function Transition(props) {
             zIndex: '10000',
         },
         buttonInvitation: {
-            position: "fixed",
             zIndex: '10000',
         },
         serviceListLink: {

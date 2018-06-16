@@ -1,6 +1,6 @@
 import React from "react";
 import IconButton from '@material-ui/core/IconButton';
-import {register, doLogin} from './LoginFunctions';
+import {register, doLogin, setAuthenticationHeader} from './LoginFunctions';
 import {Input, InputLabel, InputAdornment, FormControlLabel, Checkbox } from '@material-ui/core';
 import { FormControl } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
@@ -99,6 +99,7 @@ class Registration extends React.Component {
                     if(response.status === 201) {
                         doLogin(this.state.username, this.state.password, message => {
                         if(message.type === "LOGIN_SUCCESS") {
+                            setAuthenticationHeader();
                             getHistory().push("/app/event");
                         }})
                     } else {
