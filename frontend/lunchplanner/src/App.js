@@ -20,10 +20,8 @@ import {init} from './components/notification/Firebase'
 import NotificationsScreen from "./components/notification/NotificationsScreen";
 import TeamScreen from "./components/Team/TeamScreen";
 import InviteExtern from "./components/User/InviteExtern";
-import MyMap from "./components/Map/MyMap";
 import NewMap from "./components/Map/NewMap";
 import AppContainer from "./components/AppContainer";
-import UserEditScreen from "./components/User/UserEditScreen";
 import MyTetris from "./components/EasterEgg/Tetris";
 
 
