@@ -37,6 +37,10 @@ backend-server and `FRONTEND_HOST` to the url of your frontend-server.
 #### Database
 Change in `src/main/resources/application.properties` the fields `spring.datasource.url` `spring.datasource.username` `spring.datasource.password` and apply `src/main/resources/quart-table.sql` to your database.
 
+#### Storage 
+Change in `src/main/resources/application.properties` the field `upload.location` to an absolute path beginning and ending with `/`.
+At this location all uploaded files will be saved.
+
 #### Notifications
 Push Notifications are send with [Firebase-Cloud-Messaging](https://firebase.google.com/docs/cloud-messaging/).
 To get this work you have to create you an developer account and follow [this](https://firebase.google.com/docs/web/setup)
