@@ -3,10 +3,11 @@ import {compose, withProps} from "recompose"
 import {withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow} from "react-google-maps"
 import { geocodeByPlaceId } from 'react-places-autocomplete'
 import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerClusterer"
-import { AddLocation, LocationOff } from "@material-ui/icons"
+import { AddLocation, LocationOff, Create } from "@material-ui/icons"
 import {getUsername} from "../authentication/LoginFunctions";
 import {getSubscribedLocations, subscribe, unsubscribe} from "../User/UserFunctions";
 import {getHistory} from "../../utils/HistoryUtils";
+import {Button} from "@material-ui/core";
 
 const style = {
     linkSubscribe: {
@@ -59,14 +60,14 @@ let SubscribeMapComponent = compose(
                                                     <div>
                                                         {
                                                             (value.subscribed)
-                                                                ? <a href='#'
-                                                                     onClick={() => props.onMarkerToggleSubscribe(value.key)}><LocationOff/> unsubscribe</a>
-                                                                : <a href='#'
-                                                                     onClick={() => props.onMarkerToggleSubscribe(value.key)}><AddLocation/> subscribe</a>
+                                                                ? <Button
+                                                                     onClick={() => props.onMarkerToggleSubscribe(value.key)}><LocationOff/> unsubscribe</Button>
+                                                                : <Button
+                                                                     onClick={() => props.onMarkerToggleSubscribe(value.key)}><AddLocation/> subscribe</Button>
                                                         }
                                                         <br />
-                                                        <a href='#'
-                                                           onClick={() => props.onCreateEvent(value.key)}>Create an event for this location</a>
+                                                        <Button
+                                                           onClick={() => props.onCreateEvent(value.key)}><Create/>Create an event for this location</Button>
                                                     </div>
                                                 </InfoWindow>
                                                 : ''
