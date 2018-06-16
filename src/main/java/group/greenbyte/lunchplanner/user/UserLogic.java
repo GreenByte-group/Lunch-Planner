@@ -16,6 +16,7 @@ import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 import group.greenbyte.lunchplanner.user.database.notifications.OptionsJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -38,20 +39,20 @@ public class UserLogic {
 
     private static final Pattern REGEX_MAIL = Pattern.compile("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
 
-    @Autowired
-    private HttpServletRequest request;
-    //private ServletContext context;
+    private final Environment env;
 
-    @Value("${upload.location}")
     private String uploadsDirName;
-
 
     // This variable will be set over the setter Method by java spring
     private UserDao userDao;
 
     @Autowired
-    public UserLogic(JwtService jwtService) {
+    public UserLogic(JwtService jwtService, Environment env) {
         this.jwtService = jwtService;
+        this.env = env;
+        uploadsDirName = this.env.getProperty("upload.location");
+        if(uploadsDirName == null)
+            uploadsDirName = "/tmp";
     }
 
     // ------------------ JWT --------------------
