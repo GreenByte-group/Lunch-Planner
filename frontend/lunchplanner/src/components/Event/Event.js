@@ -64,7 +64,6 @@ const styles = {
     text: {
         width: 'auto',
         color: 'black',
-        marginLeft: '72px',
     },
     textSelected: {
         width: 'auto',

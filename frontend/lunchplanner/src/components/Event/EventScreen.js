@@ -57,6 +57,8 @@ function Transition(props) {
             fontFamily: 'Work Sans',
             fontSize: '16px',
             lineHeight: '24px',
+            display: 'flex',
+            flexDirection: 'row',
         },
         fontBig: {
             fontSize: '16px',
@@ -89,6 +91,9 @@ function Transition(props) {
         commentText: {
             fontSize: '11px',
             lineHeight: '16px',
+        },
+        actionContainer: {
+            width: '100px',
         },
         headerShare: {
             float: 'right',
@@ -564,23 +569,25 @@ class EventScreen extends React.Component {
                                         : <p className={classes.fontSmall}><Today viewBox="-5 -5 27 27" className={classes.icons} /> {monthDay} <Schedule viewBox="-5 -5 27 27" className={classes.icons}/> {time}</p>
                                 }
                             </div>
-                            <Link to={{pathname:`/app/event/${eventId}/comments`}}>
-                                <div className={classes.headerComment}>
-                                <CommentsIcon className={classes.commentIcon} />
-                                    <p className={classes.commentText}>Comments ({countComments})</p>
-                                </div>
-                            </Link>
-                            {(iAmAdmin || isShared)
-                                ?
-                                <Link to={{pathname:`/app/event/${eventId}/share`, query: {
-                                        source: "/app/event/" + this.state.eventId}}}>
-                                    <div className={classes.headerShare}>
-                                        <ShareIcon className={classes.shareIcon}/>
-                                        <p className={classes.shareText}>Share</p>
+                            <div className={classes.actionContainer}>
+                                <Link to={{pathname:`/app/event/${eventId}/comments`}}>
+                                    <div className={classes.headerComment}>
+                                    <CommentsIcon className={classes.commentIcon} />
+                                        <p className={classes.commentText}>Comments ({countComments})</p>
                                     </div>
                                 </Link>
-                                : ''
-                            }
+                                {(iAmAdmin || isShared)
+                                    ?
+                                    <Link to={{pathname:`/app/event/${eventId}/share`, query: {
+                                            source: "/app/event/" + this.state.eventId}}}>
+                                        <div className={classes.headerShare}>
+                                            <ShareIcon className={classes.shareIcon}/>
+                                            <p className={classes.shareText}>Share</p>
+                                        </div>
+                                    </Link>
+                                    : ''
+                                }
+                            </div>
 
                         </div>
                         <div className={classes.invitations}>
