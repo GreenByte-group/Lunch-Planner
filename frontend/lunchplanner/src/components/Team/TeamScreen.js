@@ -65,6 +65,7 @@ const styles = {
     fontBig: {
         fontSize: '20px',
         margin: '0px',
+        width: '100%',
     },
     fontSmall: {
         fontSize: '11px',
@@ -89,18 +90,19 @@ const styles = {
     },
     information:{
         height: '160px',
-        width: '280px',
+        width: 'atuo',
         marginLeft: '24px',
+        marginRight: '24px',
         marginTop: '24px',
     },
     teamName: {
-        marginLeft: '100px',
+        width: '100%',
     },
     description: {
         paddingTop: '10px',
         marginTop: '15px',
         fontSize: '16px',
-        width: '300px',
+        width: '100%',
     },
     secretTeam:{
         marginTop: '20px',
@@ -168,7 +170,7 @@ class TeamScreen extends React.Component {
     }
 
     componentDidMount() {
-        let teamId, teamName, description, people;
+        let teamId, teamName, description, people, isPublic;
 
         teamId = this.props.match.params.teamId;
 
@@ -183,7 +185,9 @@ class TeamScreen extends React.Component {
             if (this.props.location.query.people) {
                 people = this.props.location.query.people;
             }
-
+            if (this.props.location.query.public) {
+                isPublic = this.props.location.query.public;
+            }
 
             this.setState({
                 teamId: teamId,
@@ -191,6 +195,7 @@ class TeamScreen extends React.Component {
                 description: description,
                 people: people,
                 loading: false,
+                public: isPublic,
             })
 
         } else {
@@ -243,6 +248,7 @@ class TeamScreen extends React.Component {
                 name: response.data.teamName,
                 description: response.data.description,
                 people: response.data.invitations,
+                public: response.data.public,
                 loading: false,
             });
         })
@@ -361,7 +367,6 @@ class TeamScreen extends React.Component {
                     <div className={classes.overButton}>
                         <div className={classes.content}>
                             <div className={classes.information}>
-                                <div className={classes.picture}/>
                                 <div className={classes.teamName}>
                                     <p className={classes.fontSmall}>Team Name</p>
                                     <TextFieldEditing onChange={this.onTitleChanged} value={name} editable={iAmAdmin} className={classes.fontBig} />
@@ -371,10 +376,15 @@ class TeamScreen extends React.Component {
                                     <TextFieldEditing rowsMax="3" onChange={this.onDescriptionChanged} value={description} editable={iAmAdmin} className={classes.description}  multiline/>
                                 </div>
                             </div>
-                            <div className={classes.secretTeam}>
-                                <SecretIcon/>
-                                <p className={classes.secretTeamText}>Secret team. Only you can see the activity of this team.</p>
-                            </div>
+                            {
+                                (!this.state.public)
+                                    ?
+                                        <div className={classes.secretTeam}>
+                                            <SecretIcon/>
+                                            <p className={classes.secretTeamText}>Secret team. Only you can see the activity of this team.</p>
+                                        </div>
+                                    : ''
+                            }
                             <Divider className={classes.divider} />
 
                             <div className={classes.invitations}>
