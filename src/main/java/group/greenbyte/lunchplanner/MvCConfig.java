@@ -1,6 +1,7 @@
 package group.greenbyte.lunchplanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -14,12 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 @Configuration
 public class MvCConfig extends WebMvcConfigurerAdapter {
 
-    private final ServletContext request;
-
-    @Autowired
-    public MvCConfig(ServletContext request) {
-        this.request = request;
-    }
+    @Value("${upload.location}")
+    private String uploadsDirName;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -29,6 +26,6 @@ public class MvCConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         super.addResourceHandlers(registry);
-        registry.addResourceHandler("/static/**").addResourceLocations("file://" + request.getRealPath(""));
+        registry.addResourceHandler("/static/**").addResourceLocations("file:" + uploadsDirName);
     }
 }
