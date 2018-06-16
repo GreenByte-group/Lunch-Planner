@@ -79,7 +79,7 @@ class EventContainer extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            value: 0,
+            value: 1,
             search: props.search,
             events: [],
             loading: true,

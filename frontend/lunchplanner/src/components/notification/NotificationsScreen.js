@@ -3,14 +3,11 @@ import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@material-ui/core/AppBar';
-import {Tabs, Tab} from '@material-ui/core';
+import {Tab, Tabs} from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
-import Teamlist from "../Team/TeamList";
-import BottomNavigationBar from "../BottomNavigationBar";
-import {getUsername, setAuthenticationHeader} from "../authentication/LoginFunctions";
+import {setAuthenticationHeader} from "../authentication/LoginFunctions";
 import NotificationList from "./NotificationList";
 import NotificationSettings from "./NotificationSettings";
-import {getNotifications} from "./NotificationFunctions";
 
 function TabContainer({ children, dir }) {
     return (
@@ -61,8 +58,11 @@ class NotificationsScreen extends React.Component {
 
     constructor(props) {
         super();
+
+        let tab = this.getTabValue(props);
+
         this.state = {
-            value: this.getTabValue(props),
+            value: tab,
             notifications: [],
         };
 
@@ -82,16 +82,6 @@ class NotificationsScreen extends React.Component {
             return 0;
         }
     }
-
-    parseUrl = (props) => {
-        const params = new URLSearchParams(props.location.search);
-        let tab = params.get('tab');
-        if(tab != null && tab !== undefined && tab !== this.state.value) {
-            this.setState({
-                value: tab,
-            });
-        }
-    };
 
     handleChange = (event, value) => {
         this.setState({ value: value });
@@ -141,6 +131,7 @@ class NotificationsScreen extends React.Component {
 NotificationsScreen.propTypes = {
     classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles, { withTheme: true })(NotificationsScreen);

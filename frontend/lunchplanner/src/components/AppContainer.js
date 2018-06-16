@@ -226,26 +226,26 @@ class AppContainer extends React.Component {
 
         switch(component) {
             case 'event':
-                children = <LunchPlanner searchValue={this.state.search}/>;
+                children = <LunchPlanner location={this.props.location} searchValue={this.state.search}/>;
                 title = "Events";
                 bottomNavigationValue = 1;
                 break;
             case 'team':
-                children = <SocialScreen/>;
+                children = <SocialScreen location={this.props.location} />;
                 title = "Teams";
                 bottomNavigationValue = 2;
                 break;
             case 'location':
-                children = <LocationScreen/>;
+                children = <LocationScreen location={this.props.location} />;
                 title = "Places";
                 bottomNavigationValue = 0;
                 break;
             case 'notifications':
-                children = <NotificationsScreen/>;
+                children = <NotificationsScreen location={this.props.location} />;
                 title = "Notifications";
                 break;
             case 'user':
-                children = <UserEditScreen />;
+                children = <UserEditScreen location={this.props.location} />;
                 title = "Your Profile";
                 break;
         }
@@ -283,7 +283,7 @@ class AppContainer extends React.Component {
                             </MenuItem>
                         </Link>
                         <Divider />
-                        <Link to="/app/notifications">
+                        <Link to="/app/notifications?tab=0">
                             <MenuItem>
                                 <NotificationsNone className={classes.icon}/>
                                 Notifications
@@ -304,7 +304,7 @@ class AppContainer extends React.Component {
                             />
                         </MenuItem>
                         <Divider />
-                        <Link to="/app/options">
+                        <Link to="/app/notifications?tab=1">
                             <MenuItem>
                                 <Settings className={classes.icon}/>
                                 Options
