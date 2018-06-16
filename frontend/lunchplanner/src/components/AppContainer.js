@@ -11,9 +11,8 @@ import {Place, LocalDining, Group, NotificationsNone, ExitToApp, Settings, Menu}
 
 import {Link} from "react-router-dom";
 import {getUser} from "./User/UserFunctions";
-import {getUsername} from "./authentication/LoginFunctions";
+import {getUsername, doLogout} from "./authentication/LoginFunctions";
 import {getHistory} from "../utils/HistoryUtils";
-import {doLogout} from "./LoginFunctions";
 import BottomNavigationBar from "./BottomNavigationBar";
 import LunchPlanner from "./LunchPlanner";
 import SocialScreen from "./SocialScreen";
