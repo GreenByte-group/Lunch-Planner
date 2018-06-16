@@ -15,6 +15,7 @@ import group.greenbyte.lunchplanner.user.database.notifications.NotificationOpti
 import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 import group.greenbyte.lunchplanner.user.database.notifications.OptionsJson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,9 @@ public class UserLogic {
     @Autowired
     private HttpServletRequest request;
     //private ServletContext context;
+
+    @Value("${upload.location}")
+    private String uploadsDirName;
 
 
     // This variable will be set over the setter Method by java spring
@@ -376,17 +380,21 @@ public class UserLogic {
                    throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "the uploaded file is not an image");
                }
 
-               String relativePath = "/profilePictures/";
-
-               /*with servletContext
-               String absolutePath = context.getRealPath(relativePath);*/
+               String relativePath = "profilePictures/";
 
                //the path changes in a different context
-               String absolutePath = request.getServletContext().getRealPath(relativePath);
+               String absolutePath;
+               if(uploadsDirName.charAt(uploadsDirName.length() - 1) != '/') {
+                   absolutePath = uploadsDirName + "/" + relativePath;
+               } else {
+                   absolutePath = uploadsDirName + relativePath;
+               }
+
+               relativePath = "/" + relativePath;
 
                //create a new directory if it doesn't exist
                if(!new File(absolutePath).exists()) {
-                   new File(absolutePath).mkdir();
+                   new File(absolutePath).mkdirs();
                }
                String fileName = userName;
                String path = absolutePath + File.separator + fileName;
