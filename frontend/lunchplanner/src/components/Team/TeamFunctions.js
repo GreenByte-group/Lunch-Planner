@@ -102,3 +102,17 @@ export function inviteMemberToTeam(teamId, member, responseFunc, errorFunc) {
             })
     });
 }
+
+export function leaveTeam(teamId, responseFunc, errorFunc){
+    let url = HOST + '/team/' + teamId + '/leave';
+    axios.delete(url, config)
+        .then(responseFunc)
+        .catch(errorFunc);
+}
+
+export function joinTeam(teamId, responseFunc, errorFunc){
+    let url = HOST + '/team/' + teamId + '/join';
+    axios.post(url, config)
+        .then(responseFunc)
+        .catch(errorFunc);
+}

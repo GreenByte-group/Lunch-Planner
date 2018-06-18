@@ -5,6 +5,7 @@ import {Link} from "react-router-dom";
 import {eventListNeedReload} from "./EventContainer";
 import {replyToEvent} from "./EventFunctions";
 import {getProfilePicturePath} from "../User/UserFunctions";
+import {HOST} from "../../Config";
 
 const styles = {
     card: {
@@ -192,7 +193,7 @@ class EventLocation extends React.Component {
                     if(!this.state[stateId]) {
                         getProfilePicturePath(value.userName, (response) => {
                             this.setState({
-                                [stateId]: response.data,
+                                [stateId]:  HOST + response.data,
                             })
                         });
                     }

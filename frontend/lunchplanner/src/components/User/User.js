@@ -3,6 +3,7 @@ import {withStyles, ListItem, IconButton} from "@material-ui/core";
 import {Close} from "@material-ui/icons"
 import AcceptedButton from "../Event/AcceptedButton";
 import {getProfilePicturePath} from "./UserFunctions";
+import {HOST} from "../../Config";
 
 const styles = {
     listItem: {
@@ -106,7 +107,7 @@ class Event extends React.Component {
         if(!this.state.profilePicturePath) {
             getProfilePicturePath(username, (response) => {
                 this.setState({
-                    profilePicturePath: response.data,
+                    profilePicturePath: HOST + response.data,
                 })
             })
         }

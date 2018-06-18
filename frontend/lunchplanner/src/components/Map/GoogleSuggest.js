@@ -4,8 +4,9 @@ import PlacesAutocomplete from 'react-places-autocomplete'
 import {Input, withStyles} from "@material-ui/core"
 import {Link} from "react-router-dom";
 import MapIcon from '@material-ui/icons/Map'
+import Geocode from "react-geocode";
 
-const MY_API_KEY = "AIzaSyCOYsTeZ29UyBEHqYG39GXJIN1-rp1KayU";
+const MY_API_KEY = "AIzaSyA9g1HmDqPm-H4jF-SUMPAWAEkJRbwnsSw";
 
 const styles = {
     autocomplete: {
@@ -24,6 +25,7 @@ export class GoogleSuggest extends React.Component {
 
     constructor(props) {
         super();
+        this.setLocationChange = this.setLocationChange.bind(this);
         this.state = {
             search: "",
             value: props.value,
@@ -38,6 +40,30 @@ export class GoogleSuggest extends React.Component {
     handleChange = (address) => {
         this.setState({ address });
         this.props.onChange(address);
+    };
+
+    setLocationChange = (lat, lng, placeId) => {
+        if(placeId === undefined || this.state.placeId == null){
+            Geocode.setApiKey(MY_API_KEY);
+            Geocode.fromLatLng(lat, lng)
+               .then((results) =>
+               {
+                    this.setState({
+                        address: results.results[0].formatted_address
+                    })
+                   console.log(this.state.address)
+                   this.state.onChange(this.state.address)
+               })
+        }else{
+            geocodeByPlaceId(placeId)
+                .then((results) =>
+                {
+                    this.setState({
+                        address: results[0].formatted_address
+                    })
+                    console.log(this.state.address)})
+                .then(this.state.onChange(String(this.state.address)))
+        }
     };
 
     handleSelect = (address) => {
@@ -107,13 +133,15 @@ export class GoogleSuggest extends React.Component {
                 <Link className={classes.mapIcon}
                       float="right"
                       to={{pathname: "/app/event/create/map", query: {
-                                lng: this.state.lng,
-                                lat: this.state.lat,
+                            source: "/app/event/create",
+                              lng: this.state.lng,
+                              lat: this.state.lat,
+                              locationChange: this.setLocationChange,
                           }}}
-                      location={ this.state.location}
+
                 >
                     <MapIcon disabled={false} className={classes.mapIcon} />
-                    <span>View on Map</span>
+                    <span>Search on Map</span>
                 </Link>
             </div>
         )

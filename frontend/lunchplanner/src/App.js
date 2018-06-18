@@ -1,6 +1,5 @@
 import React from "react";
 import FirstScreen from "./components/authentication/Authentication"
-import LunchPlanner from "./components/LunchPlanner"
 import { Router, Route, Redirect } from "react-router-dom";
 import {isAuthenticated} from "./components/authentication/LoginFunctions"
 import { MuiThemeProvider } from '@material-ui/core/styles';
@@ -21,10 +20,9 @@ import {init} from './components/notification/Firebase'
 import NotificationsScreen from "./components/notification/NotificationsScreen";
 import TeamScreen from "./components/Team/TeamScreen";
 import InviteExtern from "./components/User/InviteExtern";
-import MyMap from "./components/Map/MyMap";
 import NewMap from "./components/Map/NewMap";
 import AppContainer from "./components/AppContainer";
-import UserEditScreen from "./components/User/UserEditScreen";
+import MyTetris from "./components/EasterEgg/Tetris";
 
 
 const oldTheme = getMuiTheme({
@@ -120,6 +118,7 @@ class App extends React.Component {
                             <PrivateRoute path="/app/event/:eventId(\d+)/comments" component={Comments} />
                             <PrivateRoute path="/app/event/:eventId(\d+)/share" component={InviteExtern} />
                             <PrivateRoute path="/app/event/:eventId(\d+)/service" component={ServiceListScreen} />
+                            <PrivateRoute path="/app/tetris" component={MyTetris} />
                         </div>
                     </Router>
                 </MuiThemeProvider>

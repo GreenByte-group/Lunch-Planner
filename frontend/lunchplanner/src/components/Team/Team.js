@@ -3,6 +3,7 @@ import {withStyles, ListItem, Avatar, IconButton} from "@material-ui/core";
 import {Link} from "react-router-dom";
 import TeamIcon from  "@material-ui/icons/Create";
 import {getProfilePicturePath} from "../User/UserFunctions";
+import {HOST} from "../../Config";
 
 const styles = {
     listItem: {
@@ -76,7 +77,7 @@ class Team extends React.Component {
             let stateId = "pic" + value.userName.replace(/\s/g, '');
             getProfilePicturePath(value.userName, (response) => {
                 this.setState({
-                    [stateId]: response.data,
+                    [stateId]: HOST + response.data,
                 })
             });
             return value.userName

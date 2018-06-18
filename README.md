@@ -34,6 +34,13 @@ When you clone the repo it will not work out of the box. You need to set some pa
 Open the file `frontend/lunchplanner/src/Config.js` and change `HOST` to the url of your 
 backend-server and `FRONTEND_HOST` to the url of your frontend-server.
 
+#### Database
+Change in `src/main/resources/application.properties` the fields `spring.datasource.url` `spring.datasource.username` `spring.datasource.password` and apply `src/main/resources/quart-table.sql` to your database.
+
+#### Storage 
+Change in `src/main/resources/application.properties` the field `upload.location` to an absolute path beginning and ending with `/`.
+At this location all uploaded files will be saved.
+
 #### Notifications
 Push Notifications are send with [Firebase-Cloud-Messaging](https://firebase.google.com/docs/cloud-messaging/).
 To get this work you have to create you an developer account and follow [this](https://firebase.google.com/docs/web/setup)
@@ -58,7 +65,12 @@ and change to the created folder
 cd Lunch-Planner
 ```
 
-If you are lazy just run `./install.js`
+If you are lazy just run 
+```
+chmod +x install.js
+chmod +x gradlew
+./install.js
+```
 
 Or you build and start the servers yourself.
 ## Backend
@@ -67,6 +79,7 @@ changing the value of the field `server.port`
    
 You can build the backend with gradle. Just run
 ```
+chmod +x gradlew
 ./gradlew build
 ```
 A executable jar is no in `build/libs` and can be executed with 

@@ -2,12 +2,14 @@ package group.greenbyte.lunchplanner.user;
 
 import io.jsonwebtoken.lang.Assert;
 import org.junit.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.validation.constraints.AssertTrue;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
 import static org.junit.Assert.*;
+
 
 public class SecurityHelperTest {
 

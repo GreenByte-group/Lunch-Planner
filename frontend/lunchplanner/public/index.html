@@ -6,17 +6,17 @@
     <meta name="theme-color" content="#000000">
     <meta http-equiv="Content-Security-Policy"
           content="
-          default-src 'self' http://localhost:8080 https://greenbyte.group https://lunchplanner.greenbyte.group https://lunchplanner-api.greenbyte.group blob: https://maps.googleapis.com https://maps.gstatic.com https://raw.githubusercontent.com http://maps.gstatic.com https://*.googleapis.com;
-          worker-src 'self' ;
-          connect-src 'self' http://localhost:8080/ http://localhost:3000 ws://localhost:3000 https://fcm.googleapis.com https://maps.googleapis.com;
-          script-src 'self' 'unsafe-inline' http://code.jquery.com/ https://www.gstatic.com https://fonts.googleapis.com/ https://maps.googleapis.com;
-          style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/ https://maxcdn.bootstrapcdn.com;
-          font-src https://fonts.googleapis.com/ https://fonts.gstatic.com https://maxcdn.bootstrapcdn.com" >
+          default-src 'self' http://localhost:8080 https://greenbyte.group https://lunchplanner.greenbyte.group https://lunchplanner-api.greenbyte.group blob: https://maps.googleapis.com https://maps.gstatic.com https://raw.githubusercontent.com https://*.googleapis.com;
+          worker-src 'self' http://localhost:8080 https://greenbyte.group https://lunchplanner.greenbyte.group https://lunchplanner-api.greenbyte.group;
+          connect-src 'self' http://localhost:8080 https://greenbyte.group https://lunchplanner.greenbyte.group https://lunchplanner-api.greenbyte.group https://fcm.googleapis.com https://maps.googleapis.com https://*.google.com;
+          script-src 'self' http://localhost:8080 'unsafe-inline' http://code.jquery.com/ https://www.gstatic.com https://fonts.googleapis.com/ https://maps.googleapis.com https://greenbyte.group https://lunchplanner.greenbyte.group https://lunchplanner-api.greenbyte.group;
+          style-src 'self' http://localhost:8080 'unsafe-inline' https://fonts.googleapis.com/ https://maxcdn.bootstrapcdn.com https://greenbyte.group https://lunchplanner.greenbyte.group https://lunchplanner-api.greenbyte.group;
+          font-src 'self' http://localhost:8080 https://fonts.googleapis.com/ https://fonts.gstatic.com https://maxcdn.bootstrapcdn.com https://greenbyte.group https://lunchplanner.greenbyte.group https://lunchplanner-api.greenbyte.group"  >
 
     <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase.js"></script>
     <!--<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-messaging.js"></script>-->
 
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCOYsTeZ29UyBEHqYG39GXJIN1-rp1KayU&libraries=places"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9g1HmDqPm-H4jF-SUMPAWAEkJRbwnsSw&libraries=places"></script>
 
     <!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxwL_2v8uEcq3ItG-gNI21NnSWgekJGNs" ></script>-->
     <!--<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5UW1KsLdDGY5CpBBe98Q5owmKdJ_P35gAIzaSyCOYsTeZ29UyBEHqYG39GXJIN1-rp1KayU -->

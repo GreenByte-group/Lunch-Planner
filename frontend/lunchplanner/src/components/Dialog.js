@@ -45,7 +45,7 @@ const styles = {
     },
     paper: {
         maxWidth: '1024px',
-        maxHeight: '100vh',
+        maxHeight: '100%',
         width: '600px',
         display: 'flex',
         flexDirection: 'column',
@@ -138,9 +138,9 @@ class Dialog extends React.Component {
         let style;
 
         if(this.state.width <= 600)
-            style = {height: '100vh'};
+            style = {height: '100%'};
         else
-            style= {maxHeight: '90vh',};
+            style= {maxHeight: '90%',};
 
         return (
                 <DialogMaterial

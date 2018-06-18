@@ -79,7 +79,7 @@ class EventContainer extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            value: 0,
+            value: 1,
             search: props.search,
             events: [],
             loading: true,
@@ -181,7 +181,7 @@ class EventContainer extends React.Component {
                     : ''
                 }
 
-                {this.state.events.length !== 0 ?
+                {this.state.events.length !== 0 || !loading ?
                     <div className={classes.root}>
                         <AppBar position="relative" color="default" >
                             <Tabs
