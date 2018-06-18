@@ -38,5 +38,6 @@ public class MvCConfig extends WebMvcConfigurerAdapter {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         super.addResourceHandlers(registry);
         registry.addResourceHandler("/static/**").addResourceLocations("file:" + uploadsDirName);
+        System.out.println("-----------------------" + uploadsDirName);
     }
 }
