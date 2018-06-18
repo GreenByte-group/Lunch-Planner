@@ -40,16 +40,17 @@ class TeamList extends React.Component {
 
     constructor(props) {
         setAuthenticationHeader();
-        super(props);
+        super();
+        console.log("Teamlist", props.search);
         this.state = {
             teams: [],
-            search:null,
+            search:props.search,
             loading: true,
         };
 
         funcReload = () => {
             this.setState({dummy: true})
-        }
+        };
         teamListNeedReload();
     }
 

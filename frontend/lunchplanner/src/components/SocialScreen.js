@@ -46,15 +46,19 @@ class SocialScreen extends React.Component {
 
     constructor(props) {
         super();
+        console.log(props.searchValue);
+        this.state= {
+            search: props.location.state,
+        };
+        console.log(this.state.search);
 
         setAuthenticationHeader();
     }
     render() {
         const { classes, theme } = this.props;
-
         return (
             <div className={classes.root}>
-                <Teamlist/>
+                <Teamlist search={this.state.search}/>
             </div>
         );
     }

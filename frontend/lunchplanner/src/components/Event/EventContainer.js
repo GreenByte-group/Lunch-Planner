@@ -85,6 +85,7 @@ class EventContainer extends React.Component {
             loading: true,
             completed: 0,
         };
+        console.log(this.state.search);
 
         functionToFire = () => {
             this.setState({

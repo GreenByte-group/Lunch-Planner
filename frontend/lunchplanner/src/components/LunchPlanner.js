@@ -8,8 +8,9 @@ class LunchPlanner extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            search: props.searchValue,
+            search: props.location.state,
         };
+        console.log(this.state.search);
         setAuthenticationHeader();
     }
 

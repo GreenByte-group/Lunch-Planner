@@ -1,20 +1,32 @@
 import React from 'react';
-import {withStyles,IconButton, TextField,} from '@material-ui/core';
+import {withStyles,IconButton, Input,InputAdornment,FormControl, TextField} from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
+import DeleteIcon from '@material-ui/icons/Delete';
+import classNames from 'classnames';
 
 const styles =  theme => ({
     icon:{
         float: "right",
         color: "white"
     },
+    margin: {
+        margin: theme.spacing.unit,
+    },
     textField: {
-        width: '90%',
         color: "white",
+        flexBasis:200,
+        width: 100,
+        fontSize: 20,
     },
     root:{
         position: 'relative',
         display: 'flex',
         flexDirection: 'row',
+    },
+    deleteIcon:{
+        marginRight: -20,
+        color: "white",
+        height: 15,
     }
 });
 class Search extends React.Component {
@@ -69,13 +81,22 @@ class Search extends React.Component {
         let open = this.state.open;
         return (
             <div className={classes.root}>
-                {open ? <TextField
-                    id="Search"
-                    defaultValue={this.state.search}
-                    className={classes.textField}
-                    onChange={this.handleChange('search')}
-                    margin="normal"
-                    /> : <p>{this.state.search}</p>}
+                {open ?
+                    <FormControl className={classNames(classes.margin ,classes.textField)}>
+                        <Input
+                            id="adornment-password"
+                            value={this.state.search}
+                            onChange={this.handleChange('search')}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton>
+                                        <DeleteIcon className={classes.deleteIcon} onClick={this.handleCancel}/>
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                    </FormControl>
+                : <p>{this.state.search}</p>}
                 <IconButton>
                     <SearchIcon className={classes.icon} onClick={this.searchForEvents}/>
                 </IconButton>

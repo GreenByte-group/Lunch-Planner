@@ -49,9 +49,18 @@ const styles = theme => ({
 });
 
 class LocationScreen extends React.Component {
-    state = {
-        value: 0,
-    };
+
+    constructor(props) {
+        super();
+        console.log(props.searchValue);
+        this.state = {
+            value: 0,
+            search: props.location.state,
+        };
+        console.log(this.state.search);
+    }
+
+
 
     handleChange = (event, value) => {
         this.setState({ value });

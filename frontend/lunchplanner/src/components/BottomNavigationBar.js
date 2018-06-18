@@ -5,7 +5,6 @@ import { BottomNavigation, BottomNavigationAction } from '@material-ui/core';
 import PlaceIcon from '@material-ui/icons/Place';
 import EventIcon from '@material-ui/icons/LocalDining';
 import SocialIcon from '@material-ui/icons/Group';
-import {Link} from "react-router-dom";
 import {getHistory} from "../utils/HistoryUtils";
 
 const styles = {
@@ -26,6 +25,7 @@ class BottomNavigationBar extends React.Component {
 
         this.state = {
             value: value,
+            search: props.search
         };
     }
 
@@ -35,6 +35,11 @@ class BottomNavigationBar extends React.Component {
                 value: newProps.value,
             })
         }
+        if(newProps.search !== undefined && newProps.search !== null) {
+            this.setState({
+                search: newProps.search,
+            })
+        }
     }
 
     handleChange = (event, value) => {
@@ -42,20 +47,20 @@ class BottomNavigationBar extends React.Component {
 
         switch(value) {
             case 0:
-                getHistory().push("/app/location");
+                getHistory().push("/app/location", this.state.search);
                 break;
             case 1:
-                getHistory().push("/app/event");
+                getHistory().push("/app/event", this.state.search);
                 break;
             case 2:
-                getHistory().push("/app/team");
+                getHistory().push("/app/team", this.state.search);
                 break;
         }
     };
 
     render() {
         const { classes } = this.props;
-        const { value } = this.state;
+        const { value } = this.state.value;
 
         return (
                 <BottomNavigation
@@ -76,5 +81,4 @@ BottomNavigationBar.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-//export default withTheme(MuiThemeProvider) (BottomNavigationBar);
 export default withStyles(styles)(BottomNavigationBar);
