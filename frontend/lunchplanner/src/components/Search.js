@@ -22,6 +22,7 @@ const styles =  theme => ({
         position: 'relative',
         display: 'flex',
         flexDirection: 'row',
+        marginTop: 10,
     },
     deleteIcon:{
         marginRight: -20,

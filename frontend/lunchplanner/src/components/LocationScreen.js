@@ -55,9 +55,7 @@ class LocationScreen extends React.Component {
         console.log(props.searchValue);
         this.state = {
             value: 0,
-            search: props.location.state,
         };
-        console.log(this.state.search);
     }
 
 

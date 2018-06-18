@@ -143,7 +143,7 @@ class CreateTeamScreen extends React.Component {
 
     handleAccept = () => {
         let invitedUsers = this.state.invitedUsers + "," + this.state.invitedTeamMember;
-        console.log( "secret",this.state.secret);
+        console.log( "secret",this.state.parentTeam);
         createTeamWithParent(this.state.name, this.state.description, this.state.parentTeam,
             invitedUsers, !this.state.secret,
             (response) => {

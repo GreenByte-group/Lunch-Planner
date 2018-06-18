@@ -234,7 +234,7 @@ class AppContainer extends React.Component {
                 bottomNavigationValue = 2;
                 break;
             case 'location':
-                children = <LocationScreen location={this.props.location} searchValue={this.state.search}/>;
+                children = <LocationScreen location={this.props.location}/>;
                 title = "Places";
                 bottomNavigationValue = 0;
                 break;

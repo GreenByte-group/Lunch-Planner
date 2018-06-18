@@ -67,11 +67,18 @@ class TeamList extends React.Component {
             needReload = !needReload;
             this.loadTeams();
         }
+        if(newProps.search !== this.state.search){
+            this.setState({
+                search: newProps.search,
+            });
+            this.loadTeams(newProps.search);
+        }
     }
 
     loadTeams(search){
         getTeams(this.props.search,
             (response) => {
+            console.log(response.data)
                 this.setState({
                     teams: response.data,
                     loading: false,
@@ -90,6 +97,7 @@ class TeamList extends React.Component {
         const { classes } = this.props;
         let teams = this.state.teams;
         console.log(teams);
+        let parentTeamName = "";
         return (
             <div className={classes.root}>
                 {loading ? <CircularProgress className={classes.progress} color="secondary"/>
@@ -97,10 +105,19 @@ class TeamList extends React.Component {
                         <div >
                             <List className={classes.list}>
                                 {teams.map((listValue)=>{
-                                    return <Team name={listValue.teamName}
-                                                 id={listValue.teamId}
-                                                 member={listValue.invitations}
-                                    />;
+                                    return <div>
+                                        <p>{teams.forEach((value) =>{
+                                            console.log("value",value)
+                                            if(listValue.parentTeam === value.teamId){
+                                                parentTeamName = value.teamName;
+                                            }
+                                            return parentTeamName;
+                                        })}{parentTeamName}</p>
+                                        <Team name={listValue.teamName}
+                                              id={listValue.teamId}
+                                              member={listValue.invitations}
+                                        />
+                                    </div>
                                 })}
                             </List>
                             <FloatingActionButton
