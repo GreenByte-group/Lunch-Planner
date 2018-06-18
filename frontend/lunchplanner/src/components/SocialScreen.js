@@ -62,7 +62,6 @@ class SocialScreen extends React.Component {
 
     componentWillReceiveProps(newProps){
         if(newProps.search !== this.state.search){
-            console.log(newProps.search)
             this.setState({
                 search: newProps.search,
             });

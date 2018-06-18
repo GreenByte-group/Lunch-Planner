@@ -68,7 +68,6 @@ class TeamList extends React.Component {
             this.loadTeams();
         }
         if(newProps.search !== this.state.search){
-            console.log(newProps.search)
             this.setState({
                 search: newProps.search,
             });
@@ -95,7 +94,6 @@ class TeamList extends React.Component {
 
         const { classes } = this.props;
         let teams = this.state.teams;
-        console.log(teams);
         let parentTeamName = "";
         return (
             <div className={classes.root}>
