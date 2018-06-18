@@ -93,7 +93,7 @@ public class TeamDaoMySql implements TeamDao {
             else {
                 Team team = teams.get(0).getTeam();
                 if(teams.get(0).getParentTeam() != null)
-                    team.setParentTeam(getTeam(teams.get(0).getParentTeam()));
+                    team.setParentTeam(teams.get(0).getParentTeam());
 
                 team.setInvitations(new HashSet<>(getInvitations(team.getTeamId())));
 

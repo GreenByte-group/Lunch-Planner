@@ -46,6 +46,7 @@ const styles = {
     paper: {
         maxWidth: '1024px',
         maxHeight: '100%',
+        height: "100%",
         width: '600px',
         display: 'flex',
         flexDirection: 'column',

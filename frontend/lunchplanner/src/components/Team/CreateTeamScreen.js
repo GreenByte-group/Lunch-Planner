@@ -143,11 +143,10 @@ class CreateTeamScreen extends React.Component {
 
     handleAccept = () => {
         let invitedUsers = this.state.invitedUsers + "," + this.state.invitedTeamMember;
-        console.log( "secret",this.state.secret);
         createTeamWithParent(this.state.name, this.state.description, this.state.parentTeam,
             invitedUsers, !this.state.secret,
             (response) => {
-            console.log(!this.state.secret);
+
                 if(response.status === 201) {
                     teamListNeedReload();
                     getHistory().push('/app/team');
@@ -180,7 +179,6 @@ class CreateTeamScreen extends React.Component {
     };
 
     handleParentChange = (event) => {
-        console.log('parent selected: ', event.target.value);
         this.setState({ parentTeam: event.target.value });
     };
 

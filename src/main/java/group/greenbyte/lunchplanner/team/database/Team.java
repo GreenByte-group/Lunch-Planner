@@ -37,6 +37,9 @@ public class Team {
     @Transient
     private Set<TeamMemberDataForReturn> invitations = new HashSet<>();
 
+    @Transient
+    private Integer parentId;
+
 
     public Integer getTeamId() {
         return teamId;
@@ -70,12 +73,12 @@ public class Team {
         this.description = description;
     }
 
-    public Team getParentTeam() {
-        return parentTeam;
+    public Integer getParentTeam() {
+        return parentId;
     }
 
-    public void setParentTeam(Team parentTeam) {
-        this.parentTeam = parentTeam;
+    public void setParentTeam(Integer parentTeam) {
+        this.parentId = parentTeam;
     }
 
     @Override

@@ -177,7 +177,7 @@ public class UserLogic {
         //ToDO send notfication to user
     }
 
-    public void saveNotification(String creator, String title, String description, String receiver, String linkToClick, String picturePath) throws HttpRequestException {
+    public void saveNotification(String receiver, String title, String description, String creator, String linkToClick, String picturePath) throws HttpRequestException {
         //save notification
         try {
             userDao.saveNotificationIntoDatabase(receiver,title,description,creator,linkToClick, picturePath);

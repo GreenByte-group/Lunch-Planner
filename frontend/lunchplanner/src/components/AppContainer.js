@@ -111,7 +111,6 @@ class AppContainer extends React.Component {
             currentScreen: props.currentScreen,
             openSearch: false,
             search: null,
-
             drawerOpen: false,
             username: getUsername(),
             email: "",
@@ -119,7 +118,7 @@ class AppContainer extends React.Component {
 
             noNotificationToday: false,
         };
-        this.handleSearch = this.handleSearch.bind(this);
+       // this.handleSearch = this.handleSearch.bind(this);
     }
 
     componentDidMount() {
@@ -225,17 +224,17 @@ class AppContainer extends React.Component {
 
         switch(component) {
             case 'event':
-                children = <LunchPlanner location={this.props.location} searchValue={this.state.search}/>;
+                children = <LunchPlanner location={this.props.location} search={this.state.search}/>;
                 title = "Events";
                 bottomNavigationValue = 1;
                 break;
             case 'team':
-                children = <SocialScreen location={this.props.location} />;
+                children = <SocialScreen location={this.props.location} search={this.state.search}/>;
                 title = "Teams";
                 bottomNavigationValue = 2;
                 break;
             case 'location':
-                children = <LocationScreen location={this.props.location} />;
+                children = <LocationScreen location={this.props.location}/>;
                 title = "Places";
                 bottomNavigationValue = 0;
                 break;
@@ -269,13 +268,17 @@ class AppContainer extends React.Component {
                                 Places
                             </MenuItem>
                         </Link>
-                        <Link to="/app/event">
+                        <Link  to={{pathname: "/app/event",  query: {
+                                search: this.state.search,
+                            }}}>
                             <MenuItem>
                                 <LocalDining className={classes.icon}/>
                                 Events
                             </MenuItem>
                         </Link>
-                        <Link to="/app/team">
+                        <Link  to={{pathname: "/app/team",  query: {
+                                search: this.state.search,
+                            }}}>
                             <MenuItem>
                                 <Group className={classes.icon}/>
                                 Teams
@@ -376,7 +379,7 @@ class AppContainer extends React.Component {
                     {children}
 
                     <Hidden mdUp>
-                        <BottomNavigationBar value={bottomNavigationValue} />
+                        <BottomNavigationBar value={bottomNavigationValue} search={this.state.search}/>
                     </Hidden>
                 </div>
             </div>

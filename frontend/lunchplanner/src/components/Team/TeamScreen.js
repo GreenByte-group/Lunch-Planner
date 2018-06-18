@@ -321,7 +321,7 @@ class TeamScreen extends React.Component {
 
     reloadTeamsOnSuccess = (response) => {
         console.log("reload", response.status)
-        if(response.status === 204) {
+        if(response.status === 204 || response.status === 201) {
             teamListNeedReload();
         }
     };
