@@ -331,21 +331,64 @@ public class TeamLogic {
             if(teamdao.getTeam(teamId) == null)
                 throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Team with team-id: " + teamId + ", was not found");
 
+            User user = userLogic.getUser(userName);
+            Team team = getTeam(userName, teamId);
+            //set notification information
+            String profilePictureUrl = user.getProfilePictureUrl();
+            String title = "Team member left";
+            String description = String.format("%s left your team %s", userName, team.getTeamName());
+            String linkToClick = "/team/" + teamId;
+
+
             if(hasAdminPrivileges(teamId, userName)) {
                 List<TeamMemberDataForReturn> memberList = teamdao.getInvitations(teamId);
+
                 //if there is only one member left then the team gets automatically deleted
                 if(memberList.size() == 1) {
                     teamdao.leave(userName, teamId);
                     teamdao.deleteTeam(teamId);
 
                 }else if(amountOfAdmins(memberList) == 1) {
+                    Set<TeamMemberDataForReturn> noAdmins = new HashSet<>();
+                    teamdao.leave(userName, teamId);
                     for(TeamMemberDataForReturn m : memberList) {
-                        if(m.isAdmin() == false) {
-                            teamdao.changeUserToAdmin(teamId, m.getUserName());
-                            break;
+
+                        if(!m.isAdmin()) {
+                           noAdmins.add(m);
+                        }
+                        //save notification
+                        userLogic.saveNotification(m.getUserName(),title,description,userName,linkToClick, profilePictureUrl);
+
+                        //send a notification
+                        NotificationOptions notificationOptions = userLogic.getNotificationOptions(m.getUserName());
+                        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
+                            try {
+                                userLogic.sendNotification(userLogic.getUser(m.getUserName()).getFcmToken(), m.getUserName(), title, description,linkToClick, profilePictureUrl);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
-                    teamdao.leave(userName, teamId);
+                    //get one random member that is not an admin of the team
+                    TeamMemberDataForReturn member = noAdmins.toArray(new TeamMemberDataForReturn[noAdmins.size()])[0];
+                    if(member != null) {
+                        teamdao.changeUserToAdmin(teamId, member.getUserName());
+                        //save notification
+                        userLogic.saveNotification(member.getUserName(),title,description,userName,linkToClick, profilePictureUrl);
+                        title = "Promotion";
+                        description = String.format("%s left your team %s and you have been chosen to be an admin. You can change the description or the name of your team and remove members.", userName, team.getTeamName());
+
+                        //send a notification
+                        NotificationOptions notificationOptions = userLogic.getNotificationOptions(member.getUserName());
+                        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
+                            try {
+                                userLogic.sendNotification(userLogic.getUser(member.getUserName()).getFcmToken(), member.getUserName(), title, description,linkToClick, profilePictureUrl);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    }
                 }
             } else {
                 teamdao.leave(userName, teamId);
