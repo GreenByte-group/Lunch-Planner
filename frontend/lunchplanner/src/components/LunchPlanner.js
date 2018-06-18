@@ -16,7 +16,7 @@ class LunchPlanner extends React.Component {
     componentWillReceiveProps(newProps) {
         if(newProps.search !== this.state.search){
             this.setState({
-                search: newProps.searchValue,
+                search: newProps.search,
             });
         }
     }

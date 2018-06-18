@@ -85,7 +85,6 @@ class EventContainer extends React.Component {
             loading: true,
             completed: 0,
         };
-        console.log("search", props.search)
 
         functionToFire = () => {
             this.setState({
@@ -111,6 +110,7 @@ class EventContainer extends React.Component {
             this.loadEvents();
         }
         if(newProps.search !== this.state.search){
+            console.log(newProps.search)
             this.setState({
                 search: newProps.search,
             });
@@ -122,6 +122,7 @@ class EventContainer extends React.Component {
         this.setState({
             loading: true,
         });
+        console.log(search);
         if(search === null || search === undefined)
             search = this.state.search;
 
