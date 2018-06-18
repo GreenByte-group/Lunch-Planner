@@ -43,6 +43,7 @@ class TeamList extends React.Component {
             search:null,
             loading: true,
         }
+        teamListNeedReload();
     }
 
     componentDidMount() {
@@ -72,6 +73,7 @@ class TeamList extends React.Component {
 
     render() {
         if(needReload) {
+            console.log("needReload")
             needReload = !needReload;
             this.loadTeams();
         }
