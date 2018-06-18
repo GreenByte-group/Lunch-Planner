@@ -162,9 +162,9 @@ public class TeamLogic {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
 
-        //TODO picture
-        //TODO write own method for each entity?
         User user = userLogic.getUser(userToRemove);
+        User teamAdmin = userLogic.getUser(userName);
+        String profilePictureUrl = teamAdmin.getProfilePictureUrl();
         Team team = getTeam(userName, teamId);
         //set notification information
         String title = "You have been removed from a team";
@@ -172,13 +172,13 @@ public class TeamLogic {
         String linkToClick = "/team/" + teamId;
 
         //save notification
-        userLogic.saveNotification(userToRemove,title,description,userName,linkToClick, "");
+        userLogic.saveNotification(userToRemove,title,description,userName,linkToClick, profilePictureUrl);
 
         //send a notification to userToInvite
         NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToRemove);
         if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
             try {
-                userLogic.sendNotification(user.getFcmToken(), userToRemove, title, description,linkToClick, "");
+                userLogic.sendNotification(user.getFcmToken(), userToRemove, title, description,linkToClick, profilePictureUrl);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -374,8 +374,33 @@ public class TeamLogic {
             if(team.isPublic() == false)
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "Team is not public!");
 
-            teamdao.addUserToTeam(teamId, userName);
+            //set notification information
+            User user = userLogic.getUser(userName);
+            String profilePictureUrl = user.getProfilePictureUrl();
+            String title = "New team member";
+            String description = String.format("%s joined your team %s", userName, team.getTeamName());
+            String linkToClick = "/team/" + teamId;
+            String receiverName;
+            User receiverData;
+            List<TeamMemberDataForReturn> members = teamdao.getInvitations(teamId);
 
+            for(TeamMemberDataForReturn m : members) {
+                receiverName = m.getUserName();
+                receiverData = userLogic.getUser(receiverName);
+                //save notification
+                userLogic.saveNotification(receiverName, title, description, userName, linkToClick, profilePictureUrl);
+
+                //send a notification to userToInvite
+                NotificationOptions notificationOptions = userLogic.getNotificationOptions(receiverName);
+                if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
+                    try {
+                        userLogic.sendNotification(receiverData.getFcmToken(), receiverName, title, description, linkToClick, profilePictureUrl);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            teamdao.addUserToTeam(teamId, userName);
         } catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
