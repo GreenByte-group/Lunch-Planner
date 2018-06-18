@@ -25,7 +25,6 @@ const styles =  theme => ({
         marginTop: 10,
     },
     deleteIcon:{
-        marginRight: -20,
         color: "white",
         height: 15,
     }
@@ -90,9 +89,7 @@ class Search extends React.Component {
                             onChange={this.handleChange('search')}
                             endAdornment={
                                 <InputAdornment position="end">
-                                    <IconButton>
                                         <DeleteIcon className={classes.deleteIcon} onClick={this.handleCancel}/>
-                                    </IconButton>
                                 </InputAdornment>
                             }
                         />

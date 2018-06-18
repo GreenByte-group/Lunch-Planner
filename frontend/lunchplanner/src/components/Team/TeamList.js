@@ -11,12 +11,9 @@ import {getHistory} from "../../utils/HistoryUtils";
 
 const styles = {
     root: {
-        //width: 1500,,
         height: '100%',
         overflowX: 'hidden',
         overflowY: 'auto',
-       // position: 'absolute',
-        //display: 'flex',
     },
     list: {
         padding: 0,
@@ -25,6 +22,11 @@ const styles = {
         marginLeft: '50%',
         marginTop: "50%",
     },
+    parentTeamName:{
+        marginLeft: 16,
+        marginTop: 10,
+        fontSize: 14,
+    }
 };
 
 export let needReload = false;
@@ -106,8 +108,7 @@ class TeamList extends React.Component {
                             <List className={classes.list}>
                                 {teams.map((listValue)=>{
                                     return <div>
-                                        <p>{teams.forEach((value) =>{
-                                            console.log("value",value)
+                                        <p className={classes.parentTeamName}>{teams.forEach((value) =>{
                                             if(listValue.parentTeam === value.teamId){
                                                 parentTeamName = value.teamName;
                                             }
