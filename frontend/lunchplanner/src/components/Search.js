@@ -51,6 +51,11 @@ class Search extends React.Component {
             });
         }
     }
+    componentDidMount() {
+        this.setState({
+            search: this.props.search,
+        });
+    }
 
     handleChange = name => event => {
         this.setState({
