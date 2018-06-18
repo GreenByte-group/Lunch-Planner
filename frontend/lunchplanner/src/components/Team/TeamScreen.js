@@ -7,8 +7,17 @@ import {Button, Slide, Divider, CircularProgress} from "@material-ui/core";
 import {getUsername, setAuthenticationHeader} from "../authentication/LoginFunctions";
 import {getHistory} from "../../utils/HistoryUtils"
 import {Https as SecretIcon} from "@material-ui/icons";
+import {Public as PublicIcon} from "@material-ui/icons";
 import UserList from "../User/UserList";
-import {getTeam, changeTeamDescription, changeTeamName, removeUserFromTeam, inviteMemberToTeam} from "./TeamFunctions";
+import {
+    getTeam,
+    changeTeamDescription,
+    changeTeamName,
+    removeUserFromTeam,
+    inviteMemberToTeam,
+    joinTeam,
+    leaveTeam
+} from "./TeamFunctions";
 import {teamListNeedReload} from "./TeamList";
 import TextFieldEditing from "../editing/TextFieldEditing";
 import axios from "axios";
@@ -165,6 +174,7 @@ class TeamScreen extends React.Component {
             description: "",
             people:[],
             loading: true,
+            isPublic: false,
         };
 
     }
@@ -250,6 +260,7 @@ class TeamScreen extends React.Component {
                 people: response.data.invitations,
                 public: response.data.public,
                 loading: false,
+                isPublic: response.data.public,
             });
         })
     };
@@ -262,18 +273,34 @@ class TeamScreen extends React.Component {
         this.setState({
            people: people,
         });
-        this.sendAnswer();
+        this.sendAnswer("leave");
     };
 
-    sendAnswer = () => {
-        let url = HOST + '/team/' + this.state.teamId + '/leave';
-        let config = {
-            headers: {
-                'Content-Type': 'text/plain',
-            }
-        };
-        axios.delete(url,config)
-            .then(this.reloadTeamsOnSuccess);
+    handleJoin = () => {
+        console.log("handleJoin")
+        getHistory().push("/app/team");
+        let people = this.state.people;
+        people.push(getUsername());
+        this.setState({
+            people: people,
+        });
+        this.sendAnswer("join");
+    };
+
+    sendAnswer = (answer) => {
+        console.log(answer)
+        if(answer === "leave"){
+            console.log(answer)
+            leaveTeam(this.state.teamId, () => {
+                teamListNeedReload();
+            })
+        }else if(answer === "join"){
+            console.log(answer)
+            joinTeam(this.state.teamId, () => {
+                this.loadTeam(this.state.teamId);
+                teamListNeedReload();
+            })
+        }
     };
 
     onTitleChanged = (event) => {
@@ -318,6 +345,8 @@ class TeamScreen extends React.Component {
         let iAmAdmin = false;
         let userName = getUsername();
         let loading = this.state.loading;
+        let isPublic = this.state.isPublic;
+        console.log("isPublic", isPublic);
 
         if(people.length !== 0) {
             this.parseUrl();
@@ -344,10 +373,12 @@ class TeamScreen extends React.Component {
         let selectedUsers = [];
         let buttonText = "Join Team";
         let username = getUsername();
+        let isInTeam = false;
 
         people.forEach((listValue) => {
             if(listValue.userName === username) {
                 buttonText = "Leave Team";
+                isInTeam = true;
             }
         });
 
@@ -376,15 +407,21 @@ class TeamScreen extends React.Component {
                                     <TextFieldEditing rowsMax="3" onChange={this.onDescriptionChanged} value={description} editable={iAmAdmin} className={classes.description}  multiline/>
                                 </div>
                             </div>
-                            {
-                                (!this.state.public)
-                                    ?
-                                        <div className={classes.secretTeam}>
-                                            <SecretIcon/>
-                                            <p className={classes.secretTeamText}>Secret team. Only you can see the activity of this team.</p>
-                                        </div>
-                                    : ''
-                            }
+
+                            <div className={classes.secretTeam}>
+                                {isPublic ?
+                                    <div>
+                                        <PublicIcon/>
+                                        <p className={classes.secretTeamText}>Public team. All people can see the activity of this team.</p>
+                                    </div>
+                                :
+                                    <div>
+                                        <SecretIcon/>
+                                        <p className={classes.secretTeamText}>Secret team. Only you can see the activity of this team.</p>
+                                    </div>
+                                }
+
+                            </div>
                             <Divider className={classes.divider} />
 
                             <div className={classes.invitations}>
@@ -412,12 +449,22 @@ class TeamScreen extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <Button variant="raised"
-                    color="secondary"
-                    onClick={this.handleLeave}
-                    className={classes.button}>
-                    {buttonText}
-                </Button>
+                    {isInTeam?
+                        <Button variant="raised"
+                                        color="secondary"
+                                        onClick={this.handleLeave}
+                                        className={classes.button}>
+                        {buttonText}
+                    </Button>
+                    :
+                        <Button variant="raised"
+                                color="secondary"
+                                onClick={this.handleJoin}
+                                className={classes.button}>
+                            {buttonText}
+                        </Button>
+                    }
+
                 </Dialog>}
             </div>
         );
