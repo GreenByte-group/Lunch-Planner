@@ -140,7 +140,7 @@ class Dialog extends React.Component {
         if(this.state.width <= 600)
             style = {height: '100%'};
         else
-            style= {maxHeight: '90%',};
+            style = {maxHeight: '90%',};
 
         return (
                 <DialogMaterial
