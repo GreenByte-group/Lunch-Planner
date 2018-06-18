@@ -157,12 +157,6 @@ class AppContainer extends React.Component {
             needReload = false;
             this.getData();
         }
-
-        if(newProps.searchValue !== this.state.search){
-            this.setState({
-                search: newProps.searchValue,
-            });
-        }
     }
 
     showSearch = () => {
