@@ -428,13 +428,19 @@ public class TeamLogicTest {
         teamLogic.removeTeamMember(userName, userToRemove, teamId);
     }
 
-    //TODO (Bin mir nicht sicher was wir damit in "inviteTeamMember" meinten
+
     @Test(expected = HttpRequestException.class)
     public void test6RemoveTeamMemberNoAccessToTeam() throws Exception {
         String userName = createUserIfNotExists(userLogic, createString(50));
-        String userToInvite = createUserIfNotExists(userLogic, createString(50));
+        String userToRemove = createUserIfNotExists(userLogic, createString(50));
 
-        teamLogic.removeTeamMember(userName, userToInvite, parent);
+        teamLogic.removeTeamMember(userName, userToRemove, parent);
+    }
+
+    @Test(expected = HttpRequestException.class)
+    public void test7RemoveTeamMemberSameUser() throws Exception {
+
+        teamLogic.removeTeamMember(userName, userName, parent);
     }
 
     // ------------------------- LEAVE ------------------------------

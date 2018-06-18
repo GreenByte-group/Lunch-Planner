@@ -114,7 +114,6 @@ public class TeamLogic {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
 
-        //TODO picture
         User user = userLogic.getUser(userToInvite);
         //set notification information
         String title = "Team invitation";
@@ -415,7 +414,7 @@ public class TeamLogic {
             if(team == null)
                 throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + teamId + ", was not found");
 
-            if(team.isPublic() == false)
+            if(!team.isPublic())
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "Team is not public!");
 
             //set notification information
