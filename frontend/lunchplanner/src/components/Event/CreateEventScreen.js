@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '../Dialog';
-import {Switch, Typography, TextField, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails} from '@material-ui/core';
+import {Switch, Typography, TextField, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Checkbox} from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
-import MapIcon from '@material-ui/icons/Map'
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import {FormGroup, FormControlLabel, Slide} from '@material-ui/core';
@@ -24,7 +23,6 @@ import {getHistory} from "../../utils/HistoryUtils";
 import {InputAdornment} from "@material-ui/core";
 import {createEvent} from "./EventFunctions";
 import GoogleSuggest from "../Map/GoogleSuggest";
-import Icon from "@material-ui/core/es/Icon/Icon";
 
 const styles = {
     appBar: {
@@ -49,12 +47,6 @@ const styles = {
         width:"55%",
         float: "left"
 
-    },
-    mapIcon:{
-        margin:'0 15px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
     },
     button:{
         fontSize: '16px',
@@ -127,6 +119,16 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
     },
+    searchGoogle: {
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'none',
+        marginLeft: '18px',
+        marginRight: '18px',
+        marginTop: '5px',
+        marginBottom: '5px',
+        width: '100%',
+    },
 };
 
 function Transition(props) {
@@ -151,9 +153,12 @@ class CreateEventScreen extends React.Component {
             invitedUsers: params.get('invitedUsers') || [],
             invitedTeams: params.get('invitedTeams') || [],
             invitedTeamMember: params.get('teamMember') || [],
-            location: params.get('location') || "",
             error: "",
+            privateLocation: false,
+            locationText: params.get('location') || "",
+            locationId: params.get('locationId') || null,
         };
+        //TODO location Id
     }
 
     parseUrl = () => {
@@ -195,7 +200,9 @@ class CreateEventScreen extends React.Component {
         if(invitedUsers)
             invitedUsersArray = invitedUsers.split(",")
 
-        createEvent(this.state.location, this.state.date, invitedUsersArray, !this.state.visible,
+        let location = this.state.locationText;
+
+        createEvent(this.state.locationText, this.state.date, invitedUsersArray, !this.state.visible, this.state.locationId,
             (response) => {
                 if(response.status === 201) {
                     eventListNeedReload();
@@ -221,7 +228,7 @@ class CreateEventScreen extends React.Component {
         this.setState({
             [target.id]: target.value,
         });
-    }
+    };
 
     handleDate = (event, date) => {
         let newDate = moment(date);
@@ -230,11 +237,12 @@ class CreateEventScreen extends React.Component {
         newDate.minute(dateBefore.minute());
 
         this.setState({ date: newDate.toDate() });
-    }
+    };
 
     handleTime = (event, date) => {
         this.setState({ date: date });
-    }
+    };
+
     ischDesMehr = (invited) => {
         if(this.state.invitedUsers.length> 40){
             return " more than 3 people invited"
@@ -246,17 +254,15 @@ class CreateEventScreen extends React.Component {
 
     handleVisibility = name => event =>{
         this.setState({ [name]: event.target.checked });
-    }
-    checkVisibility = () => {
-        if(this.state.visible){
-            return true;
-        }
-    }
+    };
+
     handleLocationChange= (location) => {
+
         this.setState({
-            location: location,
+            locationText: location,
         });
-    }
+        console.log(location);
+    };
 
     render() {
         this.parseUrl();
@@ -264,7 +270,8 @@ class CreateEventScreen extends React.Component {
         const error = this.state.error;
         let invited =this.state.invitedUsers + "," + this.state.invitedTeams;
         let buttonEnabled = false;
-        if(this.state.location)
+        console.log(this.state.locationText)
+        if(this.state.locationText)
             buttonEnabled = true;
 
         return (
@@ -289,32 +296,18 @@ class CreateEventScreen extends React.Component {
                        >
 
                             <div
-                                style={{
-                                    width: 'calc(100% - 150px)',
-                                    float: 'left',
-
-                                }}
+                                className={classes.searchGoogle}
                             >
-                               <GoogleSuggest
-                                   className={classes.searchboxField}
-                                   id="location"
-                                   label="Location"
-                                   value={this.state.location}
-                                   placeholder="Add an Location ..."
-                                   float="left"
-                                   onChange={this.handleLocationChange}
-                               />
+                                <GoogleSuggest
+                                    className={classes.searchboxField}
+                                    id="location"
+                                    label="Location"
+                                    value={this.state.locationText}
+                                    placeholder="Add an Location ..."
+                                    float="left"
+                                    onChange={this.handleLocationChange}
+                                />
                            </div>
-
-                            <Link className={classes.mapIcon}
-                                  float="right"
-                                  to={{pathname: "/app/event/create/map", query: {
-                                      location: this.state.location,}}}
-                                  location={ this.state.location}
-                            >
-                                <MapIcon disabled={false} className={classes.mapIcon} />
-                                <span>View on Map</span>
-                            </Link>
                        </FormGroup>
                     {/*</form>*/}
                     <div>
@@ -358,7 +351,6 @@ class CreateEventScreen extends React.Component {
                                         label="Participants"
                                         placeholder ="Invite People"
                                         value={this.ischDesMehr(invited)}
-                                        // onChange={this.ischDesMehr}
                                         fullWidth
                                         InputProps={{
                                             startAdornment: <InputAdornment position="start"><PeopleIcon/></InputAdornment>,

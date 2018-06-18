@@ -75,14 +75,14 @@ export function replyToTeam(teamId, answer, responseFunc) {
 
 export function changeTeamName(teamId, teamName, responseFunc, errorFunc){
     let url = HOST + '/team/' + teamId + '/name';
-    axios.put(url, teamName, config)
+    axios.post(url, teamName, config)
         .then(responseFunc)
         .catch(errorFunc);
 }
 
 export function changeTeamDescription(teamId, teamDescription, responseFunc, errorFunc){
     let url = HOST + '/team/' + teamId + '/description';
-    axios.put(url, teamDescription, config)
+    axios.post(url, teamDescription, config)
         .then(responseFunc)
         .catch(errorFunc);
 }

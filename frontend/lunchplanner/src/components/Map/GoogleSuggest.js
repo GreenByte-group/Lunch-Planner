@@ -1,80 +1,150 @@
 import React from   "react"
-import GoogleMapLoader from "react-google-maps-loader"
-import GooglePlacesSuggest from "react-google-places-suggest"
+import { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete'
+import PlacesAutocomplete from 'react-places-autocomplete'
+import {Input, withStyles} from "@material-ui/core"
+import {Link} from "react-router-dom";
+import MapIcon from '@material-ui/icons/Map'
+import Geocode from "react-geocode";
 
-const MY_API_KEY = "AIzaSyCOYsTeZ29UyBEHqYG39GXJIN1-rp1KayU";
+const MY_API_KEY = "AIzaSyA9g1HmDqPm-H4jF-SUMPAWAEkJRbwnsSw";
 
 const styles = {
+    autocomplete: {
 
-}
+    },
+    mapIcon:{
+        margin:'0 15px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '100px',
+    },
+};
 
 export class GoogleSuggest extends React.Component {
 
     constructor(props) {
         super();
+        this.setLocationChange = this.setLocationChange.bind(this);
         this.state = {
             search: "",
-            value: "",
+            value: props.value,
             onChange: props.onChange,
+        };
+    }
+
+    componentDidMount() {
+        this.handleSelect(this.props.value);
+    }
+
+    handleChange = (address) => {
+        this.setState({ address });
+        this.props.onChange(address);
+    };
+
+    setLocationChange = (lat, lng, placeId) => {
+        if(placeId === undefined || this.state.placeId == null){
+            Geocode.setApiKey(MY_API_KEY);
+            Geocode.fromLatLng(lat, lng)
+               .then((results) =>
+               {
+                    this.setState({
+                        address: results.results[0].formatted_address
+                    })
+                   console.log(this.state.address)
+                   this.state.onChange(this.state.address)
+               })
+        }else{
+            geocodeByPlaceId(placeId)
+                .then((results) =>
+                {
+                    this.setState({
+                        address: results[0].formatted_address
+                    })
+                    console.log(this.state.address)})
+                .then(this.state.onChange(String(this.state.address)))
         }
-    }
+    };
 
-    handleInputChange = e => {
-        this.setState({search: e.target.value, value: e.target.value})
-    }
-
-    handleSelectSuggest = (geocodedPrediction, originalPrediction) => {
-        this.setState({search: "", value: geocodedPrediction.formatted_address})
-        this.state.onChange(geocodedPrediction);
-    }
+    handleSelect = (address) => {
+        this.handleChange(address);
+        geocodeByAddress(address)
+            .then(results => {
+                console.log('result: ', results);
+                return getLatLng(results[0])
+            })
+            .then(latLng => {
+                this.setState({
+                    lat: latLng.lat,
+                    lng: latLng.lng,
+                })
+            })
+            .catch(error => console.error('Error', error))
+    };
 
     render() {
+        const {classes} = this.props;
         const {search, value} = this.state;
 
-        console.log('google succest render');
-
         return (
-            <GoogleMapLoader
-                style={{width: '200px'}}
-                params={{
-                    key: MY_API_KEY,
-                    libraries: "places,geocode",
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    width: '100%',
                 }}
-                render={googleMaps =>
-                    googleMaps && (
-                        <GooglePlacesSuggest
-                            style={{width: '200px'}}
-                            googleMaps={googleMaps}
-                            autocompletionRequest={{
-                                input: search,
-                                // Optional options
-                                // https://developers.google.com/maps/documentation/javascript/reference?hl=fr#AutocompletionRequest
-                            }}
-                            // Optional props
-                            onSelectSuggest={this.handleSelectSuggest}
-                            textNoResults="No result found" // null or "" if you want to disable the no results item
-                            customRender={prediction => (
-                                <div className="customWrapper">
-                                    {prediction
-                                        ? prediction.description
-                                        : "No result found"}
-                                </div>
-                            )}
-                        >
-
-                            <input
-                                type="text"
-                                value={value}
-                                label="Location"
-                                style={{marginTop: 30, marginBottom:30, marginLeft: 20, width: "100%", maxWidth: "400px"}}
-                                placeholder="Search a location"
-                                onChange={this.handleInputChange}
+            >
+                <PlacesAutocomplete
+                    className={styles.autocomplete}
+                    value={this.state.address}
+                    onChange={this.handleChange}
+                    onSelect={this.handleSelect}
+                >
+                    {({ getInputProps, suggestions, getSuggestionItemProps }) => (
+                        <div style={{width: '100%'}}>
+                            <Input
+                                style={{
+                                    marginTop: '12px',
+                                }}
+                                {...getInputProps({
+                                    placeholder: 'Search Places ...',
+                                    className: 'location-search-input'
+                                })}
+                                fullWidth
+                                defaultValue={this.state.value}
                             />
-                        </GooglePlacesSuggest>
-                    )
-                }
-            />
+                            <div className="autocomplete-dropdown-container">
+                                {suggestions.map(suggestion => {
+                                    const className = suggestion.active ? 'suggestion-item--active' : 'suggestion-item';
+                                    // inline style for demonstration purpose
+                                    const style = suggestion.active
+                                        ? { backgroundColor: '#fafafa', cursor: 'pointer' }
+                                        : { backgroundColor: '#ffffff', cursor: 'pointer' };
+                                    return (
+                                        <div {...getSuggestionItemProps(suggestion, { className, style })}>
+                                            <span>{suggestion.description}</span>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    )}
+                </PlacesAutocomplete>
+                <Link className={classes.mapIcon}
+                      float="right"
+                      to={{pathname: "/app/event/create/map", query: {
+                            source: "/app/event/create",
+                              lng: this.state.lng,
+                              lat: this.state.lat,
+                              locationChange: this.setLocationChange,
+                          }}}
+
+                >
+                    <MapIcon disabled={false} className={classes.mapIcon} />
+                    <span>Search on Map</span>
+                </Link>
+            </div>
         )
     }
 }
-export default GoogleSuggest;
+export default withStyles(styles, {withTheme: true}) (GoogleSuggest);

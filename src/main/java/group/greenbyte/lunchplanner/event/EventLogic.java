@@ -17,12 +17,15 @@ import group.greenbyte.lunchplanner.user.database.User;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.Calendar;
+
+import static org.hibernate.criterion.Projections.property;
 
 @Service
 public class EventLogic {
@@ -88,21 +91,8 @@ public class EventLogic {
         return createEvent(userName, eventName, eventDescription, location, timeStart, false);
     }
 
-    /**
-     * Create an event. At least the eventName and a location or timeStart is needed
-     *
-     * @param userName userName that is logged in
-     * @param eventName name of the new event, not null
-     * @param eventDescription description of the new event
-     * @param location id of the used location
-     * @param timeStart time when the event starts
-     * @return the id of the new event
-     * @throws HttpRequestException when location and timeStart not valid or eventName has no value
-     * or an Database error happens
-     */
     int createEvent(String userName, String eventName, String eventDescription,
-                    String location, Date timeStart, boolean visible) throws HttpRequestException{
-
+                    String location, Date timeStart, boolean visible, String locationId) throws HttpRequestException{
         if(userName == null || userName.length()==0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is empty");
 
@@ -128,15 +118,83 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Location is too long, maximum length: " + Event.MAX_LOCATION_LENGTH);
 
         try {
-            Integer eventId = eventDao.insertEvent(userName, eventName, eventDescription, location, timeStart, visible)
+            //check if there is an event with the same name and start date
+            List<Event> events = eventDao.getAllEvents();
+
+            for (Event event : events) {
+                if (event.getEventName().equals(eventName) && timeStart.compareTo(event.getStartDate()) == 0) {
+                    List<EventInvitationDataForReturn> eventInvitations = eventDao.getInvitations(event.getEventId());
+                    for (EventInvitationDataForReturn eventInvitation : eventInvitations) {
+                        //TODO test if same location too?
+                        if (eventInvitation.getUserName().equals(userName) && eventInvitation.isAdmin()) {
+                            throw new HttpRequestException(HttpStatus.NOT_ACCEPTABLE.value(), "You already created an event with the same name and start date");
+                        }
+                    }
+                }
+            }
+
+            Integer eventId = eventDao.insertEvent(userName, eventName, eventDescription, location, timeStart, visible, locationId)
                     .getEventId();
 
             scheduleDeleteEvent(eventId);
+
+            //only send notifications if the created event is visible for everyone
+            if(visible) {
+
+                //set notification information
+                User eventCreator = userLogic.getUser(userName);
+                String picturePath = eventCreator.getProfilePictureUrl();
+                List<User> users = userLogic.getSubscriber(location);
+                String title = "Event created in " + location;
+                String description = String.format("%s created an event in your subscribed location", userName);
+                String linkToClick = "/event/" + eventId;
+
+                /*
+                the user that created an event in a specific location could be a subscriber too and
+                shouldn't get a notification
+                */
+                users.remove(eventCreator);
+
+
+                for (User subscriber : users) {
+                    //save notification
+                    userLogic.saveNotification(subscriber.getUserName(), title, description, userName, linkToClick, picturePath);
+
+                    //send a notification to subscriber
+                    NotificationOptions notificationOptions = userLogic.getNotificationOptions(subscriber.getUserName());
+                    if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isSubscriptionsBlocked())) {
+                        try {
+                            userLogic.sendNotification(subscriber.getFcmToken(), subscriber.getUserName(), title, description, linkToClick, picturePath);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }
 
             return eventId;
         }catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
+    }
+
+    /**
+     * Create an event. At least the eventName and a location or timeStart is needed
+     *
+     * @param userName userName that is logged in
+     * @param eventName name of the new event, not null
+     * @param eventDescription description of the new event
+     * @param location id of the used location
+     * @param timeStart time when the event starts
+     * @return the id of the new event
+     * @throws HttpRequestException when location and timeStart not valid or eventName has no value
+     * or an Database error happens
+     */
+    int createEvent(String userName, String eventName, String eventDescription,
+                    String location, Date timeStart, boolean visible) throws HttpRequestException{
+
+        return createEvent(userName, eventName, eventDescription, location, timeStart, visible, null);
     }
 
     /**
@@ -478,10 +536,13 @@ public class EventLogic {
                 throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + eventId + "was not found");
 
 
-
-            if(!hasUserPrivileges(eventId, userName))
-                if(!hasAdminPrivileges(eventId, userName))
+            // if the user doesn't have rights to access an event, they can only comment if the event is public.
+            if(!hasUserPrivileges(eventId, userName)) {
+                Event e = getEvent(userName, eventId);
+                if(!e.isPublic()) {
                     throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this event");
+                }
+            }
 
             eventDao.putCommentForEvent(userName,eventId, comment);
 

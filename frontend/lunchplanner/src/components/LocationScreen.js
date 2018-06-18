@@ -4,6 +4,7 @@ import {withStyles} from '@material-ui/core/styles';
 import SwipeableViews from 'react-swipeable-views';
 import {AppBar, Tabs, Tab, Typography} from '@material-ui/core';
 import BottomNavigationBar from "./BottomNavigationBar";
+import SubscribeMap from "./Map/SubscribeMap";
 
 
 function TabContainer({ children, dir }) {
@@ -27,7 +28,6 @@ const styles = theme => ({
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        maxWidth: '1024px',
         width: '100%',
         marginLeft: 'auto',
         marginRight: 'auto',
@@ -66,7 +66,7 @@ class LocationScreen extends React.Component {
 
         return (
             <div className={classes.root}>
-                //TODO location
+                <SubscribeMap />
             </div>
         );
     }

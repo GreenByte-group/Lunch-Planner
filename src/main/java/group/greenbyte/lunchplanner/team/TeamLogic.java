@@ -154,6 +154,9 @@ public class TeamLogic {
             if(!hasAdminPrivileges(teamId, userName))
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have write access to this team");
 
+            if(userName.equals(userToRemove))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You cannot remove yourself from a team");
+
             teamdao.removeTeamMember(userToRemove, teamId);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
@@ -326,7 +329,7 @@ public class TeamLogic {
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this team");
 
             if(teamdao.getTeam(teamId) == null)
-                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + teamId + ", was not found");
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Team with team-id: " + teamId + ", was not found");
 
             if(hasAdminPrivileges(teamId, userName)) {
                 List<TeamMemberDataForReturn> memberList = teamdao.getInvitations(teamId);

@@ -8,8 +8,8 @@ public class Event {
 
     static final public int MAX_USERNAME_LENGHT = 50;
     static final public int MAX_DESCRITION_LENGTH = 1000;
-    static final public int MAX_EVENTNAME_LENGTH = 50;
-    static final public int MAX_SEARCHWORD_LENGTH = 50;
+    static final public int MAX_EVENTNAME_LENGTH = 255;
+    static final public int MAX_SEARCHWORD_LENGTH = 255;
     static final public int MAX_COMMENT_LENGTH = 100;
     static final public int MAX_LOCATION_LENGTH = 255;
 
@@ -34,6 +34,9 @@ public class Event {
 
     @Column
     private String shareToken;
+
+    @Column
+    private String locationId;
 
     @OneToMany(mappedBy = "userInvited")
     private Set<EventInvitation> usersInvited = new HashSet<>();
@@ -145,5 +148,13 @@ public class Event {
 
     public void setShareToken(String shareToken) {
         this.shareToken = shareToken;
+    }
+
+    public String getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(String locationId) {
+        this.locationId = locationId;
     }
 }

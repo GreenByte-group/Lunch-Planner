@@ -15,6 +15,8 @@ import group.greenbyte.lunchplanner.user.database.notifications.NotificationOpti
 import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 import group.greenbyte.lunchplanner.user.database.notifications.OptionsJson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -37,17 +39,20 @@ public class UserLogic {
 
     private static final Pattern REGEX_MAIL = Pattern.compile("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
 
-    @Autowired
-    private HttpServletRequest request;
-    //private ServletContext context;
+    private final Environment env;
 
+    private String uploadsDirName;
 
     // This variable will be set over the setter Method by java spring
     private UserDao userDao;
 
     @Autowired
-    public UserLogic(JwtService jwtService) {
+    public UserLogic(JwtService jwtService, Environment env) {
         this.jwtService = jwtService;
+        this.env = env;
+        uploadsDirName = this.env.getProperty("upload.location");
+        if(uploadsDirName == null)
+            uploadsDirName = "/tmp";
     }
 
     // ------------------ JWT --------------------
@@ -376,17 +381,21 @@ public class UserLogic {
                    throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "the uploaded file is not an image");
                }
 
-               String relativePath = "/profilePictures/";
-
-               /*with servletContext
-               String absolutePath = context.getRealPath(relativePath);*/
+               String relativePath = "profilePictures/";
 
                //the path changes in a different context
-               String absolutePath = request.getServletContext().getRealPath(relativePath);
+               String absolutePath;
+               if(uploadsDirName.charAt(uploadsDirName.length() - 1) != '/') {
+                   absolutePath = uploadsDirName + "/" + relativePath;
+               } else {
+                   absolutePath = uploadsDirName + relativePath;
+               }
+
+               relativePath = "/" + relativePath;
 
                //create a new directory if it doesn't exist
                if(!new File(absolutePath).exists()) {
-                   new File(absolutePath).mkdir();
+                   new File(absolutePath).mkdirs();
                }
                String fileName = userName;
                String path = absolutePath + File.separator + fileName;
@@ -530,6 +539,14 @@ public class UserLogic {
     public void subscribe(String subscriber, String location) throws HttpRequestException{
         try {
             userDao.subscribe(subscriber, location);
+        } catch (DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    public void unsubscribe(String subscriber, String location) throws HttpRequestException{
+        try {
+            userDao.unsubscribe(subscriber, location);
         } catch (DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }

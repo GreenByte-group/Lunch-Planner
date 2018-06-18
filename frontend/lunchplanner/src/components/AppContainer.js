@@ -11,9 +11,8 @@ import {Place, LocalDining, Group, NotificationsNone, ExitToApp, Settings, Menu}
 
 import {Link} from "react-router-dom";
 import {getUser} from "./User/UserFunctions";
-import {getUsername} from "./authentication/LoginFunctions";
+import {getUsername, doLogout} from "./authentication/LoginFunctions";
 import {getHistory} from "../utils/HistoryUtils";
-import {doLogout} from "./LoginFunctions";
 import BottomNavigationBar from "./BottomNavigationBar";
 import LunchPlanner from "./LunchPlanner";
 import SocialScreen from "./SocialScreen";
@@ -77,10 +76,11 @@ const styles = {
         display: 'flex',
         flexGrow: 1,
         position: 'relative',
+        height: '100%',
     },
     mainContent: {
         overflow: 'hidden',
-        height: '100vh',
+        height: '100%',
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -225,26 +225,26 @@ class AppContainer extends React.Component {
 
         switch(component) {
             case 'event':
-                children = <LunchPlanner searchValue={this.state.search}/>;
+                children = <LunchPlanner location={this.props.location} searchValue={this.state.search}/>;
                 title = "Events";
                 bottomNavigationValue = 1;
                 break;
             case 'team':
-                children = <SocialScreen/>;
+                children = <SocialScreen location={this.props.location} />;
                 title = "Teams";
                 bottomNavigationValue = 2;
                 break;
             case 'location':
-                children = <LocationScreen/>;
+                children = <LocationScreen location={this.props.location} />;
                 title = "Places";
                 bottomNavigationValue = 0;
                 break;
             case 'notifications':
-                children = <NotificationsScreen/>;
+                children = <NotificationsScreen location={this.props.location} />;
                 title = "Notifications";
                 break;
             case 'user':
-                children = <UserEditScreen />;
+                children = <UserEditScreen location={this.props.location} />;
                 title = "Your Profile";
                 break;
         }
@@ -282,7 +282,7 @@ class AppContainer extends React.Component {
                             </MenuItem>
                         </Link>
                         <Divider />
-                        <Link to="/app/notifications">
+                        <Link to="/app/notifications?tab=0">
                             <MenuItem>
                                 <NotificationsNone className={classes.icon}/>
                                 Notifications
@@ -303,7 +303,7 @@ class AppContainer extends React.Component {
                             />
                         </MenuItem>
                         <Divider />
-                        <Link to="/app/options">
+                        <Link to="/app/notifications?tab=1">
                             <MenuItem>
                                 <Settings className={classes.icon}/>
                                 Options

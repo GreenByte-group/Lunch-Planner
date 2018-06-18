@@ -11,13 +11,13 @@ const styles = theme => ({
     root: {
         width: '100%',
         height: '100%',
+        overflowY: 'auto',
         maxWidth: '1024px',
         marginLeft: 'auto',
         marginRight: 'auto',
-        marginTop: '20px',
         display: 'flex',
         flexDirection: 'column',
-        paddingTop: '10px',
+        paddingTop: '20px',
         paddingLeft: '10px',
         paddingRight: '10px',
     },
@@ -45,7 +45,6 @@ const styles = theme => ({
         width: '200px',
         height: '200px',
         borderRadius: '50%',
-        position: 'absolute',
         backgroundColor: 'rgba(0,0,0,0.3)',
         transition: 'background-color 0.5s',
         "&:hover": {
@@ -56,7 +55,6 @@ const styles = theme => ({
     editIcon: {
         width: '30px',
         height: '30px',
-        position: 'absolute',
         marginLeft: '85px',
         marginTop: '85px',
         color: 'white',

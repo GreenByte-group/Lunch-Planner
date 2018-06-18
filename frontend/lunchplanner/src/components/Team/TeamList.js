@@ -28,9 +28,12 @@ const styles = {
 };
 
 export let needReload = false;
+let funcReload;
 
 export function teamListNeedReload() {
     needReload = true;
+    if(funcReload)
+        funcReload();
 }
 
 class TeamList extends React.Component {
@@ -42,6 +45,10 @@ class TeamList extends React.Component {
             teams: [],
             search:null,
             loading: true,
+        };
+
+        funcReload = () => {
+            this.setState({dummy: true})
         }
         teamListNeedReload();
     }

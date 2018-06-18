@@ -1,5 +1,6 @@
 import axios from "axios";
 import {HOST, TOKEN, USERNAME} from "../../Config";
+import {sendTokenToServer} from "../notification/NotificationFunctions";
 
 const authentication = {
     isAuthenticated: false,
@@ -15,7 +16,7 @@ export function isAuthenticated() {
 }
 
 export function getUsername() {
-    return localStorage.getItem(USERNAME) || "please login again";
+    return localStorage.getItem(USERNAME);
 }
 
 export function setAuthenticationHeader() {
@@ -25,6 +26,17 @@ export function setAuthenticationHeader() {
         if ( token != null ) {
             config.headers.Authorization = token;
         }
+
+        return config;
+    }, function(err) {
+        return Promise.reject(err);
+    });
+}
+
+export function resetAuthenticationHeader() {
+
+    axios.interceptors.request.use(function(config) {
+        config.headers.Authorization = null;
 
         return config;
     }, function(err) {
@@ -47,6 +59,7 @@ export function doLogin(username, password, responseFunc) {
                 localStorage.removeItem(TOKEN);
                 localStorage.setItem(TOKEN, response.data.token );
                 localStorage.setItem(USERNAME, username);
+                setAuthenticationHeader();
                 authentication.isAuthenticated = true;
                 responseFunc({type: "LOGIN_SUCCESS", payload: response.data})
             })
@@ -65,8 +78,11 @@ export function doLogin(username, password, responseFunc) {
 }
 
 export function doLogout() {
+    sendTokenToServer("");
     localStorage.removeItem(TOKEN);
+    localStorage.removeItem(USERNAME);
     authentication.isAuthenticated = false;
+    resetAuthenticationHeader
     return {
         type: "IS_NOT_AUTHENTICATED",
         payload: ''

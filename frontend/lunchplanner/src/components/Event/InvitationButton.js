@@ -10,7 +10,6 @@ const styles = {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-around',
-        position: 'fixed',
         zIndex: '10000',
         bottom: '0px',
     },

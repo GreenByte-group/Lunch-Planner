@@ -55,7 +55,6 @@ public class User implements Serializable {
     @OneToMany (mappedBy = "receiver")
     private List<Notifications> notification = new ArrayList<>();
 
-
     @OneToMany (mappedBy = "subscriber", cascade = CascadeType.ALL)
     private List<Subscribe> locations = new ArrayList<>();
 

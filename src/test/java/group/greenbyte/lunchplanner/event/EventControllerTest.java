@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -41,7 +43,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration (classes = AppConfig.class)
 @WebAppConfiguration
-@ActiveProfiles("application-test.properties")
+@ActiveProfiles("application.properties")
+
 @Transactional
 public class EventControllerTest {
 
@@ -100,7 +103,7 @@ public class EventControllerTest {
     public void test1CreateEventNoDescription() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson(createString(50), "", location, new Date(timeStart), false);
+        EventJson event = new EventJson(createString(255), "", location, new Date(timeStart), false);
 
         String json = getJsonFromObject(event);
 
@@ -124,7 +127,7 @@ public class EventControllerTest {
     public void test2CreateEventNormalDescription() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson(createString(50), "Super Event", location, new Date(timeStart), false);
+        EventJson event = new EventJson(createString(255), "Super Event", location, new Date(timeStart), false);
 
         String json = getJsonFromObject(event);
 
@@ -148,7 +151,7 @@ public class EventControllerTest {
     public void test3CreateEventLongDescription() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson(createString(50), createString(1000), location, new Date(timeStart), false);
+        EventJson event = new EventJson(createString(255), createString(1000), location, new Date(timeStart), false);
 
         String json = getJsonFromObject(event);
 
@@ -186,7 +189,7 @@ public class EventControllerTest {
     public void test5CreateEventNameTooLong() throws Exception {
         long timeStart = System.currentTimeMillis() + 100000;
 
-        EventJson event = new EventJson(createString(51), "", location, new Date(timeStart),false);
+        EventJson event = new EventJson(createString(256), "", location, new Date(timeStart),false);
 
         String json = getJsonFromObject(event);
 
@@ -266,7 +269,7 @@ public class EventControllerTest {
     @Test
     @WithMockUser(username = userName)
     public void test2SearchEventsForUserSearchwordToBig() throws Exception {
-        String searchword = createString(51);
+        String searchword = createString(256);
         String json = getJsonFromObject(searchword);
 
         mockMvc.perform(
@@ -346,7 +349,7 @@ public class EventControllerTest {
     @Test
     @WithMockUser(username = userName)
     public void test2updateEventNameTooLong() throws Exception{
-        String eventName = createString(51);
+        String eventName = createString(256);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/event/" + eventId + "/name").contentType(MediaType.TEXT_PLAIN_VALUE).content(eventName))
@@ -516,7 +519,7 @@ public class EventControllerTest {
     @Test
     @WithMockUser(username = userName)
     public void test1SearchEventsTooLongSearchWord() throws Exception {
-        String searchWord = createString(51);
+        String searchWord = createString(256);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/event/search/" + searchWord))

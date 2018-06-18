@@ -1,6 +1,5 @@
 import React from "react";
 import FirstScreen from "./components/authentication/Authentication"
-import LunchPlanner from "./components/LunchPlanner"
 import { Router, Route, Redirect } from "react-router-dom";
 import {isAuthenticated} from "./components/authentication/LoginFunctions"
 import { MuiThemeProvider } from '@material-ui/core/styles';
@@ -21,10 +20,9 @@ import {init} from './components/notification/Firebase'
 import NotificationsScreen from "./components/notification/NotificationsScreen";
 import TeamScreen from "./components/Team/TeamScreen";
 import InviteExtern from "./components/User/InviteExtern";
-import MyMap from "./components/Map/MyMap";
 import NewMap from "./components/Map/NewMap";
 import AppContainer from "./components/AppContainer";
-import UserEditScreen from "./components/User/UserEditScreen";
+import MyTetris from "./components/EasterEgg/Tetris";
 
 
 const oldTheme = getMuiTheme({
@@ -65,26 +63,30 @@ class App extends React.Component {
 
         setHistory(createHistory(props));
 
-        init(() => {
-            console.log('notificaton: success');
-        }, (error) => {
-            console.log('notificaton: error: ', error);
-        }, (message) => {
-            console.log('notificaton: message: ', message);
-            let notificationTitle = message.data.title;
-            let notificationOptions = {
-                body: message.data.body,
-                icon: message.data.icon,
-                tag: message.data.tag,
-                click_action: message.data.tag,
-            };
+        try {
+            init(() => {
+                console.log('notificaton: success');
+            }, (error) => {
+                console.log('notificaton: error: ', error);
+            }, (message) => {
+                console.log('notificaton: message: ', message);
+                let notificationTitle = message.data.title;
+                let notificationOptions = {
+                    body: message.data.body,
+                    icon: message.data.icon,
+                    tag: message.data.tag,
+                    click_action: message.data.tag,
+                };
 
-            let notification = new Notification(notificationTitle, notificationOptions);
-            notification.addEventListener('click', (event) => {
-                console.log('click', event);
-                getHistory().push("/app" + event.target.tag);
-            })
-        });
+                let notification = new Notification(notificationTitle, notificationOptions);
+                notification.addEventListener('click', (event) => {
+                    console.log('click', event);
+                    getHistory().push("/app" + event.target.tag);
+                })
+            });
+        } catch(e) {
+            console.log('init failed: ', e);
+        }
     }
 
     render() {
@@ -109,12 +111,14 @@ class App extends React.Component {
                             <PrivateRoute path="/app/team/:teamId(\d+)" component={TeamScreen} />
                             <PrivateRoute path="/app/team/:teamId(\d+)/invite" component={SelectUserScreen} />
                             <PrivateRoute path="/app/event/create" component={CreateEventScreen} />
+                            <PrivateRoute path="/app/event/create/map" component={NewMap} />
                             <PrivateRoute path="/app/event/create/invite" component={SelectUserScreen} />
                             <PrivateRoute path="/app/event/:eventId(\d+)/invite" component={SelectUserScreen} />
                             <PrivateRoute path="/app/event/:eventId(\d+)" component={EventScreen} />
                             <PrivateRoute path="/app/event/:eventId(\d+)/comments" component={Comments} />
                             <PrivateRoute path="/app/event/:eventId(\d+)/share" component={InviteExtern} />
                             <PrivateRoute path="/app/event/:eventId(\d+)/service" component={ServiceListScreen} />
+                            <PrivateRoute path="/app/tetris" component={MyTetris} />
                         </div>
                     </Router>
                 </MuiThemeProvider>
