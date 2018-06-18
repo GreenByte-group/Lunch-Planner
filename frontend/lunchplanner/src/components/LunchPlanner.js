@@ -10,7 +10,6 @@ class LunchPlanner extends React.Component {
         this.state = {
             search: props.location.state,
         };
-        console.log(this.state.search);
         setAuthenticationHeader();
     }
 

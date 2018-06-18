@@ -52,7 +52,6 @@ class LocationScreen extends React.Component {
 
     constructor(props) {
         super();
-        console.log(props.searchValue);
         this.state = {
             value: 0,
         };

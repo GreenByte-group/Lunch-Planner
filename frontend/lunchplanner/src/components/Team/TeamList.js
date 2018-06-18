@@ -43,7 +43,6 @@ class TeamList extends React.Component {
     constructor(props) {
         setAuthenticationHeader();
         super();
-        console.log("Teamlist", props.search);
         this.state = {
             teams: [],
             search:props.search,
@@ -51,9 +50,8 @@ class TeamList extends React.Component {
         };
 
         funcReload = () => {
-            this.setState({dummy: true})
+            this.setState({loading: true})
         };
-        teamListNeedReload();
     }
 
     componentDidMount() {
@@ -70,6 +68,7 @@ class TeamList extends React.Component {
             this.loadTeams();
         }
         if(newProps.search !== this.state.search){
+            console.log(newProps.search)
             this.setState({
                 search: newProps.search,
             });
@@ -78,9 +77,8 @@ class TeamList extends React.Component {
     }
 
     loadTeams(search){
-        getTeams(this.props.search,
+        getTeams(search,
             (response) => {
-            console.log(response.data)
                 this.setState({
                     teams: response.data,
                     loading: false,
@@ -90,7 +88,6 @@ class TeamList extends React.Component {
 
     render() {
         if(needReload) {
-            console.log("needReload")
             needReload = !needReload;
             this.loadTeams();
         }

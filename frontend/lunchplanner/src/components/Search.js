@@ -6,6 +6,7 @@ import classNames from 'classnames';
 
 const styles =  theme => ({
     icon:{
+        marginTop: -8,
         float: "right",
         color: "white"
     },
@@ -73,7 +74,9 @@ class Search extends React.Component {
     };
 
     searchForEvents = () => {
-        this.setState({ open: false });
+        this.setState({
+            open: false,
+        });
         this.props.handleSearch(this.state.search);
     };
     render() {

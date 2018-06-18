@@ -118,7 +118,7 @@ class AppContainer extends React.Component {
 
             noNotificationToday: false,
         };
-        this.handleSearch = this.handleSearch.bind(this);
+       // this.handleSearch = this.handleSearch.bind(this);
     }
 
     componentDidMount() {
@@ -224,12 +224,12 @@ class AppContainer extends React.Component {
 
         switch(component) {
             case 'event':
-                children = <LunchPlanner location={this.props.location} searchValue={this.state.search}/>;
+                children = <LunchPlanner location={this.props.location} search={this.state.search}/>;
                 title = "Events";
                 bottomNavigationValue = 1;
                 break;
             case 'team':
-                children = <SocialScreen location={this.props.location} searchValue={this.state.search}/>;
+                children = <SocialScreen location={this.props.location} search={this.state.search}/>;
                 title = "Teams";
                 bottomNavigationValue = 2;
                 break;
