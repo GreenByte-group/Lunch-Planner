@@ -11,12 +11,9 @@ import {getHistory} from "../../utils/HistoryUtils";
 
 const styles = {
     root: {
-        //width: 1500,,
         height: '100%',
         overflowX: 'hidden',
         overflowY: 'auto',
-       // position: 'absolute',
-        //display: 'flex',
     },
     list: {
         padding: 0,
@@ -25,6 +22,11 @@ const styles = {
         marginLeft: '50%',
         marginTop: "50%",
     },
+    parentTeamName:{
+        marginLeft: 16,
+        marginTop: 10,
+        fontSize: 14,
+    }
 };
 
 export let needReload = false;
@@ -40,16 +42,16 @@ class TeamList extends React.Component {
 
     constructor(props) {
         setAuthenticationHeader();
-        super(props);
+        super();
         this.state = {
             teams: [],
-            search:null,
+            search:props.search,
             loading: true,
         };
 
         funcReload = () => {
-            this.setState({dummy: true})
-        }
+            this.setState({loading: true})
+        };
     }
 
     componentDidMount() {
@@ -65,10 +67,16 @@ class TeamList extends React.Component {
             needReload = !needReload;
             this.loadTeams();
         }
+        if(newProps.search !== this.state.search){
+            this.setState({
+                search: newProps.search,
+            });
+            this.loadTeams(newProps.search);
+        }
     }
 
     loadTeams(search){
-        getTeams(this.props.search,
+        getTeams(search,
             (response) => {
                 this.setState({
                     teams: response.data,
@@ -86,7 +94,7 @@ class TeamList extends React.Component {
 
         const { classes } = this.props;
         let teams = this.state.teams;
-        console.log(teams);
+        let parentTeamName = "";
         return (
             <div className={classes.root}>
                 {loading ? <CircularProgress className={classes.progress} color="secondary"/>
@@ -94,10 +102,18 @@ class TeamList extends React.Component {
                         <div >
                             <List className={classes.list}>
                                 {teams.map((listValue)=>{
-                                    return <Team name={listValue.teamName}
-                                                 id={listValue.teamId}
-                                                 member={listValue.invitations}
-                                    />;
+                                    return <div>
+                                        <p className={classes.parentTeamName}>{teams.forEach((value) =>{
+                                            if(listValue.parentTeam === value.teamId){
+                                                parentTeamName = value.teamName;
+                                            }
+                                            return parentTeamName;
+                                        })}{parentTeamName}</p>
+                                        <Team name={listValue.teamName}
+                                              id={listValue.teamId}
+                                              member={listValue.invitations}
+                                        />
+                                    </div>
                                 })}
                             </List>
                             <FloatingActionButton

@@ -125,7 +125,6 @@ class UserEditScreen extends React.Component {
 
     getUser = () => {
         getUser(getUsername(), (response) => {
-            console.log('data', response.data);
             this.setState({
                 pathProfilePicture: response.data.profilePictureUrl,
                 email: response.data.eMail,
@@ -151,13 +150,12 @@ class UserEditScreen extends React.Component {
         if(this.state.pathImage) {
             updateProfilePicture(this.state.pathImage, (response) => {
                 userNeedReload();
-                console.log(response);
             })
         }
 
         if(this.state.email) {
             updateEmail(this.state.email, (response) => {
-                console.log(response);
+
                 if(response.status !== 204) {
                     this.setState({emailError: response.response.data})
                     userNeedReload();

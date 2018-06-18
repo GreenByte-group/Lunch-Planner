@@ -338,7 +338,6 @@ public class TeamLogic {
             String description = String.format("%s left your team %s", userName, team.getTeamName());
             String linkToClick = "/team/" + teamId;
 
-
             if(hasAdminPrivileges(teamId, userName)) {
                 List<TeamMemberDataForReturn> memberList = teamdao.getInvitations(teamId);
 

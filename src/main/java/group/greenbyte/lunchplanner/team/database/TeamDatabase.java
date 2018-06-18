@@ -21,6 +21,7 @@ public class TeamDatabase {
         team.setDescription(description);
         team.setIsPublic(isPublic);
         team.setTeamId(teamId);
+        team.setParentTeam(parentTeam);
 
         return team;
     }
