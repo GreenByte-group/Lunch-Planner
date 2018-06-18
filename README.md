@@ -1,10 +1,10 @@
 
-# Lunch Planner
-organise your lunch break to socialize with friends and colleagues
+# Foodastic
+Organise your lunch break to socialize with friends and colleagues.
 
-# Getting Started
-Our small group of computer science students are developing the Lunch Planner.
-During the SEP (Software engineer project, length: 1 SEM), at the university of applied sciences mannheim.
+## What's it about
+Our small group of computer science students are developing the Lunch Planner
+during the SEP (Software engineer project), at the university of applied sciences Mannheim.
 We decided to advance our project from beeing a software, only in use by companies to beeing a
 open source software, usable for all. We had the luck to work together with a high motivated 
 company, that spent very much time supporting us and
@@ -12,72 +12,100 @@ encouraged us to take our creativity to the next level.
 
 Have fun and find some new friends!
 
-This source code will show you a REST-API, written in:
+The Core-Features this Web-Application is based on, are:
+- create events
+- invite friends or colleagues to events
+- get a push notification 
+- write comments in events
+- add tasks to events
+- subscribe to locations
 
-  - Java (Backend)
-  - JS, HTML, CSS, LESS (Frontend)
-  
-  the Core-Features this Web-Application is based on, are:
-  
-    - subscribe to people, teams, events or locations
-    - invite friends or colleagues to events
-    - get a push notification from subscribers
-    - write comments about locations or events
-    - chat with friends
-    
-  additionally to the core-features are the advanced-features. They are divided up in:
-  
-    - order some food at chosen food delivery
-    - rate events or locations
-    - create private teams or events
-    - integrate the lunch planner to your outlook
-    
-    
+This project is divided in two parts
+#### Backend
+The backend is a stateless REST-API written in Java with the framework [Spring Boot](https://spring.io/projects/spring-boot).
+   
+#### Frontend
+The frontend is a responsive Web-APP written in JS with the framework [React](https://reactjs.org).
 
-# Prerequisites
-What things you need to install the software and how to install them
+# Configuration
+When you clone the repo it will not work out of the box. You need to set some parameters:
 
+#### Server-Url for the frontend and backend servers
+Open the file `frontend/lunchplanner/src/Config.js` and change `HOST` to the url of your 
+backend-server and `FRONTEND_HOST` to the url of your frontend-server.
 
-# Give examples
-Installing
-A step by step series of examples that tell you have to get a development env running
+#### Database
+Change in `src/main/resources/application.properties` the fields `spring.datasource.url` `spring.datasource.username` `spring.datasource.password` and apply `src/main/resources/quart-table.sql` to your database.
 
-Say what the step will be
+#### Storage 
+Change in `src/main/resources/application.properties` the field `upload.location` to an absolute path beginning and ending with `/`.
+At this location all uploaded files will be saved.
 
-Give the example
-And repeat
+#### Notifications
+Push Notifications are send with [Firebase-Cloud-Messaging](https://firebase.google.com/docs/cloud-messaging/).
+To get this work you have to create you an developer account and follow [this](https://firebase.google.com/docs/web/setup)
+instruction to update the fields `configFirebase` and `publicKey` in `src/Config.js`.   
+Once you have created a Firebase console project and downloaded a JSON file with your service account credentials, save this file as `lunchplanner-private-fcm-config.json` in `src/main/resources`.
 
-until finished
-End with an example of getting some data out of the system or using it for a little demo
+#### Content Security Policy
+The frontend is with csp-meta-tags secured to prevent Cross-Side-Scripting. Update this meta-tag
+in the `public/index.html` to your needs.
 
-# Running the tests
-Explain how to run the automated tests for this system
+# Installation
+You need these software to run the Foodastic APP.
+- [npm](https://www.npmjs.com/) and [yarn](https://yarnpkg.com/lang/en/)
+- [java](http://www.oracle.com/technetwork/java/javase/downloads/index.html) sdk >= 1.8
 
-# Break down into end to end tests
-Explain what these tests test and why
+Clone the repo to your locale machine.
+```
+git clone https://github.com/GreenByte-group/Lunch-Planner
+```
+and change to the created folder
+```
+cd Lunch-Planner
+```
 
-# Give an example
-And coding style tests
-Explain what these tests test and why
+If you are lazy just run 
+```
+chmod +x install.js
+chmod +x gradlew
+./install.js
+```
 
-# Give an example
-Deployment
-Add additional notes about how to deploy this on a live system
+Or you build and start the servers yourself.
+## Backend
+The default port is 8080. Your can change this in `src/main/resources/application.properties` by 
+changing the value of the field `server.port`
+   
+You can build the backend with gradle. Just run
+```
+chmod +x gradlew
+./gradlew build
+```
+A executable jar is no in `build/libs` and can be executed with 
+```
+java -jar build/libs/jarName.jar
+```
 
-# Built With
-Dropwizard - The web framework used
-Maven - Dependency Management
-ROME - Used to generate RSS Feeds
-Contributing
-Please read CONTRIBUTING.md for details on our code of conduct, and the process for submitting pull requests to us.
+## Frontend
+The frontend is in the folder `frontend/lunchplanner`. Change your working directory to it
 
-# Versioning
-We use SemVer for versioning. For the versions available, see the tags on this repository.
+Please check the [configuration section](#Configuration) to set your backend-server and to make the notifications work correctly.
 
-# Authors
-Can Arsoy - GreenByte
-
-Martin Schalter - GreenByte
+```
+cd frontend/lunchplanner
+```
+Now we build a version that we can be served over a web-server.
+```
+yarn install
+yarn build
+```
+This creates an optimized production build in the folder `build`.
+Copy the content of this folder into your web-root or start a new server by typing
+```
+npm install -g serve
+serve -s build -l <PORT>
+```
 
 # License
 This project is licensed under the HSMannheim License - see the LICENSE.md file for details

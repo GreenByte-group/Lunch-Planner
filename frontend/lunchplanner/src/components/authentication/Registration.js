@@ -1,6 +1,6 @@
 import React from "react";
 import IconButton from '@material-ui/core/IconButton';
-import {register, doLogin} from './LoginFunctions';
+import {register, doLogin, setAuthenticationHeader} from './LoginFunctions';
 import {Input, InputLabel, InputAdornment, FormControlLabel, Checkbox } from '@material-ui/core';
 import { FormControl } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
@@ -86,6 +86,12 @@ class Registration extends React.Component {
         });
     }
 
+    keyPress = (e) => {
+        if(e.keyCode === 13){
+            this.handleSubmit();
+        }
+    };
+
     handleSubmit(event) {
         if(this.state.username && this.state.password && this.state.email) {
             register(this.state.username, this.state.email, this.state.password,
@@ -93,6 +99,7 @@ class Registration extends React.Component {
                     if(response.status === 201) {
                         doLogin(this.state.username, this.state.password, message => {
                         if(message.type === "LOGIN_SUCCESS") {
+                            setAuthenticationHeader();
                             getHistory().push("/app/event");
                         }})
                     } else {
@@ -112,7 +119,8 @@ class Registration extends React.Component {
             })
         }
 
-        event.preventDefault();
+        if(event)
+            event.preventDefault();
     }
 
     render() {
@@ -123,9 +131,6 @@ class Registration extends React.Component {
         if(this.state.username && this.state.password && this.state.email && this.state.checkbox) {
             disabled = false;
         }
-
-        console.log('state: ', this.state);
-        console.log('disabled: ', disabled);
 
         return (
             <div className={classes.root}>

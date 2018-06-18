@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -33,7 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration (classes = AppConfig.class)
 @WebAppConfiguration
-@ActiveProfiles("application-test.properties")
+@ActiveProfiles("application.properties")
+
 @Transactional
 public class TeamControllerTest {
 
@@ -190,7 +192,7 @@ public class TeamControllerTest {
         String newName = "new Name";
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/team/" + teamId + "/name").contentType(MediaType.TEXT_PLAIN_VALUE).content(newName))
+                MockMvcRequestBuilders.post("/team/" + teamId + "/name").contentType(MediaType.TEXT_PLAIN_VALUE).content(newName))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         Team team = teamLogic.getTeam(userName, teamId);
@@ -203,7 +205,7 @@ public class TeamControllerTest {
         String newName = "new Name";
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/team/" + teamId + "/name").contentType(MediaType.TEXT_PLAIN_VALUE).content(newName))
+                MockMvcRequestBuilders.post("/team/" + teamId + "/name").contentType(MediaType.TEXT_PLAIN_VALUE).content(newName))
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
@@ -213,7 +215,7 @@ public class TeamControllerTest {
         String newName = createString(Team.MAX_TEAMNAME_LENGHT + 1);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/team/" + teamId + "/name").contentType(MediaType.TEXT_PLAIN_VALUE).content(newName))
+                MockMvcRequestBuilders.post("/team/" + teamId + "/name").contentType(MediaType.TEXT_PLAIN_VALUE).content(newName))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
@@ -223,7 +225,7 @@ public class TeamControllerTest {
         String newDescription = "new Description";
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/team/" + teamId + "/description").contentType(MediaType.TEXT_PLAIN_VALUE).content(newDescription))
+                MockMvcRequestBuilders.post("/team/" + teamId + "/description").contentType(MediaType.TEXT_PLAIN_VALUE).content(newDescription))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         Team team = teamLogic.getTeam(userName, teamId);
@@ -236,7 +238,7 @@ public class TeamControllerTest {
         String newDescription = "new Description";
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/team/" + teamId + "/description").contentType(MediaType.TEXT_PLAIN_VALUE).content(newDescription))
+                MockMvcRequestBuilders.post("/team/" + teamId + "/description").contentType(MediaType.TEXT_PLAIN_VALUE).content(newDescription))
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
@@ -246,7 +248,7 @@ public class TeamControllerTest {
         String newDescription = createString(Team.MAX_DESCRIPTION_LENGHT + 1);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/team/" + teamId + "/description").contentType(MediaType.TEXT_PLAIN_VALUE).content(newDescription))
+                MockMvcRequestBuilders.post("/team/" + teamId + "/description").contentType(MediaType.TEXT_PLAIN_VALUE).content(newDescription))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 

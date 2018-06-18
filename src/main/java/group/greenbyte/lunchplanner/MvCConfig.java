@@ -1,8 +1,10 @@
 package group.greenbyte.lunchplanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -14,11 +16,17 @@ import javax.servlet.http.HttpServletRequest;
 @Configuration
 public class MvCConfig extends WebMvcConfigurerAdapter {
 
-    private final ServletContext request;
+    private final Environment env;
+
+    private String uploadsDirName;
 
     @Autowired
-    public MvCConfig(ServletContext request) {
-        this.request = request;
+    public MvCConfig(Environment env) {
+        this.env = env;
+
+        uploadsDirName = this.env.getProperty("upload.location");
+        if(uploadsDirName == null)
+            uploadsDirName = "/tmp";
     }
 
     @Override
@@ -29,6 +37,6 @@ public class MvCConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         super.addResourceHandlers(registry);
-        registry.addResourceHandler("/static/**").addResourceLocations("file://" + request.getRealPath(""));
+        registry.addResourceHandler("/static/**").addResourceLocations("file:" + uploadsDirName);
     }
 }

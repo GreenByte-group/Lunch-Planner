@@ -60,7 +60,7 @@ public class EventController {
 
         try {
             int eventId = eventLogic.createEvent(SessionManager.getUserName(), event.getName(), event.getDescription(),
-                    event.getLocation(), event.getTimeStart(), event.isVisible());
+                    event.getLocation(), event.getTimeStart(), event.isVisible(), event.getLocationId());
 
             response.setStatus(HttpServletResponse.SC_CREATED);
             return String.valueOf(eventId);

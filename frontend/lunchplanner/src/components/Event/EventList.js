@@ -63,6 +63,7 @@ class EventList extends React.Component {
         let isNotToday = true;
         let isNotTomorrow = true;
         let isNotThisWeek = true;
+        let laterHeaderExists = false;
 
         return (
             <div className={classes.root}>
@@ -99,37 +100,54 @@ class EventList extends React.Component {
                                              token={listValue.shareToken}
                         />;
 
-                        return moment(listValue.startDate).isSame(moment(), 'day') && isNotToday
-                            ?
-                            <div>
-                                <p className={classes.day}>Today</p>
-                                {event}
-                                {isNotToday = false}
-                            </div>:
-                            moment(listValue.startDate).isSame(moment(new Date()).add(1,'days'),'day') && isNotTomorrow
-                                ?
+                        if(moment(listValue.startDate).isSame(moment(), 'day') && isNotToday) {
+                            return (
+                                <div>
+                                    <p className={classes.day}>Today</p>
+                                    {event}
+                                    {isNotToday = false}
+                                </div>
+                            )
+                        } else if(moment(listValue.startDate).isSame(moment(new Date()).add(1,'days'),'day') && isNotTomorrow) {
+                            return (
                                 <div>
                                     <p className={classes.day}>Tomorrow</p>
                                     {event}
                                     {isNotTomorrow = false}
-                                </div> :
-                                (moment(listValue.startDate).isSame(moment(new Date()).add(2,'days'),'day') ||
-                                moment(listValue.startDate).isSame(moment(new Date()).add(3,'days'),'day') ||
-                                moment(listValue.startDate).isSame(moment(new Date()).add(4,'days'),'day') ||
-                                moment(listValue.startDate).isSame(moment(new Date()).add(5,'days'),'day') ||
-                                moment(listValue.startDate).isSame(moment(new Date()).add(7,'days'),'day') ||
-                                moment(listValue.startDate).isSame(moment(new Date()).add(7,'days'),'day')) && isNotThisWeek
-                                    ?
-                                    <div>
-                                        <p className={classes.day}>This Week</p>
-                                        {event}
-                                        {isNotThisWeek = false}
-                                    </div>
-                                    :
-                                    <div>
-                                        <p className={classes.day}>Later</p>
-                                        {event}
-                                    </div>
+                                </div>
+                            )
+                        } else if(
+                            (moment(listValue.startDate).isSame(moment(new Date()).add(2,'days'),'day') ||
+                            moment(listValue.startDate).isSame(moment(new Date()).add(3,'days'),'day') ||
+                            moment(listValue.startDate).isSame(moment(new Date()).add(4,'days'),'day') ||
+                            moment(listValue.startDate).isSame(moment(new Date()).add(5,'days'),'day') ||
+                            moment(listValue.startDate).isSame(moment(new Date()).add(7,'days'),'day') ||
+                            moment(listValue.startDate).isSame(moment(new Date()).add(7,'days'),'day')) && isNotThisWeek
+                        ) {
+                            return (
+                                <div>
+                                    <p className={classes.day}>This Week</p>
+                                    {event}
+                                    {isNotThisWeek = false}
+                                </div>
+                            )
+                        } else if(
+                            moment(listValue.startDate).isAfter(moment(new Date()).add(7,'days'),'day') && !laterHeaderExists
+                        ) {
+                            laterHeaderExists = true;
+                            return (
+                                <div>
+                                    <p className={classes.day}>Later</p>
+                                    {event}
+                                </div>
+                            )
+                        } else {
+                            return (
+                                <div>
+                                    {event}
+                                </div>
+                            )
+                        }
                     })}
                 </List>
                 <FloatingActionButton onClick={() => getHistory().push('/app/event/create')} />

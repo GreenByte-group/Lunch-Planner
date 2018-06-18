@@ -1,10 +1,11 @@
 import React from "react"
 import moment from "moment"
-import {Card, CardContent, ListItem, withStyles, Avatar, List} from "@material-ui/core";
-import {Schedule, Today} from "@material-ui/icons";
-import AcceptedButton from "./AcceptedButton";
-import InvitedButton from "./InvitedButton";
+import {Card, CardContent, ListItem, withStyles, Avatar, List, Button, CardActions} from "@material-ui/core";
 import {Link} from "react-router-dom";
+import {eventListNeedReload} from "./EventContainer";
+import {replyToEvent} from "./EventFunctions";
+import {getProfilePicturePath} from "../User/UserFunctions";
+import {HOST} from "../../Config";
 
 const styles = {
     card: {
@@ -12,7 +13,13 @@ const styles = {
         '&:hover': {
             textDecoration: 'none',
         },
-        height: '88px',
+    },
+    cardContent: {
+        display: 'flex',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        flexDirection: 'column',
+        paddingBottom: '5px !important',
     },
     link: {
         '&:hover': {
@@ -68,11 +75,6 @@ const styles = {
         width: '13px',
         height: 'auto',
     },
-    cardContent: {
-        display: 'table',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-    },
     memberAvatar:{
         marginRight: 5,
         width: 16,
@@ -81,6 +83,10 @@ const styles = {
     row: {
         display: 'flex',
         justifyContent: 'center',
+    },
+    joinButton: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
     },
 };
 
@@ -175,20 +181,49 @@ class EventLocation extends React.Component {
 
             let first = true;
             invitations.forEach(value => {
-                if(value.answer === 0)
-                    if(first) {
+                if(value.answer === 0) {
+                    if (first) {
                         people += value.userName;
                         first = false;
                     } else {
                         people += ', ' + value.userName;
                     }
+
+                    let stateId = "pic" + value.userName.replace(/\s/g, '');
+                    if(!this.state[stateId]) {
+                        getProfilePicturePath(value.userName, (response) => {
+                            this.setState({
+                                [stateId]:  HOST + response.data,
+                            })
+                        });
+                    }
+                }
             });
+
             this.setState({
                 invitations: invitations,
                 people: people,
             });
         }
     }
+
+    onJoinLeaveClick = () => {
+        if(this.state.accepted) {
+            replyToEvent(this.state.id, 'reject', () => {
+                eventListNeedReload();
+                this.setState({
+                    accepted: false,
+                })
+            });
+        } else {
+            replyToEvent(this.state.id, 'accept', () => {
+                eventListNeedReload();
+                this.setState({
+                    accepted: true,
+                })
+            });
+        }
+    };
 
     render() {
         const {classes} = this.props;
@@ -205,31 +240,36 @@ class EventLocation extends React.Component {
         let invitations = this.state.invitations;
         let location = this.state.location;
         let token = this.state.token;
-        people = people.split(',');
-        people = people.map((value) => value.trim());
         let classesText = classes.text;
         if(accepted)
             classesText = classes.textSelected;
 
+        people = people.split(',');
+        people = people.map((value) => value.trim());
+
+        let textJoin = 'join';
+        if(accepted)
+            textJoin = 'leave';
+
         let memberCounter = 0;
 
         return (
-            <div >
-                <Link className={classes.link} to={{pathname:`/app/event/${this.state.id}`, query:{
-                        eventName: name,
-                        description: description,
-                        date: date,
-                        people: invitations,
-                        accepted: accepted,
-                        location:location,
-                        token: token,
-                    }}}>
-
-                    <div className={classes.listItem}>
-                        <Card className={classes.card}>
+            <div>
+                <div className={classes.listItem}>
+                    <Card className={classes.card}>
+                        <Link className={classes.link} to={{pathname:`/app/event/${this.state.id}`, query:{
+                                eventName: name,
+                                description: description,
+                                date: date,
+                                people: invitations,
+                                accepted: accepted,
+                                location:location,
+                                token: token,
+                            }}}>
                             <CardContent className={classes.cardContent}>
                                 <div className={classesText}>
-                                    <p className={classes.title}> {time}</p>
+                                    <p className={classes.title}>{monthDay}</p>
+                                    <p className={classes.title}>{time}</p>
                                     <p className={classes.goingPeople}> {
                                         (people[0] !== "") ?
                                             people.length : 0
@@ -238,24 +278,27 @@ class EventLocation extends React.Component {
                                         <div className={classes.row}>
                                             {people.map((person)=>{
                                                 memberCounter++;
-                                                return (
-                                                    (people.length !== 0 && person !== "" && memberCounter <= 4)
-                                                        ?
+                                                let imageId = "pic" + String(person).replace(/\s/g, '');
+                                                let url = this.state[imageId];
+                                                if(person !== "" && memberCounter <= 4) {
+                                                    return(
                                                         <Avatar className={classes.memberAvatar}>
-                                                            <span className={classes.memberAvatarTextLast}>
-                                                                {(memberCounter > 3) ? "+" + String(+ people.length-3) : person.charAt(0)}
-                                                                </span>
+                                                            <img className={classes.memberPicture} src={url}/>
                                                         </Avatar>
-                                                        : "");
+                                                    )
+                                                }
                                             })}
                                         </div>
                                     </List>
                                 </div>
                             </CardContent>
-                        </Card>
+                        </Link>
+                        <CardActions className={classes.joinButtonContainer}>
+                            <Button className={classes.joinButton} onClick={this.onJoinLeaveClick}>{textJoin}</Button>
+                        </CardActions>
+                    </Card>
 
-                    </div>
-                </Link>
+                </div>
             </div>
         );
     }

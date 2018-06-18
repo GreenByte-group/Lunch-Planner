@@ -1,21 +1,10 @@
 import * as firebase from "firebase";
-import axios from 'axios';
-import {HOST} from "../../Config";
 import {setAuthenticationHeader} from "../authentication/LoginFunctions";
-
-const config = {
-    apiKey: "AIzaSyDyuySWwkXgZDrLnO0gX9bmGpR7XAHnngE",
-    authDomain: "lunch-planner-ac676.firebaseapp.com",
-    databaseURL: "https://lunch-planner-ac676.firebaseio.com",
-    projectId: "lunch-planner-ac676",
-    storageBucket: "lunch-planner-ac676.appspot.com",
-    messagingSenderId: "573276863547"
-};
+import {sendTokenToServer} from "./NotificationFunctions";
+import {configFirebase, publicKey} from '../../Config';
 
 // Retrieve Firebase Messaging object.
 let messaging;
-
-let token;
 
 let permissionGranted = false;
 
@@ -29,12 +18,12 @@ export function init(success, error, onMessage) {
     setAuthenticationHeader();
 
     // Initialize Firebase
-    firebase.initializeApp(config);
+    firebase.initializeApp(configFirebase);
 
     messaging = firebase.messaging();
 
     // Add the public key generated from the console here.
-    messaging.usePublicVapidKey("BFnHe7da5hcIYsv_Eno8pY6ws4wBWh7iqJAFTHAvWe4gZ8Qs59JBH9tL0YRI_IZOjzhaND0UY3DhAu5yeaWxn4c");
+    messaging.usePublicVapidKey(publicKey);
 
     // Callback fired if Instance ID token is updated.
     messaging.onTokenRefresh(() => {
@@ -71,25 +60,11 @@ function getToken(response, error) {
             sendTokenToServer(currentToken);
             response(currentToken);
         } else {
-            token = false;
             permissionGranted = false;
             error('Permission denied');
         }
     }).catch((err) => {
-        token = false;
         console.log(err);
         error('Could not retrieve token from fcm');
     });
-}
-
-function sendTokenToServer(tokenToSend) {
-    token = false;
-
-    let url = HOST + "/user/fcm";
-    axios.post(url, {fcmToken: tokenToSend})
-        .then((response) => {
-        }).catch((error) => {
-    })
-
-    token = tokenToSend;
 }

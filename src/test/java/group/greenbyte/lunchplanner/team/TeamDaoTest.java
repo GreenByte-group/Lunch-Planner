@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -32,7 +33,7 @@ import static junit.framework.TestCase.fail;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = AppConfig.class)
-@ActiveProfiles("application-test.properties")
+@ActiveProfiles("application.properties")
 @Transactional
 public class TeamDaoTest {
 
@@ -167,7 +168,7 @@ public class TeamDaoTest {
         String adminName = createUserIfNotExists(userLogic, createString(50));
         String teamName = createString(50);
         String description = createString(1000);
-        teamDao.insertTeam(teamName, description, adminName, true);
+        int teamId = teamDao.insertTeam(teamName, description, adminName, true);
         Team team = teamDao.getTeam(teamId);
         Assert.assertEquals(teamName, team.getTeamName());
         Assert.assertEquals(description, team.getDescription());

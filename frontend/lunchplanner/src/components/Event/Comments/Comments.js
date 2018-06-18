@@ -10,8 +10,9 @@ const styles = {
     root: {
         display: 'flex',
         flexDirection: 'column',
-        maxHeight: '100%',
+        height: '100%',
         overflowY: 'auto',
+        flexGrow: '1',
     },
     list: {
         padding: '0px',
