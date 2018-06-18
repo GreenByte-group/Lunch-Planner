@@ -351,6 +351,7 @@ public class TeamLogic {
                 }else if(amountOfAdmins(memberList) == 1) {
                     Set<TeamMemberDataForReturn> noAdmins = new HashSet<>();
                     teamdao.leave(userName, teamId);
+                    memberList = teamdao.getInvitations(teamId);
                     for(TeamMemberDataForReturn m : memberList) {
 
                         if(!m.isAdmin()) {
