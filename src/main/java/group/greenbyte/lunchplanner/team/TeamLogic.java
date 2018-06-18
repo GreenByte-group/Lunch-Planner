@@ -109,6 +109,9 @@ public class TeamLogic {
             if(!hasAdminPrivileges(teamId, username))
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have write access to this team");
 
+            if(username.equals(userToInvite))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You can't invite yourself to a team");
+
             teamdao.addUserToTeam(teamId, userToInvite);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
@@ -120,18 +123,7 @@ public class TeamLogic {
         String description = String.format("%s invited you to join their team", username);
         String linkToClick = "/team/" + teamId;
 
-        //save notification
-        userLogic.saveNotification(userToInvite,title,description,username,linkToClick, "");
-
-        //send a notification to userToInvite
-        NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToInvite);
-        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
-            try {
-                userLogic.sendNotification(user.getFcmToken(), userToInvite, title, description,linkToClick, "");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        saveAndSendNotification(userToInvite, user.getFcmToken(), username, title, description, linkToClick, "");
     }
 
     /**
@@ -170,18 +162,7 @@ public class TeamLogic {
         String description = String.format("%s removed you from team %s", userName, team.getTeamName());
         String linkToClick = "/team/" + teamId;
 
-        //save notification
-        userLogic.saveNotification(userToRemove,title,description,userName,linkToClick, profilePictureUrl);
-
-        //send a notification to userToInvite
-        NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToRemove);
-        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
-            try {
-                userLogic.sendNotification(user.getFcmToken(), userToRemove, title, description,linkToClick, profilePictureUrl);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        saveAndSendNotification(userToRemove, user.getFcmToken(), userName, title, description, linkToClick, profilePictureUrl);
     }
 
     /**
@@ -321,77 +302,49 @@ public class TeamLogic {
     }
 
     public void leave(String userName,int teamId) throws HttpRequestException{
+
         if(!isValidName(userName))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + User.MAX_USERNAME_LENGTH + ", minimum length 1");
         try {
-            if(!hasViewPrivileges(teamId, userName))
-                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this team");
 
             if(teamdao.getTeam(teamId) == null)
                 throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Team with team-id: " + teamId + ", was not found");
 
-            User user = userLogic.getUser(userName);
-            Team team = getTeam(userName, teamId);
-            //set notification information
-            String profilePictureUrl = user.getProfilePictureUrl();
-            String title = "Team member left";
-            String description = String.format("%s left your team %s", userName, team.getTeamName());
-            String linkToClick = "/team/" + teamId;
-
-            if(hasAdminPrivileges(teamId, userName)) {
-                List<TeamMemberDataForReturn> memberList = teamdao.getInvitations(teamId);
-
-                //if there is only one member left then the team gets automatically deleted
-                if(memberList.size() == 1) {
-                    teamdao.leave(userName, teamId);
-                    teamdao.deleteTeam(teamId);
-
-                }else if(amountOfAdmins(memberList) == 1) {
-                    Set<TeamMemberDataForReturn> noAdmins = new HashSet<>();
-                    teamdao.leave(userName, teamId);
-                    memberList = teamdao.getInvitations(teamId);
-                    for(TeamMemberDataForReturn m : memberList) {
-
-                        if(!m.isAdmin()) {
-                           noAdmins.add(m);
-                        }
-                        //save notification
-                        userLogic.saveNotification(m.getUserName(),title,description,userName,linkToClick, profilePictureUrl);
-
-                        //send a notification
-                        NotificationOptions notificationOptions = userLogic.getNotificationOptions(m.getUserName());
-                        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
-                            try {
-                                userLogic.sendNotification(userLogic.getUser(m.getUserName()).getFcmToken(), m.getUserName(), title, description,linkToClick, profilePictureUrl);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
+                List<TeamMemberDataForReturn> members = teamdao.getInvitations(teamId);
+                if(hasAdminPrivileges(teamId, userName)) {
+                    //if there is only one member left than the team gets automatically deleted
+                    if(members.size() == 1) {
+                        //cannot delete the team before someone leaves (dependencies)
+                        teamdao.leave(userName, teamId);
+                        teamdao.deleteTeam(teamId);
                     }
-                    //get one random member that is not an admin of the team
-                    TeamMemberDataForReturn member = noAdmins.toArray(new TeamMemberDataForReturn[noAdmins.size()])[0];
-                    if(member != null) {
-                        teamdao.changeUserToAdmin(teamId, member.getUserName());
-                        //save notification
-                        userLogic.saveNotification(member.getUserName(),title,description,userName,linkToClick, profilePictureUrl);
-                        title = "Promotion";
-                        description = String.format("%s left your team %s and you have been chosen to be an admin. You can change the description or the name of your team and remove members.", userName, team.getTeamName());
+                    teamdao.leave(userName, teamId);
+                    members = teamdao.getInvitations(teamId);
+                    //if there is more than one member left, the remaining team members get notified
+                    User user = userLogic.getUser(userName);
+                    Team team = getTeam(userName, teamId);
+                    //set notification information
+                    String profilePictureUrl = user.getProfilePictureUrl();
+                    String title = "Team member left";
+                    String description = String.format("%s left your team %s", userName, team.getTeamName());
+                    String linkToClick = "/team/" + teamId;
 
-                        //send a notification
-                        NotificationOptions notificationOptions = userLogic.getNotificationOptions(member.getUserName());
-                        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
-                            try {
-                                userLogic.sendNotification(userLogic.getUser(member.getUserName()).getFcmToken(), member.getUserName(), title, description,linkToClick, profilePictureUrl);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
+                    for(TeamMemberDataForReturn m : members) {
+                        saveAndSendNotification(m.getUserName(), userLogic.getUser(m.getUserName()).getFcmToken(),
+                                userName, title, description, linkToClick, profilePictureUrl);
                     }
+                    //choose new admin
+                    TeamMemberDataForReturn newAdmin = members.get(0);
+                    teamdao.changeUserToAdmin(teamId, newAdmin.getUserName());
+                    String newTitle = "You got promoted";
+                    String newDescription = String.format("%s left your team %s and you have been chosen to be an admin." +
+                            " You can change the description or the name of your team and remove members.", userName, team.getTeamName());
+                    
+                    saveAndSendNotification(newAdmin.getUserName(), userLogic.getUser(newAdmin.getUserName()).getFcmToken(),
+                            userName, newTitle, newDescription, linkToClick, profilePictureUrl);
+
                 }
-            } else {
-                teamdao.leave(userName, teamId);
-            }
+
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
@@ -429,26 +382,31 @@ public class TeamLogic {
             for(TeamMemberDataForReturn m : members) {
                 receiverName = m.getUserName();
                 receiverData = userLogic.getUser(receiverName);
-                //save notification
-                userLogic.saveNotification(receiverName, title, description, userName, linkToClick, profilePictureUrl);
 
-                //send a notification to userToInvite
-                NotificationOptions notificationOptions = userLogic.getNotificationOptions(receiverName);
-                if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
-                    try {
-                        userLogic.sendNotification(receiverData.getFcmToken(), receiverName, title, description, linkToClick, profilePictureUrl);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                saveAndSendNotification(receiverName, receiverData.getFcmToken(), userName, title,
+                        description, linkToClick, profilePictureUrl);
             }
             teamdao.addUserToTeam(teamId, userName);
         } catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
+    }
 
+    private void saveAndSendNotification(String receiver, String receiverFcmToken, String builder, String title,
+                                         String description, String linkToClick, String picturePath) throws HttpRequestException {
 
+        //save notification
+        userLogic.saveNotification(receiver, title, description, builder, linkToClick, picturePath);
 
+        //send a notification to userToInvite
+        NotificationOptions notificationOptions = userLogic.getNotificationOptions(receiver);
+        if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
+            try {
+                userLogic.sendNotification(receiverFcmToken, receiver, title, description, linkToClick, picturePath);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
