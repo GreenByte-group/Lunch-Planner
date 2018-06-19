@@ -142,7 +142,7 @@ public class TeamLogic {
             if (!hasAdminPrivileges(teamId, userName))
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have write access to this team");
 
-            if (userName.equals(userToRemove))
+            if (userName.compareTo(userToRemove) == 0)
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You cannot remove yourself from a team");
 
             teamdao.removeTeamMember(userToRemove, teamId);
