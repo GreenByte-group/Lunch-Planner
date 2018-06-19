@@ -311,24 +311,27 @@ public class TeamLogic {
             String description = String.format("%s left your team %s", userName, team.getTeamName());
             String linkToClick = "/team/" + teamId;
 
+            boolean isAdmin = hasAdminPrivileges(teamId, userName);
             teamdao.leave(userName, teamId);
             List<TeamMemberDataForReturn> members = teamdao.getInvitations(teamId);
-            if (hasAdminPrivileges(teamId, userName)) {
+            if (isAdmin) {
                 //if there is only one member left than the team gets automatically deleted
-                if (members == null) {
+                if (members.size() == 0) {
                     //cannot delete the team before someone leaves (dependencies)
                     teamdao.deleteTeam(teamId);
+                } else {
+                    //choose new admin
+                    TeamMemberDataForReturn newAdmin = members.get(0);
+                    teamdao.changeUserToAdmin(teamId, newAdmin.getUserName());
+                    String newTitle = "You got promoted";
+                    String newDescription = String.format("%s left your team %s and you have been chosen to be an admin." +
+                            " You can change the description or the name of your team and remove members.", userName, team.getTeamName());
+
+                    saveAndSendNotification(newAdmin.getUserName(), userLogic.getUser(newAdmin.getUserName()).getFcmToken(),
+                            userName, newTitle, newDescription, linkToClick, profilePictureUrl);
                 }
 
-                //choose new admin
-                TeamMemberDataForReturn newAdmin = members.get(0);
-                teamdao.changeUserToAdmin(teamId, newAdmin.getUserName());
-                String newTitle = "You got promoted";
-                String newDescription = String.format("%s left your team %s and you have been chosen to be an admin." +
-                        " You can change the description or the name of your team and remove members.", userName, team.getTeamName());
 
-                saveAndSendNotification(newAdmin.getUserName(), userLogic.getUser(newAdmin.getUserName()).getFcmToken(),
-                        userName, newTitle, newDescription, linkToClick, profilePictureUrl);
             }
 
             for(TeamMemberDataForReturn m : members) {
