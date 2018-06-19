@@ -25,61 +25,60 @@ public class TeamLogic {
     private UserLogic userLogic;
 
     private UserDao userDao;
+
     /**
-     *
-     * @param userName userName that is logged in
-     * @param parent parent of the new team
-     * @param teamName name of the new team
+     * @param userName    userName that is logged in
+     * @param parent      parent of the new team
+     * @param teamName    name of the new team
      * @param description description of the new location
      * @return the id of the new team
      * @throws HttpRequestException when teamName, userName, description not valid
-     * or an Database error happens
+     *                              or an Database error happens
      */
     int createTeamWithParent(String userName, int parent, String teamName, String description, boolean isPublic) throws HttpRequestException {
         checkParams(userName, teamName, description);
 
         try {
-            if(!hasViewPrivileges(userName, parent))
+            if (!hasViewPrivileges(userName, parent))
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "No Privileges to acces parent team: " + parent);
 
             return teamdao.insertTeamWithParent(teamName, description, userName, isPublic, parent);
-        } catch(DatabaseException d){
+        } catch (DatabaseException d) {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), d.getMessage());
         }
     }
 
     /**
-     *
-     * @param userName userName that is logged in
-     * @param teamName name of the new team
+     * @param userName    userName that is logged in
+     * @param teamName    name of the new team
      * @param description description of the new location
      * @return the id of the new team
      * @throws HttpRequestException when teamName, userName, description not valid
-     * or an Database error happens
+     *                              or an Database error happens
      */
     int createTeamWithoutParent(String userName, String teamName, String description, boolean isPublic) throws HttpRequestException {
         checkParams(userName, teamName, description);
         try {
             return teamdao.insertTeam(teamName, description, userName, isPublic);
-        } catch(DatabaseException d){
+        } catch (DatabaseException d) {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), d.getMessage());
         }
     }
 
     private void checkParams(String userName, String teamName, String description) throws HttpRequestException {
-        if(userName.length() == 0)
+        if (userName.length() == 0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is empty");
 
-        if(userName.length() > User.MAX_USERNAME_LENGTH)
+        if (userName.length() > User.MAX_USERNAME_LENGTH)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username too long");
 
-        if(teamName.length() == 0)
+        if (teamName.length() == 0)
             throw new HttpRequestException(HttpStatus.NOT_EXTENDED.value(), "Teamname is empty");
 
-        if(teamName.length() > Team.MAX_TEAMNAME_LENGHT)
+        if (teamName.length() > Team.MAX_TEAMNAME_LENGHT)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Teamname too long");
 
-        if(description.length() > Team.MAX_DESCRIPTION_LENGHT)
+        if (description.length() > Team.MAX_DESCRIPTION_LENGHT)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Description too long");
     }
 
@@ -90,27 +89,28 @@ public class TeamLogic {
     /**
      * Invite user to a team
      *
-     * @param username id of the user who creates the events
+     * @param username     id of the user who creates the events
      * @param userToInvite id of the user who is invited
-     * @param teamId id of team
+     * @param teamId       id of team
      * @return the Event of the invitation
-     *
      * @throws HttpRequestException when an unexpected error happens
-     *
      */
-    public void inviteTeamMember(String username, String userToInvite, int teamId) throws HttpRequestException{
+    public void inviteTeamMember(String username, String userToInvite, int teamId) throws HttpRequestException {
 
-        if(!isValidName(username))
+        if (!isValidName(username))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximun length" + User.MAX_USERNAME_LENGTH + ", minimum length 1");
-        if(!isValidName(userToInvite))
+        if (!isValidName(userToInvite))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username of invited user is not valid, maximun length" + User.MAX_USERNAME_LENGTH + ", minimum length 1");
 
-        try{
-            if(!hasAdminPrivileges(teamId, username))
+        try {
+            if (!hasAdminPrivileges(teamId, username))
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have write access to this team");
 
+            if (username.equals(userToInvite))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You can't invite yourself to a team");
+
             teamdao.addUserToTeam(teamId, userToInvite);
-        }catch(DatabaseException e){
+        } catch (DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
 
@@ -120,44 +120,33 @@ public class TeamLogic {
         String description = String.format("%s invited you to join their team", username);
         String linkToClick = "/team/" + teamId;
 
-        //save notification
-        userLogic.saveNotification(userToInvite,title,description,username,linkToClick, "");
-
-        //send a notification to userToInvite
-        NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToInvite);
-        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
-            try {
-                userLogic.sendNotification(user.getFcmToken(), userToInvite, title, description,linkToClick, "");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        saveAndSendNotification(userToInvite, user.getFcmToken(), username, title, description, linkToClick, "");
     }
 
     /**
      * Remove a team member from a team
      *
      * @param userName user that is going to be removed
-     * @param teamId id of the team
+     * @param teamId   id of the team
      * @throws DatabaseException
      */
-    public void removeTeamMember(String userName,String userToRemove, int teamId) throws HttpRequestException {
+    public void removeTeamMember(String userName, String userToRemove, int teamId) throws HttpRequestException {
 
-        if(!isValidName(userName))
+        if (!isValidName(userName))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximun length" + User.MAX_USERNAME_LENGTH + ", minimum length 1");
-        if(!isValidName(userToRemove))
+        if (!isValidName(userToRemove))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username of removed user is not valid, maximun length" + User.MAX_USERNAME_LENGTH + ", minimum length 1");
 
 
-        try{
-            if(!hasAdminPrivileges(teamId, userName))
+        try {
+            if (!hasAdminPrivileges(teamId, userName))
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have write access to this team");
 
-            if(userName.equals(userToRemove))
+            if (userName.equals(userToRemove))
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You cannot remove yourself from a team");
 
             teamdao.removeTeamMember(userToRemove, teamId);
-        }catch(DatabaseException e){
+        } catch (DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
 
@@ -170,53 +159,39 @@ public class TeamLogic {
         String description = String.format("%s removed you from team %s", userName, team.getTeamName());
         String linkToClick = "/team/" + teamId;
 
-        //save notification
-        userLogic.saveNotification(userToRemove,title,description,userName,linkToClick, profilePictureUrl);
-
-        //send a notification to userToInvite
-        NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToRemove);
-        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
-            try {
-                userLogic.sendNotification(user.getFcmToken(), userToRemove, title, description,linkToClick, profilePictureUrl);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        saveAndSendNotification(userToRemove, user.getFcmToken(), userName, title, description, linkToClick, profilePictureUrl);
     }
 
     /**
-     *
      * @param userName the user who wants to access the team
-     * @param teamId  id of the team
+     * @param teamId   id of the team
      * @return Team which matched with the given id or null
      */
-    public Team getTeam(String userName, int teamId)throws HttpRequestException{
-        try{
+    public Team getTeam(String userName, int teamId) throws HttpRequestException {
+        try {
             Team team = teamdao.getTeam(teamId);
 
-            if(team == null)
+            if (team == null)
                 throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Team with team-id: " + teamId + "was not found");
             else {
-                if(!hasViewPrivileges(teamId, userName)) //TODO write test for next line
+                if (!hasViewPrivileges(teamId, userName)) //TODO write test for next line
                     throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this team");
 
                 return team;
             }
-        }catch(DatabaseException e){
+        } catch (DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
     }
 
     /**
-     *
-     * @param username  userName that is logged in
+     * @param username userName that is logged in
      * @return List<Team> List with generic typ of Team which includes all teams matching with the searchword
-     *
      */
-    public List<Team> getAllTeams(String username) throws HttpRequestException{
-        if(username.length() > User.MAX_USERNAME_LENGTH)
+    public List<Team> getAllTeams(String username) throws HttpRequestException {
+        if (username.length() > User.MAX_USERNAME_LENGTH)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is too long, maximum length: " + User.MAX_USERNAME_LENGTH);
-        if(username.length() == 0 )
+        if (username.length() == 0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is empty");
 
         return this.searchTeamsForUser(username, "");
@@ -224,32 +199,31 @@ public class TeamLogic {
 
 
     /**
-     *
      * @param userName
      * @param searchword
      * @return
      * @throws HttpRequestException
      */
-    public List<Team> searchTeamsForUser(String userName, String searchword) throws HttpRequestException{
+    public List<Team> searchTeamsForUser(String userName, String searchword) throws HttpRequestException {
 
-        if(searchword == null || searchword.length() > Team.MAX_SEARCHWORD_LENGTH)
+        if (searchword == null || searchword.length() > Team.MAX_SEARCHWORD_LENGTH)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Searchword is too long or null ");
-        if(userName == null || userName.length()== 0 || userName.length() > User.MAX_USERNAME_LENGTH)
+        if (userName == null || userName.length() == 0 || userName.length() > User.MAX_USERNAME_LENGTH)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is too long, empty or null ");
 
-        try{
+        try {
 
             Set<Team> searchResults = new HashSet<>(teamdao.findPublicTeams(searchword));
 
             List<Team> temp = teamdao.findTeamsUserInvited(userName, searchword);
-            for(Team team : temp) {
-                if(!searchResults.contains(team))
+            for (Team team : temp) {
+                if (!searchResults.contains(team))
                     searchResults.add(team);
             }
 
             return new ArrayList<>(searchResults);
 
-        }catch(DatabaseException e){
+        } catch (DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
     }
@@ -258,15 +232,15 @@ public class TeamLogic {
      * Update the name of a team
      *
      * @param userName who wants to change the name
-     * @param teamId team to change
-     * @param name name to change
+     * @param teamId   team to change
+     * @param name     name to change
      */
     public void updateName(String userName, int teamId, String name) throws HttpRequestException {
         try {
-            if(name == null || name.length() > Team.MAX_TEAMNAME_LENGHT || name.length() == 0)
+            if (name == null || name.length() > Team.MAX_TEAMNAME_LENGHT || name.length() == 0)
                 throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is too long or empty ");
 
-            if(!hasAdminPrivileges(teamId, userName)) {
+            if (!hasAdminPrivileges(teamId, userName)) {
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "User: " + userName + " is no admin of this team");
             }
 
@@ -279,16 +253,16 @@ public class TeamLogic {
     /**
      * Update the description of a team
      *
-     * @param userName who wants to change the description
-     * @param teamId team to change
+     * @param userName    who wants to change the description
+     * @param teamId      team to change
      * @param description description to change
      */
     public void updateDescription(String userName, int teamId, String description) throws HttpRequestException {
         try {
-            if(description == null || description.length() > Team.MAX_DESCRIPTION_LENGHT || description.length() == 0)
+            if (description == null || description.length() > Team.MAX_DESCRIPTION_LENGHT || description.length() == 0)
                 throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Description is too long or empty ");
 
-            if(!hasAdminPrivileges(teamId, userName)) {
+            if (!hasAdminPrivileges(teamId, userName)) {
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "User: " + userName + " is no admin of this team");
             }
 
@@ -301,7 +275,7 @@ public class TeamLogic {
     /**
      * Checks if a user has privileges to change the team object
      *
-     * @param teamId id of the team to check
+     * @param teamId   id of the team to check
      * @param userName who wants to change
      * @return true if the user has permission, false if not
      */
@@ -312,7 +286,7 @@ public class TeamLogic {
     /**
      * Checks if a user has privileges to view the team object
      *
-     * @param teamId id of the team to check
+     * @param teamId   id of the team to check
      * @param userName who wants to change
      * @return true if the user has permission, false if not
      */
@@ -320,14 +294,13 @@ public class TeamLogic {
         return teamdao.hasViewPrivileges(teamId, userName);
     }
 
-    public void leave(String userName,int teamId) throws HttpRequestException{
-        if(!isValidName(userName))
+    public void leave(String userName, int teamId) throws HttpRequestException {
+
+        if (!isValidName(userName))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + User.MAX_USERNAME_LENGTH + ", minimum length 1");
         try {
-            if(!hasViewPrivileges(teamId, userName))
-                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You dont have rights to access this team");
 
-            if(teamdao.getTeam(teamId) == null)
+            if (teamdao.getTeam(teamId) == null)
                 throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Team with team-id: " + teamId + ", was not found");
 
             User user = userLogic.getUser(userName);
@@ -338,61 +311,35 @@ public class TeamLogic {
             String description = String.format("%s left your team %s", userName, team.getTeamName());
             String linkToClick = "/team/" + teamId;
 
-            if(hasAdminPrivileges(teamId, userName)) {
-                List<TeamMemberDataForReturn> memberList = teamdao.getInvitations(teamId);
-
-                //if there is only one member left then the team gets automatically deleted
-                if(memberList.size() == 1) {
-                    teamdao.leave(userName, teamId);
+            boolean isAdmin = hasAdminPrivileges(teamId, userName);
+            teamdao.leave(userName, teamId);
+            List<TeamMemberDataForReturn> members = teamdao.getInvitations(teamId);
+            if (isAdmin) {
+                //if there is only one member left than the team gets automatically deleted
+                if (members.size() == 0) {
+                    //cannot delete the team before someone leaves (dependencies)
                     teamdao.deleteTeam(teamId);
+                } else {
+                    //choose new admin
+                    TeamMemberDataForReturn newAdmin = members.get(0);
+                    teamdao.changeUserToAdmin(teamId, newAdmin.getUserName());
+                    String newTitle = "You got promoted";
+                    String newDescription = String.format("%s left your team %s and you have been chosen to be an admin." +
+                            " You can change the description or the name of your team and remove members.", userName, team.getTeamName());
 
-                }else if(amountOfAdmins(memberList) == 1) {
-                    Set<TeamMemberDataForReturn> noAdmins = new HashSet<>();
-                    teamdao.leave(userName, teamId);
-                    memberList = teamdao.getInvitations(teamId);
-                    for(TeamMemberDataForReturn m : memberList) {
-
-                        if(!m.isAdmin()) {
-                           noAdmins.add(m);
-                        }
-                        //save notification
-                        userLogic.saveNotification(m.getUserName(),title,description,userName,linkToClick, profilePictureUrl);
-
-                        //send a notification
-                        NotificationOptions notificationOptions = userLogic.getNotificationOptions(m.getUserName());
-                        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
-                            try {
-                                userLogic.sendNotification(userLogic.getUser(m.getUserName()).getFcmToken(), m.getUserName(), title, description,linkToClick, profilePictureUrl);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    //get one random member that is not an admin of the team
-                    TeamMemberDataForReturn member = noAdmins.toArray(new TeamMemberDataForReturn[noAdmins.size()])[0];
-                    if(member != null) {
-                        teamdao.changeUserToAdmin(teamId, member.getUserName());
-                        //save notification
-                        userLogic.saveNotification(member.getUserName(),title,description,userName,linkToClick, profilePictureUrl);
-                        title = "Promotion";
-                        description = String.format("%s left your team %s and you have been chosen to be an admin. You can change the description or the name of your team and remove members.", userName, team.getTeamName());
-
-                        //send a notification
-                        NotificationOptions notificationOptions = userLogic.getNotificationOptions(member.getUserName());
-                        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
-                            try {
-                                userLogic.sendNotification(userLogic.getUser(member.getUserName()).getFcmToken(), member.getUserName(), title, description,linkToClick, profilePictureUrl);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                    }
+                    saveAndSendNotification(newAdmin.getUserName(), userLogic.getUser(newAdmin.getUserName()).getFcmToken(),
+                            userName, newTitle, newDescription, linkToClick, profilePictureUrl);
                 }
-            } else {
-                teamdao.leave(userName, teamId);
+
+
             }
-        }catch(DatabaseException e){
+
+            for(TeamMemberDataForReturn m : members) {
+                saveAndSendNotification(m.getUserName(), userLogic.getUser(m.getUserName()).getFcmToken(),
+                        userName, title, description, linkToClick, profilePictureUrl);
+            }
+
+        } catch (DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
     }
@@ -401,19 +348,19 @@ public class TeamLogic {
      * Join a public team
      *
      * @param userName user that wants to join the team
-     * @param teamId id of the team
+     * @param teamId   id of the team
      * @throws HttpRequestException
      */
     public void joinPublicTeam(String userName, int teamId) throws HttpRequestException {
-        if(!isValidName(userName))
+        if (!isValidName(userName))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + User.MAX_USERNAME_LENGTH + ", minimum length 1");
 
         try {
             Team team = teamdao.getTeam(teamId);
-            if(team == null)
+            if (team == null)
                 throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + teamId + ", was not found");
 
-            if(!team.isPublic())
+            if (!team.isPublic())
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "Team is not public!");
 
             //set notification information
@@ -426,29 +373,34 @@ public class TeamLogic {
             User receiverData;
             List<TeamMemberDataForReturn> members = teamdao.getInvitations(teamId);
 
-            for(TeamMemberDataForReturn m : members) {
+            for (TeamMemberDataForReturn m : members) {
                 receiverName = m.getUserName();
                 receiverData = userLogic.getUser(receiverName);
-                //save notification
-                userLogic.saveNotification(receiverName, title, description, userName, linkToClick, profilePictureUrl);
 
-                //send a notification to userToInvite
-                NotificationOptions notificationOptions = userLogic.getNotificationOptions(receiverName);
-                if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
-                    try {
-                        userLogic.sendNotification(receiverData.getFcmToken(), receiverName, title, description, linkToClick, profilePictureUrl);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                saveAndSendNotification(receiverName, receiverData.getFcmToken(), userName, title,
+                        description, linkToClick, profilePictureUrl);
             }
             teamdao.addUserToTeam(teamId, userName);
-        } catch(DatabaseException e) {
+        } catch (DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
+    }
 
+    private void saveAndSendNotification(String receiver, String receiverFcmToken, String builder, String title,
+                                         String description, String linkToClick, String picturePath) throws HttpRequestException {
 
+        //save notification
+        userLogic.saveNotification(receiver, title, description, builder, linkToClick, picturePath);
 
+        //send a notification to userToInvite
+        NotificationOptions notificationOptions = userLogic.getNotificationOptions(receiver);
+        if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isTeamsBlocked())) {
+            try {
+                userLogic.sendNotification(receiverFcmToken, receiver, title, description, linkToClick, picturePath);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -460,17 +412,16 @@ public class TeamLogic {
     private int amountOfAdmins(List<TeamMemberDataForReturn> members) {
         int countAdmins = 0;
 
-        for(TeamMemberDataForReturn member : members) {
-                if(member.isAdmin())
-                    countAdmins++;
+        for (TeamMemberDataForReturn member : members) {
+            if (member.isAdmin())
+                countAdmins++;
         }
         return countAdmins;
     }
 
-    private boolean isValidName(String name){
+    private boolean isValidName(String name) {
         return name.length() <= User.MAX_USERNAME_LENGTH && name.length() > 0;
     }
-
 
 
     @Autowired
