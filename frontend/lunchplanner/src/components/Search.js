@@ -3,6 +3,8 @@ import {withStyles,IconButton, Input,InputAdornment,FormControl, TextField} from
 import SearchIcon from '@material-ui/icons/Search';
 import DeleteIcon from '@material-ui/icons/Delete';
 import classNames from 'classnames';
+import {Link} from "react-router-dom";
+
 
 const styles =  theme => ({
     icon:{
@@ -104,7 +106,12 @@ class Search extends React.Component {
                     </FormControl>
                 : <p>{this.state.search}</p>}
                 <IconButton>
+                    {this.state.search === "tetris" ? <Link to={{pathname: "/app/tetris"}}>
+                            <SearchIcon className={classes.icon} />
+                        </Link>
+                        :
                     <SearchIcon className={classes.icon} onClick={this.searchForEvents}/>
+                    }
                 </IconButton>
             </div>
         );

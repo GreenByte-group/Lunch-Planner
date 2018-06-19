@@ -30,7 +30,7 @@ const styles = {
         flex: 1,
         fontFamily: "Work Sans",
         fontWeight: '600',
-        fontSize: '14px',
+        fontSize: '16px',
     },
     menuButton: {
         marginLeft: -12,
@@ -156,12 +156,6 @@ class AppContainer extends React.Component {
         if(needReload) {
             needReload = false;
             this.getData();
-        }
-
-        if(newProps.searchValue !== this.state.search){
-            this.setState({
-                search: newProps.searchValue,
-            });
         }
     }
 

@@ -205,9 +205,9 @@ class Registration extends React.Component {
                                 color="primary"
                             />
                         }
-                        label="I accept the general terms and conditions"
+                        label="I accept the privacy policy."
                     />
-                    <Link to="/terms">read more</Link>
+                    <Link to="/privacyPolicy">read more</Link>
                 </div>
                 <Button disabled={disabled} fullWidth variant="raised" color="secondary" className={classes.button} onClick={this.handleSubmit}>
                     <Done color={"#FFFFF"}/>REGISTER

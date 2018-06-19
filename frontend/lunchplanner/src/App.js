@@ -23,6 +23,7 @@ import InviteExtern from "./components/User/InviteExtern";
 import NewMap from "./components/Map/NewMap";
 import AppContainer from "./components/AppContainer";
 import MyTetris from "./components/EasterEgg/Tetris";
+import PrivacyPolicy from "./components/PrivacyPolicy";
 
 
 const oldTheme = getMuiTheme({
@@ -40,6 +41,7 @@ const theme = createMuiTheme({
     },
     typography: {
         fontFamily: "Work Sans",
+        htmlFontSize: "",
     },
 
 });
@@ -96,6 +98,7 @@ class App extends React.Component {
                     <Router history={getHistory()}>
                         <div style={{height: '100%'}}>
                             <Route exact path="/login" component={FirstScreen} />
+                            <Route path="/privacyPolicy" component={PrivacyPolicy} />
                             <Route path="/public/:securityToken" component={EventScreen} />
                             <Route exact path="/"
                                           render={ () => <Redirect to="/app/event" />}
@@ -119,6 +122,7 @@ class App extends React.Component {
                             <PrivateRoute path="/app/event/:eventId(\d+)/share" component={InviteExtern} />
                             <PrivateRoute path="/app/event/:eventId(\d+)/service" component={ServiceListScreen} />
                             <PrivateRoute path="/app/tetris" component={MyTetris} />
+
                         </div>
                     </Router>
                 </MuiThemeProvider>
