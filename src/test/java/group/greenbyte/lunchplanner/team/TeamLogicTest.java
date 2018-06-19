@@ -447,7 +447,6 @@ public class TeamLogicTest {
 
     @Test
     public void test1LeaveTeamGetsDeletedIfThereIsOnlyOneMemberLeft() throws Exception {
-        String userName = createUserIfNotExists(userLogic, createString(50));
         int teamId = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
 
 
