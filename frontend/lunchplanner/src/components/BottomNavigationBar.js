@@ -33,7 +33,7 @@ class BottomNavigationBar extends React.Component {
         if(newProps.value !== undefined && newProps.value !== null) {
             this.setState({
                 value: newProps.value,
-            })
+            });
         }
         if(newProps.search !== undefined && newProps.search !== null) {
             this.setState({
@@ -43,8 +43,6 @@ class BottomNavigationBar extends React.Component {
     }
 
     handleChange = (event, value) => {
-        this.setState({ value });
-
         switch(value) {
             case 0:
                 getHistory().push("/app/location", this.state.search);
@@ -60,7 +58,7 @@ class BottomNavigationBar extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const { value } = this.state.value;
+        const { value } = this.state;
 
         return (
                 <BottomNavigation

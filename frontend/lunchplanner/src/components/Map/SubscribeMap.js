@@ -31,7 +31,7 @@ let SubscribeMapComponent = compose(
     return (
         <div>
             <GoogleMap
-                defaultZoom={14}
+                defaultZoom={16}
                 defaultCenter={{lat: parseFloat(props.myLat), lng: parseFloat(props.myLng)}}
                 onClick={props.onMapClick}
                 defaultClickableIcons={true}
@@ -107,8 +107,8 @@ export class SubscribeMap extends React.Component {
                 // {key: 'test3', lat: 49.4894792, lng: 8.466039499999965, subscribed: true, isOpen: false},
                 // {key: 'test4', lat: 49.48974892, lng: 8.466039499999965, subscribed: true, isOpen: false},
                 ],
-            myLat: 49.4874592,
-            myLng: 8.466039499999965,
+            myLat: 49.474210558898626,
+            myLng: 8.46496045589447,
             clicked: false,
         };
     };
