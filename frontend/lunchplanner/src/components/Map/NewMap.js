@@ -17,7 +17,7 @@ let MyMapComponent = compose(
 )((props) =>
     <div>
         <GoogleMap
-            defaultZoom={(props.isMarkerShown) ? 17 : 14}
+            defaultZoom={(props.isMarkerShown) ? 17 : 15}
             defaultCenter={{ lat: parseFloat(props.lat), lng: parseFloat(props.lng) }}
             onClick={(e) => props.onMapClick(e)}
         >
@@ -109,8 +109,8 @@ export class NewMap extends React.Component {
     };
 
     render() {
-        let lat = this.state.lat || this.state.defaultLat || 49.4874592;
-        let lng = this.state.lng || this.state.defaultLng || 8.466039499999965;
+        let lat = this.state.lat || this.state.defaultLat || 49.474210558898626;
+        let lng = this.state.lng || this.state.defaultLng || 8.46496045589447;
         let showMarker = !!(this.state.isMarkerShown && this.state.lat && this.state.lng);
 
         console.log('render newmap show:', showMarker);

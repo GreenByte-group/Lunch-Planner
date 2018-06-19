@@ -171,6 +171,12 @@ class AppContainer extends React.Component {
     };
 
     handleSearch = (search) => {
+        console.log('search: ', search);
+        if(search === 'play tetris') {
+            console.log('open tetris');
+            getHistory().push("/app/tetris");
+        }
+
         this.setState({
             openSearch: false,
             search: search,
