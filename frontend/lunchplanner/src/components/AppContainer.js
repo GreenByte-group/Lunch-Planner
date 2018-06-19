@@ -30,7 +30,7 @@ const styles = {
         flex: 1,
         fontFamily: "Work Sans",
         fontWeight: '600',
-        fontSize: '16px',
+        fontSize: '14px',
     },
     menuButton: {
         marginLeft: -12,

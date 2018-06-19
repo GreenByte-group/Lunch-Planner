@@ -41,7 +41,6 @@ const theme = createMuiTheme({
     },
     typography: {
         fontFamily: "Work Sans",
-        htmlFontSize: "",
     },
 
 });
