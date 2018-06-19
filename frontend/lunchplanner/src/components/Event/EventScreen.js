@@ -57,7 +57,7 @@ function Transition(props) {
             fontFamily: 'Work Sans',
             fontSize: '16px',
             lineHeight: '24px',
-            display: 'flex',
+            // display: 'flex',
             flexDirection: 'row',
         },
         fontBig: {
@@ -75,7 +75,7 @@ function Transition(props) {
         },
         headerText: {
             float: 'left',
-            minWidth: '80%',
+            width: 'calc(100% - 110px)',
         },
         headerComment: {
             float: 'right',
@@ -94,6 +94,7 @@ function Transition(props) {
         },
         actionContainer: {
             width: '100px',
+            float: 'left',
         },
         headerShare: {
             float: 'right',
