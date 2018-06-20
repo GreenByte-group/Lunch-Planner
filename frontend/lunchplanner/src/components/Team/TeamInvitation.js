@@ -2,6 +2,8 @@ import React from "react"
 import {ListItem, Avatar} from "@material-ui/core";
 import {withStyles} from "@material-ui/core";
 import AcceptedButton from "../Event/AcceptedButton";
+import {getProfilePicturePath} from "../User/UserFunctions";
+import {HOST} from "../../Config";
 
 const styles = {
     listItem: {
@@ -71,6 +73,11 @@ const styles = {
         display: 'inline-flex',
         justifyContent: 'center',
     },
+    memberPicture: {
+        height: '100%',
+        width: '100%',
+        objectFit: 'cover',
+    },
 };
 
 class TeamInvitation extends React.Component {
@@ -78,7 +85,15 @@ class TeamInvitation extends React.Component {
     constructor(props) {
         super();
         let invitations = props.teamMember;
-        let people = invitations.map(value => value.userName).join(', ');
+        let people = invitations.map(value => {
+            let stateId = "pic" + value.userName.replace(/\s/g, '');
+            getProfilePicturePath(value.userName, (response) => {
+                this.setState({
+                    [stateId]: HOST + response.data,
+                })
+            });
+            return value.userName
+        }).join(', ');
         this.state = {
             selected: props.selected || false,
             teamname: props.teamname,
@@ -125,32 +140,37 @@ class TeamInvitation extends React.Component {
         people = people.split(',');
         people = people.map((value) => value.trim());
         let member = 0;
+        let memberCounter = 0;
 
         return (
             <ListItem button className={listClasses} onClick={this.clickHandler}>
                 <div className={classes.content}>
                     <div className={classes.row}>
-                        {/*TODO picture*/
-                            people.map((person, index) =>{
-                                member = index + 1;
-                                return(
-                                    <div className={classes.member}>
-                                        {(index === people.length - 1)
-                                            ?
-                                            <Avatar className={classes.memberAvatar}><span
-                                                className={classes.memberAvatarTextLast}>{person.charAt(0)}</span></Avatar>
-                                            :
-                                            <Avatar className={classes.memberAvatar}><span
-                                                className={classes.memberAvatarText}>{person.charAt(0)}</span></Avatar>
-                                        }
-                                    </div>)
-
-                            })
+                        {people.map((person)=>{
+                                memberCounter++;
+                                let imageId = "pic" + String(person).replace(/\s/g, '');
+                                let url = this.state[imageId];
+                                if(person !== "" && memberCounter <= 4) {
+                                    return(
+                                        <div className={classes.member}>
+                                            <Avatar className={classes.memberAvatar}>
+                                                <img className={classes.memberPicture} src={url}/>
+                                            </Avatar>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        {people.length > 4 ?
+                            <div className={classes.member}>
+                                <Avatar className={classes.memberAvatar}>
+                                    +{people.length - 4}
+                                </Avatar>
+                            </div> : ""
                         }
                     </div>
                     <div className={classes.text}>
                         <span className={classes.teamname}>
-                            <p>{teamname} ({member})</p>
+                            <p>{teamname} ({people.length})</p>
                         </span>
                     </div>
                 </div>
