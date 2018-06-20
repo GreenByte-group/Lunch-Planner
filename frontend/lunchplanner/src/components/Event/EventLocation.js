@@ -88,6 +88,11 @@ const styles = {
         marginLeft: 'auto',
         marginRight: 'auto',
     },
+    memberPicture: {
+        height: '100%',
+        width: '100%',
+        objectFit: 'cover',
+    },
 };
 
 class EventLocation extends React.Component {
@@ -280,7 +285,7 @@ class EventLocation extends React.Component {
                                                 memberCounter++;
                                                 let imageId = "pic" + String(person).replace(/\s/g, '');
                                                 let url = this.state[imageId];
-                                                if(person !== "" && memberCounter <= 4) {
+                                                if(person !== "" && memberCounter <= 3) {
                                                     return(
                                                         <Avatar className={classes.memberAvatar}>
                                                             <img className={classes.memberPicture} src={url}/>
@@ -288,6 +293,13 @@ class EventLocation extends React.Component {
                                                     )
                                                 }
                                             })}
+                                            {people.length > 3 ?
+                                                <div className={classes.member}>
+                                                    <Avatar className={classes.memberAvatar}>
+                                                        +{people.length - 3}
+                                                    </Avatar>
+                                                </div> : ""
+                                            }
                                         </div>
                                     </List>
                                 </div>

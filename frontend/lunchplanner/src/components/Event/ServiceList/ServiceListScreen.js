@@ -25,7 +25,7 @@ const styles = {
         fontSize: '16px',
         fontFamily: 'Work Sans',
         color: "white",
-        position: "fixed",
+        //position: "fixed",
         bottom: 0,
         width: "100%",
         height: '56px',
