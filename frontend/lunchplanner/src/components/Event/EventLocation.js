@@ -285,7 +285,7 @@ class EventLocation extends React.Component {
                                                 memberCounter++;
                                                 let imageId = "pic" + String(person).replace(/\s/g, '');
                                                 let url = this.state[imageId];
-                                                if(person !== "" && memberCounter <= 4) {
+                                                if(person !== "" && memberCounter <= 3) {
                                                     return(
                                                         <Avatar className={classes.memberAvatar}>
                                                             <img className={classes.memberPicture} src={url}/>
@@ -293,10 +293,10 @@ class EventLocation extends React.Component {
                                                     )
                                                 }
                                             })}
-                                            {people.length > 4 ?
+                                            {people.length > 3 ?
                                                 <div className={classes.member}>
                                                     <Avatar className={classes.memberAvatar}>
-                                                        +{people.length - 4}
+                                                        +{people.length - 3}
                                                     </Avatar>
                                                 </div> : ""
                                             }
