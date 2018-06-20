@@ -82,7 +82,7 @@ You can build the backend with gradle. Just run
 chmod +x gradlew
 ./gradlew build
 ```
-A executable jar is no in `build/libs` and can be executed with 
+A executable jar is now in `build/libs` and can be executed with 
 ```
 java -jar build/libs/jarName.jar
 ```
