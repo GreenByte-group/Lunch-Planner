@@ -131,25 +131,33 @@ class Team extends React.Component {
         let people = this.state.people;
         people = people.split(',');
         people = people.map((value) => value.trim());
-
+        let memberCounter = 0;
 
         return (
             <Link to={{pathname:`/app/team/${this.state.id}`}}>
                 <ListItem style={{backgroundColor: background}} button className={classes.listItem}>
                     <div className={classes.text}>
                         <div className={classes.row}>
-                            {
-                                people.map((person, index) =>{
-                                    let imageId = "pic" + person.replace(/\s/g, '');
-                                    let url = this.state[imageId];
+                            {people.map((person)=>{
+                                memberCounter++;
+                                let imageId = "pic" + String(person).replace(/\s/g, '');
+                                let url = this.state[imageId];
+                                if(person !== "" && memberCounter <= 4) {
                                     return(
                                         <div className={classes.member}>
-                                                <Avatar className={classes.memberAvatar}>
-                                                    <img className={classes.memberPicture} src={url} />
-                                                </Avatar>
-                                        </div>)
-
-                                })
+                                        <Avatar className={classes.memberAvatar}>
+                                            <img className={classes.memberPicture} src={url}/>
+                                        </Avatar>
+                                        </div>
+                                    )
+                                }
+                            })}
+                            {people.length > 4 ?
+                                <div className={classes.member}>
+                                    <Avatar className={classes.memberAvatar}>
+                                        +{people.length - 4}
+                                    </Avatar>
+                                </div> : ""
                             }
                        </div>
                         <p className={classes.title}>{name}</p>

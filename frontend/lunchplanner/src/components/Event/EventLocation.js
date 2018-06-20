@@ -88,6 +88,11 @@ const styles = {
         marginLeft: 'auto',
         marginRight: 'auto',
     },
+    memberPicture: {
+        height: '100%',
+        width: '100%',
+        objectFit: 'cover',
+    },
 };
 
 class EventLocation extends React.Component {
@@ -288,6 +293,13 @@ class EventLocation extends React.Component {
                                                     )
                                                 }
                                             })}
+                                            {people.length > 4 ?
+                                                <div className={classes.member}>
+                                                    <Avatar className={classes.memberAvatar}>
+                                                        +{people.length - 4}
+                                                    </Avatar>
+                                                </div> : ""
+                                            }
                                         </div>
                                     </List>
                                 </div>
