@@ -67,10 +67,12 @@ export class NewMap extends React.Component {
         }
     }
 
+    //just to insure for working correctly--
     handleMarkerClick = () => {
         console.log('Marker click');
     };
 
+    //giving a eventHandler with this param
     onMapClick = (event) => {
         console.log(event)
         this.setState({
@@ -115,6 +117,7 @@ export class NewMap extends React.Component {
     };
 
     render() {
+        //default coordinates are the position of VSF Experts GmbH in Mannheim
         let lat = this.state.lat || this.state.defaultLat || 49.4874592;
         let lng = this.state.lng || this.state.defaultLng || 8.466039499999965;
         let showMarker = !!(this.state.isMarkerShown && this.state.lat && this.state.lng);

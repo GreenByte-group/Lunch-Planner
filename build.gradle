@@ -25,11 +25,11 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 }
-//jar {
-  //  from('frontend/lunchplanner/src') {
-    //    into 'static'
-    //}
-//}
+jar {
+    from('frontend/lunchplanner/src') {
+        into 'static'
+    }
+}
 
 //processResources.dependsOn('frontend:bundle')
 

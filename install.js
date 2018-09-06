@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "This script will install the backend-server and frontend-server"
+echo "This script will install the backend-server and frontend-server";
 echo "Make sure npm, yarn and the java sdk >= 1.8 is installed"
 echo "Do you want to build the backend-server? (Y / N)"
 read install_backend
