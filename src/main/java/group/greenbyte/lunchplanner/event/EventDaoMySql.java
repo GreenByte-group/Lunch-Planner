@@ -82,7 +82,7 @@ public class EventDaoMySql implements EventDao {
 
     @Override
     public Event insertEvent(String userName, String eventName, String description, String location, Date timeStart, boolean isPublic) throws DatabaseException {
-        return insertEvent(userName, eventName, description, location, timeStart, isPublic);
+        return insertEvent(userName, eventName, description, location, timeStart, isPublic, null);
     }
 
     @Override
