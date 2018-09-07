@@ -222,14 +222,14 @@ public class TeamLogicTest {
 
     // ------------------------- INVITE TEAM MEMBER ------------------------------
 
-    @Test
-    public void test1InviteTeamMemberWithMinLength() throws Exception {
-        String userName = createUserIfNotExists(userLogic, createString(1));
-        int parent = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
-        String userToInvite = createUserIfNotExists(userLogic, createString(1));
-
-        teamLogic.inviteTeamMember(userName, userToInvite, parent);
-    }
+//    @Test
+//    public void test1InviteTeamMemberWithMinLength() throws Exception {
+//        String userName = createUserIfNotExists(userLogic, createString(1));
+//        int parent = createTeamWithoutParent(teamLogic, userName, createString(10), createString(10));
+//        String userToInvite = createUserIfNotExists(userLogic, createString(1));
+//
+//        teamLogic.inviteTeamMember(userName, userToInvite, parent);
+//    }
 
     @Test
     public void test2InviteTeamMemberWithMaxLength() throws Exception {
