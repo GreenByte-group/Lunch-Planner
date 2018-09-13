@@ -119,6 +119,7 @@ public class User implements Serializable {
     }
 
     public String getProfilePictureUrl() {
+        System.out.println("IN USER: "+profilePictureUrl);
         return profilePictureUrl;
     }
 

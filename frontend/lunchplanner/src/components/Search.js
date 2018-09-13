@@ -4,7 +4,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import DeleteIcon from '@material-ui/icons/Delete';
 import classNames from 'classnames';
 import {Link} from "react-router-dom";
-
+// import Search from "react-search-box";
 
 const styles =  theme => ({
     icon:{
@@ -32,6 +32,8 @@ const styles =  theme => ({
         height: 15,
     }
 });
+
+
 class Search extends React.Component {
 
     constructor(props){
@@ -82,16 +84,24 @@ class Search extends React.Component {
 
     searchForEvents = () => {
         this.setState({
-            open: false,
+            openEvent: false,
         });
         this.props.handleSearch(this.state.search);
     };
+
+    searchforUser = () => {
+        this.setState({
+            searchUser: null,
+        })
+        this.props.handleSearch(this.state.search);
+    }
     render() {
         const { classes } = this.props;
         let open = this.state.open;
         return (
             <div className={classes.root}>
                 {open ?
+                    /*
                     <FormControl className={classNames(classes.margin ,classes.textField)}>
                         <Input
                             id="adornment-password"
@@ -103,7 +113,8 @@ class Search extends React.Component {
                                 </InputAdornment>
                             }
                         />
-                    </FormControl>
+                    </FormControl>*/
+                    <div> coming soon</div>
                 : <p>{this.state.search}</p>}
                 <IconButton>
                     {this.state.search === "tetris" ? <Link to={{pathname: "/app/tetris"}}>

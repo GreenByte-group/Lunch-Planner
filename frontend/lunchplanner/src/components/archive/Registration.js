@@ -1,6 +1,11 @@
 import React from "react";
 import axios from "axios";
 import {Link, Redirect} from "react-router-dom";
+import Modal from 'react-modal';
+
+
+
+
 
 class Registration extends React.Component {
 
@@ -13,8 +18,14 @@ class Registration extends React.Component {
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this)
+
+
     }
+
+
+
+
 
     handleInputChange(event) {
         const target = event.target;

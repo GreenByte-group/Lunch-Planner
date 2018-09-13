@@ -191,6 +191,7 @@ class UserEditScreen extends React.Component {
         let url;
         if(this.state.pathImage) {
             console.log('Profile picture', this.state.pathImage);
+            console.log('picturepath', this.state.pathProfilePicture)
             url = URL.createObjectURL(this.state.pathImage)
         } else {
             url = HOST + this.state.pathProfilePicture;

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -366,15 +367,19 @@ public class UserLogic {
      */
     public void uploadProfilePicture(String userName, MultipartFile imageFile) throws HttpRequestException {
 
+
+        System.out.println("uername:"+userName);
         if(userName == null || userName.length() == 0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
 
+        System.out.println("uernameLänge:"+userName.length());
         if(userName.length() > User.MAX_USERNAME_LENGTH)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
 
+        System.out.println("imagefile empty?: "+ imageFile.equals(null));
         if(!imageFile.isEmpty()) {
            try{
-
+                System.out.println("conetntype: "+imageFile.getContentType());
                String contentType = imageFile.getContentType();
                String type = contentType.split("/")[0];
                if (!type.equalsIgnoreCase("image")) {
@@ -385,14 +390,17 @@ public class UserLogic {
 
                //the path changes in a different context
                String absolutePath;
+               System.out.println("mkdir name: "+ uploadsDirName);
                if(uploadsDirName.charAt(uploadsDirName.length() - 1) != '/') {
                    absolutePath = uploadsDirName + "/" + relativePath;
                } else {
+                   System.out.println("im falschen zweig");
                    absolutePath = uploadsDirName + relativePath;
                }
 
                relativePath = "/" + relativePath;
-
+System .out.println("relatipath: "+ relativePath);
+               System .out.println("absolutpath: "+ absolutePath);
                //create a new directory if it doesn't exist
                if(!new File(absolutePath).exists()) {
                    new File(absolutePath).mkdirs();
@@ -410,7 +418,8 @@ public class UserLogic {
 
 
            } catch(IOException | DatabaseException e){
-               throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+               System.out.println("HER HÖRTS AUF");
+               throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "error 500()");
            }
 
         } else {
@@ -433,6 +442,7 @@ public class UserLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is too long");
 
         try {
+            System.out.println("getProfilepicture: "+ userDao.getUser(userName).getProfilePictureUrl());
             return userDao.getUser(userName).getProfilePictureUrl();
 //            String absolutePath = request.getServletContext().getRealPath(path);
 //            return absolutePath;
@@ -530,6 +540,7 @@ public class UserLogic {
         if(location == null || location.length() == 0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "location is empty");
         try {
+
             return userDao.getSubscriber(location);
         } catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());

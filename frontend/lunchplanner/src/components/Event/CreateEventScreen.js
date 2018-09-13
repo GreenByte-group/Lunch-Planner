@@ -9,7 +9,7 @@ import AddIcon from '@material-ui/icons/Add';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import {FormGroup, FormControlLabel, Slide} from '@material-ui/core';
-import {DatePicker, TimePicker} from 'material-ui-old';
+import {DatePicker, TimePicker} from 'material-ui/';
 import PeopleIcon from '@material-ui/icons/People'
 
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
@@ -231,6 +231,7 @@ class CreateEventScreen extends React.Component {
     };
 
     handleDate = (event, date) => {
+        console.log("handleDate");
         let newDate = moment(date);
         let dateBefore = moment(this.state.date);
         newDate.hour(dateBefore.hour());
@@ -311,7 +312,7 @@ class CreateEventScreen extends React.Component {
                        </FormGroup>
                     {/*</form>*/}
                     <div>
-                        <p className={classes.dateHeader}>Date</p><p className={classes.timeHeader}>Time</p>
+                        <p className={classes.dateHeader}>Date</p><p className={classes.timeHeader}>TIME</p>
                         <div className={classes.pickerWithIcon}>
                             <Today viewBox="-2 -4 26 26" className={classes.icons} style={{marginLeft: '18px'}} />
                             <DatePicker
@@ -322,14 +323,13 @@ class CreateEventScreen extends React.Component {
                             />
                         </div>
                         <div className={classes.pickerWithIcon}>
-                            <Schedule viewBox="-2 -4 26 26" className={classes.icons}/>
-                            <TimePicker
-                                className={classes.timePicker}
-                                onChange={this.handleTime}
-                                value={this.state.date}
-                                format="24hr"
-                                textFieldStyle={styles.pickerTextField}
-                            />
+                            <Schedule viewBox="-2 -4 26 26" className={classes.icons} style={{marginRight: '18px'}}/>
+                           <TimePicker   className={classes.timePicker}
+                                         placeholder ="time"
+                                         onChange={this.handleTime}
+                                         value={this.state.date}
+                                         format="24hr"
+                                         textFieldStyle={styles.pickerTextField}/>
                         </div>
                     </div>
                     <ExpansionPanel>

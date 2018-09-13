@@ -52,6 +52,7 @@ export function updatePassword(password, responseFunc) {
 }
 
 export function updateProfilePicture(file, responseFunc) {
+    console.log(" in front of axios:"+ file + "responce: "+String(responseFunc));
     let config = {
         headers:{
             'Content-Type':'multipart/form-data'
@@ -62,6 +63,9 @@ export function updateProfilePicture(file, responseFunc) {
     formData.append('file',file);
 
     let url = HOST + "/user/options/profile/picture/upload";
+    console.log("Formdata: " + String(formData))
+    console.log("URL: " +String(url))
+    console.log("config: "+String(config))
     axios.post(url, formData, config)
         .then(responseFunc)
         .catch(responseFunc);
@@ -69,6 +73,7 @@ export function updateProfilePicture(file, responseFunc) {
 
 export function getProfilePicturePath(username, responseFunc) {
     let url = HOST + "/user/getProfilePicture/" + username;
+    console.log("name: "+String(username)+", host: "+ String(HOST)+"func: "+String(responseFunc));
     axios.get(url)
         .then(responseFunc);
 }

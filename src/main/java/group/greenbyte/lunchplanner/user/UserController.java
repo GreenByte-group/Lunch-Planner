@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.Console;
 import java.util.List;
+import java.util.logging.Logger;
 
 
 @RestController
@@ -320,6 +322,7 @@ public class UserController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public String uploadProfilePicture(@RequestParam("file") MultipartFile imageFile, HttpServletResponse response) {
+        System.out.println("imageFile: "+ imageFile);
         try {
             userLogic.uploadProfilePicture(SessionManager.getUserName(), imageFile);
             response.setStatus(HttpServletResponse.SC_CREATED);
@@ -341,6 +344,7 @@ public class UserController {
     public ResponseEntity getProfilePicture(@PathVariable("username") String username) {
         try {
             String picturePath = userLogic.getPicturePath(username);
+            System.out.println("PICTUREPATH: "+picturePath);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(picturePath);

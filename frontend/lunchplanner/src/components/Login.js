@@ -1,6 +1,7 @@
 import React from "react";
 import {doLogin} from "./LoginFunctions";
 import {Link, Redirect} from "react-router-dom";
+import Modal from 'react-modal';
 
 class Login extends React.Component {
 
@@ -15,7 +16,17 @@ class Login extends React.Component {
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+
+        this.setState = {
+            modalIsOpen: false
+        };
+
+        this.openModal = this.openModal.bind(this);
+        this.afterOpenModal = this.afterOpenModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
     }
+
+
 
     handleInputChange(event) {
         const target = event.target;
@@ -48,6 +59,15 @@ class Login extends React.Component {
         event.preventDefault();
     }
 
+    openModal() {
+        this.setState({modalIsOpen: true});
+    }
+
+    afterOpenModal() {
+        // references are now sync'd and can be accessed.
+        this.subtitle.style.color = '#f00';
+    }
+
     render() {
         const { from } = this.props.location.state || { from: { pathname: "/" } };
         const { redirectToReferrer } = this.state;
@@ -60,7 +80,7 @@ class Login extends React.Component {
             <div className="container">
                 <h3>Login</h3>
                 {(error
-                        ? <div>{error}</div>
+                        ? <>{error}</>
                         : ""
                 )}
                 <form className="form col-md-12 center-block" onSubmit={this.handleSubmit}>

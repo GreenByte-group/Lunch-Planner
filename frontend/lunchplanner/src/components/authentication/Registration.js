@@ -10,6 +10,8 @@ import Done from '@material-ui/icons/Done'
 import {withStyles} from "@material-ui/core/styles/index";
 import {getHistory} from "../../utils/HistoryUtils";
 import {Link} from "react-router-dom";
+import Modal from 'react-modal';
+
 
 const styles = theme => ({
     root: {
@@ -49,6 +51,18 @@ const styles = theme => ({
     },
 });
 
+
+const customStyles = {
+    content : {
+        top                   : '50%',
+        left                  : '50%',
+        right                 : 'auto',
+        bottom                : 'auto',
+        marginRight           : '-50%',
+        transform             : 'translate(-50%, -50%)'
+    }
+};
+
 class Registration extends React.Component {
 
     constructor(props) {
@@ -59,10 +73,22 @@ class Registration extends React.Component {
             email: '',
             showPassword: false,
             checkbox: false,
+            modalIsOpen: false,
+
         };
+
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    openModal() {
+        this.setState({modalIsOpen: true});
+    }
+    closeModal() {
+        this.setState({modalIsOpen: false});
     }
 
     handleChange = prop => event => {
@@ -103,12 +129,14 @@ class Registration extends React.Component {
                             getHistory().push("/app/event");
                         }})
                     } else {
+                        this.openModal();
                         this.setState({
                             error: response.data,
                         })
                     }
                 },
                 (err) => {
+                    this.openModal();
                     this.setState({
                         error: err.response.data,
                     })
@@ -136,7 +164,12 @@ class Registration extends React.Component {
             <div className={classes.root}>
                 <div className={classes.content}>
                     {(error
-                            ? <div>{error}</div>
+                            ? <Modal
+                                isOpen={this.state.modalIsOpen}
+                                onRequestClose={this.closeModal}
+                                style={customStyles}
+                                contentLabel="Example Modal"
+                            >{error}</Modal>
                             : ""
                     )}
                     <p className={classes.description}>

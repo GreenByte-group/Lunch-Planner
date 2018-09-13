@@ -356,6 +356,8 @@ public class UserDaoMySql implements UserDao {
         String SQL = " UPDATE " + USER_TABLE + " SET " + USER_PICTURE + " = ? WHERE " + USER_NAME + " = ? ";
 
         try {
+            System.out.println("username:"+userName);
+            System .out.println("path: "+ picturePath);
             jdbcTemplate.update(SQL, picturePath, userName);
         } catch (Exception e) {
             throw new DatabaseException(e);
@@ -370,7 +372,7 @@ public class UserDaoMySql implements UserDao {
         parameters.put(USER_NAME, userName);
         parameters.put(USER_MAIL, mail);
         parameters.put(USER_PASSWORD, password);
-        parameters.put(USER_PICTURE, "/profilePictures/default.jpg");
+        parameters.put(USER_PICTURE, "C:/Users/cango/GitHub/Lunch-Planner/src/main/webapp/profilePictures/default.jpg");
 
         try {
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));

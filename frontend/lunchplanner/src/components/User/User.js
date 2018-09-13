@@ -104,6 +104,7 @@ class Event extends React.Component {
     }
 
     getUserImage = (username) => {
+        console.log("this username is: "+ String(username));
         if(!this.state.profilePicturePath) {
             getProfilePicturePath(username, (response) => {
                 this.setState({

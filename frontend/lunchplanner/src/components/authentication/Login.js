@@ -10,6 +10,8 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Button from '@material-ui/core/Button';
 import LoginIcon from '@material-ui/icons/ExitToApp';
+import Modal from 'react-modal';
+
 const styles = theme => ({
     root: {
         display: 'flex',
@@ -46,7 +48,19 @@ const styles = theme => ({
     textField: {
         flexBasis: 200,
     },
+
 });
+
+const customStyles = {
+    content : {
+        top                   : '50%',
+        left                  : '50%',
+        right                 : 'auto',
+        bottom                : 'auto',
+        marginRight           : '-50%',
+        transform             : 'translate(-50%, -50%)'
+    }
+};
 
 class Login extends React.Component {
     constructor(props) {
@@ -56,11 +70,20 @@ class Login extends React.Component {
             password: "",
             redirectToReferrer: false,
             error: "",
+            modalIsOpen: false,
+
         };
+
+
+        this.openModal = this.openModal.bind(this);
+        this.afterOpenModal = this.afterOpenModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
+
+
 
     handleInputChange(event) {
         const target = event.target;
@@ -69,6 +92,18 @@ class Login extends React.Component {
         this.setState({
             [name]: target.value
         });
+    }
+    openModal() {
+        this.setState({modalIsOpen: true});
+    }
+
+    afterOpenModal() {
+        // references are now sync'd and can be accessed.
+        this.subtitle.style.color = '#f00';
+    }
+
+    closeModal() {
+        this.setState({modalIsOpen: false});
     }
 
     handleSubmit(event) {
@@ -85,7 +120,8 @@ class Login extends React.Component {
                 });
             } else if(message.type === "LOGIN_FAILED") {
                 this.setState({
-                    error: "Wrong username or password"
+                    modalIsOpen:true,
+                    error: "wroung username or password",
                 });
             }
         });
@@ -130,7 +166,13 @@ class Login extends React.Component {
             <div className={classes.root}>
                 <div className={classes.content}>
                     {(error
-                            ? <div>{error}</div>
+                            ? <Modal
+                                isOpen={this.state.modalIsOpen}
+                                // onAfterOpen={this.afterOpenModal}
+                                onRequestClose={this.closeModal}
+                                style={customStyles}
+                                contentLabel="Example Modal"
+                            >{error}</Modal>
                             : ""
                     )}
                     <p className={classes.description}>
