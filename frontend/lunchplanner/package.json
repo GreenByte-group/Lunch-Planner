@@ -5,10 +5,10 @@
   "proxy": "http://localhost:8080",
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
+    "@babel/runtime": "7.0.0-beta.55",
     "@material-ui/core": "^1.2.0",
     "@material-ui/icons": "^1.1.0",
     "axios": "^0.18.0",
-    "babel-polyfill": "^6.26.0",
     "bootstrap": "^4.0.0",
     "classnames": "^2.2.5",
     "firebase": "^5.0.3",
@@ -37,7 +37,8 @@
     "react-swipeable-views": "^0.12.13",
     "react-tetris": "^0.1.0",
     "recompose": "latest",
-    "yarn": "^1.9.4"
+    "yarn": "^1.9.4",
+    "yarn-install": "^1.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -47,6 +48,7 @@
   },
   "devDependencies": {
     "axios": "^0.18.0",
+    "babel-polyfill": "^6.26.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-15": "^1.0.5",
     "enzyme-adapter-react-16": "^1.1.1",
