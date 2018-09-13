@@ -16,7 +16,7 @@ import InvitationButton from "./InvitationButton";
 import {eventListNeedReload} from "./EventContainer";
 import {getHistory} from "../../utils/HistoryUtils";
 import TextFieldEditing from "../editing/TextFieldEditing";
-import {DatePicker, TimePicker} from "material-ui-old";
+import {DatePicker, TimePicker} from "material-ui";
 import {
     changeEventLocation,
     changeEventTime,
