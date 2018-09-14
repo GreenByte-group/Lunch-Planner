@@ -1,6 +1,4 @@
-export const HOST = "http://35.158.190.93:8090";
-// export const HOST = "http://54.93.251.199:8090";
-
+export const HOST = "http://54.93.251.199:8090";
 export const TOKEN = "token_lunch_planner";
 export const USERNAME = "user_name_lunch_planner";
 export const FRONTEND_HOST = "http://52.58.35.169:3000";
