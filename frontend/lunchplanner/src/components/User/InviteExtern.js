@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from "prop-types";
 import {withStyles} from "@material-ui/core/styles/index";
-import CopyButton from "@material-ui/icons/ContentCopy"
+// import CopyButton from "@material-ui/icons/"
 import {inviteExtern} from "./UserFunctions";
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -74,7 +74,7 @@ class InviteExtern extends React.Component {
                         <CopyToClipboard text={link}
                                          onCopy={this.handleCopy}>
                             <IconButton>
-                                <CopyButton />
+                                <p>COPY</p>
                             </IconButton>
                         </CopyToClipboard>
 

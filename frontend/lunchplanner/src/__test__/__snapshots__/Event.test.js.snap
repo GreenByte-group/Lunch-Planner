@@ -1,109 +1,115 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Event with dummy data 1`] = `
-<a
-  className="Event-link-2"
-  href="/event/1"
-  onClick={[Function]}
->
-  <div
-    className="MuiButtonBase-root-24 MuiListItem-root-14 MuiListItem-default-17 MuiListItem-gutters-21 MuiListItem-button-22 Event-listItem-3"
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onKeyDown={[Function]}
-    onKeyUp={[Function]}
-    onMouseDown={[Function]}
-    onMouseLeave={[Function]}
-    onMouseUp={[Function]}
-    onTouchEnd={[Function]}
-    onTouchMove={[Function]}
-    onTouchStart={[Function]}
-    role="button"
-    style={
-      Object {
-        "backgroundColor": "#FFFFFF",
-      }
-    }
-    tabIndex="0"
+<div>
+  <a
+    className="Event-link-02"
+    href="/app/event/1"
+    onClick={[Function]}
   >
     <div
-      className="MuiPaper-root-28 MuiPaper-elevation2-32 MuiPaper-rounded-29 MuiCard-root-27 Event-card-1"
+      className="MuiButtonBase-root-025 MuiListItem-root-014 MuiListItem-default-017 MuiListItem-gutters-021 MuiListItem-button-022 Event-listItem-03"
+      onBlur={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+      onMouseDown={[Function]}
+      onMouseLeave={[Function]}
+      onMouseUp={[Function]}
+      onTouchEnd={[Function]}
+      onTouchMove={[Function]}
+      onTouchStart={[Function]}
+      role="button"
+      style={
+        Object {
+          "backgroundColor": "#FFFFFF",
+        }
+      }
+      tabIndex="0"
     >
       <div
-        className="MuiCardContent-root-55 Event-cardContent-12"
+        className="MuiPaper-root-029 MuiPaper-elevation1-032 MuiPaper-rounded-030 MuiCard-root-028 Event-card-01"
       >
         <div
-          className="Event-imageDiv-11"
+          className="MuiCardContent-root-056 Event-cardContent-012"
+        >
+          <div
+            className="Event-text-09"
+          >
+            <p
+              className="Event-title-04"
+            >
+              event @ location
+            </p>
+            <p
+              className="Event-time-06"
+            >
+              <svg
+                aria-hidden="true"
+                className="MuiSvgIcon-root-057 Event-icons-08"
+                color={undefined}
+                focusable="false"
+                viewBox="0 0 22 22"
+              >
+                <path
+                  d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+                />
+                <path
+                  d="M0 0h24v24H0z"
+                  fill="none"
+                />
+                <path
+                  d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"
+                />
+              </svg>
+               
+              03:24
+            </p>
+            <div
+              className="Event-users-07"
+            >
+              name
+            </div>
+          </div>
+        </div>
+        <hr
+          style={
+            Object {
+              "marginBottom": "11px",
+            }
+          }
         />
         <div
-          className="Event-text-9"
+          className="Event-footer-013"
         >
           <p
-            className="Event-title-4"
-          >
-            event @ location
-          </p>
-          <p
-            className="Event-time-6"
+            className="Event-date-05"
           >
             <svg
               aria-hidden="true"
-              className="MuiSvgIcon-root-56 Event-icons-8"
+              className="MuiSvgIcon-root-057 Event-icons-08"
               color={undefined}
               focusable="false"
-              viewBox="0 0 22 22"
+              viewBox="-5 -5 27 27"
             >
-              <g>
-                <path
-                  d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"
-                />
-              </g>
-            </svg>
-             
-            03:24
-          </p>
-          <div
-            className="Event-users-7"
-          >
-            name
-          </div>
-        </div>
-      </div>
-      <hr
-        style={
-          Object {
-            "marginBottom": "11px",
-          }
-        }
-      />
-      <div
-        className="Event-footer-13"
-      >
-        <p
-          className="Event-date-5"
-        >
-          <svg
-            aria-hidden="true"
-            className="MuiSvgIcon-root-56 Event-icons-8"
-            color={undefined}
-            focusable="false"
-            viewBox="-5 -5 27 27"
-          >
-            <g>
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
               <path
                 d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
               />
-            </g>
-          </svg>
-           
-          17 Dec
-        </p>
-        
+            </svg>
+             
+            17 Dec
+          </p>
+          
+        </div>
       </div>
+      <span
+        className="MuiTouchRipple-root-064"
+      />
     </div>
-    <span
-      className="MuiTouchRipple-root-62"
-    />
-  </div>
-</a>
+  </a>
+</div>
 `;
