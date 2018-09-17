@@ -373,7 +373,6 @@ public class UserDaoMySql implements UserDao {
         parameters.put(USER_MAIL, mail);
         parameters.put(USER_PASSWORD, password);
         parameters.put(USER_PICTURE, "upload.location");
-
         try {
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
         } catch (Exception e) {

@@ -322,7 +322,7 @@ public class UserController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public String uploadProfilePicture(@RequestParam("file") MultipartFile imageFile, HttpServletResponse response) {
-        System.out.println("imageFile: "+ imageFile);
+
         try {
             userLogic.uploadProfilePicture(SessionManager.getUserName(), imageFile);
             response.setStatus(HttpServletResponse.SC_CREATED);
@@ -344,7 +344,6 @@ public class UserController {
     public ResponseEntity getProfilePicture(@PathVariable("username") String username) {
         try {
             String picturePath = userLogic.getPicturePath(username);
-            System.out.println("PICTUREPATH: "+picturePath);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(picturePath);

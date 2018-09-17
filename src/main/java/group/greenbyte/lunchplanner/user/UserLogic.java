@@ -368,7 +368,7 @@ public class UserLogic {
     public void uploadProfilePicture(String userName, MultipartFile imageFile) throws HttpRequestException {
 
 
-        System.out.println("uername:"+userName);
+        System.out.println("Logic Erste Afrage: "+userName == null || userName.length() == 0);
         if(userName == null || userName.length() == 0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
 
@@ -379,7 +379,7 @@ public class UserLogic {
         System.out.println("imagefile empty?: "+ imageFile.equals(null));
         if(!imageFile.isEmpty()) {
            try{
-                System.out.println("conetntype: "+imageFile.getContentType());
+               System.out.println("conetntype: "+imageFile.getContentType());
                String contentType = imageFile.getContentType();
                String type = contentType.split("/")[0];
                if (!type.equalsIgnoreCase("image")) {
@@ -399,13 +399,18 @@ public class UserLogic {
                }
 
                relativePath = "/" + relativePath;
-System .out.println("relatipath: "+ relativePath);
+
+               System .out.println("relatipath: "+ relativePath);
                System .out.println("absolutpath: "+ absolutePath);
+
+
                //create a new directory if it doesn't exist
                if(!new File(absolutePath).exists()) {
                    new File(absolutePath).mkdirs();
                }
                String fileName = userName;
+
+
                String path = absolutePath + File.separator + fileName;
                String[] stringAfterPoint = imageFile.getOriginalFilename().split("\\.");
                String fileExtension = "";
@@ -418,7 +423,6 @@ System .out.println("relatipath: "+ relativePath);
 
 
            } catch(IOException | DatabaseException e){
-               System.out.println("HER HÖRTS AUF");
                throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "error 500()");
            }
 
