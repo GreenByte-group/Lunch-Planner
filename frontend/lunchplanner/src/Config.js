@@ -1,7 +1,7 @@
-export const HOST = "http://localhost:8090";
+export const HOST = "http://18.195.220.177:8090";
 export const TOKEN = "token_lunch_planner";
 export const USERNAME = "user_name_lunch_planner";
-export const FRONTEND_HOST = "http://localhost:80";
+export const FRONTEND_HOST = "http://18.195.220.177:80";
 
 export const configFirebase = {
     apiKey: "AIzaSyDyuySWwkXgZDrLnO0gX9bmGpR7XAHnngE",
@@ -12,8 +12,5 @@ export const configFirebase = {
     messagingSenderId: "573276863547"
 };
 
-module.exports = {
-    plugins: ['no-minify'],
-};
 
 export const publicKey = "BFnHe7da5hcIYsv_Eno8pY6ws4wBWh7iqJAFTHAvWe4gZ8Qs59JBH9tL0YRI_IZOjzhaND0UY3DhAu5yeaWxn4c";
