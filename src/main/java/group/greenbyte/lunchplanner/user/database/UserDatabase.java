@@ -25,7 +25,7 @@ public class UserDatabase {
         user.seteMail(eMail);
         user.setToken(token);
         user.setFcmToken(fcmToken);
-        user.setProfilePictureUrl("/static"+profilePictureUrl);
+        user.setProfilePictureUrl("/static" + profilePictureUrl);
 
         return user;
     }

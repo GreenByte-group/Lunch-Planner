@@ -38,7 +38,7 @@ class Registration extends React.Component {
 
     handleSubmit(event) {
         if(this.state.username && this.state.password && this.state.email) {
-            let url =  'http://localhost:8080/user';
+            let url =  'http://localhost:8090/user';
             axios.post(url, {userName: this.state.username, password: this.state.password, mail: this.state.email})
                 .then((response) => {
                     if(response.status === 201) {
