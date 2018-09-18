@@ -1,7 +1,7 @@
-export const HOST = "http://18.195.220.177:8090";
+export const HOST = "http://35.157.113.101:8090";
 export const TOKEN = "token_lunch_planner";
 export const USERNAME = "user_name_lunch_planner";
-export const FRONTEND_HOST = "http://18.195.220.177:80";
+export const FRONTEND_HOST = "http://35.157.113.101:80";
 
 export const configFirebase = {
     apiKey: "AIzaSyDyuySWwkXgZDrLnO0gX9bmGpR7XAHnngE",
