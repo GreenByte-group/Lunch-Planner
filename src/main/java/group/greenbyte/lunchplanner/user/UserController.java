@@ -324,6 +324,7 @@ public class UserController {
     public String uploadProfilePicture(@RequestParam("file") MultipartFile imageFile, HttpServletResponse response) {
 
         try {
+            System.out.println("ENTRY OF CONTROLLER picture: "+imageFile.getContentType().toString());
             userLogic.uploadProfilePicture(SessionManager.getUserName(), imageFile);
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (HttpRequestException e) {
