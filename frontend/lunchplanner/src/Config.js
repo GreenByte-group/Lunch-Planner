@@ -1,4 +1,4 @@
-export const HOST = "http://lunchplanner.vsf-experts.com:80";
+export const HOST = "http://18.184.127.109:8090";
 export const TOKEN = "token_lunch_planner";
 export const USERNAME = "user_name_lunch_planner";
 export const FRONTEND_HOST = "http://lunchplanner.vsf-experts.com";
