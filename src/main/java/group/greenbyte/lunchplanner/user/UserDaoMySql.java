@@ -433,6 +433,7 @@ public class UserDaoMySql implements UserDao {
         String SQL = "UPDATE " + USER_TABLE + " SET " + USER_FCM_TOKEN + " = ? WHERE " + USER_NAME + " = ?";
 
         try {
+            System.out.println("FCM JDBC");
             jdbcTemplate.update(SQL, fcmToken, username);
         } catch (Exception e) {
 

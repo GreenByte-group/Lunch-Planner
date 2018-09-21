@@ -61,6 +61,7 @@ public class UserController {
     public String setFcm(@RequestBody FcmToken fcmToken,
                              HttpServletResponse response) {
         try {
+            System.out.println("CONTROLLER FCM");
             userLogic.addFcmToken(SessionManager.getUserName(), fcmToken.getFcmToken());
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (HttpRequestException e) {

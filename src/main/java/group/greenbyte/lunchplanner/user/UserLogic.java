@@ -162,6 +162,7 @@ public class UserLogic {
 
     public void addFcmToken(String username, String fcmToken) throws HttpRequestException {
         try {
+            System.out.println("LOGIC ADD FCM");
             userDao.setFcmForUser(username, fcmToken);
         } catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());

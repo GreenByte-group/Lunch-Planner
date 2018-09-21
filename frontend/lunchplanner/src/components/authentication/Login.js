@@ -121,7 +121,7 @@ class Login extends React.Component {
             } else if(message.type === "LOGIN_FAILED") {
                 this.setState({
                     modalIsOpen:true,
-                    error: "wroung username or password",
+                    error: "wrong username or password",
                 });
             }
         });
