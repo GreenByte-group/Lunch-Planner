@@ -22,7 +22,7 @@ public class UserDaoMySql implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public static final String USER_TABLE = "user";
+    public static final String USER_TABLE="user";
     public static final String USER_NAME = "user_name";
     public static final String USER_MAIL = "e_mail";
     public static final String USER_PASSWORD = "password";

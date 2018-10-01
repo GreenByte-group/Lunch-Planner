@@ -1,4 +1,4 @@
-export const HOST = "https://lunchplanner.vsf-experts.de";
+export const HOST = "https://lunchplanner.vsf-experts.de/backend";
 export const TOKEN = "token_lunch_planner";
 export const USERNAME = "user_name_lunch_planner";
 export const FRONTEND_HOST = "https://lunchplanner.vsf-experts.de";

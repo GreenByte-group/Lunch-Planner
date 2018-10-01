@@ -420,7 +420,7 @@ public class UserController {
 
 }
 
-class FcmToken {
+class   FcmToken {
     private String fcmToken;
 
     public String getFcmToken() {
