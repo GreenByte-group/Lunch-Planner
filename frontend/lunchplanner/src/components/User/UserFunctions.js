@@ -86,6 +86,7 @@ export function subscribe(username, location, responseFunc) {
     };
 
     let url = HOST + "/user/subscribe/" + username;
+    console.log('UsrFunction => subscribe', username, location);
     axios.post(url, location, config)
         .then(responseFunc);
 }
@@ -98,11 +99,13 @@ export function unsubscribe(username, location, responseFunc) {
     };
 
     let url = HOST + "/user/subscribe/delete/" + username;
+    console.log('UsrFunction => unsubscribe', username, location);
     axios.post(url, location, config)
         .then(responseFunc);
 }
 
 export function getSubscribedLocations(username, responseFunc) {
+    console.log('UsrFunction => getSubribedLocation', username);
     let url = HOST + "/user/subscribe/" + username;
     axios.get(url)
         .then(responseFunc);

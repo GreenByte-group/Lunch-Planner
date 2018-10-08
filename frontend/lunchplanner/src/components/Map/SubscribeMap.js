@@ -9,6 +9,8 @@ import {getSubscribedLocations, subscribe, unsubscribe} from "../User/UserFuncti
 import {getHistory} from "../../utils/HistoryUtils";
 import {Button} from "@material-ui/core";
 
+import * as _ from 'lodash';
+
 const style = {
     linkSubscribe: {
         "&:hover": {
@@ -27,7 +29,6 @@ let SubscribeMapComponent = compose(
     withScriptjs,
     withGoogleMap
 )((props) => {
-    console.log('render', props.subscriptions);
     return (
         <div>
             <GoogleMap
@@ -36,16 +37,14 @@ let SubscribeMapComponent = compose(
                 onClick={props.onMapClick}
                 defaultClickableIcons={true}
             >
-                <MarkerClusterer
-                    averageCenter
-                    enableRetinaIcons
-                    gridSize={60}
-                >
+                {/*<MarkerClusterer*/}
+                    {/*averageCenter*/}
+                    {/*enableRetinaIcons*/}
+                    {/*gridSize={60}*/}
+                {/*>*/}
                     {
                         props.subscriptions.map((value) => {
-                            console.log('in render:', value);
                             if(value.isOpen || value.subscribed) {
-                                console.log('erstelle marker', value);
                                 return (
                                     <Marker
                                         key={value.key}
@@ -79,7 +78,7 @@ let SubscribeMapComponent = compose(
                                 return '';
                         })
                     }
-                </MarkerClusterer>
+                {/*</MarkerClusterer>*/}
 
             </GoogleMap>
         </div>
@@ -88,14 +87,6 @@ let SubscribeMapComponent = compose(
 )
 
 export class SubscribeMap extends React.Component {
-
-    /**
-     * Subscriptions
-     *
-     * key
-     * lat:
-     * lng:
-     */
 
     constructor(props) {
         super();
@@ -123,8 +114,8 @@ export class SubscribeMap extends React.Component {
             },
             error => console.log(error)
         );
-
         this.loadSubscriptions();
+        console.log('erster0', this.state.subscriptions)
     };
 
     loadSubscriptions = () => {
@@ -132,6 +123,7 @@ export class SubscribeMap extends React.Component {
             let array = response.data;
 
             array.forEach((location) => {
+                console.log('IN LOOP');
                 geocodeByPlaceId(location)
                     .then((result) => {
                         let lat = result[0].geometry.location.lat();
@@ -191,19 +183,37 @@ export class SubscribeMap extends React.Component {
             subscriptions: subscriptions,
             clicked: !this.state.clicked,
         })
+
     };
+
+ removeDuplicates = (array) => {
+
+     console.log('vor duplicate', array)
+     var uPrice = _.uniqBy(array, 'key');
+     console.log('nach duplicate', uPrice)
+     return uPrice;
+
+
+ };
 
     handleMarkerSubscribe = (marker) => {
         let subscriptions = this.state.subscriptions;
-        subscriptions.forEach((value) => {
+        console.log(subscriptions);
+        let newSubscriptions = this.removeDuplicates(subscriptions);
+        console.log(newSubscriptions);
+
+
+        newSubscriptions.forEach((value) => {
             if(value.key === marker) {
                 value.subscribed = !value.subscribed;
 
                 if(value.subscribed) {
                     this.subscribe(value.key);
+                    this.forceUpdate()
                 } else {
                     value.isOpen = false;
                     this.unsubscribe(value.key);
+                    this.forceUpdate()
                 }
             }
         });
@@ -218,7 +228,6 @@ export class SubscribeMap extends React.Component {
         if(!event.placeId)
             return ;
 
-        console.log('click', event);
 
         let subscriptions = this.state.subscriptions;
 
@@ -238,18 +247,37 @@ export class SubscribeMap extends React.Component {
     };
 
     subscribe = (location) => {
-        console.log('subscribe', location);
-        subscribe(getUsername(), location, (response) => {
+           subscribe(getUsername(), location, (response) => {
+           });
 
-        });
+
     };
 
     unsubscribe = (location) => {
-        console.log('unsubscribe', location);
-        unsubscribe(getUsername(), location, (response) => {
+        console.log('vor unsubscribe', this.state.subscriptions);
+            unsubscribe(getUsername(), location, (response) => {
+            });
 
-        });
+            var i =0;
+            let list = this.state.subscriptions;
+            list.forEach((value) => {
+                if(value.key == location){
+                    return;
+                }else{
+                    i++;
+                }
+            });
+            console.log('index', i);
+            list.splice(i, 1);
+            this.setState({
+                subscriptions: list,
+            });
+        console.log('nach unsubscribe', this.state.subscriptions);
+
     };
+
+
+
 
     render() {
 

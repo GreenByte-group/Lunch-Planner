@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "react-day-picker": "^7.2.4",
     "react-geocode": "^0.0.9",
     "react-google-maps-loader": "^4.2.2",
     "react-google-places-suggest": "^3.4.0",

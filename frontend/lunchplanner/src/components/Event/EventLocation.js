@@ -100,7 +100,6 @@ class EventLocation extends React.Component {
     constructor(props) {
         super();
 
-        //http://momentjs.com/docs/
         let date = moment(props.date);
 
         let invitations = props.people;
@@ -131,6 +130,7 @@ class EventLocation extends React.Component {
             people: people,
             location: props.location,
             token: props.token,
+            weekday:props.weekDay,
         }
     }
 
@@ -239,6 +239,8 @@ class EventLocation extends React.Component {
         let name = this.state.name;
         let description = this.state.description;
         let monthDay = this.state.monthDay;
+        // let weekDay = this.state.weekDay;
+        console.log(this.state.weekDay);
         let time = this.state.time;
         let date = this.state.date;
         let people = this.state.people;
@@ -258,6 +260,13 @@ class EventLocation extends React.Component {
 
         let memberCounter = 0;
 
+        let weekDay = getDayOfWeek(date);
+        console.log(weekDay);
+        function getDayOfWeek(date) {
+            var dayOfWeek = new Date(date).getDay();
+            return isNaN(dayOfWeek) ? null : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
+        }
+
         return (
             <div>
                 <div className={classes.listItem}>
@@ -274,6 +283,7 @@ class EventLocation extends React.Component {
                             <CardContent className={classes.cardContent}>
                                 <div className={classesText}>
                                     <p className={classes.title}>{monthDay}</p>
+                                    <p className={classes.title}>{weekDay}</p>
                                     <p className={classes.title}>{time}</p>
                                     <p className={classes.goingPeople}> {
                                         (people[0] !== "") ?

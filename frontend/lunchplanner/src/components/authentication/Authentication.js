@@ -96,6 +96,7 @@ class Authentication extends React.Component {
                         textColor="secondary"
                         fullWidth
                         centered
+
                     >
                         <Tab label="SIGN UP" />
                         <Tab label="LOGIN" />

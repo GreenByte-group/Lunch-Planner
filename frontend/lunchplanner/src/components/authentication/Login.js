@@ -23,7 +23,7 @@ const styles = theme => ({
         flex: '0 1 auto',
     },
     description: {
-        fontSize: '16px',
+        fontSize: '25px',
         lineHeight: '24px',
         textAlign: 'center',
         margin: '20px',
@@ -40,7 +40,7 @@ const styles = theme => ({
         fontSize: '15px',
     },
     margin: {
-        margin: '10px 0px',
+        margin: '20px 0px',
     },
     withoutLabel: {
         marginTop: theme.spacing.unit * 3,

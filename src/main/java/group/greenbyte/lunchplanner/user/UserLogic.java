@@ -122,6 +122,9 @@ public class UserLogic {
         if(!REGEX_MAIL.matcher(mail).matches())
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "mail is not valid");
 
+//        if(!mail.contains("@vsf-experts.com") || !mail.contains("@vsf-experts.de") || !mail.contains("@vsf-experts.pl"))
+//            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "mail is not valid");
+
         try {
             if(userDao.getUser(userName) != null)
                 throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name already exists");
@@ -553,6 +556,12 @@ public class UserLogic {
     }
 
     public void subscribe(String subscriber, String location) throws HttpRequestException{
+//        List<String> locationbefore = getSubscribedLocations(subscriber);
+//        for(String locations : locationbefore){
+//            if(locations == location)
+//                System.out.println("Schon drinne");
+//        }
+
         try {
             userDao.subscribe(subscriber, location);
         } catch (DatabaseException e) {
@@ -561,8 +570,18 @@ public class UserLogic {
     }
 
     public void unsubscribe(String subscriber, String location) throws HttpRequestException{
+        boolean flag = true;
+        List<String>listen = this.getSubscribedLocations(subscriber);
+        for(String loca : listen){
+            if(loca == location){
+                System.out.println("existert schon");
+                flag=false;
+            }
+        }
         try {
-            userDao.unsubscribe(subscriber, location);
+            if(flag==true) {
+                userDao.unsubscribe(subscriber, location);
+            }
         } catch (DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }

@@ -214,6 +214,7 @@ public class UserController {
                              HttpServletResponse response) {
         try {
             userLogic.subscribe(username, location);
+            System.out.println("USER CONTROLLER SUBSCRIBE");
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());
@@ -235,6 +236,7 @@ public class UserController {
                             HttpServletResponse response) {
         try {
             userLogic.unsubscribe(username, location);
+            System.out.println("USER CONTROLLER UNSUBSCRIBE");
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());

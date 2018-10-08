@@ -91,8 +91,14 @@ class Event extends React.Component {
     constructor(props) {
         super();
 
-        //http://momentjs.com/docs/
+
         let date = moment(props.date);
+        let weekday = getDayOfWeek(date);
+        console.log(weekday);
+        function getDayOfWeek(date) {
+            var dayOfWeek = new Date(date).getDay();
+            return isNaN(dayOfWeek) ? null : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
+        }
 
         let invitations = props.people;
         let people = "";
@@ -122,7 +128,10 @@ class Event extends React.Component {
             people: people,
             location: props.location,
             token: props.token,
+            weekDay: weekday,
+
         }
+        console.log(this.state.weekDay)
     }
 
     componentWillReceiveProps(newProps) {
@@ -151,6 +160,7 @@ class Event extends React.Component {
                 date: date,
                 monthDay: date.format('DD MMM'),
                 time: date.format('HH:mm'),
+                weekDay: date.weekday(),
             });
         }
 
@@ -208,6 +218,7 @@ class Event extends React.Component {
         let invitations = this.state.invitations;
         let location = this.state.location;
         let token = this.state.token;
+        let weekDay = this.state.weekDay;
 
         people = people.split(',');
         people = people.map((value) => value.trim());

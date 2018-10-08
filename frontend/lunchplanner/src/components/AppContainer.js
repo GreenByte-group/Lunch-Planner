@@ -8,6 +8,9 @@ import Search from "./Search";
 import SearchIcon from '@material-ui/icons/Search';
 import {Button, MenuItem, List, Divider, withStyles, FormControlLabel,TextField, Switch, Drawer, Avatar, Hidden} from '@material-ui/core'
 import {Place, LocalDining, Group, NotificationsNone, ExitToApp, Settings, Menu} from '@material-ui/icons'
+import InfiniteCalendar from 'react-infinite-calendar';
+import DayPicker from 'react-day-picker';
+
 
 import {Link} from "react-router-dom";
 import {getUser} from "./User/UserFunctions";
@@ -24,7 +27,7 @@ import moment from "moment";
 import UserEditScreen from "./User/UserEditScreen";
 import {HOST} from "../Config";
 
-
+import 'react-day-picker/lib/style.css';
 const styles = {
     flex: {
         flex: 1,
@@ -44,6 +47,7 @@ const styles = {
     list: {
         width: 250,
         color:"white",
+        position: 'relative',
     },
     profile:{
         fontSize: 10,
@@ -55,6 +59,7 @@ const styles = {
         "&:hover": {
             textDecoration: 'none',
         },
+
     },
     avatar:{
         width: '64px',
@@ -95,6 +100,18 @@ const styles = {
         position: 'relative',
         boxShadow: '0px 2px 4px -1px rgba(0, 0, 0, 0.2),0px 4px 5px 0px rgba(0, 0, 0, 0.14),0px 1px 10px 0px rgba(0, 0, 0, 0.12)',
     },
+    navCalendar: {
+        position: 'relative',
+        width: 250,
+        marginTop: '10%',
+    },
+    logo: {
+        position: 'relatvie',
+        width: 100,
+        height: 38,
+
+
+}
 };
 
 export let needReload = false;
@@ -124,6 +141,8 @@ class AppContainer extends React.Component {
     componentDidMount() {
         this.getData();
     }
+
+
 
     getData = () => {
         getUser(getUsername(), (response) => {
@@ -184,6 +203,8 @@ class AppContainer extends React.Component {
         });
     };
 
+
+
     handleDrawerClick = () => {
         if (!this.state.drawerOpen) {
             document.addEventListener('click', this.handleDrawerClick, false);
@@ -214,6 +235,8 @@ class AppContainer extends React.Component {
             sendOptions({blockUntil: dateMoment.toDate()})
         }
     };
+
+
 
     render() {
         const { classes } = this.props;
@@ -319,6 +342,11 @@ class AppContainer extends React.Component {
                         </MenuItem>
                     </List>
                 </div>
+                <List>
+                    <DayPicker
+                        className={classes.navCalendar}
+                    />
+                </List>
             </div>
         );
 
@@ -362,6 +390,7 @@ class AppContainer extends React.Component {
                             <Typography color="inherit" className={classes.flex}>
                                 {title}
                             </Typography>
+                            <img src="/logo.jpg"  className={classes.logo}/>
                             <div color="inherit">
                                 {
                                     this.state.openSearch === false ?
@@ -373,12 +402,10 @@ class AppContainer extends React.Component {
                                         <Search open={this.state.openSearch} handleCancel={this.cancelSearch} handleSearch={this.handleSearch} search={this.state.search}/> :
                                         ""
                                     }
-
                             </div>
                         </Toolbar>
                     </AppBar>
                     {children}
-
                     <Hidden mdUp>
                         <BottomNavigationBar value={bottomNavigationValue} search={this.state.search}/>
                     </Hidden>

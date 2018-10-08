@@ -7,7 +7,7 @@ import FloatingActionButton from "../FloatingActionButton";
 
 let MyMapComponent = compose(
     withProps({
-        googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyA9g1HmDqPm-H4jF-SUMPAWAEkJRbwnsSw",
+        // googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyA9g1HmDqPm-H4jF-SUMPAWAEkJRbwnsSw",
         loadingElement: <div  style={{ height: `calc(100% - 56px)` }}/>,
         containerElement: <div  style={{ height: `calc(100% - 56px)` }}/>,
         mapElement: <div  style={{ height: `100%` }}/>
