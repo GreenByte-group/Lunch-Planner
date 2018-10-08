@@ -53,6 +53,9 @@ const styles = {
         fontSize: 10,
         textAlign: "center",
         backgroundColor: "darkGrey",
+        height: '64px',
+        paddingTop:'8px',
+
     },
     noHover: {
         color: 'black',
@@ -103,12 +106,15 @@ const styles = {
     navCalendar: {
         position: 'relative',
         width: 250,
-        marginTop: '10%',
+        paddingTop: '40px',
+        paddingRight: '10px',
+
     },
     logo: {
-        position: 'relatvie',
+        position: 'relative',
         width: 100,
         height: 38,
+        boxShadow: '0px 2px 4px -1px rgba(0, 0, 0, 0.2),0px 4px 5px 0px rgba(0, 0, 0, 0.14),0px 1px 10px 0px rgba(0, 0, 0, 0.12)',
 
 
 }
@@ -342,6 +348,7 @@ class AppContainer extends React.Component {
                         </MenuItem>
                     </List>
                 </div>
+                <Divider />
                 <List>
                     <DayPicker
                         className={classes.navCalendar}
@@ -391,18 +398,18 @@ class AppContainer extends React.Component {
                                 {title}
                             </Typography>
                             <img src="/logo.jpg"  className={classes.logo}/>
-                            <div color="inherit">
-                                {
-                                    this.state.openSearch === false ?
-                                            <IconButton  className={classes.search}>
-                                                <SearchIcon onClick={this.showSearch}/>
-                                            </IconButton> : ""
-                                }
-                                {this.state.openSearch ?
-                                        <Search open={this.state.openSearch} handleCancel={this.cancelSearch} handleSearch={this.handleSearch} search={this.state.search}/> :
-                                        ""
-                                    }
-                            </div>
+                            {/*<div color="inherit">*/}
+                                {/*{*/}
+                                    {/*this.state.openSearch === false ?*/}
+                                            {/*<IconButton  className={classes.search}>*/}
+                                                {/*<SearchIcon onClick={this.showSearch}/>*/}
+                                            {/*</IconButton> : ""*/}
+                                {/*}*/}
+                                {/*{this.state.openSearch ?*/}
+                                        {/*<Search open={this.state.openSearch} handleCancel={this.cancelSearch} handleSearch={this.handleSearch} search={this.state.search}/> :*/}
+                                        {/*""*/}
+                                    {/*}*/}
+                            {/*</div>*/}
                         </Toolbar>
                     </AppBar>
                     {children}

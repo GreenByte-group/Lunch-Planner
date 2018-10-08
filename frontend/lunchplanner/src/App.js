@@ -1,6 +1,6 @@
 import React from "react";
 import FirstScreen from "./components/authentication/Authentication"
-import { Router, Route, Redirect } from "react-router-dom";
+import { Router, Route, Redirect, BrowserRouter } from "react-router-dom";
 import {isAuthenticated} from "./components/authentication/LoginFunctions"
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { MuiThemeProvider as OldMuiThemeProvider } from 'material-ui-old/styles'
@@ -94,7 +94,7 @@ class App extends React.Component {
         return (
             <OldMuiThemeProvider theme={oldTheme}>
                 <MuiThemeProvider theme={theme}>
-                    <Router history={getHistory()}>
+                    <BrowserRouter history={getHistory()}>
                         <div style={{height: '100%'}}>
                             <Route exact path="/login" component={FirstScreen} />
                             <Route path="/privacyPolicy" component={PrivacyPolicy} />
@@ -123,7 +123,7 @@ class App extends React.Component {
                             <PrivateRoute path="/app/tetris" component={MyTetris} />
 
                         </div>
-                    </Router>
+                    </BrowserRouter>
                 </MuiThemeProvider>
             </OldMuiThemeProvider>
         );
