@@ -94,7 +94,7 @@ class App extends React.Component {
         return (
             <OldMuiThemeProvider theme={oldTheme}>
                 <MuiThemeProvider theme={theme}>
-                    <BrowserRouter history={getHistory()}>
+                    <Router history={getHistory()}>
                         <div style={{height: '100%'}}>
                             <Route exact path="/login" component={FirstScreen} />
                             <Route path="/privacyPolicy" component={PrivacyPolicy} />
@@ -123,7 +123,7 @@ class App extends React.Component {
                             <PrivateRoute path="/app/tetris" component={MyTetris} />
 
                         </div>
-                    </BrowserRouter>
+                    </Router>
                 </MuiThemeProvider>
             </OldMuiThemeProvider>
         );
