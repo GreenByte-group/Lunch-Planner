@@ -59,6 +59,7 @@ public class UserLogic {
     // ------------------ JWT --------------------
     public User createUserToken(String username) {
         String token = jwtService.createToken(username, getExpirationDate());
+        System.out.println("user :" +username+ "  token: " +token);
         try {
             return userDao.setTokenForUser(username, token);
         } catch (DatabaseException e) {

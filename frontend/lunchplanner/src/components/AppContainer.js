@@ -52,8 +52,8 @@ const styles = {
     profile:{
         fontSize: 10,
         textAlign: "center",
-        backgroundColor: "darkGrey",
-        height: '64px',
+        backgroundColor: "#f29b26",
+        height: '115px',
         paddingTop:'8px',
 
     },

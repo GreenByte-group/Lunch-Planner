@@ -392,6 +392,7 @@ public class UserDaoMySql implements UserDao {
     @Override
     public User setTokenForUser(String username, String token) throws DatabaseException {
         String SQL = "UPDATE " + USER_TABLE + " SET " + USER_TOKEN + " = ? WHERE " + USER_NAME + " = ?";
+        System.out.println("#2 user :" +username+ "  token: " +token);
 
         try {
             jdbcTemplate.update(SQL, token, username);
