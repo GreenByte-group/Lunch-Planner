@@ -40,7 +40,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-security')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-mail')
-    compile('it.ozimov:spring-boot-email-core')
+//    compile('it.ozimov:spring-boot-email-core')
     compile('io.jsonwebtoken:jjwt:0.7.0')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.session:spring-session-core:0.6.3')
