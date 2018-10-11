@@ -38,9 +38,12 @@ dependencies {
     runtime files('org.gradle.internal.jvm.Jvm.current().toolsJar)')
     compile('org.springframework.boot:spring-boot-starter-mail')
     compile('org.springframework.boot:spring-boot-starter-security')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-mail')
+    compile('it.ozimov:spring-boot-email-core')
     compile('io.jsonwebtoken:jjwt:0.7.0')
     compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.springframework.session:spring-session-core')
+    compile('org.springframework.session:spring-session-core:0.6.3')
     compile('org.springframework.boot:spring-boot-starter-data-jpa:2.0.0.RELEASE')
     compile('org.springframework.boot:spring-boot-starter-quartz')
     compile "commons-io:commons-io:+"
@@ -49,6 +52,7 @@ dependencies {
     testCompile('com.h2database:h2')
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('org.springframework.security:spring-security-test')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
     //changes in frontend without restarting server
     compile("org.springframework.boot:spring-boot-devtools")
     //google firebase cloud messaging

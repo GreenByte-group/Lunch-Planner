@@ -1,6 +1,10 @@
 package group.greenbyte.lunchplanner.user;
 
+import group.greenbyte.lunchplanner.event.EventLogic;
+import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
+import group.greenbyte.lunchplanner.team.TeamLogic;
+import group.greenbyte.lunchplanner.team.database.Team;
 import group.greenbyte.lunchplanner.user.database.SubscribeDatabase;
 import group.greenbyte.lunchplanner.user.database.User;
 import group.greenbyte.lunchplanner.user.database.UserDatabase;
@@ -14,6 +18,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.quartz.*;
 
 import java.util.*;
 
@@ -63,6 +68,8 @@ public class UserDaoMySql implements UserDao {
     public UserDaoMySql(JdbcTemplate jdbcTemplateObject) {
         this.jdbcTemplate = jdbcTemplateObject;
     }
+
+
 
     @Override
     public User getUser(String userName) throws DatabaseException {
@@ -440,6 +447,48 @@ public class UserDaoMySql implements UserDao {
 
             throw new DatabaseException(e);
         }
+    }
+
+    @Override
+    public void terminateUser(String username) throws DatabaseException{
+
+            String SQL = "DELETE FROM " + USER_TABLE + " WHERE " + USER_NAME + " = ? ";
+            try{
+                jdbcTemplate.update(SQL, username);
+            }catch(Exception e){
+                e.printStackTrace();
+                throw new DatabaseException(e);
+            }
+
+    }
+
+    @Override
+    public void deleteUser(String username) throws DatabaseException {
+       List<String> table = new ArrayList<>();
+       table.add(this.USER_NOTIFICATIONOPTIONS_TABLE);
+       table.add(this.USER_NOTIFICATION_TABLE);
+       table.add(this.USER_SUBSCRIBE_TABLE);
+
+       for(int i =0;i<table.size();i++){
+           System.out.println("DAOM MySQL table index: "+ table.get(i));
+           String SQL = "DELETE FROM " + table.get(i) + " WHERE " + USER_NAME + " = ? ";
+
+           try{
+               System.out.println("DAOM MySQL: "+ SQL);
+               jdbcTemplate.update(SQL, username);
+           }catch(Exception e){
+               e.printStackTrace();
+               throw new DatabaseException(e);
+           }
+       }
+
+//        String SQLUser = "DELETE FROM " + table.get(0) + " WHERE " + USER_NAME + " = ? ";
+//        try{
+//            System.out.println("DAOM MySQL: "+ SQLUser);
+//            jdbcTemplate.update(SQLUser, username);
+//        }catch(Exception e){
+//            throw new DatabaseException(e);
+//        }
     }
 
 

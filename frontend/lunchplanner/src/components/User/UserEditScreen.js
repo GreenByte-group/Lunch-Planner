@@ -3,7 +3,14 @@ import {withStyles} from "@material-ui/core/styles/index";
 import {TextField, FormControl, InputLabel, Input, Button} from "@material-ui/core";
 import {Edit} from "@material-ui/icons";
 import {getUsername} from "../authentication/LoginFunctions";
-import {getProfilePicturePath, getUser, updateEmail, updatePassword, updateProfilePicture} from "./UserFunctions";
+import {
+    deleteAccount,
+    getProfilePicturePath,
+    getUser,
+    updateEmail,
+    updatePassword,
+    updateProfilePicture
+} from "./UserFunctions";
 import {HOST} from "../../Config";
 import {userNeedReload} from "../AppContainer";
 
@@ -101,6 +108,9 @@ const styles = theme => ({
     },
     error: {
         color: 'red',
+    },
+    placeGiver: {
+        padding: '10px',
     }
 });
 
@@ -117,6 +127,7 @@ class UserEditScreen extends React.Component {
             emailError: null,
             passwordError: null,
             pathImage: null,
+            delete: false,
             pathProfilePicture: "",
         };
 
@@ -144,6 +155,14 @@ class UserEditScreen extends React.Component {
         this.setState({
             pathImage: fileList.item(0),
         })
+    };
+
+
+    onDeleteClick = () => {
+        this.setState({
+            delete: true,
+        });
+        deleteAccount(getUsername());
     };
 
     onSubmit = () => {
@@ -266,6 +285,15 @@ class UserEditScreen extends React.Component {
                                 color="primary"
                             >
                                 Change password
+                            </Button>
+                            <p className={classes.placeGiver}/>
+                            <Button
+                                className={classes.button}
+                                onClick={this.onDeleteClick}
+                                variant="contained"
+                                color="primary"
+                            >
+                                Delete my account
                             </Button>
                         </div>
                     }

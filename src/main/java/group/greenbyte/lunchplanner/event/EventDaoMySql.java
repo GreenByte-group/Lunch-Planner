@@ -97,6 +97,18 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
+    public void deleteUserInvitation(String username) throws DatabaseException {
+        System.out.println("DAO SQL deleteUserinvatation: "+username);
+        try {
+            String SQL_DELETE = "DELETE FROM " + EVENT_INVITATION_TABLE + " WHERE " + EVENT_INVITATION_USER + " = ?";
+
+            jdbcTemplate.update(SQL_DELETE, username);
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
     public void deleteBringServiceForEvent(int eventId) throws DatabaseException {
         try {
             String SQL_DELETE = "DELETE FROM " + EVENT_BRINGSERVICE_TABLE + " WHERE " + EVENT_BRINGSERVICE_EVENT + " = ?";
@@ -108,11 +120,45 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
+    public void deleteUserBringservice(String username) throws DatabaseException {
+        System.out.println("DAO SQL deleteBringService: "+username);
+        try {
+            String SQL_DELETE = "DELETE FROM " + EVENT_BRINGSERVICE_TABLE + " WHERE " + EVENT_BRINGSERVICE_CREATOR + " = ?";
+
+            jdbcTemplate.update(SQL_DELETE, username);
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+
+        try {
+            String SQL_DELETE2 = "DELETE FROM " + EVENT_BRINGSERVICE_TABLE + " WHERE " + EVENT_BRINGSERVICE_ACCEPTER + " = ?";
+
+            jdbcTemplate.update(SQL_DELETE2, username);
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+
+    }
+
+
+    @Override
     public void deleteCommentsForEvent(int eventId) throws DatabaseException {
         try {
             String SQL_DELETE = "DELETE FROM " + EVENT_COMMENT_TABLE + " WHERE " + EVENT_COMMENT_EVENT + " = ?";
 
             jdbcTemplate.update(SQL_DELETE, eventId);
+        } catch(Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void deleteUserComments(String username) throws DatabaseException {
+        System.out.println("DAO SQL deleteUserComments: "+username);
+        try {
+            String SQL_DELETE = "DELETE FROM " + EVENT_COMMENT_TABLE + " WHERE " + EVENT_COMMENT_USER + " = ?";
+
+            jdbcTemplate.update(SQL_DELETE, username);
         } catch(Exception e) {
             throw new DatabaseException(e);
         }

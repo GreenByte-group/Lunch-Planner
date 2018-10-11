@@ -5,6 +5,7 @@ import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.event.database.EventInvitationDataForReturn;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
+import org.hibernate.dialect.Database;
 
 import java.util.Date;
 import java.util.List;
@@ -43,6 +44,22 @@ public interface EventDao {
     void deleteBringServiceForEvent(int eventId) throws DatabaseException;
 
     void deleteCommentsForEvent(int eventId) throws DatabaseException;
+
+    /**
+     * deleted user will delete from event
+     * @param username user to delete
+     * @throws DatabaseException
+     */
+    void  deleteUserInvitation(String username) throws DatabaseException;
+
+    /**
+     * delete user from bringservice as an creator and accepter
+     * @param username
+     * @throws DatabaseException
+     */
+    void deleteUserBringservice(String username) throws DatabaseException;
+
+
 
     /**
      * Delete one event from the database
@@ -230,6 +247,8 @@ public interface EventDao {
     List<Comment> getAllComments(int eventId) throws DatabaseException;
 
     void putCommentForEvent(String userName, int eventId, String comment) throws DatabaseException;
+
+    void deleteUserComments(String username) throws DatabaseException;
 
     //TODO test
     List<EventInvitationDataForReturn> getInvitations(int eventId) throws DatabaseException;

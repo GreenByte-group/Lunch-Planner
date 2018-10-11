@@ -54,6 +54,8 @@ class InviteExtern extends React.Component {
     };
 
 
+
+
     render(){
 
         const classes = this.props;
@@ -77,8 +79,6 @@ class InviteExtern extends React.Component {
                                 <p>COPY</p>
                             </IconButton>
                         </CopyToClipboard>
-
-
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

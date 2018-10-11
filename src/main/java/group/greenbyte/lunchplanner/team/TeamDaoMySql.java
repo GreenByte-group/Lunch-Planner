@@ -38,6 +38,8 @@ public class TeamDaoMySql implements TeamDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+
+
     @Override
     public int insertTeam(String teamName, String description, String adminName, boolean isPublic) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
@@ -226,6 +228,17 @@ public class TeamDaoMySql implements TeamDao {
             jdbcTemplate.update(SQL, teamId, userToRemove);
         } catch (Exception e) {
             throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void deleteUser(String username){
+        String SQL = "DELETE FROM " + TEAM_MEMBER_TABLE + " WHERE " + TEAM_MEMBER_USER + " = ? ";
+        try{
+            jdbcTemplate.update(SQL, username);
+        }catch(Exception e){
+            System.out.println("Exception in Team DAO delete user");
+            e.printStackTrace();
         }
     }
 

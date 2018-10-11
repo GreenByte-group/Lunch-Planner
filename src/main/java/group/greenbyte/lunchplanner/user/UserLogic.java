@@ -9,6 +9,8 @@ import com.google.firebase.messaging.Message;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.JwtService;
+import group.greenbyte.lunchplanner.team.TeamLogic;
+import group.greenbyte.lunchplanner.event.EventLogic;
 import group.greenbyte.lunchplanner.user.database.User;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationDatabase;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
@@ -37,7 +39,6 @@ import java.util.regex.Pattern;
 public class UserLogic {
 
     private final JwtService jwtService;
-
     private static final Pattern REGEX_MAIL = Pattern.compile("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
 
     private final Environment env;
@@ -46,6 +47,8 @@ public class UserLogic {
 
     // This variable will be set over the setter Method by java spring
     private UserDao userDao;
+    private TeamLogic teamlogic;
+    private EventLogic eventlogic;
 
     @Autowired
     public UserLogic(JwtService jwtService, Environment env) {
@@ -54,6 +57,16 @@ public class UserLogic {
         uploadsDirName = this.env.getProperty("upload.location");
         if(uploadsDirName == null)
             uploadsDirName = "/tmp";
+    }
+
+    @Autowired
+    public void setTeamLogic(TeamLogic teamLogic) {
+        this.teamlogic = teamLogic;
+    }
+
+    @Autowired
+    public void setEventLogic(EventLogic eventLogic) {
+        this.eventlogic = eventLogic;
     }
 
     // ------------------ JWT --------------------
@@ -67,6 +80,8 @@ public class UserLogic {
             return null;
         }
     }
+
+
 
     public User validateUser(String token) {
         try {
@@ -152,6 +167,22 @@ public class UserLogic {
 
     /**
      *
+     * @param username user to delete
+     * @throws HttpRequestException
+     */
+    public void deleteUser(String username) throws HttpRequestException{
+        try{
+            userDao.deleteUser(username);
+            this.teamlogic.deleteUser(username);
+            this.eventlogic.deleteUser(username);
+            userDao.terminateUser(username);
+        }catch (Exception e){
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        }
+    }
+
+    /**
+     *
      * @param userName name of Username for searching in database
      * @return
      * @throws HttpRequestException
@@ -205,20 +236,20 @@ public class UserLogic {
         if(fcmToken == null)
             return;
 
-        // See documentation on defining a message payload.
-        Message message = Message.builder()
-                .putData("title", title)
-                .putData("body", description)
-                .putData("tag", linkToClick)
-                .putData("icon", "https://greenbyte.group/assets/images/logo.png")
-                .setToken(fcmToken)
-                .build();
-
-        // Send a message to the device corresponding to the provided
-        // registration token.
-        String response = FirebaseMessaging.getInstance().send(message);
-        // Response is a message ID string.
-        System.out.println("Successfully sent message: " + response);
+//        // See documentation on defining a message payload.
+//        Message message = Message.builder()
+//                .putData("title", title)
+//                .putData("body", description)
+//                .putData("tag", linkToClick)
+//                .putData("icon", "https://greenbyte.group/assets/images/logo.png")
+//                .setToken(fcmToken)
+//                .build();
+//
+//        // Send a message to the device corresponding to the provided
+//        // registration token.
+//        String response = FirebaseMessaging.getInstance().send(message);
+//        // Response is a message ID string.
+//        System.out.println("Successfully sent message: " + response);
 
     }
 
@@ -512,16 +543,22 @@ public class UserLogic {
 
     private boolean fcmInitialized = false;
     private void initNotifications() throws IOException {
+
         Resource resource = new ClassPathResource("lunchplanner-private-fcm-config.json");
-        InputStream serviceAccount = resource.getInputStream();
 
-        FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl("https://lunch-planner-ac676.firebaseio.com")
-                .build();
+        if(resource.exists()){
+            InputStream serviceAccount = resource.getInputStream();
 
-        FirebaseApp.initializeApp(options);
-        fcmInitialized = true;
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setDatabaseUrl("https://lunch-planner-ac676.firebaseio.com")
+                    .build();
+
+            FirebaseApp.initializeApp(options);
+            fcmInitialized = true;
+        }else{
+            System.out.println("firebase shutdown");
+        }
     }
 
     @Autowired

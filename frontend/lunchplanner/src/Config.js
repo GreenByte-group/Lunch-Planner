@@ -4,7 +4,7 @@ export const USERNAME = "user_name_lunch_planner";
 export const FRONTEND_HOST = "https://lunchplanner.vsf-experts.de";
 
 export const configFirebase = {
-    apiKey: "AIzaSyDyuySWwkXgZDrLnO0gX9bmGpR7XAHnngE",
+    apiKey: "AIzaSyCOYsTeZ29UyBEHqYG39GXJIN1-rp1KayU ",
     authDomain: "lunch-planner-ac676.firebaseapp.com",
     databaseURL: "https://lunch-planner-ac676.firebaseio.com",
     projectId: "lunch-planner-ac676",

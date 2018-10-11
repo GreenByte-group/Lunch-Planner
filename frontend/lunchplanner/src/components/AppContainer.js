@@ -152,7 +152,6 @@ class AppContainer extends React.Component {
 
     getData = () => {
         getUser(getUsername(), (response) => {
-            console.log("FRONTEND, APPCONTAINER, getDATA. response.data.profilepictureURL: "+response.data.profilePicturePath)
             if(response.status === 200) {
                 this.setState({
                     email: response.data.eMail,

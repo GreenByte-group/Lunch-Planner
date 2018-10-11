@@ -1,5 +1,7 @@
 import axios from "axios";
 import {HOST} from "../../Config";
+import {doLogout} from "../authentication/LoginFunctions"
+import {getHistory} from "../../utils/HistoryUtils";
 
 export function getUsers(search, responseFunc) {
     let url;
@@ -51,8 +53,16 @@ export function updatePassword(password, responseFunc) {
         .catch(responseFunc);
 }
 
+export function deleteAccount(username, responseFunc){
+    let url = HOST + "/user/delete/" + username;
+    axios.post(url)
+        .then(responseFunc)
+        .catch(responseFunc);
+    doLogout();
+    getHistory().push("/login")
+}
+
 export function updateProfilePicture(file, responseFunc) {
-    console.log(" in front of axios:"+ file + "responce: "+String(responseFunc));
     let config = {
         headers:{
             'Content-Type':'multipart/form-data'

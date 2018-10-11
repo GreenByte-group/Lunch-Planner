@@ -55,6 +55,10 @@ public interface UserDao {
     void setFcmForUser(String userName, String fcmToken) throws DatabaseException;
 
     /**
+     * @param userName
+     */
+    void deleteUser(String userName) throws DatabaseException;
+    /**
      *
      * @param userName
      * @return
@@ -75,7 +79,10 @@ public interface UserDao {
                                         ,String builder, String linkToClick, String picturePath) throws DatabaseException;
 
 
+    void terminateUser(String username) throws DatabaseException;
+
     Notifications getNotification(int notificationId) throws DatabaseException;
+
 
     void setNotificationRead(int notificationId, boolean read) throws DatabaseException;
 

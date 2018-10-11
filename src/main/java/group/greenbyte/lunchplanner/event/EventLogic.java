@@ -22,6 +22,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+
+import javax.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+
 import java.util.*;
 import java.util.Calendar;
 
@@ -38,6 +48,12 @@ public class EventLogic {
     private TeamLogic teamLogic;
     private UserDao userDao;
 
+//    @Autowired
+//    private JavaMailSender sender;
+
+    @Autowired
+    public EmailService emailservice;
+
     @Autowired
     public EventLogic(Scheduler scheduler) {
         this.scheduler = scheduler;
@@ -51,6 +67,17 @@ public class EventLogic {
 
             }
         } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteUser(String username){
+        System.out.println("Eventlogic "+ username);
+        try{
+            eventDao.deleteUserInvitation(username);
+            eventDao.deleteUserComments(username);
+            eventDao.deleteUserBringservice(username);
+        }catch(DatabaseException e){
             e.printStackTrace();
         }
     }
@@ -354,6 +381,8 @@ public class EventLogic {
         }
     }
 
+
+
     /**
      * Invite user to an event
      *
@@ -365,7 +394,7 @@ public class EventLogic {
      * @throws HttpRequestException when an unexpected error happens
      *
      */
-    public void inviteFriend(String username, String userToInvite, int eventId) throws HttpRequestException {
+    public void inviteFriend(String username, String userToInvite, int eventId) throws HttpRequestException,Exception {
 
         if(!isValidName(username))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
@@ -381,25 +410,30 @@ public class EventLogic {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
 
-        //TODO picture
+
+        String body = "Hey "+userToInvite+",\ncheck mal den Lunchplanner. Du hast eine Einladung von "+SessionManager.getUserName()+
+                " erhalten.\nVielleicht hast du ja lust auf "+this.eventDao.getEvent(eventId).getEventName()+" ?\n\nViel spaß & Hasta la pasta";
+       emailservice.send(this.userDao.getUser(userToInvite).geteMail(),"Email", body, eventId);
+
+
         User user = userLogic.getUser(userToInvite);
         //set notification information
-        String title = "Event invitation";
-        String description = String.format("%s invited you to an event", username);
-        String linkToClick = "/event/" + eventId;
-
-        //save notification
-        userLogic.saveNotification(userToInvite,title,description,username,linkToClick, "");
-
-        //send a notification to userToInvite
-        NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToInvite);
-        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isEventsBlocked())) {
-            try {
-                userLogic.sendNotification(user.getFcmToken(), userToInvite, title, description,linkToClick, "");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+//        String title = "Event invitation";
+//        String description = String.format("%s invited you to an event", username);
+//        String linkToClick = "/event/" + eventId;
+//
+//        //save notification
+//        userLogic.saveNotification(userToInvite,title,description,username,linkToClick, "");
+//
+//        //send a notification to userToInvite
+//        NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToInvite);
+//        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isEventsBlocked())) {
+//            try {
+//                userLogic.sendNotification(user.getFcmToken(), userToInvite, title, description,linkToClick, "");
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     /**
@@ -430,8 +464,6 @@ public class EventLogic {
             User user;
 
             for(TeamMemberDataForReturn member : members) {
-                //userName == member.getUserName() -> primary key exception
-                //users can not invite themselves to an event
                 if(!userName.equals(member.getUserName())){
                     eventDao.putUserInviteToEvent(member.getUserName(), eventId);
 
@@ -440,6 +472,7 @@ public class EventLogic {
                     //TODO picture path
                     user = userLogic.getUser(member.getUserName());
                     userLogic.sendNotification(user.getFcmToken(),member.getUserName(),title, description,linkToClick, "");
+                    this.inviteFriend(userName,member.getUserName(),eventId);
                 }
             }
         }catch(DatabaseException e){

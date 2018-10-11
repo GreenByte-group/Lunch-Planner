@@ -403,6 +403,14 @@ public class TeamLogic {
         }
     }
 
+    public void deleteUser(String username) throws DatabaseException{
+        try{
+            teamdao.deleteUser(username);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Count admins in a team
      *

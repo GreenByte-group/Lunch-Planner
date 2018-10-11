@@ -52,6 +52,9 @@ public class UserController {
         return "";
     }
 
+
+
+
     /**
      * Set the fcm (firebase cloud messaging) token for push notifications
      *
@@ -245,6 +248,23 @@ public class UserController {
         return "";
     }
 
+    /**
+     * delete user and all datas from user
+     */
+    @RequestMapping(value="/delete/{username}", method = RequestMethod.POST)
+    public String deleteUser(@PathVariable("username") String username, HttpServletResponse response) {
+
+        System.out.println("controller delete entry");
+        try {
+            userLogic.deleteUser(username);
+            response.setStatus(HttpServletResponse.SC_ACCEPTED);
+        } catch (HttpRequestException e) {
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+
+        return "";
+    }
 
   /**
      * TODO:

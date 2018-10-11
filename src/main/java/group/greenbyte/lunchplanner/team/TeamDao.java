@@ -168,4 +168,6 @@ public interface TeamDao {
      * @throws DatabaseException
      */
     void deleteTeam(int teamId) throws DatabaseException;
+
+    void deleteUser(String username) throws DatabaseException;
 }
