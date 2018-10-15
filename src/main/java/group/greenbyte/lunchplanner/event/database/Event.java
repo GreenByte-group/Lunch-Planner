@@ -7,7 +7,7 @@ import java.util.*;
 public class Event {
 
     static final public int MAX_USERNAME_LENGHT = 50;
-    static final public int MAX_DESCRITION_LENGTH = 1000;
+    static final public int MAX_DESCRIPTION_LENGTH = 1000;
     static final public int MAX_EVENTNAME_LENGTH = 255;
     static final public int MAX_SEARCHWORD_LENGTH = 255;
     static final public int MAX_COMMENT_LENGTH = 100;
@@ -26,7 +26,7 @@ public class Event {
     @Column(nullable = false, length = MAX_EVENTNAME_LENGTH)
     private String eventName;
 
-    @Column(length = MAX_DESCRITION_LENGTH)
+    @Column(length = MAX_DESCRIPTION_LENGTH)
     private String eventDescription;
 
     @Column(length = MAX_LOCATION_LENGTH)

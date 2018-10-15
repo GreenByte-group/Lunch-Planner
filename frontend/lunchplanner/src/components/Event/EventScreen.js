@@ -141,6 +141,13 @@ function Transition(props) {
             flexDirection: 'column',
             justifyContent: 'center',
             backgroundColor: '#FAFAFA',
+            marginLeft: '30px',
+            width: '150px',
+
+        },
+        taskAndDescription: {
+          display: 'flex',
+          flexDirection: 'row',
         },
         serviceList: {
             alignSelf: 'center',
@@ -148,12 +155,35 @@ function Transition(props) {
             flexDirection: 'column',
             textAlign: 'center',
             color: 'black',
+
         },
         serviceListIcon: {
             height: '58px',
             width: '41px',
             marginLeft: 'auto',
             marginRight: 'auto',
+        },
+        descriptionHeader: {
+            textAlign: 'center',
+            textDecoration: 'underline',
+            display: 'flex',
+            marginLeft: '30px',
+            width: '300px',
+
+        },
+        description: {
+            alignSelf: 'left',
+            display: 'flex',
+            flexDirection: 'column',
+            textAlign: 'center',
+            marginLeft: '30px',
+            minHeight: '171px',
+            width: '300px',
+
+        },
+        descriptionContainer: {
+            flexDirection: 'column',
+            backgroundColor: '#FAFAFA',
         },
         overButton: {
             height: '100%',
@@ -609,6 +639,7 @@ class EventScreen extends React.Component {
                             <UserList selectedUsers={selectedUsers} othersInvited={true} users={people} selectable={false} />
                         </div>
 
+                        <div className={classes.taskAndDescription}>
                         {
                             (accepted)
                                 ? <div>
@@ -622,6 +653,12 @@ class EventScreen extends React.Component {
                                 </div>
                                 : ''
                         }
+                            <div className={classes.descriptionContainer}>
+                                <p className={classes.descriptionHeader}>Description </p>
+                                <TextFieldEditing  value={description} className={classes.description}  multiline/>
+                            </div>
+
+                        </div>
                     </div>
                     {
                         (invited)

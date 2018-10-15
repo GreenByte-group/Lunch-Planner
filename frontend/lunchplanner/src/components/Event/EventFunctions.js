@@ -69,16 +69,16 @@ export function changeEventTime(eventId, time, responseFunc, errorFunc) {
         .catch(errorFunc)
 }
 
-export function createEvent(location, date, member, visible, locationId, responseFunc, errorFunc) {
+export function createEvent(location, description, date, member, visible, locationId, responseFunc, errorFunc) {
     let momentDate = moment(date);
 
     let timeEnd = date.getTime();
     let url =  HOST + '/event';
 
 
-    let data = {name: location, description: "", location : location, timeStart: date, visible: visible};
+    let data = {name: location, description: description, location : location, timeStart: date, visible: visible};
     if(locationId)
-        data = {name: location, description: "", location : location, timeStart: date, visible: visible, locationId: locationId};
+        data = {name: location, description: description, location : location, timeStart: date, visible: visible, locationId: locationId};
 
     console.log('function', data);
     axios.post(url, data)

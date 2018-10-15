@@ -134,8 +134,8 @@ public class EventLogic {
         if(eventName.length()>Event.MAX_EVENTNAME_LENGTH)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Event name is too long, maximum length: " + Event.MAX_EVENTNAME_LENGTH);
 
-        if(eventDescription == null || eventDescription.length()>Event.MAX_DESCRITION_LENGTH)
-            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Description is too long, maximum length" + Event.MAX_DESCRITION_LENGTH);
+        if(eventDescription == null || eventDescription.length()>Event.MAX_DESCRIPTION_LENGTH)
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Description is too long, maximum length" + Event.MAX_DESCRIPTION_LENGTH);
 
         if(timeStart.before(new Date()))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Start time must be in the future");
@@ -275,7 +275,7 @@ public class EventLogic {
      */
     void updateEventDescription(String username, int eventId, String description)  throws HttpRequestException {
         try {
-            if(description.length() > Event.MAX_DESCRITION_LENGTH)
+            if(description.length() > Event.MAX_DESCRIPTION_LENGTH)
                 throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Too long description");
 
             Event event = eventDao.getEvent(eventId);

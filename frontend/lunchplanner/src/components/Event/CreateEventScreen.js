@@ -131,6 +131,15 @@ const styles = {
         marginBottom: '5px',
         width: '100%',
     },
+    description: {
+        fontSize: '14px !important',
+        height: '50px !important',
+        width: '100%',
+        marginTop: '5px',
+        marginLeft: '18px',
+        marginRight: '18px',
+        marginBottom: '10px',
+    },
 };
 
 function Transition(props) {
@@ -151,6 +160,7 @@ class CreateEventScreen extends React.Component {
         this.state = {
             open: true,
             name: params.get('name') || "",
+            description: "",
             visible: params.get('visible') || false,
             date: params.get('date') || defaultDate,
             invitedUsers: params.get('invitedUsers') || [],
@@ -160,6 +170,7 @@ class CreateEventScreen extends React.Component {
             privateLocation: false,
             locationText: params.get('location') || "",
             locationId: params.get('locationId') || null,
+
         };
         //TODO location Id
     }
@@ -211,7 +222,7 @@ class CreateEventScreen extends React.Component {
 
 
 
-        createEvent(this.state.locationText, this.state.date, invitedUsersArray, !this.state.visible, this.state.placeId,
+        createEvent(this.state.locationText,this.state.description, this.state.date, invitedUsersArray, !this.state.visible, this.state.placeId,
             (response) => {
                 console.log('all states of new event', this.state);
                 if(response.status === 201) {
@@ -263,12 +274,19 @@ class CreateEventScreen extends React.Component {
 
     };
 
+    handleDescription = (event) => {
+        let target = event.target();
+        // console.log('description', evet.get());
+        this.setState({
+            description: target.value,
+        });
+    };
+
     handleVisibility = name => event =>{
         this.setState({ [name]: event.target.checked });
     };
 
     handleLocationChange= (location) => {
-
 
         this.setState({
             locationText: location,
@@ -331,6 +349,18 @@ class CreateEventScreen extends React.Component {
                        </FormGroup>
                     {/*</form>*/}
                     <div>
+                        <FormGroup row>
+                            <TextField
+                                id="description"
+                                label={"Description"}
+                                className={classes.description}
+                                placeholder={"Type in a description for this event"}
+                                value={this.state.description}
+                                onChange={this.handleChange}
+                                multiline
+                                rows="6"
+                            />
+                        </FormGroup>
                         <p className={classes.dateHeader}>Date</p><p className={classes.timeHeader}>TIME</p>
                         <div className={classes.pickerWithIcon}>
                             <Today viewBox="-2 -4 26 26" className={classes.icons} style={{marginLeft: '18px'}} />
@@ -397,6 +427,7 @@ class CreateEventScreen extends React.Component {
 
                                 />
                             </FormGroup>
+
                         </ExpansionPanelDetails>
                     </ExpansionPanel>
                 </div>
