@@ -49,6 +49,7 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_SUBSCRIBE_TABLE = "subscribe";
     public static final String USER_SUBSCRIBE_SUBSCRIBER = "user_name";
     public static final String USER_SUBSCRIBE_LOCATION = "location";
+    public static final String USER_SUBSCRIBE_LOCATIONNAME = "location_name";
 
     public static final String USER_NOTIFICATIONOPTIONS_TABLE = "notification_options";
     public static final String USER_NOTIFICATIONOPTIONS_ID = "id";
@@ -225,7 +226,7 @@ public class UserDaoMySql implements UserDao {
     @Override
     public List<User> getSubscriber(String location) throws DatabaseException {
         try{
-            String SQL = "SELECT * FROM " + USER_SUBSCRIBE_TABLE + " WHERE " + USER_SUBSCRIBE_LOCATION + " = ?";
+            String SQL = "SELECT * FROM " + USER_SUBSCRIBE_TABLE + " WHERE " + USER_SUBSCRIBE_LOCATIONNAME + " = ?";
 
             List<SubscribeDatabase> users = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(SubscribeDatabase.class), location);
 
@@ -240,12 +241,13 @@ public class UserDaoMySql implements UserDao {
     }
 
     @Override
-    public void subscribe(String subscriber, String location) throws DatabaseException {
+    public void subscribe(String subscriber, String location, String locationName) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(USER_SUBSCRIBE_TABLE);
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(USER_SUBSCRIBE_SUBSCRIBER, subscriber);
         parameters.put(USER_SUBSCRIBE_LOCATION, location);
+        parameters.put(USER_SUBSCRIBE_LOCATIONNAME, locationName);
         try {
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
         } catch (Exception e) {

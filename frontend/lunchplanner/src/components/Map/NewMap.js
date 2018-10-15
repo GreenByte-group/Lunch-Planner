@@ -97,9 +97,12 @@ export class NewMap extends React.Component {
 
     setLocation = () => {
         if(this.state.isMarkerShown){
-            console.log(this.state.lat, this.state.lng, this.state.placeId)
+            console.log('set Location',this.state.lat, this.state.lng, this.state.placeId)
             this.state.onLocationChange(this.state.lat, this.state.lng, this.state.placeId);
             getHistory().push(this.props.location.query.source);
+
+            console.log("AAAAAA")
+
         }else{
             console.log("AAAAAA")
         }

@@ -26,7 +26,7 @@ public class EmailService {
         this.emailProps = emailProps;
     }
 
-    public void send(String emailTo, String subject, String body, int eventid){
+    public void send(String emailTo, String subject, String body){
 
         System.out.println(emailProps.getHost());
 

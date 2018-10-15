@@ -71,7 +71,6 @@ export function updateProfilePicture(file, responseFunc) {
 
     const formData = new FormData();
     formData.append('file',file);
-
     let url = HOST + "/user/options/profile/picture/upload";
     console.log("Formdata: " + String(formData))
     console.log("URL: " +String(url))
@@ -88,16 +87,16 @@ export function getProfilePicturePath(username, responseFunc) {
         .then(responseFunc);
 }
 
-export function subscribe(username, location, responseFunc) {
-    let config = {
-        headers: {
-            'Content-Type': 'text/plain',
-        }
-    };
+export function subscribe(username, location, locationName, responseFunc) {
+    // let config = {
+    //     headers: {
+    //         'Content-Type': 'text/plain',
+    //     }
+    // };
 
     let url = HOST + "/user/subscribe/" + username;
-    console.log('UsrFunction => subscribe', username, location);
-    axios.post(url, location, config)
+    let data = {username:username, location: location, locationName: locationName};
+    axios.post(url, data)
         .then(responseFunc);
 }
 

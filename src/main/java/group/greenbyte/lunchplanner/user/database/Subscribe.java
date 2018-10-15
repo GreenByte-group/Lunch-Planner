@@ -20,6 +20,8 @@ public class Subscribe implements Serializable {
     @Transient
     private String user;
 
+    @Column(name = "locationName")
+    private String locationName;
 
     //------------GETTER AND SETTER-----------------------
     public String getSubscriber() {
@@ -37,4 +39,10 @@ public class Subscribe implements Serializable {
     public void setLocation(String location) {
         this.location = location;
     }
+
+    public String getLocationName() { return locationName; }
+
+    public void setLocationName(String locationName) { this.locationName = locationName; }
+
+
 }

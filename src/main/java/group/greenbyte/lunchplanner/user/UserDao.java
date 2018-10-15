@@ -108,7 +108,7 @@ public interface UserDao {
      * @param location
      * @throws DatabaseException
      */
-    void subscribe(String userName, String location) throws DatabaseException;
+    void subscribe(String userName, String location, String locationName) throws DatabaseException;
     NotificationOptions getNotificationOptions(String userName) throws DatabaseException;
 
     /**

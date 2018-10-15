@@ -1,7 +1,7 @@
 import React from "react"
 import {compose, withProps} from "recompose"
 import {withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow} from "react-google-maps"
-import { geocodeByPlaceId } from 'react-places-autocomplete'
+import { geocodeByPlaceId, geocodeByAddress } from 'react-places-autocomplete'
 import { MarkerClusterer } from "react-google-maps/lib/components/addons/MarkerClusterer"
 import { AddLocation, LocationOff, Create } from "@material-ui/icons"
 import {getUsername} from "../authentication/LoginFunctions";
@@ -101,6 +101,7 @@ export class SubscribeMap extends React.Component {
             myLat: 49.474210558898626,
             myLng: 8.46496045589447,
             clicked: false,
+            locationName: " ",
         };
     };
 
@@ -228,6 +229,23 @@ export class SubscribeMap extends React.Component {
         if(!event.placeId)
             return ;
 
+        console.log('event',event.getLatLng);
+
+
+        geocodeByPlaceId(event.placeId)
+            // .then(result => console.log('result', result))
+            .then((result) => {
+               this.state.subscriptions.locationName = result[0].formatted_address;
+            });
+
+
+        // geocodeByPlaceId(event.placeId)
+        //     .then(result => result[0].formatted_address)
+        //     .then(result => this.state.subscription.location = result)
+        //     .then(result => console.log('result',result))
+        //     .catch(error => console.error('Error', error));
+
+        // setTimeout(150);
 
         let subscriptions = this.state.subscriptions;
 
@@ -239,15 +257,21 @@ export class SubscribeMap extends React.Component {
             isOpen: true,
         });
 
+
+
+
+        console.log('schauen wir mal', this.state.subscriptions[0].locationName)
+
         setTimeout(() =>
         this.setState({
             subscriptions: subscriptions,
             clicked: !this.state.clicked,
-        }), 100);
+        }), 150);
     };
 
     subscribe = (location) => {
-           subscribe(getUsername(), location, (response) => {
+        console.log('location',this.state.subscriptions);
+           subscribe(getUsername(), location, this.state.subscriptions.locationName,  (response) => {
            });
 
 

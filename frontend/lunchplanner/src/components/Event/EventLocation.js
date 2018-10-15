@@ -239,8 +239,6 @@ class EventLocation extends React.Component {
         let name = this.state.name;
         let description = this.state.description;
         let monthDay = this.state.monthDay;
-        // let weekDay = this.state.weekDay;
-        console.log(this.state.weekDay);
         let time = this.state.time;
         let date = this.state.date;
         let people = this.state.people;
@@ -261,7 +259,6 @@ class EventLocation extends React.Component {
         let memberCounter = 0;
 
         let weekDay = getDayOfWeek(date);
-        console.log(weekDay);
         function getDayOfWeek(date) {
             var dayOfWeek = new Date(date).getDay();
             return isNaN(dayOfWeek) ? null : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];

@@ -120,6 +120,8 @@ public class EventLogic {
 
     int createEvent(String userName, String eventName, String eventDescription,
                     String location, Date timeStart, boolean visible, String locationId) throws HttpRequestException{
+
+        System.out.println("Alle wichtigen Daten:" +userName+" ,"+eventName+userName+" ,"+eventDescription+userName+" ,"+location+userName+" ,"+timeStart+userName+" ,"+visible+userName+" ,"+locationId);
         if(userName == null || userName.length()==0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is empty");
 
@@ -164,6 +166,7 @@ public class EventLogic {
                     .getEventId();
 
             scheduleDeleteEvent(eventId);
+            System.out.println("All variables from new event: "+userName+", "+eventName+", "+eventDescription+", "+location+", "+visible+", "+locationId);
 
             //only send notifications if the created event is visible for everyone
             if(visible) {
@@ -171,7 +174,9 @@ public class EventLogic {
                 //set notification information
                 User eventCreator = userLogic.getUser(userName);
                 String picturePath = eventCreator.getProfilePictureUrl();
+                System.out.println("locationId: "+locationId);
                 List<User> users = userLogic.getSubscriber(location);
+                System.out.println("USERS: "+users);
                 String title = "Event created in " + location;
                 String description = String.format("%s created an event in your subscribed location", userName);
                 String linkToClick = "/event/" + eventId;
@@ -181,13 +186,19 @@ public class EventLogic {
                 shouldn't get a notification
                 */
                 users.remove(eventCreator);
-
+                System.out.println("user anzahl: "+users.size());
+                System.out.println("user list: "+users);
 
                 for (User subscriber : users) {
                     //save notification
                     userLogic.saveNotification(subscriber.getUserName(), title, description, userName, linkToClick, picturePath);
+                    String nameOfUser = subscriber.getUserName();
+                    //send a notification & email to subscriber
+                    String body = "Hey "+nameOfUser+",\ncheck mal den Lunchplanner. Du wolltest benachrichtigt werden wenn jemand zur Location:  "+eventName+
+                            " geht.\nVielleicht hast du ja lust "+userName+" zu begleiten?\n\nViel spaß & Hasta la pasta";
+                    emailservice.send(subscriber.geteMail(),"Email", body);
 
-                    //send a notification to subscriber
+
                     NotificationOptions notificationOptions = userLogic.getNotificationOptions(subscriber.getUserName());
                     if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isSubscriptionsBlocked())) {
                         try {
@@ -411,9 +422,10 @@ public class EventLogic {
         }
 
 
+        //send invited peoples a email
         String body = "Hey "+userToInvite+",\ncheck mal den Lunchplanner. Du hast eine Einladung von "+SessionManager.getUserName()+
                 " erhalten.\nVielleicht hast du ja lust auf "+this.eventDao.getEvent(eventId).getEventName()+" ?\n\nViel spaß & Hasta la pasta";
-       emailservice.send(this.userDao.getUser(userToInvite).geteMail(),"Email", body, eventId);
+       emailservice.send(this.userDao.getUser(userToInvite).geteMail(),"Email", body);
 
 
         User user = userLogic.getUser(userToInvite);
@@ -471,7 +483,7 @@ public class EventLogic {
                     //TODO check if user wants notifications
                     //TODO picture path
                     user = userLogic.getUser(member.getUserName());
-                    userLogic.sendNotification(user.getFcmToken(),member.getUserName(),title, description,linkToClick, "");
+                   // userLogic.sendNotification(user.getFcmToken(),member.getUserName(),title, description,linkToClick, "");
                     this.inviteFriend(userName,member.getUserName(),eventId);
                 }
             }

@@ -59,6 +59,8 @@ public class EventController {
     public String createEvent(@RequestBody EventJson event, HttpServletResponse response) {
 
         try {
+
+            System.out.println("event: "+event.getLocationId());
             int eventId = eventLogic.createEvent(SessionManager.getUserName(), event.getName(), event.getDescription(),
                     event.getLocation(), event.getTimeStart(), event.isVisible(), event.getLocationId());
 

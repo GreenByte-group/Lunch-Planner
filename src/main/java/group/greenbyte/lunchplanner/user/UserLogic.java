@@ -583,6 +583,7 @@ public class UserLogic {
     }
 
     public List<User> getSubscriber(String location) throws HttpRequestException{
+        System.out.println("LOCATION: "+location);
         if(location == null || location.length() == 0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "location is empty");
         try {
@@ -593,15 +594,10 @@ public class UserLogic {
         }
     }
 
-    public void subscribe(String subscriber, String location) throws HttpRequestException{
-//        List<String> locationbefore = getSubscribedLocations(subscriber);
-//        for(String locations : locationbefore){
-//            if(locations == location)
-//                System.out.println("Schon drinne");
-//        }
+    public void subscribe(String subscriber, String location, String locationName) throws HttpRequestException{
 
         try {
-            userDao.subscribe(subscriber, location);
+            userDao.subscribe(subscriber, location, locationName);
         } catch (DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }

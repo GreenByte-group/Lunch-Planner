@@ -212,11 +212,11 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/subscribe/{username}", method = RequestMethod.POST,
-                consumes = MediaType.TEXT_PLAIN_VALUE)
-    public String subscribe(@PathVariable("username") String username, @RequestBody String location,
-                             HttpServletResponse response) {
+                consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String subscribe(@PathVariable("username") String username, @RequestBody SubscribeJson subscribeJson,
+                            HttpServletResponse response) {
         try {
-            userLogic.subscribe(username, location);
+            userLogic.subscribe(username, subscribeJson.getLocation(),subscribeJson.getLocationName());
             System.out.println("USER CONTROLLER SUBSCRIBE");
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (HttpRequestException e) {

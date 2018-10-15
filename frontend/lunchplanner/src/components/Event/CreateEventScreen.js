@@ -23,6 +23,8 @@ import {getHistory} from "../../utils/HistoryUtils";
 import {InputAdornment} from "@material-ui/core";
 import {createEvent} from "./EventFunctions";
 import GoogleSuggest from "../Map/GoogleSuggest";
+import { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete'
+
 
 const styles = {
     appBar: {
@@ -141,6 +143,7 @@ class CreateEventScreen extends React.Component {
 
     constructor(props) {
         super();
+
         const params = new URLSearchParams(props.location.search);
 
         let defaultDate = moment().add(30, 'm').toDate();
@@ -190,6 +193,8 @@ class CreateEventScreen extends React.Component {
         if(this.state.invitedUsers)
             invitedUsers += this.state.invitedUsers;
 
+
+
         if(this.state.invitedTeamMember) {
             if(invitedUsers)
                 invitedUsers += ",";
@@ -202,8 +207,13 @@ class CreateEventScreen extends React.Component {
 
         let location = this.state.locationText;
 
-        createEvent(this.state.locationText, this.state.date, invitedUsersArray, !this.state.visible, this.state.locationId,
+        // console.log('all states of new event', this.state);
+
+
+
+        createEvent(this.state.locationText, this.state.date, invitedUsersArray, !this.state.visible, this.state.placeId,
             (response) => {
+                console.log('all states of new event', this.state);
                 if(response.status === 201) {
                     eventListNeedReload();
                     getHistory().push('/app/event');
@@ -259,10 +269,20 @@ class CreateEventScreen extends React.Component {
 
     handleLocationChange= (location) => {
 
+
         this.setState({
             locationText: location,
         });
-        console.log(location);
+
+        console.log('locaation',location);
+        geocodeByAddress(location)
+            .then(result => result[0].place_id)
+            .then(result => this.setState({
+                placeId : result,
+            }))
+            .then(result => console.log('result',result))
+            .catch(error => console.error('Error', error));
+
     };
 
     render() {
@@ -271,7 +291,6 @@ class CreateEventScreen extends React.Component {
         const error = this.state.error;
         let invited =this.state.invitedUsers + "," + this.state.invitedTeams;
         let buttonEnabled = false;
-        console.log(this.state.locationText)
         if(this.state.locationText)
             buttonEnabled = true;
 
