@@ -196,13 +196,20 @@ public class EventLogic {
                     //send a notification & email to subscriber
                     String body = "Hey "+nameOfUser+",\ncheck mal den Lunchplanner. Du wolltest benachrichtigt werden wenn jemand zur Location:  "+eventName+
                             " geht.\nVielleicht hast du ja lust "+userName+" zu begleiten?\n\nViel spaß & Hasta la pasta";
-                    emailservice.send(subscriber.geteMail(),"Email", body);
+                    System.out.println("NAME: "+userLogic.getUser(subscriber.getUserName()).geteMail());
+
+                   try{
+                       emailservice.send(subscriber.getUserName(),"Email", body);
+                   }catch(Exception e){
+                       e.printStackTrace();
+                   }
+
 
 
                     NotificationOptions notificationOptions = userLogic.getNotificationOptions(subscriber.getUserName());
                     if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isSubscriptionsBlocked())) {
                         try {
-                            userLogic.sendNotification(subscriber.getFcmToken(), subscriber.getUserName(), title, description, linkToClick, picturePath);
+//                            userLogic.sendNotification(subscriber.getFcmToken(), subscriber.getUserName(), title, description, linkToClick, picturePath);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -425,7 +432,9 @@ public class EventLogic {
         //send invited peoples a email
         String body = "Hey "+userToInvite+",\ncheck mal den Lunchplanner. Du hast eine Einladung von "+SessionManager.getUserName()+
                 " erhalten.\nVielleicht hast du ja lust auf "+this.eventDao.getEvent(eventId).getEventName()+" ?\n\nViel spaß & Hasta la pasta";
-       emailservice.send(this.userDao.getUser(userToInvite).geteMail(),"Email", body);
+
+        System.out.println("NAME2: "+this.userDao.getUser(userToInvite).geteMail());
+       emailservice.send(userToInvite,"Email", body);
 
 
         User user = userLogic.getUser(userToInvite);
@@ -720,13 +729,14 @@ public class EventLogic {
 
                     //send a notification to userToInvite
                     NotificationOptions notificationOptions = userLogic.getNotificationOptions(user.getUserName());
-                    if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isEventsBlocked())) {
+                    System.out.println("dachte es amk: "+notificationOptions.notificationsAllowed()+", "+notificationOptions.isEventsBlocked());
+//                    if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isEventsBlocked())) {
                         try {
                             userLogic.sendNotification(user.getFcmToken(), user.getUserName(), title, descriptionNotification, linkToClick, picturePath);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }
+//                    }
                 }
             }
         }catch(DatabaseException e){
@@ -770,13 +780,13 @@ public class EventLogic {
                     user.getUserName(), linkToClick, picturePath);
 
             NotificationOptions notificationOptions = userLogic.getNotificationOptions(user.getUserName());
-            if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isEventsBlocked())) {
+//            if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isEventsBlocked())) {
                 try {
                     userLogic.sendNotification(user.getFcmToken(), user.getUserName(), title, descriptionNotification, linkToClick, picturePath);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
+//            }
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }

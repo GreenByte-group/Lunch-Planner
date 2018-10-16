@@ -4,6 +4,8 @@ import React from 'react';
 import {Slide,CircularProgress} from '@material-ui/core';
 import {Link} from "react-router-dom";
 import {Today, Schedule, MyLocation, Add} from "@material-ui/icons/";
+import { Scrollbars } from 'react-custom-scrollbars';
+
 import ListIcon from "@material-ui/icons/Assignment"
 import moment from "moment";
 import Dialog from "../Dialog";
@@ -64,6 +66,13 @@ function Transition(props) {
             fontSize: '16px',
             margin: '0px',
             color: 'white !important',
+            overflow: 'hidden',
+        },
+        fontBigHeader: {
+            fontSize: '16px',
+            margin: '0px',
+            color: 'white !important',
+            overflow: 'hidden',
         },
         fontSmall: {
             fontSize: '13px',
@@ -146,8 +155,13 @@ function Transition(props) {
 
         },
         taskAndDescription: {
-          display: 'flex',
-          flexDirection: 'row',
+            display: 'flex',
+            flexDirection: 'row',
+            height: '160px',
+            width: 'atuo',
+            marginLeft: '24px',
+            marginRight: '24px',
+            marginTop: '24px',
         },
         serviceList: {
             alignSelf: 'center',
@@ -164,26 +178,27 @@ function Transition(props) {
             marginRight: 'auto',
         },
         descriptionHeader: {
-            textAlign: 'center',
-            textDecoration: 'underline',
-            display: 'flex',
-            marginLeft: '30px',
-            width: '300px',
+            fontSize: '11px',
+            margin: '0px',
 
         },
         description: {
-            alignSelf: 'left',
             display: 'flex',
-            flexDirection: 'column',
-            textAlign: 'center',
-            marginLeft: '30px',
-            minHeight: '171px',
-            width: '300px',
+            paddingTop: '10px',
+            marginTop: '15px',
+            fontSize: '16px',
+            width: '100%',
 
+
+        },
+        scrollbar: {
+            backgroundColor: '#FAFAFA',
         },
         descriptionContainer: {
             flexDirection: 'column',
             backgroundColor: '#FAFAFA',
+            width: '100%',
+            // overflow: 'hidden',
         },
         overButton: {
             height: '100%',
@@ -566,7 +581,7 @@ class EventScreen extends React.Component {
                         <div className={classes.header}>
                             <div className={classes.headerText}>
                                 <p className={classes.fontSmall}>Created by {admin}</p>
-                                <TextFieldEditing onChange={this.onTitleChanged} value={name} editable={iAmAdmin} className={classes.fontBig} />
+                                <TextFieldEditing onChange={this.onTitleChanged} value={name} editable={iAmAdmin} className={classes.fontBigHeader} />
                                 {
                                     (iAmAdmin || name !== location)
                                         ? <div><MyLocation className={classes.locationIcon} /> <TextFieldEditing onChange={this.onLocationChanged} value={location} editable={iAmAdmin} className={classes.fontBig} /></div>
@@ -655,7 +670,10 @@ class EventScreen extends React.Component {
                         }
                             <div className={classes.descriptionContainer}>
                                 <p className={classes.descriptionHeader}>Description </p>
-                                <TextFieldEditing  value={description} className={classes.description}  multiline/>
+                                <Scrollbars className={classes.scrollbar}>
+                                    <TextFieldEditing  rowsMax="3" value={description} className={classes.description} />
+
+                                </Scrollbars>
                             </div>
 
                         </div>

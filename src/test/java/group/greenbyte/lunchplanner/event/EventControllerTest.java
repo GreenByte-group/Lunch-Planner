@@ -385,7 +385,7 @@ public class EventControllerTest {
     @Test
     @WithMockUser(username = userName)
     public void test2updateEventDescriptionTooLong() throws Exception{
-        String eventDescription = createString(Event.MAX_DESCRITION_LENGTH + 1);
+        String eventDescription = createString(Event.MAX_DESCRIPTION_LENGTH + 1);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/event/" + eventId + "/description").contentType(MediaType.TEXT_PLAIN_VALUE).content(eventDescription))

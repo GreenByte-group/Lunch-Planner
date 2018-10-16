@@ -6,9 +6,11 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
+import group.greenbyte.lunchplanner.event.EmailService;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.JwtService;
+import group.greenbyte.lunchplanner.security.SessionManager;
 import group.greenbyte.lunchplanner.team.TeamLogic;
 import group.greenbyte.lunchplanner.event.EventLogic;
 import group.greenbyte.lunchplanner.user.database.User;
@@ -58,6 +60,9 @@ public class UserLogic {
         if(uploadsDirName == null)
             uploadsDirName = "/tmp";
     }
+
+    @Autowired
+    public EmailService emailservice;
 
     @Autowired
     public void setTeamLogic(TeamLogic teamLogic) {
@@ -235,6 +240,60 @@ public class UserLogic {
         System.out.println("FCM token null");
         if(fcmToken == null)
             return;
+
+
+        System.out.println("SENDEEEEEEEEEEEN");
+
+        String body = "Hey "+receiver+",\ncheck mal den Lunchplanner.\n\nViel spaß & Hasta la pasta";
+
+        if(title == "Team invitation") {
+            body = "Hey "+receiver+",\ncheck mal den Lunchplanner. Dein Team wurde eingeladen.\n "+
+                    "Vielleicht hast du ja lust mit"+SessionManager.getUserName() +" im Team zu sein?\n\nViel spaß & Hasta la pasta";
+        }
+
+        if(title == "You have been removed from a team"){
+            body = "Hey "+receiver+",\ncheck mal den Lunchplanner. Du wolltest benachrichtigt werden wenn du aus einem Team gelöscht wirst.\n"+
+                    "Vielleicht hast du ja lust ein neues Team zu bilden?\n\nViel spaß & Hasta la pasta";
+        }
+
+        if(title == "You got promoted"){
+            body = "Hey "+receiver+",\ncheck mal den Lunchplanner. Du wolltest benachrichtigt werden wenn du zum Admin auserwählt wurdest"+
+                    ".\nVielleicht hast du ja lust deine neue Rolle in einem Kommentar zu teilen?\n\nViel spaß & Hasta la pasta";
+        }
+
+        if(title == "Team member left"){
+            body = "Hey "+receiver+",\ncheck mal den Lunchplanner. Du wolltest benachrichtigt werden wenn jemand aus deinem Team ausgetreten ist"+
+                    ".\nVielleicht hast du ja lust zu checken, wer das Team verlassen hat\n\nViel spaß & Hasta la pasta";
+        }
+
+        if(title == "New team member"){
+            body = "Hey "+receiver+",\ncheck mal den Lunchplanner. Du wolltest benachrichtigt werden wenn eine neue Person im Team aufgenommen wurde"+
+                    "\nVielleicht hast du ja lust das neue Teammitglied zu begrüßen?\n\nViel spaß & Hasta la pasta";
+        }
+
+        if(title.contains("New comment in")){
+            body = "Hey "+receiver+",\ncheck mal den Lunchplanner. Du wolltest benachrichtigt werden wenn jemand ein neues Kommentar in einem Event erstellt"+
+                    ".\nVielleicht hast du ja lust das Kommentar zu lesen oder es zu beantworten?\n\nViel spaß & Hasta la pasta";
+        }
+
+        if(title.contains("New task in")){
+            body = "Hey "+receiver+",\ncheck mal den Lunchplanner. Du wolltest benachrichtigt werden wenn jemand ein neues Task in einem Event erstellt"+
+                    " \nVielleicht hast du ja lust jemandem was mitzunehmen?\n\nViel spaß & Hasta la pasta";
+        }
+
+        if(title == "Task accepted"){
+            body = "Hey "+receiver+",\ncheck mal den Lunchplanner. Du wolltest benachrichtigt werden wenn jemand dein Task akzeptiert"+
+                    ".\nVielleicht hast du ja lust zu wissen, wer dir was mitbringt?\n\nViel spaß & Hasta la pasta";
+        }
+
+        try{
+            emailservice.send(getUser(receiver).getUserName(),title, body);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+
+
 
 //        // See documentation on defining a message payload.
 //        Message message = Message.builder()

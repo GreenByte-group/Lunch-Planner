@@ -18,6 +18,8 @@ const styles = {
     appBar: {
         position: 'relative',
         padding: '0px',
+        overflow: 'hidden',
+
     },
     typograph: {
         flex: 1,

@@ -1,6 +1,9 @@
 package group.greenbyte.lunchplanner.event;
 
+import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.SessionManager;
+import group.greenbyte.lunchplanner.user.UserLogic;
+import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +21,9 @@ public class EmailService {
     @Autowired
     private EmailProperties emailProps;
 
+    @Autowired
+    private UserLogic user;
+
     public EmailProperties getEmailProps() {
         return emailProps;
     }
@@ -26,9 +32,10 @@ public class EmailService {
         this.emailProps = emailProps;
     }
 
-    public void send(String emailTo, String subject, String body){
+    public void send(String emailTo, String subject, String body) throws HttpRequestException, Exception {
 
         System.out.println(emailProps.getHost());
+        System.out.println("alle varianlen für Email: "+user.getUser(emailTo).geteMail()+", "+subject+", "+body);
 
         // Get system properties
         Properties properties = System.getProperties();
@@ -47,7 +54,7 @@ public class EmailService {
             message.setFrom(new InternetAddress(emailProps.getFrom()));
 
             // Set To: header field of the header.
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailTo));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getUser(emailTo).geteMail()));
 
             // Set Subject: header field
             message.setSubject(subject);
@@ -60,6 +67,8 @@ public class EmailService {
             System.out.println("Sent message successfully....");
         } catch (MessagingException mex) {
             mex.printStackTrace();
+        } catch (NullPointerException e){
+            e.printStackTrace();
         }
 
     }
