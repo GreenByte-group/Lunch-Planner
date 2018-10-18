@@ -24,6 +24,7 @@ import NewMap from "./components/Map/NewMap";
 import AppContainer from "./components/AppContainer";
 import MyTetris from "./components/EasterEgg/Tetris";
 import PrivacyPolicy from "./components/PrivacyPolicy";
+import DebtsScreen from "./components/Debts/DebtsScreen";
 
 
 const oldTheme = getMuiTheme({
@@ -103,11 +104,6 @@ class App extends React.Component {
                                           render={ () => <Redirect to="/app/event" />}
                             />
                             <PrivateRoute path="/app/:component" component={AppContainer} />
-                            {/*<PrivateRoute path="/event" component={LunchPlanner} />*/}
-                            {/*<PrivateRoute path="/social" component={SocialScreen} />*/}
-
-                            {/*<PrivateRoute path="/location" component={LocationScreen} />*/}
-                            {/*<PrivateRoute path="/notifications" component={NotificationsScreen} />*/}
                             <PrivateRoute path="/app/team/create" component={CreateTeamScreen}/>
                             <PrivateRoute path="/app/team/create/invite" component={SelectUserScreen} />
                             <PrivateRoute path="/app/team/:teamId(\d+)" component={TeamScreen} />
@@ -121,6 +117,12 @@ class App extends React.Component {
                             <PrivateRoute path="/app/event/:eventId(\d+)/share" component={InviteExtern} />
                             <PrivateRoute path="/app/event/:eventId(\d+)/service" component={ServiceListScreen} />
                             <PrivateRoute path="/app/tetris" component={MyTetris} />
+                            <PrivateRoute path="/app/debts" component={DebtsScreen}/>
+
+                            {/*<PrivateRoute path="/event" component={LunchPlanner} />*/}
+                            {/*<PrivateRoute path="/social" component={SocialScreen} />*/}
+                            {/*<PrivateRoute path="/location" component={LocationScreen} />*/}
+                            {/*<PrivateRoute path="/notifications" component={NotificationsScreen} />*/}
 
                         </div>
                     </Router>

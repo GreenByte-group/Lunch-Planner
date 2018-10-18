@@ -5,9 +5,7 @@ import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.team.TeamLogic;
 import group.greenbyte.lunchplanner.team.database.Team;
-import group.greenbyte.lunchplanner.user.database.SubscribeDatabase;
-import group.greenbyte.lunchplanner.user.database.User;
-import group.greenbyte.lunchplanner.user.database.UserDatabase;
+import group.greenbyte.lunchplanner.user.database.*;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationDatabase;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptionsDatabase;
@@ -45,6 +43,12 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_NOTIFICATION_PICTURE = "picture";
     public static final String USER_NOTIFICATION_DATE = "date";
     public static final String USER_NOTIFICATION_READ = "is_read";
+
+    public static final String USER_DEBTS_TABLE = "debts";
+    public static final String USER_DEBTS_ID = "debts_id";
+    public static final String USER_DEBTS_TOTAL = "sum";
+    public static final String USER_DEBTS_DEMAND = "creditor";
+    public static final String USER_DEBTS_LIABILITY = "debtor";
 
     public static final String USER_SUBSCRIBE_TABLE = "subscribe";
     public static final String USER_SUBSCRIBE_SUBSCRIBER = "user_name";
@@ -334,6 +338,66 @@ public class UserDaoMySql implements UserDao {
         }
     }
 
+
+    @Override
+    public List<Debts> getDebts(String creditor) throws DatabaseException {
+        try{
+            String SQL = "SELECT * FROM " + USER_DEBTS_TABLE + " WHERE " + USER_DEBTS_DEMAND + " = ?";
+            System.out.println("alle daten in sql: "+SQL);
+            List<DebtsDatabase> debts = jdbcTemplate.query(SQL,
+                    new BeanPropertyRowMapper<>(DebtsDatabase.class), creditor);
+
+
+
+
+            List<Debts> debtsList = new ArrayList<>(debts.size());
+
+                for(DebtsDatabase debtsTemp  : debts) {
+                    Debts debt = debtsTemp.getDebts();
+                    System.out.println("alle daten in sql return: "+debtsTemp.getDebts());
+                    debtsList.add(debt);
+                }
+
+
+            return debtsList;
+            } catch(Exception e){
+                throw new DatabaseException(e);
+            }
+    }
+
+
+
+
+
+
+
+
+    /**
+     *
+     * @param creditor
+     * @param debtor
+     * @param sum
+     * @throws DatabaseException
+     */
+    @Override
+    public void setDebts(String creditor, String debtor, Float sum) throws DatabaseException {
+        System.out.println("alle variablen für debts: "+creditor+", "+debtor+", "+sum);
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).usingGeneratedKeyColumns(USER_DEBTS_ID);
+        simpleJdbcInsert.withTableName(USER_DEBTS_TABLE);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(USER_DEBTS_TOTAL, sum);
+        parameters.put(USER_DEBTS_DEMAND, creditor);
+        parameters.put(USER_DEBTS_LIABILITY, debtor);
+        try{
+            simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+        }catch (Exception e){
+            throw new DatabaseException(e);
+        }
+    }
+
+
+
+
     /**
      * Put the new e-mail into the database
      *
@@ -484,13 +548,7 @@ public class UserDaoMySql implements UserDao {
            }
        }
 
-//        String SQLUser = "DELETE FROM " + table.get(0) + " WHERE " + USER_NAME + " = ? ";
-//        try{
-//            System.out.println("DAOM MySQL: "+ SQLUser);
-//            jdbcTemplate.update(SQLUser, username);
-//        }catch(Exception e){
-//            throw new DatabaseException(e);
-//        }
+
     }
 
 

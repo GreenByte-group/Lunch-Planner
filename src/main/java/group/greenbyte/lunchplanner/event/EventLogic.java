@@ -199,7 +199,7 @@ public class EventLogic {
                     System.out.println("NAME: "+userLogic.getUser(subscriber.getUserName()).geteMail());
 
                    try{
-                       emailservice.send(subscriber.getUserName(),"Email", body);
+                       emailservice.send(subscriber.geteMail(),"Email", body);
                    }catch(Exception e){
                        e.printStackTrace();
                    }
@@ -434,7 +434,7 @@ public class EventLogic {
                 " erhalten.\nVielleicht hast du ja lust auf "+this.eventDao.getEvent(eventId).getEventName()+" ?\n\nViel spaß & Hasta la pasta";
 
         System.out.println("NAME2: "+this.userDao.getUser(userToInvite).geteMail());
-       emailservice.send(userToInvite,"Email", body);
+       emailservice.send(this.userDao.getUser(userToInvite).geteMail(),"Email", body);
 
 
         User user = userLogic.getUser(userToInvite);

@@ -35,7 +35,7 @@ public class EmailService {
     public void send(String emailTo, String subject, String body) throws HttpRequestException, Exception {
 
         System.out.println(emailProps.getHost());
-        System.out.println("alle varianlen für Email: "+user.getUser(emailTo).geteMail()+", "+subject+", "+body);
+        System.out.println("alle varianlen für Email: "+emailTo+", "+subject+", "+body);
 
         // Get system properties
         Properties properties = System.getProperties();
@@ -54,7 +54,7 @@ public class EmailService {
             message.setFrom(new InternetAddress(emailProps.getFrom()));
 
             // Set To: header field of the header.
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getUser(emailTo).geteMail()));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailTo));
 
             // Set Subject: header field
             message.setSubject(subject);

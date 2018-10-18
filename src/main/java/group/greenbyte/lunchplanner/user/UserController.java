@@ -2,6 +2,9 @@ package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.SessionManager;
+import group.greenbyte.lunchplanner.test.Can;
+import group.greenbyte.lunchplanner.test.CanRepository;
+import group.greenbyte.lunchplanner.user.database.Debts;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
 import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 import group.greenbyte.lunchplanner.user.database.User;
@@ -25,6 +28,8 @@ import java.util.logging.Logger;
 @RequestMapping("/user")
 public class UserController {
 
+    @Autowired
+    private CanRepository canRepository;
 
 //    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     private SpringSessionRememberMeServices a;
@@ -182,6 +187,38 @@ public class UserController {
     }
 
 
+    @RequestMapping(value = "/debts/set/{username}", method = RequestMethod.POST,
+                consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String setDebts(@PathVariable("username") String username, @RequestBody DebtsJson debtsJson,
+                           HttpServletResponse response) {
+        try{
+            System.out.println("controller kommt was rein: "+username+", "+debtsJson.getDebtor()+", "+debtsJson.getSum());
+            userLogic.setDebts(username, debtsJson.getDebtor(), debtsJson.getSum());
+            response.setStatus(HttpServletResponse.SC_CREATED);
+        }catch(HttpRequestException e){
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+        return "";
+    }
+
+    @RequestMapping(value = "/debts/get/{username}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity setDebts(@PathVariable("username") String username) {
+        System.out.println("controller kommt was rein: " + username);
+        try{
+            List<Debts> toReturn = userLogic.getDebts(username);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(toReturn);
+        }catch(HttpRequestException e){
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+//    @RequestMapping(value = "/debts/delete/{debtsId}"), method = Re
     /**
      * TODO:
      * get a list of all subscriber of a location
@@ -207,7 +244,6 @@ public class UserController {
     /**
      * An user subscribe a location
      * @param username who subscribe
-     * @param location that the user subscribe
      * @param response
      * @return
      */
@@ -347,7 +383,6 @@ public class UserController {
     public String uploadProfilePicture(@RequestParam("file") MultipartFile imageFile, HttpServletResponse response) {
 
         try {
-            System.out.println("ENTRY OF CONTROLLER picture: "+imageFile.getContentType().toString());
             userLogic.uploadProfilePicture(SessionManager.getUserName(), imageFile);
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (HttpRequestException e) {

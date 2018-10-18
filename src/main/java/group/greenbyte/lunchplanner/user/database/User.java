@@ -144,4 +144,7 @@ public class User implements Serializable {
     public void setNotificationOptions(NotificationOptions notificationOptions) {
         this.notificationOptions = notificationOptions;
     }
+    public String toString(){
+        return "username: "+this.userName+"\nemail: "+this.eMail;
+    }
 }

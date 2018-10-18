@@ -13,6 +13,7 @@ import group.greenbyte.lunchplanner.security.JwtService;
 import group.greenbyte.lunchplanner.security.SessionManager;
 import group.greenbyte.lunchplanner.team.TeamLogic;
 import group.greenbyte.lunchplanner.event.EventLogic;
+import group.greenbyte.lunchplanner.user.database.Debts;
 import group.greenbyte.lunchplanner.user.database.User;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationDatabase;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
@@ -287,7 +288,8 @@ public class UserLogic {
         }
 
         try{
-            emailservice.send(getUser(receiver).getUserName(),title, body);
+            System.out.println(getUser(receiver));
+            emailservice.send(getUser(receiver).geteMail(),title, body);
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -676,6 +678,23 @@ public class UserLogic {
                 userDao.unsubscribe(subscriber, location);
             }
         } catch (DatabaseException e) {
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+
+    public void setDebts(String creditor, String debtor, Float sum) throws HttpRequestException{
+        try{
+            userDao.setDebts(creditor, debtor,  sum);
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    public List<Debts> getDebts(String creditor) throws HttpRequestException{
+        try{
+            return userDao.getDebts(creditor);
+        }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
     }

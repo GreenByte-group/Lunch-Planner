@@ -1,6 +1,7 @@
 package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
+import group.greenbyte.lunchplanner.user.database.Debts;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
 import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 import group.greenbyte.lunchplanner.user.database.User;
@@ -147,4 +148,8 @@ public interface UserDao {
     void savePicturePath(String userName, String picturePath) throws DatabaseException;
 
     void unsubscribe(String subscriber, String location) throws DatabaseException;
+
+    void setDebts(String creditor, String debtor, Float sum) throws DatabaseException;
+
+    List<Debts> getDebts(String creditor) throws DatabaseException;
 }

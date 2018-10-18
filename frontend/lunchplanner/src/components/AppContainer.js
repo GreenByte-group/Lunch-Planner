@@ -7,7 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Search from "./Search";
 import SearchIcon from '@material-ui/icons/Search';
 import {Button, MenuItem, List, Divider, withStyles, FormControlLabel,TextField, Switch, Drawer, Avatar, Hidden} from '@material-ui/core'
-import {Place, LocalDining, Group, NotificationsNone, ExitToApp, Settings, Menu} from '@material-ui/icons'
+import {EuroSymbol, Place, LocalDining, Group, NotificationsNone, ExitToApp, Settings, Menu} from '@material-ui/icons'
 import InfiniteCalendar from 'react-infinite-calendar';
 import DayPicker from 'react-day-picker';
 
@@ -21,6 +21,7 @@ import LunchPlanner from "./LunchPlanner";
 import SocialScreen from "./SocialScreen";
 import LocationScreen from "./LocationScreen";
 import NotificationsScreen from "./notification/NotificationsScreen";
+import DebtsScreen from "./Debts/DebtsScreen"
 import {getEvents} from "./Event/EventFunctions";
 import {getNotificationOptions, sendOptions} from "./notification/NotificationFunctions";
 import moment from "moment";
@@ -71,7 +72,7 @@ const styles = {
         objectFit: 'cover',
         borderRadius: '50%',
     },
-    icon:{
+    icons:{
         marginRight: 20,
         color: "#1EA185",
     },
@@ -267,6 +268,10 @@ class AppContainer extends React.Component {
                 title = "Places";
                 bottomNavigationValue = 0;
                 break;
+            case 'debts':
+                children = <DebtsScreen location={this.props.location} />;
+                title = "Debts";
+                break;
             case 'notifications':
                 children = <NotificationsScreen location={this.props.location} />;
                 title = "Notifications";
@@ -275,6 +280,7 @@ class AppContainer extends React.Component {
                 children = <UserEditScreen location={this.props.location} />;
                 title = "Your Profile";
                 break;
+
         }
 
         const drawer = (
@@ -293,7 +299,7 @@ class AppContainer extends React.Component {
                     <List className ={classes.menu}>
                         <Link to="/app/location">
                             <MenuItem>
-                                <Place className={classes.icon}/>
+                                <Place className={classes.icons}/>
                                 Places
                             </MenuItem>
                         </Link>
@@ -301,7 +307,7 @@ class AppContainer extends React.Component {
                                 search: this.state.search,
                             }}}>
                             <MenuItem>
-                                <LocalDining className={classes.icon}/>
+                                <LocalDining className={classes.icons}/>
                                 Events
                             </MenuItem>
                         </Link>
@@ -309,14 +315,22 @@ class AppContainer extends React.Component {
                                 search: this.state.search,
                             }}}>
                             <MenuItem>
-                                <Group className={classes.icon}/>
+                                <Group className={classes.icons}/>
                                 Teams
+                            </MenuItem>
+                        </Link>
+                        <Link to={{pathname: "/app/debts", query: {
+                            search: this.state.search,
+                            }}}>
+                            <MenuItem>
+                                <EuroSymbol className={classes.icons}/>
+                                    Debts
                             </MenuItem>
                         </Link>
                         <Divider />
                         <Link to="/app/notifications?tab=0">
                             <MenuItem>
-                                <NotificationsNone className={classes.icon}/>
+                                <NotificationsNone className={classes.icons}/>
                                 Notifications
                             </MenuItem>
                         </Link>
@@ -337,12 +351,12 @@ class AppContainer extends React.Component {
                         <Divider />
                         <Link to="/app/notifications?tab=1">
                             <MenuItem>
-                                <Settings className={classes.icon}/>
+                                <Settings className={classes.icons}/>
                                 Options
                             </MenuItem>
                         </Link>
                         <MenuItem onClick={this.signOut}>
-                            <ExitToApp className={classes.icon}/>
+                            <ExitToApp className={classes.icons}/>
                             Sign Out
                         </MenuItem>
                     </List>
