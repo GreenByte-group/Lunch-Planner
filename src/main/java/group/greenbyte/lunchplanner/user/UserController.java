@@ -2,12 +2,10 @@ package group.greenbyte.lunchplanner.user;
 
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.SessionManager;
-import group.greenbyte.lunchplanner.test.Can;
-import group.greenbyte.lunchplanner.test.CanRepository;
 import group.greenbyte.lunchplanner.user.database.Debts;
+import group.greenbyte.lunchplanner.user.database.User;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
 import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
-import group.greenbyte.lunchplanner.user.database.User;
 import group.greenbyte.lunchplanner.user.database.notifications.OptionsJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,9 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.Console;
 import java.util.List;
-import java.util.logging.Logger;
 
 
 @RestController
@@ -28,8 +24,7 @@ import java.util.logging.Logger;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    private CanRepository canRepository;
+
 
 //    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     private SpringSessionRememberMeServices a;
