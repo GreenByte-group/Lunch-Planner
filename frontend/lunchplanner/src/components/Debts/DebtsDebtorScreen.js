@@ -3,7 +3,7 @@ import React from "react"
 import {HOST} from "../../Config"
 import DebtsCard from "./DebtsCard"
 import List from "@material-ui/core/List";
-import {withStyles} from "@material-ui/core/styles/index";
+import {withStyles} from "@material-ui/core/";
 import FloatingActionButton from "../FloatingActionButton";
 import {getUsername} from "../authentication/LoginFunctions";
 import moment from "moment";

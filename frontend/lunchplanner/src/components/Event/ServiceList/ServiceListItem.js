@@ -4,7 +4,7 @@ import {Card, CardContent, ListItem} from "@material-ui/core";
 import {Done} from "@material-ui/icons";
 import {getUsername} from "../../authentication/LoginFunctions";
 import {acceptService} from "./ServiceFunctions";
-import {TextField} from "@material-ui/core/es/index";
+import {TextField} from "@material-ui/core";
 import {setDebts} from "../../Debts/DebtsFunctions";
 
 const styles = {
