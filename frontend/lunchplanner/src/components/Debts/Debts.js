@@ -3,7 +3,7 @@ import moment from "moment"
 import {Card, CardContent, ListItem, withStyles} from "@material-ui/core";
 import {getUsername} from "../authentication/LoginFunctions";
 import {getAll} from "./DebtsFunctions";
-import {Button, Divider} from "@material-ui/core/es/index";
+import {Button, Divider} from "@material-ui/core";
 import {getUser} from "../User/UserFunctions";
 import {HOST} from "../../Config";
 

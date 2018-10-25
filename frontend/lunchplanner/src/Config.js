@@ -1,7 +1,7 @@
-export const HOST = "http://localhost:8090";
+export const HOST = "https://lunchplanner.vsf-experts.de/backend";
 export const TOKEN = "token_lunch_planner";
 export const USERNAME = "user_name_lunch_planner";
-export const FRONTEND_HOST = "http://localhost:3000";
+export const FRONTEND_HOST = "https://lunchplanner.vsf-experts.de";
 
 export const configFirebase = {
     apiKey: "AIzaSyCOYsTeZ29UyBEHqYG39GXJIN1-rp1KayU ",

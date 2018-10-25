@@ -1,7 +1,7 @@
 import React from "react"
 import moment from "moment"
 import {Card, CardContent, ListItem, withStyles} from "@material-ui/core";
-import {Avatar, Button, Divider, IconButton, Icon} from "@material-ui/core/es/index";
+import {Avatar, Button, Divider, IconButton, Icon} from "@material-ui/core";
 import {deleteClaims} from "./DebtsFunctions";
 import {AddCircleOutline, MaximizeRounded} from '@material-ui/icons'
 
