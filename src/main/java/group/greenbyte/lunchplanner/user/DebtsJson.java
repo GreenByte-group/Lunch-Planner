@@ -22,7 +22,6 @@ public class DebtsJson implements Serializable{
     }
 
 
-
     public String getCreditor() {
         return creditor;
     }

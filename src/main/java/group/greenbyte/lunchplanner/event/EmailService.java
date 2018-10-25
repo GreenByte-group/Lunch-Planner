@@ -1,10 +1,9 @@
 package group.greenbyte.lunchplanner.event;
 
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
-import group.greenbyte.lunchplanner.security.SessionManager;
 import group.greenbyte.lunchplanner.user.UserLogic;
-import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Component;
 
 import javax.mail.Message;
@@ -18,11 +17,16 @@ import java.util.Properties;
 @Component
 public class EmailService {
 
+
+
     @Autowired
     private EmailProperties emailProps;
 
     @Autowired
     private UserLogic user;
+
+    private MailSender mailSender;
+
 
     public EmailProperties getEmailProps() {
         return emailProps;
@@ -35,7 +39,7 @@ public class EmailService {
     public void send(String emailTo, String subject, String body) throws HttpRequestException, Exception {
 
         System.out.println(emailProps.getHost());
-        System.out.println("alle varianlen für Email: "+emailTo+", "+subject+", "+body);
+        System.out.println("alle varianlen für Email: " + emailTo + ", " + subject + ", " + body);
 
         // Get system properties
         Properties properties = System.getProperties();
@@ -59,19 +63,23 @@ public class EmailService {
             // Set Subject: header field
             message.setSubject(subject);
 
-            // Now set the actual message
-            message.setText(body);
 
+            // Now set the actual message
+            message.setContent(body, "text/html");
             // Send message
             Transport.send(message);
             System.out.println("Sent message successfully....");
         } catch (MessagingException mex) {
             mex.printStackTrace();
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
 
     }
+//    public void sendHtml(String emailTo, String subject, String body, HtmlTemplate htmlTemplate){
+
 //
+//    }
+
 
 }

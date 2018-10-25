@@ -271,7 +271,7 @@ public class EventLogicTest {
     // Event Description
     @Test
     public void updateEventDescription() throws Exception {
-        String eventDescription = createString(Event.MAX_DESCRITION_LENGTH);
+        String eventDescription = createString(Event.MAX_DESCRIPTION_LENGTH);
 
         eventLogic.updateEventDescription(userName, eventId, eventDescription);
 
@@ -301,7 +301,7 @@ public class EventLogicTest {
 
     @Test(expected = HttpRequestException.class)
     public void updateEventDescriptionTooLong() throws Exception {
-        String eventDescription = createString(Event.MAX_DESCRITION_LENGTH + 1);
+        String eventDescription = createString(Event.MAX_DESCRIPTION_LENGTH + 1);
 
         eventLogic.updateEventDescription(userName, eventId, eventDescription);
     }

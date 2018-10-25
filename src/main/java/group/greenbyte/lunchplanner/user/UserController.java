@@ -186,13 +186,29 @@ public class UserController {
                 .body("");
     }
 
+//    @RequestMapping(value = " /debts/getBalance/{creditor}", method = RequestMethod.GET,
+//                produces = MediaType.APPLICATION_JSON_VALUE)
+//    @ResponseBody
+//    public ResponseEntity getBalance(@PathVariable("creditor") String creditor, @RequestBody UserJson userJson){
+//        try{
+//            List<Debts> toReturn = userLogic.getBalance(creditor,userJson.getUserName());
+//            return ResponseEntity
+//                    .status(HttpStatus.OK)
+//                    .body(toReturn);
+//        }catch(HttpRequestException e){
+//            return ResponseEntity
+//                    .status(e.getStatusCode())
+//                    .body(e.getErrorMessage());
+//        }
+//    }
+
 
     @RequestMapping(value = "/debts/set/{username}", method = RequestMethod.POST,
                 consumes = MediaType.APPLICATION_JSON_VALUE)
     public String setDebts(@PathVariable("username") String username, @RequestBody DebtsJson debtsJson,
                            HttpServletResponse response) {
         try{
-            System.out.println("controller kommt was rein: "+username+", "+debtsJson.getDebtor()+", "+debtsJson.getSum());
+            System.out.println("controller kommt was rein in Set Debts: "+username+", "+debtsJson.getDebtor()+", "+debtsJson.getSum());
             userLogic.setDebts(username, debtsJson.getDebtor(), debtsJson.getSum());
             response.setStatus(HttpServletResponse.SC_CREATED);
         }catch(HttpRequestException e){
@@ -202,11 +218,11 @@ public class UserController {
         return "";
     }
 
-    @RequestMapping(value = "/debts/get/{username}", method = RequestMethod.GET,
+    @RequestMapping(value = "/debts/getAll/{username}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity setDebts(@PathVariable("username") String username) {
-        System.out.println("controller kommt was rein: " + username);
+    public ResponseEntity getDebts(@PathVariable("username") String username) {
+        System.out.println("controller kommt was rein in Delete Debts: " + username);
         try{
             List<Debts> toReturn = userLogic.getDebts(username);
             return ResponseEntity
@@ -218,7 +234,52 @@ public class UserController {
                     .body(e.getErrorMessage());
         }
     }
-//    @RequestMapping(value = "/debts/delete/{debtsId}"), method = Re
+    @RequestMapping(value = "/debts/getAllLiab/{username}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getLiab(@PathVariable("username") String username) {
+        try{
+            List<Debts> toReturn = userLogic.getLiab(username);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(toReturn);
+        }catch(HttpRequestException e){
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+    @RequestMapping(value = "/debts/delete/{debtsId}", method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteDebs(@PathVariable("debtsId") int debtsId, HttpServletResponse response){
+        try{
+            System.out.println("controller kommt was rein in Delete Debts: " + debtsId);
+            response.setStatus(HttpServletResponse.SC_OK);
+            userLogic.deleteDebts(SessionManager.getUserName(), debtsId);
+        }catch(HttpRequestException e){
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+        return "";
+    }
+
+
+    @RequestMapping(value = "/debts/get/{debtId}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getDebt(@PathVariable("debtId") int debtId){
+        try{
+            Debts retDebt = userLogic.getDebt(debtId);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(retDebt);
+        }catch(HttpRequestException e){
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
     /**
      * TODO:
      * get a list of all subscriber of a location

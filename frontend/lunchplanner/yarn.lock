@@ -21,6 +21,12 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
+"@elsdoerfer/react-arrow@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@elsdoerfer/react-arrow/-/react-arrow-1.0.1.tgz#48ff5286d196ebb1aca862d6cae72c417a6e765d"
+  dependencies:
+    babel-runtime "^6.25.0"
+
 "@firebase/app-types@0.3.2":
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/@firebase/app-types/-/app-types-0.3.2.tgz#a92dc544290e2893bd8c02a81e684dae3d8e7c85"
@@ -1221,7 +1227,7 @@ babel-register@^6.26.0:
     mkdirp "^0.5.1"
     source-map-support "^0.4.15"
 
-babel-runtime@6.26.0, babel-runtime@^6.11.6, babel-runtime@^6.18.0, babel-runtime@^6.22.0, babel-runtime@^6.23.0, babel-runtime@^6.26.0:
+babel-runtime@6.26.0, babel-runtime@^6.11.6, babel-runtime@^6.18.0, babel-runtime@^6.22.0, babel-runtime@^6.23.0, babel-runtime@^6.25.0, babel-runtime@^6.26.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
   dependencies:
@@ -4561,6 +4567,10 @@ isomorphic-fetch@2.2.1, isomorphic-fetch@^2.1.1:
     node-fetch "^1.0.1"
     whatwg-fetch ">=0.10.0"
 
+isotrope@^1.0.1:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/isotrope/-/isotrope-1.0.3.tgz#0ea1db93fd1ba5373cf478090ae6bc276d2293d0"
+
 isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
@@ -6775,6 +6785,13 @@ react-addons-css-transition-group@^15.6.2:
   resolved "https://registry.yarnpkg.com/react-addons-css-transition-group/-/react-addons-css-transition-group-15.6.2.tgz#9e4376bcf40b5217d14ec68553081cee4b08a6d6"
   dependencies:
     react-transition-group "^1.2.0"
+
+react-arrow@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/react-arrow/-/react-arrow-2.0.3.tgz#bb0e5f6f0c893e7a30fda96140246fea8238686f"
+  dependencies:
+    isotrope "^1.0.1"
+    prop-types "^15.6.0"
 
 react-copy-to-clipboard@^5.0.1:
   version "5.0.1"

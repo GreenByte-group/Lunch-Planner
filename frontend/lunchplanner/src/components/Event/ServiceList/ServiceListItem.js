@@ -4,6 +4,8 @@ import {Card, CardContent, ListItem} from "@material-ui/core";
 import {Done} from "@material-ui/icons";
 import {getUsername} from "../../authentication/LoginFunctions";
 import {acceptService} from "./ServiceFunctions";
+import {TextField} from "@material-ui/core/es/index";
+import {setDebts} from "../../Debts/DebtsFunctions";
 
 const styles = {
     listItem: {
@@ -62,23 +64,53 @@ class ServiceListItem extends React.Component {
             description: props.description,
             creator: props.creator,
             accepter: props.accepter,
+            price: 0,
         };
     }
 
     acceptedClicked = () => {
         if(!this.state.accepter) {
-            acceptService(this.state.eventId, this.state.serviceId, (response) => {
-                if (response.status !== 204) {
-                    this.setState({
-                        error: response.response.data,
-                    })
-                } else {
-                    this.setState({
-                        accepter: getUsername(),
-                    })
+            console.log('states', this.state)
+            acceptService(this.state.eventId, this.state.serviceId, this.state.price, (response) => {
+                if(this.state.price !== 0 || null){
+                    if (response.status !== 204) {
+                        this.setState({
+                            error: response.response.data,
+                        })
+                    } else {
+                        this.setState({
+                            accepter: getUsername(),
+                        });
+                        this.sendDebts();
+                    }
+                }else {
+                    if (response.status !== 204) {
+                        this.setState({
+                            error: response.response.data,
+                        })
+                    } else {
+                        this.sendDebts();
+                        this.setState({
+                            accepter: getUsername(),
+                            price: 0,
+                        })
+                    }
                 }
+
             });
         }
+    };
+
+    sendDebts(){
+        setDebts(this.state.creator, this.state.accepter, this.state.price, (response => {
+            console.log('response', response.data)
+        }));
+    }
+    handleChangePrice = (event) => {
+        console.log('event', event.target.value);
+        this.setState({
+           price: event.target.value,
+        });
     };
 
     render() {
@@ -87,6 +119,7 @@ class ServiceListItem extends React.Component {
         let description = this.state.description;
         let creator = this.state.creator;
         let accepter = this.state.accepter;
+        let price = this.state.price;
 
         let error = this.state.error;
 
@@ -106,12 +139,28 @@ class ServiceListItem extends React.Component {
                             {
                                 (accepter) ?
                                     <Done color="primary" className={classes.doneIcon} />
+
                                     : ''
                             }
+
                         </div>
                         <div className={classes.text}>
                             <p>{food}</p>
                             <p>{description}</p>
+                            <TextField  id="outlined-number"
+                                        label={"Price"}
+                                        placholder={"Type in the price of this task"}
+                                        keyboardType='numeric'
+                                        type="number"
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        variant="outlined"
+                                        // value={this.state.price}
+                                        onChange={this.handleChangePrice}
+                            >
+
+                            </TextField>
                         </div>
                     </CardContent>
                     <div className={classes.footer}>

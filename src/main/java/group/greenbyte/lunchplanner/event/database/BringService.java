@@ -45,9 +45,20 @@ public class BringService implements Serializable {
     @Column(length = MAX_DESCRIPTION_LENGTH)
     private String description;
 
+    @Column
+    private int price;
+
 
 
     //gettER AN SETTER---------------------------------------------------------
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
 
     public Integer getServiceId() {
         return serviceId;

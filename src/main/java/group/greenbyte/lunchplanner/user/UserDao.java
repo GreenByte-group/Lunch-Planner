@@ -152,4 +152,12 @@ public interface UserDao {
     void setDebts(String creditor, String debtor, Float sum) throws DatabaseException;
 
     List<Debts> getDebts(String creditor) throws DatabaseException;
+
+    List<Debts> getLiab(String creditor) throws DatabaseException;
+
+    Debts getDebt(int debtId) throws DatabaseException;
+
+    void deleteDebts(String creditor, int debtsId) throws DatabaseException;
+
+
 }

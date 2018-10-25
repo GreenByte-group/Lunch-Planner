@@ -18,6 +18,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.quartz.*;
 
+import javax.persistence.OneToOne;
+import javax.xml.crypto.Data;
 import java.util.*;
 
 @Repository
@@ -45,7 +47,7 @@ public class UserDaoMySql implements UserDao {
     public static final String USER_NOTIFICATION_READ = "is_read";
 
     public static final String USER_DEBTS_TABLE = "debts";
-    public static final String USER_DEBTS_ID = "debts_id";
+    public static final String USER_DEBTS_ID = "debts_Id";
     public static final String USER_DEBTS_TOTAL = "sum";
     public static final String USER_DEBTS_DEMAND = "creditor";
     public static final String USER_DEBTS_LIABILITY = "debtor";
@@ -343,42 +345,39 @@ public class UserDaoMySql implements UserDao {
     public List<Debts> getDebts(String creditor) throws DatabaseException {
         try{
             String SQL = "SELECT * FROM " + USER_DEBTS_TABLE + " WHERE " + USER_DEBTS_DEMAND + " = ?";
-            System.out.println("alle daten in sql: "+SQL);
-            List<DebtsDatabase> debts = jdbcTemplate.query(SQL,
-                    new BeanPropertyRowMapper<>(DebtsDatabase.class), creditor);
 
-
-
-
+            List<DebtsDatabase> debts = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(DebtsDatabase.class), creditor);
+            System.out.println("GET DEBTS: "+debts.get(0).getDebts().getDebtsId());
             List<Debts> debtsList = new ArrayList<>(debts.size());
-
                 for(DebtsDatabase debtsTemp  : debts) {
                     Debts debt = debtsTemp.getDebts();
-                    System.out.println("alle daten in sql return: "+debtsTemp.getDebts());
+                    System.out.println("ID: "+debt.getDebtsId());
                     debtsList.add(debt);
                 }
-
-
             return debtsList;
             } catch(Exception e){
                 throw new DatabaseException(e);
             }
     }
 
+    @Override
+    public List<Debts> getLiab(String creditor) throws DatabaseException {
+        try{
+            String SQL = "SELECT * FROM " + USER_DEBTS_TABLE + " WHERE " + USER_DEBTS_LIABILITY + " = ?";
 
+            List<DebtsDatabase> debts = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(DebtsDatabase.class), creditor);
+            System.out.println("GET DEBTS: "+debts.get(0).getDebts().getDebtsId());
+            List<Debts> debtsList = new ArrayList<>(debts.size());
+            for(DebtsDatabase debtsTemp  : debts) {
+                Debts debt = debtsTemp.getDebts();
+                debtsList.add(debt);
+            }
+            return debtsList;
+        } catch(Exception e){
+            throw new DatabaseException(e);
+        }
+    }
 
-
-
-
-
-
-    /**
-     *
-     * @param creditor
-     * @param debtor
-     * @param sum
-     * @throws DatabaseException
-     */
     @Override
     public void setDebts(String creditor, String debtor, Float sum) throws DatabaseException {
         System.out.println("alle variablen für debts: "+creditor+", "+debtor+", "+sum);
@@ -395,8 +394,33 @@ public class UserDaoMySql implements UserDao {
         }
     }
 
+    @Override
+    public Debts getDebt(int debtId) throws DatabaseException{
+        String SQL = "SELECT * FROM " + USER_DEBTS_TABLE + " WHERE " + USER_DEBTS_ID + " = ?";
+
+        List<DebtsDatabase> debts = jdbcTemplate.query(SQL, new Object[] {debtId}, new BeanPropertyRowMapper<>(DebtsDatabase.class));
+
+        System.out.println("GET DEBTS: "+debts.get(0).getDebts().getDebtsId());
+        if (debts.size() == 0)
+            return null;
+        else {
+            Debts retDebts = debts.get(0).getDebts();
+            return retDebts;
+        }
 
 
+    }
+
+    @Override
+    public void deleteDebts(String creditor, int debtsId) throws DatabaseException{
+        String SQL = "DELETE FROM " + USER_DEBTS_TABLE + " WHERE " + USER_DEBTS_ID + " = ?";
+        try{
+            System.out.println("DEBTS DELETE: "+creditor+", ID: "+debtsId);
+            jdbcTemplate.update(SQL,debtsId);
+        }catch(Exception e){
+            throw new DatabaseException(e);
+        }
+    }
 
     /**
      * Put the new e-mail into the database

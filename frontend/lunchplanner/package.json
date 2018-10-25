@@ -6,6 +6,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "@babel/runtime": "7.0.0",
+    "@elsdoerfer/react-arrow": "^1.0.1",
     "@material-ui/core": "^3.0.3",
     "@material-ui/icons": "^3.0.1",
     "axios": "^0.18.0",
@@ -22,6 +23,7 @@
     "prop-types": "^15.6.2",
     "react": "^16.5.1",
     "react-addons-css-transition-group": "^15.6.2",
+    "react-arrow": "^2.0.3",
     "react-copy-to-clipboard": "^5.0.1",
     "react-datepicker": "^1.6.0",
     "react-dom": "^16.5.1",

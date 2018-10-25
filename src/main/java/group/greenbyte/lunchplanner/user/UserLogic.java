@@ -3,24 +3,20 @@ package group.greenbyte.lunchplanner.user;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.Message;
 import group.greenbyte.lunchplanner.event.EmailService;
+import group.greenbyte.lunchplanner.event.EventLogic;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.JwtService;
 import group.greenbyte.lunchplanner.security.SessionManager;
 import group.greenbyte.lunchplanner.team.TeamLogic;
-import group.greenbyte.lunchplanner.event.EventLogic;
 import group.greenbyte.lunchplanner.user.database.Debts;
 import group.greenbyte.lunchplanner.user.database.User;
-import group.greenbyte.lunchplanner.user.database.notifications.NotificationDatabase;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
 import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
 import group.greenbyte.lunchplanner.user.database.notifications.OptionsJson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -28,8 +24,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -197,6 +191,7 @@ public class UserLogic {
         try {
             return userDao.getUser(userName);
         } catch (DatabaseException e) {
+            System.out.println("logic getUser error");
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
     }
@@ -243,74 +238,64 @@ public class UserLogic {
             return;
 
 
-        System.out.println("SENDEEEEEEEEEEEN");
-
-        String body = "Hey "+receiver+",\ncheck mal den Lunchplanner.\n\nViel spaß & Hasta la pasta";
+        String body = "<p style=\"font-size: large\" > Hey "+receiver+",<br>check the Lunchplanner.<br><br>have fun & Hasta la pasta<br><br><br><p>This mail is generated automatically</p>";
 
         if(title == "Team invitation") {
-            body = "Hey "+receiver+",\ncheck mal den Lunchplanner. Dein Team wurde eingeladen.\n "+
-                    "Vielleicht hast du ja lust mit"+SessionManager.getUserName() +" im Team zu sein?\n\nViel spaß & Hasta la pasta";
+            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. You wanted to be notified if a anyone <b>invited your team</b>." +
+                    "                <br>Maybe you would like to join "+SessionManager.getUserName() +"?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                    "                    </p>";
         }
 
         if(title == "You have been removed from a team"){
-            body = "Hey "+receiver+",\ncheck mal den Lunchplanner. Du wolltest benachrichtigt werden wenn du aus einem Team gelöscht wirst.\n"+
-                    "Vielleicht hast du ja lust ein neues Team zu bilden?\n\nViel spaß & Hasta la pasta";
+            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. You wanted to be notified if a team <b>removed you from a team</b>." +
+                    "                <br>Maybe you would like to start your own team?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                    "                    </p>";
         }
 
         if(title == "You got promoted"){
-            body = "Hey "+receiver+",\ncheck mal den Lunchplanner. Du wolltest benachrichtigt werden wenn du zum Admin auserwählt wurdest"+
-                    ".\nVielleicht hast du ja lust deine neue Rolle in einem Kommentar zu teilen?\n\nViel spaß & Hasta la pasta";
+            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. You wanted to be notified if you get <b>promoted to an admin</b>." +
+                    "                <br>Maybe you would like to inform your team?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                    "                    </p>";
         }
 
         if(title == "Team member left"){
-            body = "Hey "+receiver+",\ncheck mal den Lunchplanner. Du wolltest benachrichtigt werden wenn jemand aus deinem Team ausgetreten ist"+
-                    ".\nVielleicht hast du ja lust zu checken, wer das Team verlassen hat\n\nViel spaß & Hasta la pasta";
+            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. You wanted to be notified if a team member <b>left the team</b>." +
+                    "                <br>Maybe you would like to invite new member to your team?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                    "                    </p>";
         }
 
         if(title == "New team member"){
-            body = "Hey "+receiver+",\ncheck mal den Lunchplanner. Du wolltest benachrichtigt werden wenn eine neue Person im Team aufgenommen wurde"+
-                    "\nVielleicht hast du ja lust das neue Teammitglied zu begrüßen?\n\nViel spaß & Hasta la pasta";
+            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. You wanted to be notified if a <b>new team member</b> hav joined the team." +
+                    "                <br>Maybe you would like to welcome the new member?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                    "                    </p>";
         }
 
         if(title.contains("New comment in")){
-            body = "Hey "+receiver+",\ncheck mal den Lunchplanner. Du wolltest benachrichtigt werden wenn jemand ein neues Kommentar in einem Event erstellt"+
-                    ".\nVielleicht hast du ja lust das Kommentar zu lesen oder es zu beantworten?\n\nViel spaß & Hasta la pasta";
+            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. You wanted to be notified if anyone <b>edit a comment</b> ." +
+                    "                <br>Maybe you would like to know what the comment is about?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                    "                    </p>";
         }
 
         if(title.contains("New task in")){
-            body = "Hey "+receiver+",\ncheck mal den Lunchplanner. Du wolltest benachrichtigt werden wenn jemand ein neues Task in einem Event erstellt"+
-                    " \nVielleicht hast du ja lust jemandem was mitzunehmen?\n\nViel spaß & Hasta la pasta";
+            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. You wanted to be notified if anyone <b>edit a task</b> ." +
+                    "                <br>Maybe you would like to know if you can do them a favor?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                    "                    </p>";
         }
 
         if(title == "Task accepted"){
-            body = "Hey "+receiver+",\ncheck mal den Lunchplanner. Du wolltest benachrichtigt werden wenn jemand dein Task akzeptiert"+
-                    ".\nVielleicht hast du ja lust zu wissen, wer dir was mitbringt?\n\nViel spaß & Hasta la pasta";
+            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. You wanted to be notified if anyone <b>accepted your task</b> ." +
+                    "                <br>Maybe you would like to know who brings you something?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                    "                    </p>";
         }
 
+        String newTitle = title+" @Lunchplanner";
         try{
             System.out.println(getUser(receiver));
-            emailservice.send(getUser(receiver).geteMail(),title, body);
+            emailservice.send(getUser(receiver).geteMail(), newTitle, body);
+//            emailservice.sendHtml(getUser(receiver).geteMail(),title, body, htmlTemplate);
         } catch(Exception e){
             e.printStackTrace();
         }
-
-
-
-
-//        // See documentation on defining a message payload.
-//        Message message = Message.builder()
-//                .putData("title", title)
-//                .putData("body", description)
-//                .putData("tag", linkToClick)
-//                .putData("icon", "https://greenbyte.group/assets/images/logo.png")
-//                .setToken(fcmToken)
-//                .build();
-//
-//        // Send a message to the device corresponding to the provided
-//        // registration token.
-//        String response = FirebaseMessaging.getInstance().send(message);
-//        // Response is a message ID string.
-//        System.out.println("Successfully sent message: " + response);
 
     }
 
@@ -690,6 +675,14 @@ public class UserLogic {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
     }
+    public Debts getDebt(int debtId)throws HttpRequestException{
+        try{
+            return userDao.getDebt(debtId);
+        }catch(DatabaseException e){
+            System.out.println("logic delete error");
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
 
     public List<Debts> getDebts(String creditor) throws HttpRequestException{
         try{
@@ -698,4 +691,37 @@ public class UserLogic {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
     }
+    public List<Debts> getLiab(String debtor) throws HttpRequestException{
+        try{
+            return userDao.getLiab(debtor);
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    public void deleteDebts(String creditor, int debtsId) throws HttpRequestException {
+        String checkName = this.getDebt(debtsId).getCreditor();
+        if(checkName.equals(creditor)){
+            try{
+                userDao.deleteDebts(creditor, debtsId);
+            }catch(DatabaseException e){
+                System.out.println("logic delete error");
+                throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "ID IS NOT AVAILABLE");
+            }
+        }else {
+            System.out.println("logic delete error");
+            throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "NOT_ALLOWED");
+        }
+    }
+
+//    public void getBalance(String creditor, String debtor) throws HttpRequestException {
+//        try{
+//            List<Debts> a =getDebts(creditor);
+//            List<Debts> b = getDebts(debtor);
+//
+//
+//        }catch(DatabaseException e){
+//            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+//        }
+//    }
 }

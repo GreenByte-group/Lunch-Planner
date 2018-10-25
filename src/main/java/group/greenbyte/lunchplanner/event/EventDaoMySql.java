@@ -22,6 +22,7 @@ public class EventDaoMySql implements EventDao {
     private static final String EVENT_BRINGSERVICE_CREATOR = "user_name";
     private static final String EVENT_BRINGSERVICE_ACCEPTER = "accepter";
     private static final String EVENT_BRINGSERVICE_DESCRIPTION = "description";
+    private static final String EVENT_BRINGSERVICE_PRICE="price";
 
     private static final String EVENT_INVITATION_TABLE = "event_invitation";
     private static final String EVENT_INVITATION_ADMIN = "is_admin";
@@ -483,6 +484,7 @@ public class EventDaoMySql implements EventDao {
         parameters.put(EVENT_BRINGSERVICE_CREATOR, creater);
         parameters.put(EVENT_BRINGSERVICE_ACCEPTER, null);
         parameters.put(EVENT_BRINGSERVICE_DESCRIPTION, description);
+        parameters.put(EVENT_BRINGSERVICE_PRICE, 0);
 
         try{
             simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
@@ -492,12 +494,18 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
-    public void updateBringservice(int eventId,String accepter, int serviceId) throws DatabaseException{
+    public void updateBringservice(int eventId,String accepter, int serviceId, int price) throws DatabaseException{
             try {
-                String SQL = " UPDATE " + EVENT_BRINGSERVICE_TABLE +
+                String SQL1 = " UPDATE " + EVENT_BRINGSERVICE_TABLE +
                         " SET " + EVENT_BRINGSERVICE_ACCEPTER + " = ? WHERE " + EVENT_BRINGSERVICE_ID + " = ? " +
-                        "AND " + EVENT_BRINGSERVICE_EVENT + " = ?";
-                jdbcTemplate.update(SQL, accepter, serviceId, eventId);
+                        "AND " + EVENT_BRINGSERVICE_EVENT + " = ? ";
+                jdbcTemplate.update(SQL1, accepter, serviceId, eventId);
+
+                String SQL2 = " UPDATE " + EVENT_BRINGSERVICE_TABLE +
+                        " SET " + EVENT_BRINGSERVICE_PRICE + " = ? WHERE " + EVENT_BRINGSERVICE_ID + " = ? " +
+                        "AND " + EVENT_BRINGSERVICE_EVENT + " = ? ";
+                jdbcTemplate.update(SQL2, price, serviceId, eventId);
+
             }catch(Exception e){
                 throw new DatabaseException(e);
             }

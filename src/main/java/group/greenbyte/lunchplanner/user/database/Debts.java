@@ -33,7 +33,7 @@ public class Debts  implements Serializable{
         return this.debtsId;
     }
 
-    public void setDebtsId(Integer debtsId) {
+    public void setDebtsId(int debtsId) {
         this.debtsId = debtsId;
     }
 
@@ -45,20 +45,23 @@ public class Debts  implements Serializable{
         this.sum = sum;
     }
 
-    public String getCreatorName() {
+    public String getCreditor() {
         return this.creditor;
     }
 
-    public void setCreatorName(String creatorName) {
+    public void setCreditor(String creatorName) {
         this.creditor= creatorName;
     }
 
-    public String getDebtorName() {
+    public String getDebtor() {
+
+        System.out.println("ALLE WICHTIGEN DATEN DER DATABASE:\nid: "+debtsId+"\ncreditor: "+creditor+"\ndebtor:"+debtor+"\nsum: "+sum);
         return this.debtor;
     }
 
-    public void setDebtorName(String debtorName) {
+    public void setDebtor(String debtorName) {
         this.debtor = debtorName;
     }
+
 
 }

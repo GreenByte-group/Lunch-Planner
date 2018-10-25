@@ -8,6 +8,7 @@ public class BringServiceDatabase {
     private String userName;
     private String accepter;
     private String description;
+    private int price;
 
     public BringService getBringService(){
         BringService bringService = new BringService();
@@ -17,6 +18,7 @@ public class BringServiceDatabase {
         bringService.setCreatorName(this.userName);
         bringService.setAccepter(this.accepter);
         bringService.setDescription(this.description);
+        bringService.setPrice(this.price);
 
         return bringService;
     }
@@ -45,4 +47,6 @@ public class BringServiceDatabase {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
+    public void setPrice(int price) { this.price = price; };
 }

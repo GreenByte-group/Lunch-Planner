@@ -672,10 +672,8 @@ class EventScreen extends React.Component {
                                 <p className={classes.descriptionHeader}>Description </p>
                                 <Scrollbars className={classes.scrollbar}>
                                     <TextFieldEditing  rowsMax="3" value={description} className={classes.description} />
-
                                 </Scrollbars>
                             </div>
-
                         </div>
                     </div>
                     {

@@ -17,25 +17,12 @@ import group.greenbyte.lunchplanner.user.database.User;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-
-import javax.mail.internet.MimeMessage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-
 import java.util.*;
 import java.util.Calendar;
-
-import static org.hibernate.criterion.Projections.property;
 
 @Service
 public class EventLogic {
@@ -758,14 +745,14 @@ public class EventLogic {
         }
     }
 
-    public void updateBringservice(int eventId, String accepter, int serviceId) throws HttpRequestException{
+    public void updateBringservice(int eventId, String accepter, int serviceId, int price) throws HttpRequestException{
         try{
             BringService bringService = eventDao.getOneService(serviceId);
 
             if(bringService.getAccepter() != null)
                 throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), bringService.getAccepter() + " already accepted this task");
 
-            eventDao.updateBringservice(eventId,accepter,serviceId);
+            eventDao.updateBringservice(eventId,accepter,serviceId,price);
 
             //Send notification
             User user = userLogic.getUser(bringService.getCreatorName());

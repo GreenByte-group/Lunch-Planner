@@ -353,12 +353,14 @@ public class EventController {
      * @param response response channel
      * @return empty String
      */
-    @RequestMapping(value = "/{eventId}/service/{serviceId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{eventId}/service/{serviceId}/{price}", method = RequestMethod.POST)
     @ResponseBody
     public String acceptBringservice(@PathVariable("eventId") int eventId,
-                                     @PathVariable("serviceId") int serviceId, HttpServletResponse response){
+                                     @PathVariable("serviceId") int serviceId,
+                                     @PathVariable("price")int price, HttpServletResponse response){
         try{
-            eventLogic.updateBringservice(eventId,SessionManager.getUserName(),serviceId);
+            System.out.println("DATA: "+eventId+ serviceId+ price);
+            eventLogic.updateBringservice(eventId,SessionManager.getUserName(),serviceId, price);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
             return "";
         }catch(HttpRequestException e){

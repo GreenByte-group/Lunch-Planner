@@ -2,24 +2,22 @@ package group.greenbyte.lunchplanner.user.database;
 
 public class DebtsDatabase {
 
-    private int debsID;
+    private Integer debtsId;
     private String creditor;
     private String debtor;
     private Float sum;
 
     public Debts getDebts(){
         Debts debts = new Debts();
-        debts.setDebtsId(this.debsID);
-        debts.setCreatorName(this.creditor);
-        debts.setDebtorName(this.debtor);
-        debts.setSum(this.sum);
 
+        debts.setCreditor(this.creditor);
+        debts.setDebtor(this.debtor);
+        debts.setSum(this.sum);
+        debts.setDebtsId(this.debtsId);
+        System.out.println("ALLE WICHTIGEN DATEN DER DATABASE:\nid: "+debtsId+"\ncreditor: "+creditor+"\ndebtor:"+debtor+"\nsum: "+sum);
         return debts;
     }
 
-    public void setDebsID(int debsID) {
-        this.debsID = debsID;
-    }
 
     public void setCreditor(String creditor) {
         this.creditor = creditor;
@@ -32,4 +30,20 @@ public class DebtsDatabase {
     public void setSum(Float sum) {
         this.sum = sum;
     }
+
+    public void setDebtsId(Integer debtsId) { this.debtsId = debtsId; }
+
+    public String getCreditor() {
+        return creditor;
+    }
+
+    public String getDebtor() {
+        return debtor;
+    }
+
+    public Float getSum() {
+        return sum;
+    }
+
+    public Integer getDebtsId() {return this.debtsId; }
 }

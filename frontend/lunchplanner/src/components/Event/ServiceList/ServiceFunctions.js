@@ -9,8 +9,9 @@ export function getServices(eventId, responseFunc) {
         .then(responseFunc)
 }
 
-export function acceptService(eventId, serviceId, responseFunc) {
-    let url = HOST + "/event/" + eventId + "/service/" + serviceId;
+export function acceptService(eventId, serviceId, price, responseFunc) {
+    let url = HOST + "/event/" + eventId + "/service/" + serviceId + "/" + price;
+    console.log('url', url);
     axios.post(url)
         .then(responseFunc)
 }
