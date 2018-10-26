@@ -57,6 +57,7 @@ const styles = {
         backgroundColor: "#75a045",
         height: '115px',
         paddingTop:'8px',
+        color: 'white'
 
     },
     noHover: {
@@ -108,8 +109,7 @@ const styles = {
     navCalendar: {
         position: 'relative',
         width: 250,
-        // paddingTop: '40px',
-        // paddingRight: '10px',
+
 
     },
     logo: {
@@ -273,6 +273,7 @@ class AppContainer extends React.Component {
             case 'debts':
                 children = <DebtsScreen location={this.props.location} />;
                 title = "Debts";
+                bottomNavigationValue = 3;
                 break;
             case 'notifications':
                 children = <NotificationsScreen location={this.props.location} />;

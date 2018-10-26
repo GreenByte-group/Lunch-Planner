@@ -349,6 +349,7 @@ public class UserDaoMySql implements UserDao {
             List<DebtsDatabase> debts = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(DebtsDatabase.class), creditor);
             System.out.println("GET DEBTS: "+debts.get(0).getDebts().getDebtsId());
             List<Debts> debtsList = new ArrayList<>(debts.size());
+
                 for(DebtsDatabase debtsTemp  : debts) {
                     Debts debt = debtsTemp.getDebts();
                     System.out.println("ID: "+debt.getDebtsId());
@@ -368,6 +369,7 @@ public class UserDaoMySql implements UserDao {
             List<DebtsDatabase> debts = jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(DebtsDatabase.class), creditor);
             System.out.println("GET DEBTS: "+debts.get(0).getDebts().getDebtsId());
             List<Debts> debtsList = new ArrayList<>(debts.size());
+
             for(DebtsDatabase debtsTemp  : debts) {
                 Debts debt = debtsTemp.getDebts();
                 debtsList.add(debt);

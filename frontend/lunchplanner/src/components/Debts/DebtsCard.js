@@ -107,7 +107,6 @@ class DebtsCard extends React.Component {
 
     render() {
         const {classes} = this.props;
-        console.log('Debts in DebtsCard', this.state);
 
 
         if(this.state.artOfCard == 'debtor'){

@@ -5,6 +5,7 @@ import { BottomNavigation, BottomNavigationAction } from '@material-ui/core';
 import PlaceIcon from '@material-ui/icons/Place';
 import EventIcon from '@material-ui/icons/LocalDining';
 import SocialIcon from '@material-ui/icons/Group';
+import EuroSymbol from '@material-ui/icons/EuroSymbol'
 import {getHistory} from "../utils/HistoryUtils";
 
 const styles = {
@@ -53,25 +54,29 @@ class BottomNavigationBar extends React.Component {
             case 2:
                 getHistory().push("/app/team", this.state.search);
                 break;
+            case 3:
+                getHistory().push("/app/debts", this.state.search);
         }
     };
 
     render() {
         const { classes } = this.props;
         const { value } = this.state;
-
         return (
-                <BottomNavigation
-                    className={classes.root}
-                    value={value}
-                    onChange={this.handleChange}
-                    showLabels
-                >
-                    <BottomNavigationAction label="Places" icon={<PlaceIcon />} />
-                    <BottomNavigationAction label="Events" icon={<EventIcon />} />
-                    <BottomNavigationAction label="Teams" icon={<SocialIcon />}/>
-                </BottomNavigation>
+            <BottomNavigation
+                className={classes.root}
+                value={value}
+                onChange={this.handleChange}
+                showLabels
+            >
+                <BottomNavigationAction label="Places" icon={<PlaceIcon />}/>
+                <BottomNavigationAction label="Events" icon={<EventIcon />}/>
+                <BottomNavigationAction label="Teams" icon={<SocialIcon />}/>
+                <BottomNavigationAction label="Debts" icon={<EuroSymbol />}/>
+            </BottomNavigation>
         );
+
+
     }
 }
 

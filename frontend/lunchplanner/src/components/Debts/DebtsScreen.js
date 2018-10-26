@@ -101,18 +101,10 @@ class DebtsScreen extends React.Component {
 
 
     componentDidMount() {
-            this.loadDebts();
     }
 
     loadDebts() {
-        // getAll(getUsername(), (response) => {
-        //     this.setState({
-        //         debts: response.data,
-        //         loading: true,
-        //
-        //     });
-        // });
-        // console.log('states of load Debs',this.state);
+
     }
 
     componentWillReceiveProps(newProps) {

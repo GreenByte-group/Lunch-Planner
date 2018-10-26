@@ -52,9 +52,14 @@ class DebtsDebtorScreen extends React.Component {
 
     loadDebts() {
         getAllLiab(getUsername(), (response) => {
-            this.setState({
-                debts: response.data,
-            });
+            if(response !== 500){
+                this.setState({
+                    debts: response.data,
+                });
+            }else{
+                this.setState({error: response.response.data});
+            }
+
         });
     }
 
