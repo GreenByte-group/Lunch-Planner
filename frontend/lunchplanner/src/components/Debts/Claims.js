@@ -174,7 +174,6 @@ class Claims extends React.Component {
 
     deleteDebt = () => {
         let returnId = this.state.id;
-        console.log('id', returnId);
         deleteClaims(returnId);
         this.setState({
            loading: true,

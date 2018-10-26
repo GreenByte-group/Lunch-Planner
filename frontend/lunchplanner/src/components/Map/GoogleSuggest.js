@@ -51,7 +51,7 @@ export class GoogleSuggest extends React.Component {
                     this.setState({
                         address: results.results[0].formatted_address
                     })
-                   console.log(this.state.address)
+
                    this.state.onChange(this.state.address)
                })
         }else{
@@ -70,7 +70,7 @@ export class GoogleSuggest extends React.Component {
         this.handleChange(address);
         geocodeByAddress(address)
             .then(results => {
-                console.log('result: ', results);
+
                 return getLatLng(results[0])
             })
             .then(latLng => {

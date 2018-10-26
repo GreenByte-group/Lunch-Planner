@@ -35,6 +35,7 @@ const styles = {
         fontFamily: "Work Sans",
         fontWeight: '600',
         fontSize: '14px',
+        color: 'white',
     },
     menuButton: {
         marginLeft: -12,
@@ -53,7 +54,7 @@ const styles = {
     profile:{
         fontSize: 10,
         textAlign: "center",
-        backgroundColor: "#f29b26",
+        backgroundColor: "#75a045",
         height: '115px',
         paddingTop:'8px',
 
@@ -107,15 +108,16 @@ const styles = {
     navCalendar: {
         position: 'relative',
         width: 250,
-        paddingTop: '40px',
-        paddingRight: '10px',
+        // paddingTop: '40px',
+        // paddingRight: '10px',
 
     },
     logo: {
         position: 'relative',
-        width: 100,
-        height: 38,
-        boxShadow: '0px 2px 4px -1px rgba(0, 0, 0, 0.2),0px 4px 5px 0px rgba(0, 0, 0, 0.14),0px 1px 10px 0px rgba(0, 0, 0, 0.12)',
+        height: '-webkit-fill-available',
+        maxHeight: '38px',
+        width: '-webkit-fill-available',
+        maxWidth: '100px',
 
 
 }
@@ -410,7 +412,7 @@ class AppContainer extends React.Component {
                             <Typography color="inherit" className={classes.flex}>
                                 {title}
                             </Typography>
-                            <img src="/logo.jpg"  className={classes.logo}/>
+                            <img src="/logo.png"  className={classes.logo}/>
                             {/*<div color="inherit">*/}
                                 {/*{*/}
                                     {/*this.state.openSearch === false ?*/}

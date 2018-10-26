@@ -51,7 +51,7 @@ export function sendOptions({blockAll, events, teams,
     if(blockUntil !== undefined && blockUntil !== null)
         data.block_until = blockUntil;
 
-    console.log("start: ", startWorking);
+
 
     if(Object.keys(data).length === 0)
         return;

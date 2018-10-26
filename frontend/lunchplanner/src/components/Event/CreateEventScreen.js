@@ -218,7 +218,6 @@ class CreateEventScreen extends React.Component {
 
         let location = this.state.locationText;
 
-        // console.log('all states of new event', this.state);
 
 
 
@@ -252,7 +251,7 @@ class CreateEventScreen extends React.Component {
     };
 
     handleDate = (event, date) => {
-        console.log("handleDate");
+
         let newDate = moment(date);
         let dateBefore = moment(this.state.date);
         newDate.hour(dateBefore.hour());
@@ -292,7 +291,7 @@ class CreateEventScreen extends React.Component {
             locationText: location,
         });
 
-        console.log('locaation',location);
+
         geocodeByAddress(location)
             .then(result => result[0].place_id)
             .then(result => this.setState({

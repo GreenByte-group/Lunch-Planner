@@ -185,7 +185,7 @@ class Debts extends React.Component {
         const {classes} = this.props;
         let picPathDebtor = this.state.picPathDebtor;
         let picPathCreditor = this.state.picPathCreditor;
-        console.log('Debts in Debts', this.state);
+
 
         return (
             <div className = {classes.card}>

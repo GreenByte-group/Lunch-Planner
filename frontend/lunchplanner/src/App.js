@@ -37,14 +37,15 @@ const oldTheme = getMuiTheme({
 
 const theme = createMuiTheme({
     palette: {
-        primary: {main: "#75a045"},
-        secondary: {main: '#f29b26'},
+        secondary: {main: "#75a045"},
+        primary: {main: '#f29b26'},
     },
     typography: {
         fontFamily: "Work Sans",
     },
-
 });
+
+
 
 function isAuth() {
     return isAuthenticated();
@@ -82,7 +83,6 @@ class App extends React.Component {
 
                 let notification = new Notification(notificationTitle, notificationOptions);
                 notification.addEventListener('click', (event) => {
-                    console.log('click', event);
                     getHistory().push("/app" + event.target.tag);
                 })
             });

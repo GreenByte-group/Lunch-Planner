@@ -96,7 +96,6 @@ class NotificationListItem extends React.Component {
 
     clickHandler = (event) => {
         let title = event.target.title;
-        console.log("Title: ", title);
 
         if(title !== 'read') {
             getHistory().push("/app" + this.state.clickUrl);

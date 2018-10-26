@@ -4,6 +4,7 @@
     "react-geocode": "^0.0.9",
     "react-google-maps-loader": "^4.2.2",
     "react-google-places-suggest": "^3.4.0",
-    "react-places-autocomplete": "^7.1.2"
+    "react-places-autocomplete": "^7.1.2",
+    "react-responsive-decorator": "0.0.1"
   }
 }

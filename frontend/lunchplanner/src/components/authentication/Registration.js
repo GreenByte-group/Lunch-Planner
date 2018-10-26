@@ -11,17 +11,31 @@ import {withStyles} from "@material-ui/core/styles/index";
 import {getHistory} from "../../utils/HistoryUtils";
 import {Link} from "react-router-dom";
 import Modal from 'react-modal';
+import TextField from '@material-ui/core/TextField';
 
+
+
+
+let pizza = '/pizza.jpg';
+let banana = '/banana.jpg';
 
 const styles = theme => ({
     root: {
         display: 'flex',
         flexDirection: 'column',
-        height: '100%',
-        maxWidth: '600px',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        flex: '0 1 auto',
+        height: '-webkit-fill-available',
+        maxHeight: '100%',
+        width: '-webkit-fill-available',
+        maxWidth: '100%',
+
+    },
+    root2: {
+        display: 'flex',
+        flexDirection: 'row',
+        height: '-webkit-fill-available',
+        maxHeight: '100%',
+        width: '-webkit-fill-available',
+        maxWidth: '100%',
     },
     description: {
         fontSize: '25px',
@@ -33,12 +47,25 @@ const styles = theme => ({
         justifyContent: 'space-between',
         flexGrow: 1,
         padding: '0 5px',
+        height: '-webkit-fill-available',
+        maxHeight: '100%',
+        width: '-webkit-fill-available',
+        maxWidth: '100%',
     },
     button: {
-        height: '56px',
-        width: '100%',
+        height: '-webkit-fill-available',
+        maxHeight: '50px',
+        width: '-webkit-fill-available',
+        maxWidth: '100%',
+
         color: 'white',
         fontSize: '15px',
+
+
+    },
+    textField: {
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
     },
     margin: {
         margin: '20px 0px',
@@ -49,7 +76,45 @@ const styles = theme => ({
     textField: {
         flexBasis: 200,
     },
+    logo: {
+        display: 'flex',
+        position: 'sticky',
+        width: '-webkit-fill-available',
+        maxWidth: '200px',
+        height: '-webkit-fill-available',
+        maxHeight: '200px',
 
+        margin: 'auto',
+        textAlign: 'center',
+
+
+    },
+    left:{
+        height: '-webkit-fill-available',
+        maxHeight: '100%',
+        width: '-webkit-fill-available',
+        maxWidth: '25%',
+        float: 'left',
+        overflow: 'hidden',
+        backgroundImage: 'url(' + pizza + ')',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat',
+
+    },
+    right: {
+        height: '-webkit-fill-available',
+        maxHeight: '100%',
+        width: '-webkit-fill-available',
+        maxWidth: '25%',
+        float: 'right',
+        overflowX: 'hidden',
+        overflowY: 'hidden' ,
+        backgroundImage: 'url(' + banana + ')',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat',
+    },
 });
 
 
@@ -162,6 +227,8 @@ class Registration extends React.Component {
         }
 
         return (
+            <div className={classes.root2}>
+            <div className={classes.left}/>
             <div className={classes.root}>
                 <div className={classes.content}>
                     {(error
@@ -174,22 +241,22 @@ class Registration extends React.Component {
                             : ""
                     )}
                     <p className={classes.description}>
-                        Nice to meet you. <br/> Please set up your account.
+                      Set up your account<br/>
                     </p>
+                    <img label="logoLunchplanner" src="/foodastic.png" className={classes.logo}/>
                     <FormControl
                         fullWidth
                         className={classes.margin}
                         aria-describedby="weight-helper-text"
                     >
-                        <Input
+                        <TextField
                             id="email"
-                            placeholder="E-mail"
+                            label="Email"
                             value={this.state.email}
                             onChange={this.handleInputChange}
-                            inputProps={{
-                                'aria-label': 'Email',
-                            }}
-                            className={classes.inputField}
+                            autoComplete={"email"}
+                            type="email"
+                            variant="filled"
 
                         />
                     </FormControl>
@@ -198,14 +265,12 @@ class Registration extends React.Component {
                         className={classes.margin}
                         aria-describedby="weight-helper-text"
                     >
-                        <Input
+                        <TextField
                             id="username"
-                            placeholder="Username"
+                            label="Name"
                             value={this.state.username}
                             onChange={this.handleInputChange}
-                            inputProps={{
-                                'aria-label': 'Username',
-                            }}
+                            variant="filled"
 
                         />
                     </FormControl>
@@ -248,6 +313,8 @@ class Registration extends React.Component {
                     <Done color={"#FFFFF"}/>REGISTER
                 </Button>
             </div>
+        <div className={classes.right}/>
+        </div>
         );
     }
 }

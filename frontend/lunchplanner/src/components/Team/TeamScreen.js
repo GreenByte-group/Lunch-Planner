@@ -185,7 +185,7 @@ class TeamScreen extends React.Component {
         teamId = this.props.match.params.teamId;
 
         if(this.props.location.query) {
-            console.log("Query exists");
+
             if (this.props.location.query.teamName) {
                 teamName = String(this.props.location.query.teamName);
             }
@@ -277,7 +277,7 @@ class TeamScreen extends React.Component {
     };
 
     handleJoin = () => {
-        console.log("handleJoin")
+
         getHistory().push("/app/team");
         let people = this.state.people;
         people.push(getUsername());
@@ -290,7 +290,6 @@ class TeamScreen extends React.Component {
     sendAnswer = (answer) => {
         console.log(answer)
         if(answer === "leave"){
-            console.log(answer)
             leaveTeam(this.state.teamId, () => {
                 teamListNeedReload();
             })
@@ -320,7 +319,7 @@ class TeamScreen extends React.Component {
     };
 
     reloadTeamsOnSuccess = (response) => {
-        console.log("reload", response.status)
+
         if(response.status === 204 || response.status === 201) {
             teamListNeedReload();
         }

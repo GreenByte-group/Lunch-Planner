@@ -110,7 +110,7 @@ class EventContainer extends React.Component {
             this.loadEvents();
         }
         if(newProps.search !== this.state.search){
-            console.log(newProps.search)
+
             this.setState({
                 search: newProps.search,
             });

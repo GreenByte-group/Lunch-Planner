@@ -70,7 +70,7 @@ class ServiceListItem extends React.Component {
 
     acceptedClicked = () => {
         if(!this.state.accepter) {
-            console.log('states', this.state)
+
             acceptService(this.state.eventId, this.state.serviceId, this.state.price, (response) => {
                 if(this.state.price !== 0 || null){
                     if (response.status !== 204) {
@@ -107,7 +107,6 @@ class ServiceListItem extends React.Component {
         }));
     }
     handleChangePrice = (event) => {
-        console.log('event', event.target.value);
         this.setState({
            price: event.target.value,
         });

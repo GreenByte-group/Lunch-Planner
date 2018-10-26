@@ -86,7 +86,7 @@ let functionToFire;
 class DebtsScreen extends React.Component {
     constructor(props) {
         super();
-        console.log('props', props);
+
 
         this.state = {
             value: 1,

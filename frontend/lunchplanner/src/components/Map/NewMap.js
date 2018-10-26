@@ -39,7 +39,7 @@ export class NewMap extends React.Component {
     constructor(props) {
         super();
 
-        console.log('query', props.location.query);
+
         if(props.location.query && props.location.query.lat && props.location.query.lng) {
             this.state = {
                 isMarkerShown: true,
@@ -66,15 +66,14 @@ export class NewMap extends React.Component {
     };
 
     onMapClick = (event) => {
-        console.log(event)
+
         this.setState({
             isMarkerShown: true,
             lat: event.latLng.lat(),
             lng: event.latLng.lng(),
             placeId: event.placeId,
         })
-        console.log("new Lat: "+this.state.lat+"\n"+"new Lng: "+this.state.lng);
-        console.log("event: ",this.state.place_id)
+
         this.render();
     };
 
@@ -97,14 +96,13 @@ export class NewMap extends React.Component {
 
     setLocation = () => {
         if(this.state.isMarkerShown){
-            console.log('set Location',this.state.lat, this.state.lng, this.state.placeId)
             this.state.onLocationChange(this.state.lat, this.state.lng, this.state.placeId);
             getHistory().push(this.props.location.query.source);
 
-            console.log("AAAAAA")
+
 
         }else{
-            console.log("AAAAAA")
+
         }
        //  console.log(this.state.lat, this.state.lng, this.state.placeId)
        // this.state.onLocationChange(this.state.lat, this.state.lng, this.state.placeId);
@@ -116,7 +114,6 @@ export class NewMap extends React.Component {
         let lng = this.state.lng || this.state.defaultLng || 8.46496045589447;
         let showMarker = !!(this.state.isMarkerShown && this.state.lat && this.state.lng);
 
-        console.log('render newmap show:', showMarker);
 
         return (
             <Dialog>

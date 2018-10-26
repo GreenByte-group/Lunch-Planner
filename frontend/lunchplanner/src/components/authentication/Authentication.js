@@ -29,7 +29,7 @@ const styles = theme => ({
         flexDirection: 'column',
         height: '100%',
         backgroundColor: theme.palette.background.paper,
-        //width: 500,
+        width: '100%',
     },
     fullHeight: {
         height: '100%',
@@ -38,8 +38,13 @@ const styles = theme => ({
         height: '100%',
     },
     tabContainer: {
+        flex: 'display',
+        flexDirection: 'row',
         height: '100%',
+
     },
+
+
 });
 
 class Authentication extends React.Component {
@@ -96,10 +101,9 @@ class Authentication extends React.Component {
                         textColor="secondary"
                         fullWidth
                         centered
-
                     >
-                        <Tab label="SIGN UP" />
-                        <Tab label="LOGIN" />
+                        <Tab label="SIGN UP"/>
+                        <Tab label="LOGIN"/>
                     </Tabs>
                 </AppBar>
                 <SwipeableViews
@@ -109,7 +113,9 @@ class Authentication extends React.Component {
                     onChangeIndex={this.handleChangeIndex}
                 >
                     <TabContainer className={classes.tabContainer} dir={theme.direction}>
+
                         <Register className={classes.fullHeight}/>
+
                     </TabContainer>
                     <TabContainer className={classes.tabContainer} dir={theme.direction}>
                         <Login/>

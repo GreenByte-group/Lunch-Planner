@@ -82,7 +82,7 @@ class DebtsCreditorScreen extends React.Component {
     render() {
         const { classes } = this.props;
         let stateProps = this.state.debts;
-        console.log('Debts in CreditorScreen', stateProps);
+
 
         return (
             <div className={classes.root}>

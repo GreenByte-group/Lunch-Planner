@@ -181,12 +181,15 @@ public class EventLogic {
                     userLogic.saveNotification(subscriber.getUserName(), title, description, userName, linkToClick, picturePath);
                     String nameOfUser = subscriber.getUserName();
                     //send a notification & email to subscriber
-                    String body = "Hey "+nameOfUser+",\ncheck mal den Lunchplanner. Du wolltest benachrichtigt werden wenn jemand zur Location:  "+eventName+
-                            " geht.\nVielleicht hast du ja lust "+userName+" zu begleiten?\n\nViel spaß & Hasta la pasta";
+
+                   String body = "<p style=\"font-size: large\" ><br><br><br>Hey "+nameOfUser+",<br><br>check the Lunchplanner.<br> You wanted to be notified if somebody is going to " +
+                            "the location: <b>"+eventName+"</b>.<br>Maybe you would like to join "+userName+"?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                            "                    </p>";
+
                     System.out.println("NAME: "+userLogic.getUser(subscriber.getUserName()).geteMail());
 
                    try{
-                       emailservice.send(subscriber.geteMail(),"Email", body);
+                       emailservice.send(subscriber.geteMail(),"Subscribe @Lunchplanner", body);
                    }catch(Exception e){
                        e.printStackTrace();
                    }
@@ -417,11 +420,13 @@ public class EventLogic {
 
 
         //send invited peoples a email
-        String body = "Hey "+userToInvite+",\ncheck mal den Lunchplanner. Du hast eine Einladung von "+SessionManager.getUserName()+
-                " erhalten.\nVielleicht hast du ja lust auf "+this.eventDao.getEvent(eventId).getEventName()+" ?\n\nViel spaß & Hasta la pasta";
+       String body = "<p style=\"font-size: large\" ><br><br><br>Hey "+userToInvite+",<br><br>check the Lunchplanner. <br>You wanted to be notified if somebody <b>invited</b> you to an event." +
+                "                <br>Maybe you would like to join "+SessionManager.getUserName()+"to "+this.eventDao.getEvent(eventId).getEventName()+"?" +
+                "<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                "                    </p>";
 
         System.out.println("NAME2: "+this.userDao.getUser(userToInvite).geteMail());
-       emailservice.send(this.userDao.getUser(userToInvite).geteMail(),"Email", body);
+       emailservice.send(this.userDao.getUser(userToInvite).geteMail(),"Invitation @Lunchplanner", body);
 
 
         User user = userLogic.getUser(userToInvite);

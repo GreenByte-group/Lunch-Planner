@@ -21,7 +21,7 @@ const style = {
 
 let SubscribeMapComponent = compose(
     withProps({
-        googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyCOYsTeZ29UyBEHqYG39GXJIN1-rp1KayU",
+        googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyA9g1HmDqPm-H4jF-SUMPAWAEkJRbwnsSw",
         loadingElement: <div style={{ height: `80%` }} />,
         containerElement: <div style={{ height: `100%` }} />,
         mapElement: <div style={{ height: `100%` }} />,

@@ -131,8 +131,7 @@ class CreateTeamScreen extends React.Component {
         }
 
         let withParent = params.get('withParent') == 'true';
-        console.log('with parent: ', withParent);
-        console.log('with parent state: ', this.state.withParent);
+
         if(withParent === true && this.state.withParent !== true) {
             console.log('set with parent true');
             this.setState({
@@ -168,7 +167,7 @@ class CreateTeamScreen extends React.Component {
 
     handleVisibility = name => event =>{
         this.setState({ [name]: event.target.checked });
-        console.log("secret",this.state.secret)
+
     };
 
     handleChange = (event) => {

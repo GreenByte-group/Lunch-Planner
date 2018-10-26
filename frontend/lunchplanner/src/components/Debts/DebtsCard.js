@@ -85,7 +85,7 @@ class DebtsCard extends React.Component {
 
     constructor(props) {
         super();
-        console.log('props in DebtsCard', props);
+
         this.state = {
             creditor: props.creditor,
             debtor: props.debtor,

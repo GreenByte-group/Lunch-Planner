@@ -4,7 +4,7 @@ import moment from "moment/moment";
 
 export function getAll(username, responseFunc) {
     let url = HOST + "/user/debts/getAll/" + username;
-    console.log('ksmdsds')
+
     axios.get(url)
         .then(responseFunc)
 }

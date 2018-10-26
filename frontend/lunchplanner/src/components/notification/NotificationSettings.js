@@ -61,7 +61,7 @@ class NotificationSettings extends React.Component {
             [id]: value,
         });
 
-        console.log('send options changed');
+
 
         sendOptions({[id]: value});
     };

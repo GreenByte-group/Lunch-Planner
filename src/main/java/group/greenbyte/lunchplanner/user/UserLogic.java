@@ -3,7 +3,9 @@ package group.greenbyte.lunchplanner.user;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
 import group.greenbyte.lunchplanner.event.EmailService;
 import group.greenbyte.lunchplanner.event.EventLogic;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
@@ -241,49 +243,49 @@ public class UserLogic {
         String body = "<p style=\"font-size: large\" > Hey "+receiver+",<br>check the Lunchplanner.<br><br>have fun & Hasta la pasta<br><br><br><p>This mail is generated automatically</p>";
 
         if(title == "Team invitation") {
-            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. You wanted to be notified if a anyone <b>invited your team</b>." +
+            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. <br>You wanted to be notified if a somebody <b>invited your team</b> to an event." +
                     "                <br>Maybe you would like to join "+SessionManager.getUserName() +"?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
                     "                    </p>";
         }
 
         if(title == "You have been removed from a team"){
-            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. You wanted to be notified if a team <b>removed you from a team</b>." +
+            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. <br>You wanted to be notified if a team <b>removed you from a team</b>." +
                     "                <br>Maybe you would like to start your own team?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
                     "                    </p>";
         }
 
         if(title == "You got promoted"){
-            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. You wanted to be notified if you get <b>promoted to an admin</b>." +
+            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. <br>You wanted to be notified if you get <b>promoted to an admin</b>." +
                     "                <br>Maybe you would like to inform your team?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
                     "                    </p>";
         }
 
         if(title == "Team member left"){
-            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. You wanted to be notified if a team member <b>left the team</b>." +
-                    "                <br>Maybe you would like to invite new member to your team?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner.<br> You wanted to be notified if a team member <b>left the team</b>." +
+                    "                <br>Maybe you would like to invite a new member to your team?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
                     "                    </p>";
         }
 
         if(title == "New team member"){
-            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. You wanted to be notified if a <b>new team member</b> hav joined the team." +
+            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner.<br> You wanted to be notified if a <b>new team member</b> have joined the team." +
                     "                <br>Maybe you would like to welcome the new member?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
                     "                    </p>";
         }
 
         if(title.contains("New comment in")){
-            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. You wanted to be notified if anyone <b>edit a comment</b> ." +
+            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner.<br> You wanted to be notified if somebody <b>edit a comment</b> ." +
                     "                <br>Maybe you would like to know what the comment is about?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
                     "                    </p>";
         }
 
         if(title.contains("New task in")){
-            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. You wanted to be notified if anyone <b>edit a task</b> ." +
+            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner.<br> You wanted to be notified if somebody <b>edit a task</b> ." +
                     "                <br>Maybe you would like to know if you can do them a favor?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
                     "                    </p>";
         }
 
         if(title == "Task accepted"){
-            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. You wanted to be notified if anyone <b>accepted your task</b> ." +
+            body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. <br>You wanted to be notified if somebody <b>accepted your task</b> ." +
                     "                <br>Maybe you would like to know who brings you something?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
                     "                    </p>";
         }
@@ -292,10 +294,20 @@ public class UserLogic {
         try{
             System.out.println(getUser(receiver));
             emailservice.send(getUser(receiver).geteMail(), newTitle, body);
-//            emailservice.sendHtml(getUser(receiver).geteMail(),title, body, htmlTemplate);
-        } catch(Exception e){
+        } catch(Exception e) {
             e.printStackTrace();
         }
+        Message message = Message.builder()
+                .putData("title", title)
+                .putData("body", description)
+                .putData("tag", linkToClick)
+                .putData("icon", "https://greenbyte.group/assets/images/logo.png")
+                .setToken(fcmToken)
+                .build();
+
+        String response = FirebaseMessaging.getInstance().send(message);
+        System.out.println("Successfully sent message: " + response);
+
 
     }
 

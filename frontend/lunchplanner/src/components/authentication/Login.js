@@ -12,30 +12,48 @@ import Button from '@material-ui/core/Button';
 import LoginIcon from '@material-ui/icons/ExitToApp';
 import Modal from 'react-modal';
 
+
+let sushi = '/sushi.jpg';
+let kebab = '/kebab.jpg';
+
 const styles = theme => ({
     root: {
         display: 'flex',
         flexDirection: 'column',
-        height: '100%',
-        maxWidth: '600px',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        flex: '0 1 auto',
+        height: '-webkit-fill-available',
+        maxHeight: '100%',
+        width: '-webkit-fill-available',
+        maxWidth: '100%',
+    },
+    root2: {
+        display: 'flex',
+        flexDirection: 'row',
+        height: '-webkit-fill-available',
+        maxHeight: '100%',
+        width: '-webkit-fill-available',
+        maxWidth: '100%',
     },
     description: {
         fontSize: '25px',
         lineHeight: '24px',
         textAlign: 'center',
         margin: '20px',
+
     },
     content: {
         justifyContent: 'space-between',
         flexGrow: 1,
         padding: '0 5px',
+        height: '-webkit-fill-available',
+        maxHeight: '100%',
+        width: '-webkit-fill-available',
+        maxWidth: '100%',
     },
     button: {
-        height: '56px',
-        width: '100%',
+        height: '-webkit-fill-available',
+        maxHeight: '50px',
+        width: '-webkit-fill-available',
+        maxWidth: '100%',
         color: 'white',
         fontSize: '15px',
     },
@@ -47,6 +65,44 @@ const styles = theme => ({
     },
     textField: {
         flexBasis: 200,
+    },
+    left:{
+        height: '-webkit-fill-available',
+        maxHeight: '100%',
+        width: '-webkit-fill-available',
+        maxWidth: '25%',
+        float: 'left',
+        overflow: 'hidden',
+        backgroundImage: 'url(' + sushi + ')',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat',
+
+    },
+    right: {
+        height: '-webkit-fill-available',
+        maxHeight: '100%',
+        width: '-webkit-fill-available',
+        maxWidth: '25%',
+        float: 'right',
+        overflowX: 'hidden',
+        overflowY: 'hidden' ,
+        backgroundImage: 'url(' + kebab + ')',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat',
+    },
+    logo: {
+        display: 'flex',
+        position: 'relative',
+        height: '-webkit-fill-available',
+        maxHeight: '200px',
+        width: '-webkit-fill-available',
+        maxWidth: '200px',
+        marginTop: '15px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+
     },
 
 });
@@ -163,11 +219,13 @@ class Login extends React.Component {
             disabled = false;
 
         return (
-            <div className={classes.root}>
-                <div className={classes.content}>
-                    {(error
-                            ? <Modal
-                                isOpen={this.state.modalIsOpen}
+            <div className={classes.root2}>
+                <div className={classes.left}/>
+                <div className={classes.root}>
+                    <div className={classes.content}>
+                        {(error
+                                ? <Modal
+                                    isOpen={this.state.modalIsOpen}
                                 // onAfterOpen={this.afterOpenModal}
                                 onRequestClose={this.closeModal}
                                 style={customStyles}
@@ -176,8 +234,9 @@ class Login extends React.Component {
                             : ""
                     )}
                     <p className={classes.description}>
-                        Welcome back. <br/> Please type in your account info!
+                        Welcome back. <br/>
                     </p>
+                    <img label="logoLunchplanner" src="/foodastic.png" className={classes.logo}/>
                     <FormControl
                         fullWidth
                         className={classes.margin}
@@ -222,6 +281,8 @@ class Login extends React.Component {
                 <Button disabled={disabled} fullWidth variant="raised" color="secondary" className={classes.button} onClick={this.handleSubmit}>
                     <LoginIcon color={"#FFFFF"}/>LOGIN
                 </Button>
+            </div>
+                <div className={classes.right}/>
             </div>
         );
     }
