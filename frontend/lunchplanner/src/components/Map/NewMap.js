@@ -1,6 +1,6 @@
 import React from "react"
 import { compose, withProps } from "recompose"
-import { withScriptjs, withGoogleMap, GoogleMap, Marker} from "react-google-maps"
+import { withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow} from "react-google-maps"
 import Dialog from '../Dialog';
 import {getHistory} from "../../utils/HistoryUtils";
 import FloatingActionButton from "../FloatingActionButton";
@@ -104,9 +104,6 @@ export class NewMap extends React.Component {
         }else{
 
         }
-       //  console.log(this.state.lat, this.state.lng, this.state.placeId)
-       // this.state.onLocationChange(this.state.lat, this.state.lng, this.state.placeId);
-       //  getHistory().push(this.props.location.query.source);
     };
 
     render() {

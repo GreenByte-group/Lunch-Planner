@@ -19,7 +19,13 @@ const styles = {
         fontSize: '13px',
         lineHeight: '20px',
         marginBottom: '0px',
-        marginLeft: '88px',
+    },
+    titleHeader: {
+        fontFamily: "Work Sans",
+        color: 'rgba(46,46,46,0.5)',
+        fontSize: '8px',
+        marginBottom: '0',
+
     },
     date: {
         fontFamily: "Work Sans",
@@ -52,6 +58,8 @@ const styles = {
         height: 'auto',
     },
     text: {
+        display: 'flex',
+        flexDirection: 'row',
         float: 'left',
         width: '100%',
         color: 'black',
@@ -61,6 +69,12 @@ const styles = {
         float: 'left',
         display: 'inline-flex',
         justifyContent: 'center',
+        marginTop: '5px',
+    },
+    column: {
+        display: 'flex',
+        flexDirection: 'column',
+        marginLeft: '30px'
     },
     icon: {
         height: '24px',
@@ -160,7 +174,10 @@ class Team extends React.Component {
                                 </div> : ""
                             }
                        </div>
-                        <p className={classes.title}>{name}</p>
+                        <div className={classes.column}>
+                            <p className={classes.titleHeader}>Team</p>
+                            <p className={classes.title}>{name}</p>
+                        </div>
                     </div>
                     {/*<IconButton>*/}
                         {/*<TeamIcon className={classes.icon} color="primary" />*/}

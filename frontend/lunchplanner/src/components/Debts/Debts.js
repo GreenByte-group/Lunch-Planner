@@ -197,7 +197,7 @@ class Debts extends React.Component {
                         <p className={classes.textCreditor}>{this.state.creditor}</p>
                     </div>
                     <div className={classes.arrowsumcontext}>
-                        <p className={classes.sumText}>have to pay to</p>
+                        <p className={classes.sumText}>have to pay</p>
                         <Divider/>
                         <p className={classes.sum}>{this.state.sum + ' €'}</p>
                     </div>

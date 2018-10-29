@@ -104,6 +104,7 @@ class TimeSettingsItem extends React.Component {
                     <TimePicker
                         disabled={!this.state.enabled}
                         className={classes.timePicker}
+                        placeholder={'00:00'}
                         value={this.state.value}
                         format='24hr'
                         minutesStep={5}

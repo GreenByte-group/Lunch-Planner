@@ -59,6 +59,10 @@ const styles = theme => ({
     },
     margin: {
         margin: '20px 0px',
+        width: '-webkit-fill-available',
+        maxWidth: '100%',
+        marginLeft: '10%',
+        marginRight: '10%',
     },
     withoutLabel: {
         marginTop: theme.spacing.unit * 3,

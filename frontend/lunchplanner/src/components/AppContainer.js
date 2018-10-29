@@ -29,6 +29,7 @@ import UserEditScreen from "./User/UserEditScreen";
 import {HOST} from "../Config";
 
 import 'react-day-picker/lib/style.css';
+import {Scrollbars} from "react-custom-scrollbars";
 const styles = {
     flex: {
         flex: 1,
@@ -66,6 +67,9 @@ const styles = {
             textDecoration: 'none',
         },
 
+    },
+    scrolls: {
+        backgroundColor: '#FAFAFA',
     },
     avatar:{
         width: '64px',
@@ -118,6 +122,7 @@ const styles = {
         maxHeight: '38px',
         width: '-webkit-fill-available',
         maxWidth: '100px',
+        backgroundColor: 'white',
 
 
 }
@@ -352,12 +357,12 @@ class AppContainer extends React.Component {
                             />
                         </MenuItem>
                         <Divider />
-                        <Link to="/app/notifications?tab=1">
-                            <MenuItem>
-                                <Settings className={classes.icons}/>
-                                Options
-                            </MenuItem>
-                        </Link>
+                        {/*<Link to="/app/notifications?tab=1">*/}
+                            {/*<MenuItem>*/}
+                                {/*<Settings className={classes.icons}/>*/}
+                                {/*Options*/}
+                            {/*</MenuItem>*/}
+                        {/*</Link>*/}
                         <MenuItem onClick={this.signOut}>
                             <ExitToApp className={classes.icons}/>
                             Sign Out

@@ -37,8 +37,8 @@ const oldTheme = getMuiTheme({
 
 const theme = createMuiTheme({
     palette: {
-        secondary: {main: "#75a045"},
-        primary: {main: '#f29b26'},
+        primary: {main: "#75a045"},
+        secondary: {main: '#f29b26'},
     },
     typography: {
         fontFamily: "Work Sans",

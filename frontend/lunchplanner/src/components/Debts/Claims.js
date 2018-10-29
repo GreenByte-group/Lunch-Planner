@@ -219,7 +219,7 @@ class Claims extends React.Component {
                         </div>
                     </div>
                     <div className={classes.arrowsumcontext}>
-                        <p className={classes.sumText}>have to pay to</p>
+                        <p className={classes.sumText}>have to pay</p>
                         <Divider/>
                         <p className={classes.sum}>{this.state.sum + ' €'}</p>
                     </div>

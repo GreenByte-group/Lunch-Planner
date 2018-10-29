@@ -67,8 +67,15 @@ const styles = theme => ({
         marginLeft: theme.spacing.unit,
         marginRight: theme.spacing.unit,
     },
+    reSize: {
+        fontSize: 20,
+    },
     margin: {
         margin: '20px 0px',
+        width: '-webkit-fill-available',
+        maxWidth: '100%',
+        marginLeft: '10%',
+        marginRight: '10%',
     },
     withoutLabel: {
         marginTop: theme.spacing.unit * 3,
@@ -245,7 +252,6 @@ class Registration extends React.Component {
                     </p>
                     <img label="logoLunchplanner" src="/foodastic.png" className={classes.logo}/>
                     <FormControl
-                        fullWidth
                         className={classes.margin}
                         aria-describedby="weight-helper-text"
                     >

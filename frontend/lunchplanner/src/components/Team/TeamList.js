@@ -1,7 +1,7 @@
 import React from "react"
 
 import Team from "./Team";
-import {List, CircularProgress} from "@material-ui/core/";
+import {List, ListItem, Card, CardContent, CircularProgress} from "@material-ui/core/";
 import {People, TagFaces} from "@material-ui/icons";
 import {withStyles} from "@material-ui/core/styles/index";
 import FloatingActionButton from "../FloatingActionButton";
@@ -17,6 +17,8 @@ const styles = {
     },
     list: {
         padding: 0,
+        display: 'flex',
+        flexDirection: 'column',
     },
     progress:{
         marginLeft: '50%',
@@ -26,7 +28,13 @@ const styles = {
         marginLeft: 16,
         marginTop: 10,
         fontSize: 14,
-    }
+    },
+    card: {
+        width: '-webkit-fill-available',
+        maxWidth: '100%',
+        marginLeft: '10%',
+        marginRight: '10%',
+    },
 };
 
 export let needReload = false;
@@ -102,19 +110,26 @@ class TeamList extends React.Component {
                         <div >
                             <List className={classes.list}>
                                 {teams.map((listValue)=>{
-                                    return <div>
-                                        <p className={classes.parentTeamName}>{teams.forEach((value) =>{
-                                            if(listValue.parentTeam === value.teamId){
-                                                parentTeamName = value.teamName;
-                                            }
-                                            return parentTeamName;
-                                        })}{parentTeamName}</p>
-                                        <Team name={listValue.teamName}
-                                              id={listValue.teamId}
-                                              member={listValue.invitations}
-                                        />
-                                    </div>
+                                    return <ListItem>
+                                            <Card className={classes.card}>
+                                                <CardContent>
+                                                    <div>
+                                                <p className={classes.parentTeamName}>{teams.forEach((value) =>{
+                                                    if(listValue.parentTeam === value.teamId){
+                                                        parentTeamName = value.teamName;
+                                                    }
+                                                    return parentTeamName;
+                                                })}{'a team from ' + parentTeamName}</p>
+                                                <Team name={listValue.teamName}
+                                                      id={listValue.teamId}
+                                                      member={listValue.invitations}
+                                                />
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
+                                    </ListItem>
                                 })}
+
                             </List>
                             <FloatingActionButton
                                 actions={

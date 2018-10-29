@@ -3,9 +3,7 @@ package group.greenbyte.lunchplanner.user;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.Message;
 import group.greenbyte.lunchplanner.event.EmailService;
 import group.greenbyte.lunchplanner.event.EventLogic;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
@@ -227,13 +225,13 @@ public class UserLogic {
     }
 
     public void sendNotification(String fcmToken, String receiver, String title, String description, String linkToClick, String picturePath) throws FirebaseMessagingException,HttpRequestException {
-        if(!fcmInitialized) {
-            try {
-                initNotifications();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        if(!fcmInitialized) {
+//            try {
+//                initNotifications();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         System.out.println("FCM token null");
         if(fcmToken == null)
@@ -297,16 +295,16 @@ public class UserLogic {
         } catch(Exception e) {
             e.printStackTrace();
         }
-        Message message = Message.builder()
-                .putData("title", title)
-                .putData("body", description)
-                .putData("tag", linkToClick)
-                .putData("icon", "https://greenbyte.group/assets/images/logo.png")
-                .setToken(fcmToken)
-                .build();
-
-        String response = FirebaseMessaging.getInstance().send(message);
-        System.out.println("Successfully sent message: " + response);
+//        Message message = Message.builder()
+//                .putData("title", title)
+//                .putData("body", description)
+//                .putData("tag", linkToClick)
+//                .putData("icon", "https://greenbyte.group/assets/images/logo.png")
+//                .setToken(fcmToken)
+//                .build();
+//
+//        String response = FirebaseMessaging.getInstance().send(message);
+//        System.out.println("Successfully sent message: " + response);
 
 
     }
