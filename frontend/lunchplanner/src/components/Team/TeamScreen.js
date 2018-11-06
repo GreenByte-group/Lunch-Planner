@@ -122,7 +122,9 @@ const styles = {
     teamName: {
         width: '100%',
     },
-    description: {
+    description:{
+        maxHeight: '100%',
+        overflow: 'scroll',
         paddingTop: '10px',
         marginTop: '15px',
         fontSize: '16px',
@@ -134,18 +136,15 @@ const styles = {
         fontWeight: '900',
         margin: '0px',
         width: '100%',
-        backgroundColor: 'rgba(0,0,0,0.4)',
+        maxHeight: '20%',
         color: 'white',
-        textShadowOffset: { width: '5', height: '5' },
-        textShadowRadius: '3',
-        textShadowColor: 'black',
         backgroundColor: 'rgba(0,0,0,0.4)',
         textShadowOffset: { width: '5', height: '5' },
         textShadowRadius: '3',
         textShadowColor: 'white',
     },
     secretTeam:{
-        marginTop: '20px',
+        marginTop: '20%',
         marginLeft: '20px',
         color: '#1EA185',
     },
@@ -531,7 +530,7 @@ class TeamScreen extends React.Component {
                                 </div>
                                 <div className={classes.description}>
                                     <p className={classes.fontSmall}>Description</p>
-                                    <TextFieldEditing rowsMax="3" onChange={this.onDescriptionChanged} value={description} editable={iAmAdmin} className={classes.descriptionText}  multiline/>
+                                    <TextFieldEditing rowsMax="3" onChange={this.onDescriptionChanged} value={description} editable={iAmAdmin} className={classes.descriptionText} multiline />
                                 </div>
                                 <div className={classes.plusIconContainer}>
                                         <IconButton>
