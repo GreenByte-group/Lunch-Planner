@@ -25,17 +25,18 @@ export function getTeam(teamId, responseFunc) {
         .then(responseFunc);
 }
 
-export function createTeam(name, description, member, visible, responseFunc, errorFunc) {
-    createTeamWithParent(name,description, null, member, visible, responseFunc, errorFunc);
+export function createTeam(name, description, member, picture, visible, responseFunc, errorFunc) {
+    createTeamWithParent(name,description, null, picture, member, visible, responseFunc, errorFunc);
 }
 
-export function createTeamWithParent(name, description, parent, member, visible, responseFunc, errorFunc) {
+export function createTeamWithParent(name, description, parent, picture, member, visible, responseFunc, errorFunc) {
     let url =  HOST + '/team';
     let data;
+    console.log('function', picture);
     if(parent !== null) {
-        data = {teamName: name, description: description, visible: visible, parent: parent};
+        data = {teamName: name, description: description, visible: visible, parent: parent, picture: picture};
     } else {
-        data = {teamName: name, description: description, visible: visible}
+        data = {teamName: name, description: description, visible: visible, picture: picture}
     }
 
     axios.post(url, data)
@@ -59,6 +60,12 @@ export function inviteMember(teamId, member) {
                 })
         });
     }
+}
+export function changePicture(teamId, picture){
+    let url = HOST + "/team" + picture + "/" + teamId;
+
+    axios.post(url)
+        .then((response) => {});
 }
 
 export function removeUserFromTeam(teamdId, username, responseFunc) {

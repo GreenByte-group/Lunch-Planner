@@ -26,6 +26,7 @@ public class TeamDaoMySql implements TeamDao {
     private static final String TEAM_DESCRIPTION = "description";
     private static final String TEAM_PUBLIC = "is_public";
     private static final String TEAM_PARENT = "parent_team";
+    private static final String TEAM_PICTURE= "picture";
 
     public static final String TEAM_MEMBER_TABLE = "team_member";
     public static final String TEAM_MEMBER_USER = "user_name";
@@ -41,13 +42,16 @@ public class TeamDaoMySql implements TeamDao {
 
 
     @Override
-    public int insertTeam(String teamName, String description, String adminName, boolean isPublic) throws DatabaseException {
+    public int insertTeam(String teamName, String description, String adminName, String picture, boolean isPublic) throws DatabaseException {
+        System.out.println("HIER: "+teamName+", "+picture);
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(TEAM_TABLE).usingGeneratedKeyColumns(TEAM_ID);
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(TEAM_NAME, teamName);
         parameters.put(TEAM_DESCRIPTION, description);
         parameters.put(TEAM_PUBLIC, isPublic);
+        parameters.put(TEAM_PICTURE, picture);
+
 
         try {
             Number key = simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
@@ -61,7 +65,8 @@ public class TeamDaoMySql implements TeamDao {
     }
 
     @Override
-    public int insertTeamWithParent(String teamName, String description, String adminName, boolean isPublic, int parent) throws DatabaseException {
+    public int insertTeamWithParent(String teamName, String description, String adminName, String picture, boolean isPublic, int parent) throws DatabaseException {
+       System.out.println("HIER: "+teamName+", "+picture);
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(TEAM_TABLE).usingGeneratedKeyColumns(TEAM_ID);
         Map<String, Object> parameters = new HashMap<>();
@@ -69,6 +74,7 @@ public class TeamDaoMySql implements TeamDao {
         parameters.put(TEAM_DESCRIPTION, description);
         parameters.put(TEAM_PARENT, parent);
         parameters.put(TEAM_PUBLIC, isPublic);
+        parameters.put(TEAM_PICTURE, picture);
 
         try {
             Number key = simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
@@ -99,6 +105,10 @@ public class TeamDaoMySql implements TeamDao {
 
                 team.setInvitations(new HashSet<>(getInvitations(team.getTeamId())));
 
+                if(team.getPicture() == null){
+                    team.setPicture("/pics/conference.jpg");
+                }
+                System.out.println("all data from teamDB: "+team.getTeamId()+", "+team.getParentTeam()+", "+team.getTeamName()+", "+team.getDescription()+", "+team.getPicture());
                 return team;
             }
         } catch (Exception e) {
@@ -358,6 +368,21 @@ public class TeamDaoMySql implements TeamDao {
         }
 
         return false;
+    }
+
+    public String setTeamPicture(int teamId, String picture) throws DatabaseException{
+        String SQL = "UPDATE "+ TEAM_TABLE+ " SET " + TEAM_PICTURE + " = ? WHERE " + TEAM_ID + " = ?";
+
+        System.out.println("gotta move");
+        try{
+            jdbcTemplate.update(SQL,picture,teamId);
+        }catch(Exception e){
+            System.out.println("grammy never git it");
+            throw new DatabaseException(e);
+        }
+
+        return "";
+
     }
 
     @Override

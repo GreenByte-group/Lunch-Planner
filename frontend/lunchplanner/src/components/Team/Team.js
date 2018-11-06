@@ -7,23 +7,25 @@ import {HOST} from "../../Config";
 
 const styles = {
     listItem: {
-        padding: '7px 16px',
-        height: '64px',
+        height: '-webkit-fill-available',
+        maxHeight: '150px',
         '&:hover': {
             backgroundColor: '#0303031a !important',
         }
     },
     title: {
         fontFamily: "Work Sans",
-        color: 'rgba(46,46,46,0.87)',
-        fontSize: '13px',
+        color: 'white',
+        fontWeight: '900',
+        fontSize: '20px',
         lineHeight: '20px',
         marginBottom: '0px',
     },
     titleHeader: {
         fontFamily: "Work Sans",
-        color: 'rgba(46,46,46,0.5)',
-        fontSize: '8px',
+        color: 'white',
+        fontWeight: '900',
+        fontSize: '14px',
         marginBottom: '0',
 
     },
@@ -63,6 +65,10 @@ const styles = {
         float: 'left',
         width: '100%',
         color: 'black',
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        textShadowOffset: { width: '5', height: '5' },
+        textShadowRadius: '3',
+        textShadowColor: 'white',
     },
     row: {
         marginLeft: '12px',

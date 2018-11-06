@@ -12,6 +12,8 @@ public class TeamDatabase {
 
     private Integer parentTeam ;
 
+    private String picture;
+
     /**
      * @return team with all data from the entity and no relations
      */
@@ -22,8 +24,17 @@ public class TeamDatabase {
         team.setIsPublic(isPublic);
         team.setTeamId(teamId);
         team.setParentTeam(parentTeam);
+        team.setPicture(picture);
 
         return team;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 
     public int getTeamId() {

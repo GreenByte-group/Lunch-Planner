@@ -13,6 +13,9 @@ import {
 } from "./UserFunctions";
 import {HOST} from "../../Config";
 import {userNeedReload} from "../AppContainer";
+import Modal from 'react-modal';
+import Dialog from "../Dialog";
+import {getHistory} from "../../utils/HistoryUtils";
 
 const styles = theme => ({
     root: {
@@ -98,7 +101,34 @@ const styles = theme => ({
         width: '100%',
         maxWidth: '300px',
     },
-    button: {
+    buttonYes: {
+        maxWidth: '100px',
+        fontSize: '14px',
+        marginLeft: '25%',
+        float: 'left',
+        boxShadow: '0px 1px 5px 0px rgba(0, 0, 0, 0.2),0px 2px 2px 0px rgba(0, 0, 0, 0.14),0px 3px 1px -2px rgba(0, 0, 0, 0.12)',
+        backgroundColor: '#75a045',
+        color: 'white',
+        "&:hover": {
+            backgroundColor: '#9cd556',
+        },
+
+    },
+    buttonNo: {
+        fontSize: '14px',
+        marginLeft: '25%',
+        float: 'right',
+        boxShadow: '0px 1px 5px 0px rgba(0, 0, 0, 0.2),0px 2px 2px 0px rgba(0, 0, 0, 0.14),0px 3px 1px -2px rgba(0, 0, 0, 0.12)',
+        backgroundColor: '#75a045',
+        color: 'white',
+        "&:hover": {
+            backgroundColor: '#9cd556',
+        }
+    },
+    buttonSubmit: {
+        fontSize: '14px',
+        justifyContent: 'center',
+        float: 'left',
         boxShadow: '0px 1px 5px 0px rgba(0, 0, 0, 0.2),0px 2px 2px 0px rgba(0, 0, 0, 0.14),0px 3px 1px -2px rgba(0, 0, 0, 0.12)',
         backgroundColor: '#75a045',
         color: 'white',
@@ -111,10 +141,25 @@ const styles = theme => ({
     },
     placeGiver: {
         padding: '10px',
+    },
+    sure: {
+        display: 'flex',
+        flexDirection: 'row',
+        width: '-webkit-fill-available',
+        height: '-webkit-fill-available',
+        maxHeight: '100px',
+        marginBottom:'20px'
+
+    },
+    mainContent: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent:'center',
     }
 });
 
 class UserEditScreen extends React.Component {
+
 
     constructor(props) {
         super();
@@ -129,8 +174,11 @@ class UserEditScreen extends React.Component {
             pathImage: null,
             delete: false,
             pathProfilePicture: "",
-        };
+            modalIsOpen: false,
+            sure: false,
+            disabledSubmit: false,
 
+        };
         this.getUser();
     }
 
@@ -157,13 +205,37 @@ class UserEditScreen extends React.Component {
         })
     };
 
+    onDeleteYes = () => {
+        this.setState({
+            sure: true,
+            disabledSubmit: true,
+        });
+        console.log('choice yes');
+    };
+
+    onDeleteNo = () => {
+        this.setState({
+            sure: false,
+            disabledSubmit: true,
+        });
+        console.log('choice no');
+    };
 
     onDeleteClick = () => {
         this.setState({
             delete: true,
         });
-        deleteAccount(getUsername());
     };
+
+    onDeleteSubmit = () => {
+      let sure = this.state.sure;
+      if(sure){
+          deleteAccount(getUsername());
+      }else{
+          getHistory().push('/app/event');
+      }
+    };
+
 
     onSubmit = () => {
         if(this.state.pathImage) {
@@ -293,6 +365,54 @@ class UserEditScreen extends React.Component {
                             >
                                 Delete my account
                             </Button>
+                            { (this.state.delete) ?
+
+                                <Dialog
+                                    title={'Delete User'}
+                                >
+
+                                    <div className={classes.mainContent}>
+                                        <p style={{
+                                            position: 'sticky',
+                                            margin: 'auto',
+                                            marginTop: '20px',
+                                            marginBottom: '20px',}}
+                                        >
+                                            Are you sure??
+                                        </p>
+                                    <div className={classes.sure}>
+                                        <Button
+                                            className={classes.buttonYes}
+                                            onClick={this.onDeleteYes}
+                                            variant="contained"
+                                            color="primary"
+                                        >
+                                            <p>Yes</p>
+                                        </Button>
+                                        <Button
+                                            className={classes.buttonNo}
+                                            onClick={this.onDeleteNo}
+                                            variant="contained"
+                                            color="primary"
+                                        >
+                                            <p>No</p>
+                                        </Button>
+
+                                    </div>
+                                    </div>
+                                    <Button
+                                        disabled={!this.state.disabledSubmit}
+                                        className={classes.buttonSubmit}
+                                        onClick={this.onDeleteSubmit}
+                                        variant="contained"
+                                        color="primary"
+                                    >
+                                        <p>Submit</p>
+                                    </Button>
+                                </Dialog>
+
+                                :""
+                            }
                         </div>
                     }
                     <div className={classes.editArea}>

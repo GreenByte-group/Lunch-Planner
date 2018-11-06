@@ -126,10 +126,11 @@ public class TeamController {
         try {
             int teamId;
 
+            System.out.println("controller: "+teamjson.getPicture());
             if(teamjson.getParent()!= null) {
-                teamId = teamlogic.createTeamWithParent(SessionManager.getUserName(), teamjson.getParent(), teamjson.getTeamName(), teamjson.getDescription(), teamjson.isVisible());
+                teamId = teamlogic.createTeamWithParent(SessionManager.getUserName(), teamjson.getParent(), teamjson.getTeamName(), teamjson.getDescription(), teamjson.getPicture(), teamjson.isVisible());
             }else{
-                teamId = teamlogic.createTeamWithoutParent(SessionManager.getUserName(),teamjson.getTeamName(), teamjson.getDescription(), teamjson.isVisible());
+                teamId = teamlogic.createTeamWithoutParent(SessionManager.getUserName(),teamjson.getTeamName(), teamjson.getDescription(),teamjson.getPicture(), teamjson.isVisible());
             }
 
             response.setStatus(HttpServletResponse.SC_CREATED);
@@ -140,6 +141,22 @@ public class TeamController {
             response.setStatus(e.getStatusCode());
             return e.getErrorMessage();
 
+        }
+    }
+
+    @RequestMapping(value = "/pics/{picture}/{teamId}", method = RequestMethod.POST,
+            produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String setTeamPicture(@PathVariable("teamId")int teamId,@PathVariable("picture")String picture, HttpServletResponse response){
+        try{
+            System.out.println(teamId + picture);
+            String pic = "/pics/" + picture;
+            String ret = teamlogic.setTeamPicture(teamId, pic);
+            response.setStatus(HttpServletResponse.SC_OK);
+            return ret;
+        }catch(HttpRequestException e){
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
         }
     }
 

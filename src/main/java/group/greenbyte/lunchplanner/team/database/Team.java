@@ -24,6 +24,9 @@ public class Team {
     @Column(length = MAX_DESCRIPTION_LENGHT)
     private String description;
 
+    @Column
+    private String picture;
+
     @OneToMany(mappedBy = "user")
     private Set<TeamMember> teamsMember;
 
@@ -40,6 +43,13 @@ public class Team {
     @Transient
     private Integer parentId;
 
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
 
     public Integer getTeamId() {
         return teamId;

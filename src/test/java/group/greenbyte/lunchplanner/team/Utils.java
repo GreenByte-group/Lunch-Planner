@@ -6,8 +6,9 @@ public class Utils {
     public static int createTeamWithoutParent(TeamLogic teamLogic,
                                               String userName,
                                               String teamName,
-                                              String description) throws Exception {
-        return teamLogic.createTeamWithoutParent(userName, teamName, description, false);
+                                              String description,
+                                              String picture) throws Exception {
+        return teamLogic.createTeamWithoutParent(userName, teamName, description, picture, false);
     }
 
     public static void setTeamPublic(TeamDao teamDao, int teamId) throws Exception {

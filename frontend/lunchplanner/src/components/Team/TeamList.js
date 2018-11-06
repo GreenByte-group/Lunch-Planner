@@ -27,7 +27,15 @@ const styles = {
     parentTeamName:{
         marginLeft: 16,
         marginTop: 10,
-        fontSize: 14,
+        fontSize: 20,
+        textDecoration: 'underline',
+        fontWeight: '900',
+        color: '#ff7700',
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        textShadowOffset: { width: '5', height: '5' },
+        textShadowRadius: '3',
+        textShadowColor: 'white',
+
     },
     card: {
         width: '-webkit-fill-available',
@@ -110,20 +118,29 @@ class TeamList extends React.Component {
                         <div >
                             <List className={classes.list}>
                                 {teams.map((listValue)=>{
+                                    console.log('listValue', listValue);
+                                    if(listValue.picture === "" || listValue.picture === null){
+                                        listValue.picture = "/pics/conference.jpg";
+                                    }
                                     return <ListItem>
                                             <Card className={classes.card}>
                                                 <CardContent>
-                                                    <div>
-                                                <p className={classes.parentTeamName}>{teams.forEach((value) =>{
-                                                    if(listValue.parentTeam === value.teamId){
-                                                        parentTeamName = value.teamName;
-                                                    }
-                                                    return parentTeamName;
-                                                })}{'a team from ' + parentTeamName}</p>
-                                                <Team name={listValue.teamName}
-                                                      id={listValue.teamId}
-                                                      member={listValue.invitations}
-                                                />
+                                                    <div style={ {backgroundImage: `url(${listValue.picture})`,
+                                                        backgroundSize: 'cover',
+                                                        backgroundPosition: 'center'
+                                                    }}>
+                                                        <p className={classes.parentTeamName}>{teams.forEach((value) =>{
+                                                            if(listValue.parentTeam === value.teamId){
+                                                                parentTeamName = value.teamName;
+                                                            }
+                                                            return parentTeamName;
+                                                        })}{parentTeamName}
+                                                        </p>
+                                                        <Team name={listValue.teamName}
+                                                              id={listValue.teamId}
+                                                              member={listValue.invitations}
+                                                        />
+
                                                     </div>
                                                 </CardContent>
                                             </Card>

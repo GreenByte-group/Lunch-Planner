@@ -8,10 +8,11 @@ import AddIcon from '@material-ui/icons/Add';
 import PeopleIcon from '@material-ui/icons/People'
 import {getHistory} from "../../utils/HistoryUtils";
 import {Link} from "react-router-dom";
-import {FormControlLabel, FormHelperText, InputAdornment, Switch, InputLabel, FormControl} from "@material-ui/core";
+import {FormControlLabel, FormHelperText, InputAdornment, Switch, InputLabel, FormControl, Typography} from "@material-ui/core";
 import {createTeam, createTeamWithParent, getTeams} from "./TeamFunctions";
 import {setAuthenticationHeader} from "../authentication/LoginFunctions";
 import {teamListNeedReload} from "./TeamList";
+import TeamPicsGrid from "./TeamPicsGrid";
 
 const styles = {
     button:{
@@ -61,6 +62,9 @@ const styles = {
     formControl: {
         width: '100%',
         marginTop: '15px',
+    },
+    picButton: {
+        marginTop: '20px'
     }
 };
 const buttonStyle = {
@@ -95,6 +99,9 @@ class CreateTeamScreen extends React.Component {
             parentTeam: null,
             teams: [],
             loading: true,
+            picUrl: params.get('picUrl') || "",
+            openModal: false,
+
         };
 
         this.getTeams();
@@ -143,7 +150,7 @@ class CreateTeamScreen extends React.Component {
     handleAccept = () => {
         let invitedUsers = this.state.invitedUsers + "," + this.state.invitedTeamMember;
         createTeamWithParent(this.state.name, this.state.description, this.state.parentTeam,
-            invitedUsers, !this.state.secret,
+            this.state.picUrl, invitedUsers,  !this.state.secret,
             (response) => {
 
                 if(response.status === 201) {
@@ -177,16 +184,36 @@ class CreateTeamScreen extends React.Component {
         });
     };
 
+    onClickPic = () =>{
+        this.setState({
+            openModal: true,
+        })
+    };
+
     handleParentChange = (event) => {
         this.setState({ parentTeam: event.target.value });
     };
 
-    render() {
+    handleTeamPicGrid = (event) => {
+       console.log('event', event)
+        this.setState({
+           openModal: false,
+            picUrl: event,
+        });
+
+    };
+
+    componentWillReceiveProps(newProps) {
+
+    };
+
+        render() {
         this.parseUrl();
         const { classes } = this.props;
         const error = this.state.error;
-
         let invited = this.state.invitedUsers + "," + this.state.invitedTeams;
+        let picUrl = this.state.picUrl;
+        let clickedPic = this.state.onClickPic;
 
         let buttonEnabled = false;
         if(this.state.name && (this.state.invitedUsers || this.state.invitedTeams)
@@ -296,12 +323,26 @@ class CreateTeamScreen extends React.Component {
                             label="Secret team"
                         />
                         <FormHelperText
-                            style={{margin: 0}}
+                        style={{margin: 0}}
+                    >
+                        If not secret, the team is visible for all users
+                    </FormHelperText>
+                        <FormControlLabel
+                            style={{marginBottom: 0, float: 'right'}}
+                            control={
+                                <Button onClick={this.onClickPic} className={classes.picButton}>
+                                    {(this.state.openModal)
+                                        ? <TeamPicsGrid open ={this.state.openModal} onChange={this.handleTeamPicGrid}/>
+                                        : ""
+                                    }
+                                    choose team picture
+                                </Button>
+                            }
                         >
-                            If not secret, the team is visible for all users
-                        </FormHelperText>
+                        </FormControlLabel>
                     </div>
                 </div>
+                <p>picUrl: {this.state.picUrl}</p>
                 <Button disabled={!buttonEnabled} variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
                     Create Team
                 </Button>

@@ -3,11 +3,13 @@ import Loadable from "react-loading-overlay";
 import {withStyles} from "@material-ui/core/styles/index";
 import React from 'react';
 import Dialog from "../Dialog";
-import {Button, Slide, Divider, CircularProgress} from "@material-ui/core";
+import {IconButton, Button, Slide, Divider, CircularProgress, Modal} from "@material-ui/core";
 import {getUsername, setAuthenticationHeader} from "../authentication/LoginFunctions";
 import {getHistory} from "../../utils/HistoryUtils"
 import {Https as SecretIcon} from "@material-ui/icons";
 import {Public as PublicIcon} from "@material-ui/icons";
+import {AddCircleOutlined as AddIcon} from "@material-ui/icons";
+
 import UserList from "../User/UserList";
 import {
     getTeam,
@@ -16,14 +18,14 @@ import {
     removeUserFromTeam,
     inviteMemberToTeam,
     joinTeam,
-    leaveTeam
+    leaveTeam, changePicture
 } from "./TeamFunctions";
 import {teamListNeedReload} from "./TeamList";
 import TextFieldEditing from "../editing/TextFieldEditing";
 import axios from "axios";
 import {HOST} from "../../Config";
 import {Link} from "react-router-dom";
-import {Add} from "@material-ui/icons";
+import TeamPicsGrid from "./TeamPicsGrid";
 
 
 function Transition(props) {
@@ -73,12 +75,20 @@ const styles = {
     },
     fontBig: {
         fontSize: '20px',
+        fontWeight: '900',
         margin: '0px',
         width: '100%',
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        color: 'white',
+        textShadowOffset: { width: '5', height: '5' },
+        textShadowRadius: '3',
+        textShadowColor: 'white',
     },
     fontSmall: {
         fontSize: '11px',
+        fontWeight: '900',
         margin: '0px',
+        color: '#ff7700',
     },
     icons: {
         height: '13px',
@@ -99,11 +109,16 @@ const styles = {
     },
     information:{
         height: '160px',
-        width: 'atuo',
+        width: 'auto',
         marginLeft: '24px',
         marginRight: '24px',
         marginTop: '24px',
     },
+    image: {
+        height: '160px',
+        width: 'auto',
+        float: 'right',
+        },
     teamName: {
         width: '100%',
     },
@@ -111,7 +126,23 @@ const styles = {
         paddingTop: '10px',
         marginTop: '15px',
         fontSize: '16px',
+        fontWeight: '900',
         width: '100%',
+    },
+    descriptionText: {
+        fontSize: '20px',
+        fontWeight: '900',
+        margin: '0px',
+        width: '100%',
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        color: 'white',
+        textShadowOffset: { width: '5', height: '5' },
+        textShadowRadius: '3',
+        textShadowColor: 'black',
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        textShadowOffset: { width: '5', height: '5' },
+        textShadowRadius: '3',
+        textShadowColor: 'white',
     },
     secretTeam:{
         marginTop: '20px',
@@ -160,9 +191,30 @@ const styles = {
         marginTop: '6px',
         marginLeft: '57px',
     },
+    plusIconContainer: {
+        float: 'right',
+    },
+    plusIcon: {
+        color: '#ff7700',
+
+    },
+    modal:{
+        top: '25%',
+        left: '10%',
+        position: 'absolute',
+        width: '80%',
+        backgroundColor: 'white',
+        boxShadow: '5px',
+        padding: '20px',
+    }
 };
+let backgroundImage = "";
+
+
 
 class TeamScreen extends React.Component {
+
+
 
     constructor(props) {
         super();
@@ -175,14 +227,36 @@ class TeamScreen extends React.Component {
             people:[],
             loading: true,
             isPublic: false,
+            openModal: false,
         };
 
     }
 
+     rand=()=> {
+        return Math.round(Math.random() * 20) - 10;
+    }
+
+     getModalStyle=()=> {
+        const top = 50 + this.rand();
+        const left = 50 + this.rand();
+
+        return {
+            top: `${top}%`,
+            left: `${left}%`,
+            transform: `translate(-${top}%, -${left}%)`,
+        };
+    };
+
     componentDidMount() {
-        let teamId, teamName, description, people, isPublic;
+        let teamId, teamName, description, people, isPublic, picture;
 
         teamId = this.props.match.params.teamId;
+        console.log('datas in frontend',teamId);
+        console.log('datas in frontend',teamName);
+        console.log('datas in frontend',description);
+        console.log('datas in frontend',isPublic);
+        console.log('datas in frontend',people);
+        console.log('datas in frontend',picture);
 
         if(this.props.location.query) {
 
@@ -198,6 +272,9 @@ class TeamScreen extends React.Component {
             if (this.props.location.query.public) {
                 isPublic = this.props.location.query.public;
             }
+            if (this.props.location.query.picture){
+                picture = String(this.props.location.query.picture);
+            }
 
             this.setState({
                 teamId: teamId,
@@ -206,13 +283,16 @@ class TeamScreen extends React.Component {
                 people: people,
                 loading: false,
                 public: isPublic,
+                picture: picture,
             })
+
 
         } else {
             console.log("Query does not exists");
             this.loadTeam(teamId);
         }
     }
+
 
     parseUrl = () => {
         const params = new URLSearchParams(this.props.location.search);
@@ -245,6 +325,8 @@ class TeamScreen extends React.Component {
         }
     };
 
+
+
     loadTeam = (teamId) => {
         this.setState({
             loading: true,
@@ -261,8 +343,12 @@ class TeamScreen extends React.Component {
                 public: response.data.public,
                 loading: false,
                 isPublic: response.data.public,
+                picture: response.data.picture,
             });
         })
+        this.backgroundImage = this.state.picture;
+        console.log('pic', this.backgroundImage);
+
     };
 
     handleLeave = () => {
@@ -335,9 +421,45 @@ class TeamScreen extends React.Component {
         removeUserFromTeam(this.state.teamId, username, this.reloadTeamsOnSuccess)
     };
 
+
+    openGrid = () => {
+        console.log('openGrid => teamScreen');
+
+        this.setState({
+            openModal: true,
+        });
+    };
+
+    closeGrid = (event) => {
+        console.log('closeGrid => teamScreen', event);
+
+        this.setState({
+            openModal: false,
+        });
+        console.log('data for picturechange', this.state.teamId, this.state.picture);
+        changePicture(this.state.teamId, this.state.picture);
+        getHistory().goBack();
+        window.location.reload();
+
+    };
+
+
+
+    handleTeamPicGrid = (event) => {
+        console.log('handleTeamPicGrid => teamScreen => event', event);
+        this.setState({
+            picture: event,
+        });
+    };
+
+
     render() {
         const { classes } = this.props;
+
+        let a = this.state.openModal;
+        console.log('states => closePicChange => teamScreen', a);
         const error = this.state.error;
+
         let name = this.state.name;
         let description = this.state.description;
         let people = this.state.people;
@@ -345,7 +467,8 @@ class TeamScreen extends React.Component {
         let userName = getUsername();
         let loading = this.state.loading;
         let isPublic = this.state.isPublic;
-        console.log("isPublic", isPublic);
+        let picture =  String(this.state.picture);
+
 
         if(people.length !== 0) {
             this.parseUrl();
@@ -385,6 +508,7 @@ class TeamScreen extends React.Component {
         if(iAmAdmin)
             clickRemove = this.clickRemove;
 
+        console.log('picChange', this.state.picChange);
         return (
             <div >
                 {loading ?
@@ -396,17 +520,36 @@ class TeamScreen extends React.Component {
                 >
                     <div className={classes.overButton}>
                         <div className={classes.content}>
-                            <div className={classes.information}>
+                            <div className={classes.information} style={ {backgroundImage: `url(${picture})` ,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+
+                            } }>
                                 <div className={classes.teamName}>
                                     <p className={classes.fontSmall}>Team Name</p>
                                     <TextFieldEditing onChange={this.onTitleChanged} value={name} editable={iAmAdmin} className={classes.fontBig} />
                                 </div>
                                 <div className={classes.description}>
                                     <p className={classes.fontSmall}>Description</p>
-                                    <TextFieldEditing rowsMax="3" onChange={this.onDescriptionChanged} value={description} editable={iAmAdmin} className={classes.description}  multiline/>
+                                    <TextFieldEditing rowsMax="3" onChange={this.onDescriptionChanged} value={description} editable={iAmAdmin} className={classes.descriptionText}  multiline/>
+                                </div>
+                                <div className={classes.plusIconContainer}>
+                                        <IconButton>
+                                            <AddIcon className={classes.plusIcon} onClick={this.openGrid}/>
+                                            {(this.state.openModal)
+                                                ?
+                                                <Modal open={this.state.openModal}>
+                                                    <div className={classes.modal}>
+                                                        <TeamPicsGrid picChange={true} onChange={this.handleTeamPicGrid} handleClose={this.closeGrid}/>
+                                                    </div>
+                                                </Modal>
+
+
+                                                : console.log('give me the juice', this.state)
+                                            }
+                                        </IconButton>
                                 </div>
                             </div>
-
                             <div className={classes.secretTeam}>
                                 {isPublic ?
                                     <div>
@@ -419,10 +562,8 @@ class TeamScreen extends React.Component {
                                         <p className={classes.secretTeamText}>Secret team. Only you can see the activity of this team.</p>
                                     </div>
                                 }
-
                             </div>
                             <Divider className={classes.divider} />
-
                             <div className={classes.invitations}>
                                 <p className={classes.invitaionsHeader}> Team Member ({people.length})</p>
                                 {
@@ -432,7 +573,7 @@ class TeamScreen extends React.Component {
                                                 invitedUsers: people.map((value) => value.userName).join(','),
                                             }}}>
                                             <div className={classes.addNewPeopleRoot}>
-                                                <Add className={classes.newPeopleIcon} />
+                                                <AddIcon className={classes.newPeopleIcon} />
                                                 <p className={classes.newPeopleText}>Add more people...</p>
                                             </div>
                                         </Link>
@@ -463,7 +604,6 @@ class TeamScreen extends React.Component {
                             {buttonText}
                         </Button>
                     }
-
                 </Dialog>}
             </div>
         );

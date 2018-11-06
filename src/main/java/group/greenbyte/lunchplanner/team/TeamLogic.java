@@ -35,14 +35,15 @@ public class TeamLogic {
      * @throws HttpRequestException when teamName, userName, description not valid
      *                              or an Database error happens
      */
-    int createTeamWithParent(String userName, int parent, String teamName, String description, boolean isPublic) throws HttpRequestException {
+    int createTeamWithParent(String userName, int parent, String teamName, String description, String picture, boolean isPublic) throws HttpRequestException {
         checkParams(userName, teamName, description);
+        System.out.println("logic: "+teamName+", "+picture);
 
         try {
             if (!hasViewPrivileges(userName, parent))
                 throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "No Privileges to acces parent team: " + parent);
 
-            return teamdao.insertTeamWithParent(teamName, description, userName, isPublic, parent);
+            return teamdao.insertTeamWithParent(teamName, description, userName, picture, isPublic, parent);
         } catch (DatabaseException d) {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), d.getMessage());
         }
@@ -56,10 +57,12 @@ public class TeamLogic {
      * @throws HttpRequestException when teamName, userName, description not valid
      *                              or an Database error happens
      */
-    int createTeamWithoutParent(String userName, String teamName, String description, boolean isPublic) throws HttpRequestException {
+    int createTeamWithoutParent(String userName, String teamName, String description,String picture, boolean isPublic) throws HttpRequestException {
         checkParams(userName, teamName, description);
+        System.out.println("logic: "+teamName+", "+picture);
+
         try {
-            return teamdao.insertTeam(teamName, description, userName, isPublic);
+            return teamdao.insertTeam(teamName, description, userName, picture, isPublic);
         } catch (DatabaseException d) {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), d.getMessage());
         }
@@ -195,6 +198,19 @@ public class TeamLogic {
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is empty");
 
         return this.searchTeamsForUser(username, "");
+    }
+
+    public String setTeamPicture(int teamId, String picture) throws HttpRequestException{
+        if(teamId < 0){
+            throw new HttpRequestException(HttpStatus.NOT_ACCEPTABLE.value(), "teamId is null");
+        }
+
+        try{
+            teamdao.setTeamPicture(teamId, picture);
+            return "";
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.NOT_ACCEPTABLE.value(), e.getMessage());
+        }
     }
 
 

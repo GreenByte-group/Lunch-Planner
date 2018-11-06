@@ -6,12 +6,8 @@ export function getAll(username, responseFunc, errorFunc) {
     let url = HOST + "/user/debts/getAll/" + username;
 
     axios.get(url)
-        .then((responseFunc) => {
-            console.log('response', responseFunc);
-        })
-        .catch((errorFunc) => {
-                console.log('error', errorFunc)
-            });
+        .then(responseFunc)
+        .catch(errorFunc);
 }
 
 export function get(debtId, responseFunc, errorFunc) {
@@ -20,7 +16,6 @@ export function get(debtId, responseFunc, errorFunc) {
     axios.get(url)
         .then(responseFunc)
         .catch(errorFunc);
-
 }
 
 

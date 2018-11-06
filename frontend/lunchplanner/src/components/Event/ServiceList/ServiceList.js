@@ -7,7 +7,6 @@ import {getServices} from "./ServiceFunctions";
 const styles = theme => ({
     root: {
         width: '100%',
-        backgroundColor: '#FAFAFA',
     },
 });
 
@@ -24,10 +23,7 @@ class ServiceList extends React.Component {
         this.state = {
             eventId: props.eventId,
             items: [
-                // {food:'Döner', description:'Bitte ohne Zwiebeln', creator:'Martin', accepter:'Felix'},
-                // {food:'Döner2', description:'Bitte ohne Tomaten', creator:'Can'},
-                // {food:'Döner3', description:'Bitte ohne Rotkraut', creator:'Sergej', accepter:'Felix'},
-                // {food:'Döner4', description:'Bitte ohne Fleisch, WHAT???!!! Spaß', creator:'Martin'}
+
                 ],
         };
 

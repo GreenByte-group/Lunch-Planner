@@ -25,6 +25,7 @@ import AppContainer from "./components/AppContainer";
 import MyTetris from "./components/EasterEgg/Tetris";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import DebtsScreen from "./components/Debts/DebtsScreen";
+import TeamPicsGrid from "./components/Team/TeamPicsGrid";
 
 
 const oldTheme = getMuiTheme({
@@ -118,6 +119,7 @@ class App extends React.Component {
                             <PrivateRoute path="/app/event/:eventId(\d+)/service" component={ServiceListScreen} />
                             <PrivateRoute path="/app/tetris" component={MyTetris} />
                             <PrivateRoute path="/app/debts" component={DebtsScreen}/>
+                            <PrivateRoute path="/app/team/teamPicsGrid" component={TeamPicsGrid}/>
 
                             {/*<PrivateRoute path="/event" component={LunchPlanner} />*/}
                             {/*<PrivateRoute path="/social" component={SocialScreen} />*/}

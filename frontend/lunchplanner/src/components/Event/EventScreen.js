@@ -145,23 +145,25 @@ function Transition(props) {
             zIndex: '10000',
         },
         serviceListLink: {
-            minHeight: '171px',
+            height: '100px',
+            width: '140px',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
-            backgroundColor: '#FAFAFA',
-            marginLeft: '30px',
-            width: '150px',
+
 
         },
         taskAndDescription: {
             display: 'flex',
             flexDirection: 'row',
-            height: '160px',
-            width: 'atuo',
+            height: '205px',
+            width: '-webkit-fill-available',
+            maxHeight: '205px',
+            maxWidth: '100%',
             marginLeft: '24px',
             marginRight: '24px',
             marginTop: '24px',
+
         },
         serviceList: {
             alignSelf: 'center',
@@ -192,13 +194,17 @@ function Transition(props) {
 
         },
         scrollbar: {
-            backgroundColor: '#FAFAFA',
+
+
         },
         descriptionContainer: {
             flexDirection: 'column',
+            height: '200px',
+            width: '-webkit-fill-available',
+            maxHeight: '205px',
+            maxWidth: '100%',
             backgroundColor: '#FAFAFA',
-            width: '100%',
-            // overflow: 'hidden',
+
         },
         overButton: {
             height: '100%',

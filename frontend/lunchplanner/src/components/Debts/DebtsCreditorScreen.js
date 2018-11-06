@@ -9,7 +9,7 @@ import moment from "moment";
 import {getHistory} from "../../utils/HistoryUtils";
 import DebtsCard from "./DebtsCard";
 import {CircularProgress} from "material-ui";
-import {getAll} from "./DebtsFunctions";
+import {getAll, getAllLiab} from "./DebtsFunctions";
 
 export let needReload = false;
 export function eventListNeedReload() {
@@ -73,7 +73,6 @@ class DebtsCreditorScreen extends React.Component {
 
     loadDebts() {
         getAll(getUsername(), (response) => {
-
             if(response !== 500){
                 this.setState({
                     debts: response.data,
