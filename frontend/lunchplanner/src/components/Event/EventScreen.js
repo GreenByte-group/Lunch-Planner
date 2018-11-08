@@ -150,8 +150,6 @@ function Transition(props) {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
-
-
         },
         taskAndDescription: {
             display: 'flex',
@@ -190,11 +188,6 @@ function Transition(props) {
             marginTop: '15px',
             fontSize: '16px',
             width: '100%',
-
-
-        },
-        scrollbar: {
-
 
         },
         descriptionContainer: {
@@ -575,9 +568,9 @@ class EventScreen extends React.Component {
 
         return (
             <div>
-                {loading ?
-                    <CircularProgress className={classes.progress} color="secondary"/>
-                    :
+                        {loading ?
+                            <CircularProgress className={classes.progress} color="secondary"/>
+                            :
                 <Dialog
                     title={barTitle}
                     closeUrl="/app/event"

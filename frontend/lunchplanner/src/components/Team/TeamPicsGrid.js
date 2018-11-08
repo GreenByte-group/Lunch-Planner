@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {GridList, GridListTile, GridListTileBar, IconButton, Button, Modal} from '@material-ui/core';
-import {ThumbUp, AddCircleOutlined} from '@material-ui/icons';
+import {ThumbUp, AddCircleOutlined, Close} from '@material-ui/icons';
 import Dialog from "../Dialog";
 import FloatingActionButton from "../FloatingActionButton";
 import {Link} from "react-router-dom";
@@ -23,22 +23,31 @@ const styles = {
     },
     gridList: {
         flexWrap: 'nowrap',
-        // width:'-webkit-fill-available',
-        // height: '-webkit-fill-available',
-        // maxWidth: '100%',
-        // maxHeight: '80%',
-        // overflow: 'auto',
         backgroundColor: 'black',
 
+    },
+    tile:{
+        height: '20px',
     },
     subheader: {
         width: '100%',
     },
     button: {
         display: 'flex',
-        position: 'sticky',
+        position: 'absolute',
+        left: '90%',
         backgroundColor: '#75a045',
         justifyContent: 'center',
+    },
+    buttonClose:{
+        left: '0%',
+        display: 'flex',
+        position: 'absolute',
+        justifyContent: 'center',
+        backgroundColor: '#75a045',
+        zIndex: '500',
+        top: '0',
+
     },
     text: {
         fontSize: '16px',
@@ -225,6 +234,11 @@ class TeamPicsGrid extends React.Component {
         this.props.handleClose();
     };
 
+    onClose = () => {
+            getHistory().goBack()
+
+    };
+
     rand() {
         return Math.round(Math.random() * 20) - 10;
     }
@@ -321,9 +335,14 @@ class TeamPicsGrid extends React.Component {
         } else {
             return (
                 <div className={classes.root}>
+                    <div>
+                        <IconButton className={classes.buttonClose} onClick={this.onClose}>
+                            <Close />
+                        </IconButton>
+                    </div>
                     <GridList cellHeight={160} className={classes.gridList} cols={3}>
                         {picData.map(tile => (
-                            <GridListTile key={tile.img} onClick={() => this.selectPhoto(tile)} cols={tile.cols || 1}>
+                            <GridListTile className={classes.tile} ey={tile.img} onClick={() => this.selectPhoto(tile)} cols={tile.cols || 1}>
                                 <img src={tile.img} alt={tile.title}/>
                                 <GridListTileBar
                                     title={tile.title}

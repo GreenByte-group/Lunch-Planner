@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '../Dialog';
+import SpeedSelectGrid from './SpeedSelectGrid'
 import {Switch, Typography, TextField, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Checkbox} from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
@@ -118,6 +119,8 @@ const styles = {
     overButton: {
         height: '100%',
         overflowY: 'auto',
+        width:'100%',
+        overflowX: 'hidden',
         display: 'flex',
         flexDirection: 'column',
     },
@@ -141,6 +144,8 @@ const styles = {
         marginBottom: '10px',
     },
 };
+
+
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -170,6 +175,8 @@ class CreateEventScreen extends React.Component {
             privateLocation: false,
             locationText: params.get('location') || "",
             locationId: params.get('locationId') || null,
+            picUrl:"",
+            deleteStateForSpeedSelect: false,
 
         };
         //TODO location Id
@@ -237,6 +244,8 @@ class CreateEventScreen extends React.Component {
                 else
                     console.log(error);
             });
+
+        this.delete();
     };
 
     handleClickOpen = () => {
@@ -299,7 +308,18 @@ class CreateEventScreen extends React.Component {
             }))
             .then(result => console.log('result',result))
             .catch(error => console.error('Error', error));
+    };
 
+    delete = () => {
+        this.setState({
+           deleteStateForSpeedSelect: true,
+        });
+    };
+
+    handleTeamPicGrid = (event) => {
+        this.setState({
+            locationText: event,
+        });
     };
 
     render() {
@@ -308,6 +328,7 @@ class CreateEventScreen extends React.Component {
         const error = this.state.error;
         let invited =this.state.invitedUsers + "," + this.state.invitedTeams;
         let buttonEnabled = false;
+        let deleteForSpeed = this.state.deleteStateForSpeedSelect;
         if(this.state.locationText)
             buttonEnabled = true;
 
@@ -322,16 +343,23 @@ class CreateEventScreen extends React.Component {
                             ? <p className={classes.error}>{error}</p>
                             : ""
                     )}
-                    {/*<form noValidate autoComplete="on" >*/}
-                       <FormGroup row
+                    <FormGroup  style={{
+                        display: 'flex'
+                    }}>
+                        <div>
+                            <SpeedSelectGrid onChange={this.handleTeamPicGrid} delete={this.state.deleteStateForSpeedSelect}/>
+                        </div>
+                    </FormGroup>
+                    <FormGroup row
                         style={{
                             display: 'flex',
                             flexDirection: 'row',
                             alignItems: 'center',
                             flexWrap: 'nowrap',
+                            marginTop:'15px',
+
                         }}
                        >
-
                             <div
                                 className={classes.searchGoogle}
                             >

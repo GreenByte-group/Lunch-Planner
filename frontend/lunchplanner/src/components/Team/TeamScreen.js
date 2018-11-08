@@ -124,7 +124,8 @@ const styles = {
     },
     description:{
         maxHeight: '100%',
-        overflow: 'scroll',
+        overflowX: 'hidden',
+        overflowY: 'auto',
         paddingTop: '10px',
         marginTop: '15px',
         fontSize: '16px',
@@ -530,7 +531,7 @@ class TeamScreen extends React.Component {
                                 </div>
                                 <div className={classes.description}>
                                     <p className={classes.fontSmall}>Description</p>
-                                    <TextFieldEditing rowsMax="3" onChange={this.onDescriptionChanged} value={description} editable={iAmAdmin} className={classes.descriptionText} multiline />
+                                    <TextFieldEditing rowsMax="3" onChange={this.onDescriptionChanged} value={description} editable={iAmAdmin} className={classes.descriptionText}  multiline/>
                                 </div>
                                 <div className={classes.plusIconContainer}>
                                         <IconButton>

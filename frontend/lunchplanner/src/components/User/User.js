@@ -151,11 +151,11 @@ class Event extends React.Component {
                     </div>
                 </div>
                 {(selected
-                        ? <AcceptedButton />
+                        ? ""
                         : ""
                 )}
                 {(!selected && invited
-                        ? <AcceptedButton invited={true} />
+                        ? ""
                         : ""
                 )}
                 {(this.state.clickRemove)

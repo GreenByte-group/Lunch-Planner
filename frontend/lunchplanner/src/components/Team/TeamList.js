@@ -42,6 +42,9 @@ const styles = {
         maxWidth: '100%',
         marginLeft: '10%',
         marginRight: '10%',
+        '&:hover': {
+            backgroundColor: '#0303031a !important',
+        }
     },
 };
 

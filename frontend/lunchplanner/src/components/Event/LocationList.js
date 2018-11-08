@@ -9,6 +9,7 @@ import {getUsername} from "../authentication/LoginFunctions";
 import { Divider, ListItem} from "@material-ui/core";
 import GPSIcon from "@material-ui/icons/GpsFixed";
 import {getHistory} from "../../utils/HistoryUtils";
+import SpeedSelectGrid from "./SpeedSelectGrid";
 
 const styles = {
     root: {
@@ -43,6 +44,9 @@ const styles = {
     icon:{
         color: "#1EA185",
     },
+    grid:{
+        margin :'0% 10%',
+    },
 };
 
 class LocationList extends React.Component {
@@ -67,7 +71,11 @@ class LocationList extends React.Component {
                 events: newProps.events,
             });
         }
-    }
+    };
+    speedSelect = (event) => {
+        getHistory().push("/app/event/create?location=" + event);
+
+    };
 
     render() {
         const { classes } = this.props;
@@ -108,6 +116,10 @@ class LocationList extends React.Component {
         let isSameLocation = false;
         return (
             <div className={classes.root}>
+                <div className={classes.grid}>
+                    <SpeedSelectGrid create={true} onChange={this.speedSelect}/>
+                </div>
+                <div style={{marginTop: '15px'}}/>
                 <List className={classes.list}>
                     {locationsUnique.map((value) => {
 

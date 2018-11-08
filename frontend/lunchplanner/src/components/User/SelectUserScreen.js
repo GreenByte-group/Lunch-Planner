@@ -188,7 +188,6 @@ class SelectUserScreen extends React.Component {
                     <Dialog
                         zIndex={10001}
                         title={textTitle}
-                        onSearch={this.searchChanged}
                     >
                         <Tabs
                             value={this.state.value}
