@@ -10,6 +10,9 @@ import { Divider, ListItem} from "@material-ui/core";
 import GPSIcon from "@material-ui/icons/GpsFixed";
 import {getHistory} from "../../utils/HistoryUtils";
 import SpeedSelectGrid from "./SpeedSelectGrid";
+import {createEvent} from "./EventFunctions";
+import {eventListNeedReload} from "./EventContainer";
+import moment from "moment/moment";
 
 const styles = {
     root: {
@@ -45,7 +48,8 @@ const styles = {
         color: "#1EA185",
     },
     grid:{
-        margin :'0% 10%',
+        margin :'0% 10px',
+        // boxShadow: '0px 2px 4px -1px rgba(0, 0, 0, 0.2),0px 4px 5px 0px rgba(0, 0, 0, 0.14),0px 1px 10px 0px rgba(0, 0, 0, 0.12)',
     },
 };
 
@@ -73,8 +77,30 @@ class LocationList extends React.Component {
         }
     };
     speedSelect = (event) => {
-        getHistory().push("/app/event/create?location=" + event);
+        console.log('Event: ', event);
 
+        let defaultDate = moment().add(30, 'm').toDate();
+
+
+        createEvent(event,"", defaultDate, [], true, "",
+            (response) => {
+                console.log('all states of new event', this.state);
+                if(response.status === 201) {
+                    eventListNeedReload();
+                    getHistory().push('/app/event');
+                } else {
+                    this.setState({error: response.response.data});
+                }
+            },
+            (error) => {
+                if(error && error.response)
+                    this.setState({error: error.response.data});
+                else
+                    console.log(error);
+            });
+
+
+        // getHistory().push("/app/event");
     };
 
     render() {
@@ -108,7 +134,6 @@ class LocationList extends React.Component {
         let locationsUnique = [];
 
         if(locations.length !== 0) {
-            //remove doubles
             locationsUnique = locations.filter((item, pos) => {
                 return locations.indexOf(item) === pos && !locations.some((person) => person.location === item);
             });

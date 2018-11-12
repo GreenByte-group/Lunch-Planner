@@ -10,6 +10,7 @@ import {Button, MenuItem, List, Divider, withStyles, FormControlLabel,TextField,
 import {EuroSymbol, Place, LocalDining, Group, NotificationsNone, ExitToApp, Settings, Menu} from '@material-ui/icons'
 import InfiniteCalendar from 'react-infinite-calendar';
 import DayPicker from 'react-day-picker';
+import 'react-day-picker/lib/style.css';
 
 
 import {Link} from "react-router-dom";
@@ -30,6 +31,7 @@ import {HOST} from "../Config";
 
 import 'react-day-picker/lib/style.css';
 import {Scrollbars} from "react-custom-scrollbars";
+import {CircularProgress} from "material-ui";
 const styles = {
     flex: {
         flex: 1,
@@ -111,8 +113,10 @@ const styles = {
         boxShadow: '0px 2px 4px -1px rgba(0, 0, 0, 0.2),0px 4px 5px 0px rgba(0, 0, 0, 0.14),0px 1px 10px 0px rgba(0, 0, 0, 0.12)',
     },
     navCalendar: {
+        marginTop: '5%',
         position: 'relative',
-        width: 250,
+        width: '-webkit-fill-available',
+        maxWidth: '250px',
 
 
     },
@@ -123,9 +127,15 @@ const styles = {
         width: '-webkit-fill-available',
         maxWidth: '100px',
         backgroundColor: 'white',
+    },
+    progress:{
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: "auto",
+        marginBottom: "auto",
+        display: "block",
+    }
 
-
-}
 };
 
 export let needReload = false;
@@ -134,10 +144,23 @@ export function userNeedReload() {
     needReload = true;
 }
 
+const selectedStyle = `.DayPicker-Day--highlighted {
+  backgroundColor: "#75a045",
+  color: 'white',
+}`;
+
+const modifiers = {
+
+    highlighted: new Date(2018, 10, 19),
+};
+
+
+
 class AppContainer extends React.Component {
 
     constructor(props) {
         super();
+
         this.state = {
             currentScreen: props.currentScreen,
             openSearch: false,
@@ -146,18 +169,48 @@ class AppContainer extends React.Component {
             username: getUsername(),
             email: "",
             profilePicture: '',
-
+            eventDates: [],
+            selectedDay: [],
             noNotificationToday: false,
+            loading: true,
         };
        // this.handleSearch = this.handleSearch.bind(this);
     }
 
     componentDidMount() {
         this.getData();
+        this.getEventsDays();
+
     }
 
 
+    getEventsDays = () => {
 
+        let eventDays = [];
+        getEvents(null, (response) => {
+            console.log("mal schauen", response);
+
+            let date = new Date();
+            let locationDay = response.data;
+           locationDay.map((tile) => {
+
+               let day = parseInt(tile.startDate.substring(8, 10));
+               let month = parseInt(tile.startDate.substring(5, 7)) - 1;
+               let year = parseInt(tile.startDate.substring(0, 4));
+               console.log('DATE', date);
+               eventDays.push(new Date(year,month,day));
+           });
+        });
+            this.setState({
+               eventDates: eventDays,
+            });
+
+        this.setState({
+            selectedDay: eventDays,
+            loading: false,
+        });
+
+    };
     getData = () => {
         getUser(getUsername(), (response) => {
             if(response.status === 200) {
@@ -251,9 +304,11 @@ class AppContainer extends React.Component {
 
 
 
+
     render() {
         const { classes } = this.props;
 
+        let loading = this.state.loading;
         let component = this.props.match.params.component;
         let children;
         let title;
@@ -313,6 +368,7 @@ class AppContainer extends React.Component {
                         </Link>
                         <Link  to={{pathname: "/app/event",  query: {
                                 search: this.state.search,
+                                events: this.getEvents,
                             }}}>
                             <MenuItem>
                                 <LocalDining className={classes.icons}/>
@@ -370,11 +426,18 @@ class AppContainer extends React.Component {
                     </List>
                 </div>
                 <Divider />
-                <List>
-                    <DayPicker
-                        className={classes.navCalendar}
-                    />
-                </List>
+                {loading ?
+                    (this.state.stateDates === false) ?
+                        <CircularProgress className={classes.progress} color="secondary"/>
+                        : <CircularProgress style={{position: 'absolute', zIndex: 10000, top: 'calc(50% - 20px)', left: 'calc(50% - 20px)'}} className={classes.progress} color="secondary"/>
+                    :  <div>
+                        <style>{selectedStyle}</style>
+                        <DayPicker
+                            className={classes.navCalendar}
+                            selectedDays={this.state.selectedDay}
+                        />
+                    </div>
+                }
             </div>
         );
 

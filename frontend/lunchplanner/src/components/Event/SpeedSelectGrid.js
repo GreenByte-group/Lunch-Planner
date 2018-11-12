@@ -2,13 +2,56 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {IconButton, GridListTileBar, GridListTile, GridList } from "@material-ui/core/";
-import {ThumbUp} from "@material-ui/icons";
+import {ThumbUp, AddCircleOutlined} from "@material-ui/icons";
+import Snackbar from '@material-ui/core/Snackbar';
 
 const styles = {
             gridList: {
                 flexWrap: 'nowrap',
                 backgroundColor: 'black',
             },
+            gridListCreate: {
+                flexWrap: 'flex',
+                backgroundColor: 'white',
+                width: 'webkit-fill-available',
+                maxWidth: '100%',
+                justifyContent:'space-around',
+            },
+            gridListTile: {
+                marginTop: '30px',
+                height: 'webkit-fill-available',
+                width: 'webkit-fill-available',
+                maxHeight: '100px',
+                maxWidth: '100px',
+                boxShadow: '0px 2px 4px -1px rgba(0, 0, 0, 0.2),0px 4px 5px 0px rgba(0, 0, 0, 0.14),0px 1px 10px 0px rgba(0, 0, 0, 0.12)',
+            },
+            gridListTileCreate: {
+                marginTop: '30px',
+                height: 'webkit-fill-available',
+                width: 'webkit-fill-available',
+                maxHeight: '100px',
+                maxWidth: '100px',
+                boxShadow: '0px 2px 4px -1px rgba(0, 0, 0, 0.2),0px 4px 5px 0px rgba(0, 0, 0, 0.14),0px 1px 10px 0px rgba(0, 0, 0, 0.12)',
+                '&:hover': {
+                    backgroundColor: '#0303031a !important',
+                    opacity: '0.75',
+                },
+            },
+            titleBar: {
+                background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+            },
+            button: {
+                zIndex: '500',
+            },
+            image: {
+                // borderRadius: '100%',
+
+            },
+            name: {
+                bottom: '10px'
+            },
+
+
 };
 
 const speedSelectArray = [
@@ -66,6 +109,9 @@ class SpeedSelectGrid extends React.Component {
             clicked: false,
             delete: props.delete,
             create: props.create || false,
+            openSnackbar: props.snackbar || false,
+            verticalSnackbar: 'top',
+            horizontalSnackbar: 'center',
         };
     };
 
@@ -73,6 +119,14 @@ class SpeedSelectGrid extends React.Component {
         if(newProps.delete){
             this.delete;
         };
+    };
+
+    handleClick = state => () => {
+        this.setState({ openSnackbar: true, ...state });
+    };
+
+    handleClose = () => {
+        this.setState({ openSnackbar: false });
     };
 
     selectPhoto = (event, buttonStyle) => {
@@ -138,28 +192,52 @@ delete  = () => {
     });
 };
 
+onHover = () => {
+    console.log('läuft rein');
+    this.setState({
+        openSnackbar: true,
+    })
+};
+
+offHover = () => {
+    console.log('läuft raus');
+    this.setState({
+        openSnackbar: false,
+    })
+};
+
 
     render(){
         const {classes} = this.props;
         let picData = speedSelectArray;
-
+        let verticalSnackbar = this.state.verticalSnackbar;
+        let horizontalSnackbar = this.state.horizontalSnackbar;
+        let openSnackbar = this.state.openSnackbar;
+        console.log('render', openSnackbar);
 
             if(this.state.create){
                return(
-                <GridList cellHeight={160} className={classes.gridList} cols={2}>
+
+                <GridList cellHeight={100} className={classes.gridListCreate} cols={2}>
                     {picData.map(tile => (
-                        <GridListTile key={tile.name} onClick={() => this.selectPhoto(tile, true)} cols={tile.cols || 1}>
-                            <img src={tile.picUrl} alt={tile.name}/>
+
+                        <GridListTile onMouseEnter={this.onHover} onMouseLeave={this.offHover} className={classes.gridListTileCreate} key={tile.name} onClick={() => this.selectPhoto(tile, true)} cols={tile.cols || 1} >
+
+                            <img src={tile.picUrl} alt={tile.name} className={classes.image}/>
                             <GridListTileBar
-                                title={tile.name}
+                                title={'Add Event'}
                                 classes={{
                                     root: classes.titleBar,
                                     title: classes.name
                                 }}
                                 actionIcon={
-                                    <IconButton style={tile.style}>
-                                        <p>ADD EVENT</p>
-                                    </IconButton>
+                                    (this.openSnackbar)
+
+                                       ?    <IconButton style={tile.style} className={classes.button}>
+                                                <AddCircleOutlined/>
+                                            </IconButton>
+
+                                        :   ""
                                 }
                             />
                         </GridListTile>
@@ -196,4 +274,4 @@ delete  = () => {
 SpeedSelectGrid.propTypes = {
     classes: PropTypes.object.isRequired,
 }
-export default withStyles(styles)(SpeedSelectGrid);
+export default  withStyles(styles)(SpeedSelectGrid);
