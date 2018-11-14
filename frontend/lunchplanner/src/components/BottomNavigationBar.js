@@ -14,6 +14,10 @@ const styles = {
         position: 'relative',
         bottom: 0,
         width: '100%',
+    },
+    icons: {
+        // height: '20px',
+        // width: '20px'
     }
 };
 
@@ -69,10 +73,10 @@ class BottomNavigationBar extends React.Component {
                 onChange={this.handleChange}
                 showLabels
             >
-                <BottomNavigationAction label="Places" icon={<PlaceIcon />}/>
-                <BottomNavigationAction label="Events" icon={<EventIcon />}/>
-                <BottomNavigationAction label="Teams" icon={<SocialIcon />}/>
-                <BottomNavigationAction label="Debts" icon={<EuroSymbol />}/>
+                <BottomNavigationAction label="Places" icon={<PlaceIcon style={{height:'40px', width: '40px'}}/>}/>
+                <BottomNavigationAction label="Events" icon={<EventIcon style={{height:'40px', width: '40px'}}/>}/>
+                <BottomNavigationAction label="Teams" icon={<SocialIcon style={{height:'40px', width: '40px'}}/>}/>
+                <BottomNavigationAction label="Debts" icon={<EuroSymbol style={{height:'40px', width: '40px'}}/>}/>
             </BottomNavigation>
         );
 

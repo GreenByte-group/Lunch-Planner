@@ -7,7 +7,7 @@ import {Link} from "react-router-dom";
 import FloatingActionButton from "../FloatingActionButton";
 import {getUsername} from "../authentication/LoginFunctions";
 import { Divider, ListItem} from "@material-ui/core";
-import GPSIcon from "@material-ui/icons/GpsFixed";
+import {FastfoodRounded} from "@material-ui/icons";
 import {getHistory} from "../../utils/HistoryUtils";
 import SpeedSelectGrid from "./SpeedSelectGrid";
 import {createEvent} from "./EventFunctions";
@@ -49,6 +49,7 @@ const styles = {
     },
     grid:{
         margin :'0% 10px',
+        maxHeight:  '-webkit-fill-available'
         // boxShadow: '0px 2px 4px -1px rgba(0, 0, 0, 0.2),0px 4px 5px 0px rgba(0, 0, 0, 0.14),0px 1px 10px 0px rgba(0, 0, 0, 0.12)',
     },
 };
@@ -144,6 +145,7 @@ class LocationList extends React.Component {
                 <div className={classes.grid}>
                     <SpeedSelectGrid create={true} onChange={this.speedSelect}/>
                 </div>
+                <Divider style={{marginTop: '15px' }}/>
                 <div style={{marginTop: '15px'}}/>
                 <List className={classes.list}>
                     {locationsUnique.map((value) => {
@@ -172,7 +174,7 @@ class LocationList extends React.Component {
                                             overflow: 'hidden',
                                         }}
                                     >
-                                        <GPSIcon className={classes.icon}/>
+                                        <FastfoodRounded className={classes.icon}/>
                                         <p className={classes.locationText}>{value}</p>
                                     </div>
                                     <Button

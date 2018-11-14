@@ -246,9 +246,10 @@ class Login extends React.Component {
                         className={classes.margin}
                         aria-describedby="weight-helper-text"
                     >
+                        <InputLabel>{<p style={{fontSize: '18px'}}>Username</p>}</InputLabel>
                         <Input
+                            style={{fontSize: '20px'}}
                             id="username"
-                            placeholder="Username"
                             value={this.state.username}
                             onChange={this.handleInputChange}
                             inputProps={{
@@ -261,9 +262,10 @@ class Login extends React.Component {
                         fullWidth
                         className={classes.margin}
                     >
-                        <InputLabel htmlFor="adornment-password">Password</InputLabel>
+                        <InputLabel htmlFor="adornment-password">{<p style={{fontSize: '18px'}}>Password</p>}</InputLabel>
                         <Input
                             id="password"
+                            style={{fontSize: '20px'}}
                             type={this.state.showPassword ? 'text' : 'password'}
                             value={this.state.password}
                             onChange={this.handleInputChange}

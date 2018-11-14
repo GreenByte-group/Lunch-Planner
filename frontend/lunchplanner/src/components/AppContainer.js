@@ -33,6 +33,9 @@ import 'react-day-picker/lib/style.css';
 import {Scrollbars} from "react-custom-scrollbars";
 import {CircularProgress} from "material-ui";
 const styles = {
+    menu: {
+        fontSize: '14px',
+    },
     flex: {
         flex: 1,
         fontFamily: "Work Sans",
@@ -83,10 +86,14 @@ const styles = {
     icons:{
         marginRight: 20,
         color: "#1EA185",
+        height: '40px',
+        width: '40px',
+
     },
     avatarText:{
         marginLeft: -10,
         marginBottom: -5,
+        fontSize: '15px',
     },
 
     root: {
@@ -134,7 +141,10 @@ const styles = {
         marginTop: "auto",
         marginBottom: "auto",
         display: "block",
-    }
+    },
+    menuItem: {
+        marginTop: '10px',
+    },
 
 };
 
@@ -361,41 +371,41 @@ class AppContainer extends React.Component {
                     <Divider />
                     <List className ={classes.menu}>
                         <Link to="/app/location">
-                            <MenuItem>
+                            <MenuItem className={classes.menuItem}>
                                 <Place className={classes.icons}/>
-                                Places
+                                <p style={{fontSize: '20px',}}>Places</p>
                             </MenuItem>
                         </Link>
                         <Link  to={{pathname: "/app/event",  query: {
                                 search: this.state.search,
                                 events: this.getEvents,
                             }}}>
-                            <MenuItem>
+                            <MenuItem className={classes.menuItem}>
                                 <LocalDining className={classes.icons}/>
-                                Events
+                                <p style={{fontSize: '20px',}}>Events</p>
                             </MenuItem>
                         </Link>
                         <Link  to={{pathname: "/app/team",  query: {
                                 search: this.state.search,
                             }}}>
-                            <MenuItem>
+                            <MenuItem className={classes.menuItem}>
                                 <Group className={classes.icons}/>
-                                Teams
+                                <p style={{fontSize: '20px',}}>Teams</p>
                             </MenuItem>
                         </Link>
                         <Link to={{pathname: "/app/debts", query: {
                             search: this.state.search,
                             }}}>
-                            <MenuItem>
+                            <MenuItem className={classes.menuItem}>
                                 <EuroSymbol className={classes.icons}/>
-                                    Debts
+                                    <p style={{fontSize: '20px',}}>Debts</p>
                             </MenuItem>
                         </Link>
-                        <Divider />
+                        <Divider className={classes.menuItem}/>
                         <Link to="/app/notifications?tab=0">
-                            <MenuItem>
+                            <MenuItem className={classes.menuItem}>
                                 <NotificationsNone className={classes.icons}/>
-                                Notifications
+                                <p style={{fontSize: '20px',}}>Notifications</p>
                             </MenuItem>
                         </Link>
                         <MenuItem>
@@ -412,20 +422,20 @@ class AppContainer extends React.Component {
                                 label="No notifications today"
                             />
                         </MenuItem>
-                        <Divider />
+                        <Divider className={classes.menuItem}/>
                         {/*<Link to="/app/notifications?tab=1">*/}
                             {/*<MenuItem>*/}
                                 {/*<Settings className={classes.icons}/>*/}
                                 {/*Options*/}
                             {/*</MenuItem>*/}
                         {/*</Link>*/}
-                        <MenuItem onClick={this.signOut}>
+                        <MenuItem onClick={this.signOut} className={classes.menuItem}>
                             <ExitToApp className={classes.icons}/>
-                            Sign Out
+                            <p style={{fontSize: '20px',}}>Sign Out</p>
                         </MenuItem>
                     </List>
                 </div>
-                <Divider />
+                <Divider className={classes.menuItem}/>
                 {loading ?
                     (this.state.stateDates === false) ?
                         <CircularProgress className={classes.progress} color="secondary"/>
@@ -479,7 +489,7 @@ class AppContainer extends React.Component {
                                 </Hidden>
                             </div>
                             <Typography color="inherit" className={classes.flex}>
-                                {title}
+                                {<p style={{fontSize: '20px'}}>{title}</p>}
                             </Typography>
                             <img src="/logo.png"  className={classes.logo}/>
                             {/*<div color="inherit">*/}

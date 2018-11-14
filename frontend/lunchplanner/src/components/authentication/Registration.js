@@ -122,6 +122,9 @@ const styles = theme => ({
         backgroundPosition: 'center center',
         backgroundRepeat: 'no-repeat',
     },
+    textSize: {
+        fontSize: '18px',
+    },
 });
 
 
@@ -257,12 +260,17 @@ class Registration extends React.Component {
                     >
                         <TextField
                             id="email"
-                            label="Email"
+                            label={<p style={{fontSize: '18px'}}>Email</p>}
                             value={this.state.email}
                             onChange={this.handleInputChange}
                             autoComplete={"email"}
                             type="email"
                             variant="filled"
+                            InputProps={{
+                                classes: {
+                                    input: classes.textSize,
+                                },
+                            }}
 
                         />
                     </FormControl>
@@ -273,10 +281,15 @@ class Registration extends React.Component {
                     >
                         <TextField
                             id="username"
-                            label="Name"
+                            label={<p style={{fontSize: '18px'}}>Name</p>}
                             value={this.state.username}
                             onChange={this.handleInputChange}
                             variant="filled"
+                            InputProps={{
+                                classes: {
+                                    input: classes.textSize,
+                                },
+                            }}
 
                         />
                     </FormControl>
@@ -284,9 +297,10 @@ class Registration extends React.Component {
                         fullWidth
                         className={classes.margin}
                     >
-                    <InputLabel htmlFor="adornment-password">Password</InputLabel>
+                    <InputLabel htmlFor="adornment-password">{<p style={{fontSize: '18px'}}>Password</p>}</InputLabel>
                     <Input
                         id="password"
+                        style={{fontSize: '18px'}}
                         type={this.state.showPassword ? 'text' : 'password'}
                         value={this.state.password}
                         onChange={this.handleInputChange}
@@ -311,7 +325,7 @@ class Registration extends React.Component {
                                 color="primary"
                             />
                         }
-                        label="I accept the privacy policy."
+                        label={<p style={{fontSize: '10px'}}>I accept the privacy policy.</p>}
                     />
                     <Link to="/privacyPolicy">read more</Link>
                 </div>

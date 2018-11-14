@@ -4,6 +4,8 @@ import { withStyles } from '@material-ui/core/styles';
 import {IconButton, GridListTileBar, GridListTile, GridList } from "@material-ui/core/";
 import {ThumbUp, AddCircleOutlined} from "@material-ui/icons";
 import Snackbar from '@material-ui/core/Snackbar';
+import Tooltip from '@material-ui/core/Tooltip';
+import moment from "moment";
 
 const styles = {
             gridList: {
@@ -30,7 +32,7 @@ const styles = {
                 height: 'webkit-fill-available',
                 width: 'webkit-fill-available',
                 maxHeight: '100px',
-                maxWidth: '100px',
+                maxWidth: '150px',
                 boxShadow: '0px 2px 4px -1px rgba(0, 0, 0, 0.2),0px 4px 5px 0px rgba(0, 0, 0, 0.14),0px 1px 10px 0px rgba(0, 0, 0, 0.12)',
                 '&:hover': {
                     backgroundColor: '#0303031a !important',
@@ -44,11 +46,14 @@ const styles = {
                 zIndex: '500',
             },
             image: {
-                // borderRadius: '100%',
-
+                width: '100%',
+                height: '100%',
             },
             name: {
                 bottom: '10px'
+            },
+            boxAdd: {
+                fontSize: '20px',
             },
 
 
@@ -96,6 +101,8 @@ const speedSelectArray = [
                 },
             }
             ];
+
+const addText = 'Event starts at: ';
 
 
 class SpeedSelectGrid extends React.Component {
@@ -220,27 +227,19 @@ offHover = () => {
 
                 <GridList cellHeight={100} className={classes.gridListCreate} cols={2}>
                     {picData.map(tile => (
+                         <Tooltip title={addText + moment().add(30, 'm').format('HH:mm') +' h'} classes={{ tooltip: classes.boxAdd }}>
+                            <GridListTile onMouseEnter={this.onHover} onMouseLeave={this.offHover} className={classes.gridListTileCreate} key={tile.name} onClick={() => this.selectPhoto(tile, true)} cols={tile.cols || 1} >
 
-                        <GridListTile onMouseEnter={this.onHover} onMouseLeave={this.offHover} className={classes.gridListTileCreate} key={tile.name} onClick={() => this.selectPhoto(tile, true)} cols={tile.cols || 1} >
-
-                            <img src={tile.picUrl} alt={tile.name} className={classes.image}/>
-                            <GridListTileBar
-                                title={'Add Event'}
-                                classes={{
-                                    root: classes.titleBar,
-                                    title: classes.name
-                                }}
-                                actionIcon={
-                                    (this.openSnackbar)
-
-                                       ?    <IconButton style={tile.style} className={classes.button}>
-                                                <AddCircleOutlined/>
-                                            </IconButton>
-
-                                        :   ""
-                                }
-                            />
-                        </GridListTile>
+                                <img src={tile.picUrl} alt={tile.name} className={classes.image}/>
+                                <GridListTileBar
+                                    title={'create Event'}
+                                    classes={{
+                                        root: classes.titleBar,
+                                        title: classes.name
+                                    }}
+                                />
+                            </GridListTile>
+                         </Tooltip>
                     ))}
                 </GridList>);
             }else{

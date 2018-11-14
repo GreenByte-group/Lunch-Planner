@@ -102,8 +102,8 @@ class Authentication extends React.Component {
                         fullWidth
                         centered
                     >
-                        <Tab label="SIGN UP"/>
-                        <Tab label="LOGIN"/>
+                        <Tab label="SIGN UP" style={{fontSize: '20px',}}/>
+                        <Tab label="LOGIN" style={{fontSize: '20px',}}/>
                     </Tabs>
                 </AppBar>
                 <SwipeableViews
