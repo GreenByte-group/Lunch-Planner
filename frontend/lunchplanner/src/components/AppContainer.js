@@ -14,7 +14,7 @@ import 'react-day-picker/lib/style.css';
 
 
 import {Link} from "react-router-dom";
-import {getUser} from "./User/UserFunctions";
+import {getProfilePicturePath, getUser} from "./User/UserFunctions";
 import {getUsername, doLogout} from "./authentication/LoginFunctions";
 import {getHistory} from "../utils/HistoryUtils";
 import BottomNavigationBar from "./BottomNavigationBar";
@@ -151,6 +151,7 @@ const styles = {
 export let needReload = false;
 
 export function userNeedReload() {
+    console.log("in der function", );
     needReload = true;
 }
 
@@ -312,14 +313,39 @@ class AppContainer extends React.Component {
         }
     };
 
-
+    loadUserStates= () => {
+            getUser(getUsername(), (response) => {
+                if (response.status === 200) {
+                    this.setState({
+                        email: response.data.eMail,
+                        profilePicture: HOST + response.data.profilePictureUrl,
+                        changeData: true,
+                    })
+                } else {
+                    console.log('NOPE BIATCH')
+                }
+            });
+        getHistory().push("");
+    };
 
 
     render() {
         const { classes } = this.props;
 
+        console.log("zeig ich dich", this.state);
+
+        if(needReload) {
+            needReload = !needReload;
+            this.loadUserStates();
+        }
+        if(this.state.changeData){
+            this.setState({
+                changeData: false,
+            })
+        }
         let loading = this.state.loading;
         let component = this.props.match.params.component;
+        let picPath = this.state.profilePicturePath;
         let children;
         let title;
         let bottomNavigationValue = -1;
@@ -362,9 +388,9 @@ class AppContainer extends React.Component {
                 role="button"
             >
                 <div className={classes.list}>
-                    <Link to="/app/user" className={classes.noHover}>
+                    <Link to={{pathname: "/app/user", query: {onChange: this.loadUserStates}}} className={classes.noHover}>
                         <List className={classes.profile}>
-                            <img alt={this.state.username} className={classes.avatar} src={this.state.profilePicture} />
+                            <img alt={this.state.username} className={classes.avatar} src={this.state.profilePicture}/>
                             <p className={classes.avatarText}>{this.state.username} ● {this.state.email}</p>
                         </List>
                     </Link>

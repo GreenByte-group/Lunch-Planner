@@ -120,8 +120,6 @@ public class UserLogic {
      * @throws HttpRequestException when an parameter is not valid or user already exists or an DatabaseError happens
      */
     void createUser(String userName, String password, String mail) throws HttpRequestException {
-        System.out.println("logic drinne user: " + password);
-
 
         if(userName == null || userName.length() == 0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");

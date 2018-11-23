@@ -99,7 +99,7 @@ const speedSelectArray = [
                 lng: "49.474299445354475",
                 lat:  "8.469026684761047",
                 placeId: "ChIJG6uq3RzMl0cR8hlRB4g8Fxg",
-                picUrl: "/pics/doener",
+                picUrl: "/pics/doener.jpg",
                 cols: 1,
                 style: {
                     color: 'white',
@@ -237,14 +237,12 @@ delete  = () => {
 };
 
 onHover = () => {
-    console.log('läuft rein');
     this.setState({
         openSnackbar: true,
     })
 };
 
 offHover = () => {
-    console.log('läuft raus');
     this.setState({
         openSnackbar: false,
     })
@@ -267,10 +265,7 @@ offHover = () => {
 
                         <Tooltip title={addText + moment().add(30, 'm').format('HH:mm') +' h'} classes={{ tooltip: classes.boxAdd }}>
                             <GridListTile onMouseEnter={this.onHover} onMouseLeave={this.offHover} className={classes.gridListTileCreate} key={tile.name} onClick={() => this.selectPhoto(tile, true)} cols={tile.cols || 1} >
-                                {(openSnackbar)
-                                    ?<img src={tile.picUrl + "Hover"} alt={tile.name} className={classes.image}/>
-                                    :<img src={tile.picUrl} alt={tile.name} className={classes.image}/>
-                                }
+                                <img src={tile.picUrl} alt={tile.name} className={classes.image}/>
                                 <GridListTileBar
                                     title={'create Event'}
                                     classes={{

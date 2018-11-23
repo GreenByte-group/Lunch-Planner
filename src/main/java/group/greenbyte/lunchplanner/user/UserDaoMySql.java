@@ -479,7 +479,6 @@ public class UserDaoMySql implements UserDao {
     @Override
     public void createUser(String userName, String password, String mail) throws DatabaseException {
 
-        System.out.println("DAO drinneuser: " + password);
         boolean isUserThere = isUserAlreadyThere(userName);
 
             SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
@@ -488,7 +487,7 @@ public class UserDaoMySql implements UserDao {
             parameters.put(USER_NAME, userName);
             parameters.put(USER_MAIL, mail);
             parameters.put(USER_PASSWORD, password);
-            parameters.put(USER_PICTURE, "upload.location");
+            parameters.put(USER_PICTURE, "/profilePictures/default.png");
             try {
                 simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
             } catch (Exception e) {

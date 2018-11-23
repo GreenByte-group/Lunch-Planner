@@ -64,7 +64,6 @@ class LocationList extends React.Component {
             locations:[],
 
         }
-        console.log('Props locatiobList', props)
     }
 
     componentWillReceiveProps(newProps) {
@@ -87,13 +86,10 @@ class LocationList extends React.Component {
                 placeId: placeId,
             });
 
-        console.log('Event: ', event);
-
         let defaultDate = moment().add(30, 'm').toDate();
 
         createEvent(event,"", defaultDate, [], true, placeId, lat, lng,
             (response) => {
-                console.log('all states of new event', this.state);
                 if(response.status === 201) {
                     eventListNeedReload();
                     getHistory().push('/app/event');
@@ -113,13 +109,15 @@ class LocationList extends React.Component {
     };
 
     onDelete = (event) => {
-        console.log("DADAAAAAAAAAAA")
+
     };
+
     updateSite(){
         this.forceUpdate();
     }
 
     render() {
+        console.log("RENDER");
         const { classes } = this.props;
         let events = this.state.events || [];
         let locations = [];
@@ -144,13 +142,6 @@ class LocationList extends React.Component {
             }
         });
 
-        // let oldCount = 0;
-        // getEvents("", response => {
-        //     oldCount = response.data.length;
-        // });
-        // if(oldCount !== events.length){
-        //     this.updateSite();
-        // }
 
         for(let i = 0; i < events.length; i++){
             locations.push(events[i].location);

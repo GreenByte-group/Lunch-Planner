@@ -46,7 +46,6 @@ export function resetAuthenticationHeader() {
 
 export function register(username, mail, password, responseFunc, errorFunc) {
     let url =  HOST + '/user';
-    console.log("PASSWORD: " + password);
     axios.post(url, {userName: username, password: password, mail: mail})
         .then(responseFunc)
         .catch(errorFunc)

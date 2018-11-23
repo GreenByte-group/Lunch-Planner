@@ -167,7 +167,9 @@ class UserEditScreen extends React.Component {
     constructor(props) {
         super();
 
+        console.log('PROPS', props);
         this.state = {
+            username: "",
             email: '',
             showPassword: false,
             password: '',
@@ -180,6 +182,7 @@ class UserEditScreen extends React.Component {
             modalIsOpen: false,
             sure: false,
             disabledSubmit: false,
+            onChange: props.location.query.onChange,
 
         };
         this.getUser();
@@ -241,9 +244,13 @@ class UserEditScreen extends React.Component {
 
 
     onSubmit = () => {
+
+        let change = false;
+
         if(this.state.pathImage) {
             updateProfilePicture(this.state.pathImage, (response) => {
                 userNeedReload();
+                change = true;
             })
         }
 
@@ -253,6 +260,7 @@ class UserEditScreen extends React.Component {
                 if(response.status !== 204) {
                     this.setState({emailError: response.response.data})
                     userNeedReload();
+                    change = true;
                 } else {
                     this.setState({
                         emailError: null,
@@ -266,6 +274,8 @@ class UserEditScreen extends React.Component {
             updatePassword(this.state.password, (response) => {
                 if(response.status !== 204) {
                     this.setState({passwordError: response.response.data})
+                    userNeedReload();
+                    change = true;
                 } else {
                     this.setState({
                         passwordError: null,
@@ -277,6 +287,8 @@ class UserEditScreen extends React.Component {
         } else if (this.state.password !== this.state.repeat){
             this.setState({passwordError: 'Passwords are different'})
         }
+        console.log('states', this.state);
+        this.props.location.query.onChange();
     };
 
     render() {
