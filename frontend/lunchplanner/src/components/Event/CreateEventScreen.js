@@ -25,7 +25,7 @@ import {InputAdornment} from "@material-ui/core";
 import {createEvent} from "./EventFunctions";
 import GoogleSuggest from "../Map/GoogleSuggest";
 import { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete'
-
+import Geocode from "react-geocode";
 
 const styles = {
     appBar: {
@@ -176,6 +176,8 @@ class CreateEventScreen extends React.Component {
             locationText: params.get('location') || "",
             locationId: params.get('locationId') || null,
             picUrl:"",
+            lat: "",
+            lng: "",
             deleteStateForSpeedSelect: false,
 
         };
@@ -228,7 +230,7 @@ class CreateEventScreen extends React.Component {
 
 
 
-        createEvent(this.state.locationText,this.state.description, this.state.date, invitedUsersArray, !this.state.visible, this.state.placeId,
+        createEvent(this.state.locationText,this.state.description, this.state.date, invitedUsersArray, !this.state.visible, this.state.placeId, this.state.lat, this.state.lng,
             (response) => {
                 console.log('all states of new event', this.state);
                 if(response.status === 201) {
@@ -300,15 +302,28 @@ class CreateEventScreen extends React.Component {
             locationText: location,
         });
 
+        console.log('handleLocationChange')
+        geocodeByAddress(location)
+            .then(result => this.setState({
+                    lat: result[0].geometry.location.lat()
+            }))
+            .catch(error => console.error('Error', error));
+
+        geocodeByAddress(location)
+            .then(result => this.setState({
+                lng: result[0].geometry.location.lng()
+            }))
+            .catch(error => console.error('Error', error));
 
         geocodeByAddress(location)
             .then(result => result[0].place_id)
             .then(result => this.setState({
                 placeId : result,
             }))
-            .then(result => console.log('result',result))
             .catch(error => console.error('Error', error));
+
     };
+
 
     delete = () => {
         this.setState({
@@ -316,10 +331,40 @@ class CreateEventScreen extends React.Component {
         });
     };
 
-    handleTeamPicGrid = (event) => {
+    handleTeamPicGrid = (name, lat, lng, placeId) => {
+        console.log('handleTeampicGrid', name);
+        console.log('handleTeampicGrid', lat);
+        console.log('handleTeampicGrid', lng);
+        console.log('handleTeampicGrid', placeId);
         this.setState({
-            locationText: event,
+            locationText: name,
+            lat: lat,
+            lng: lng,
+            placeId: placeId,
         });
+
+
+    };
+
+    getLocationFromPlaceId = (a) => {
+        console.log("in funktion drinne");
+        let placeIdR = a;
+        geocodeByPlaceId(placeIdR)
+            .then(result => result[0].geometry.location.lat)
+            .then(result => this.setState({
+                lat: parseFloat(result),
+            }))
+            .catch(error => console.error('Error', error));
+
+
+        geocodeByPlaceId(placeIdR)
+            .then(result => result[0].geometry.location.lng)
+            .then(result => this.setState({
+                lng: result,
+            }))
+            .catch(error => console.error('Error', error));
+
+
     };
 
     render() {

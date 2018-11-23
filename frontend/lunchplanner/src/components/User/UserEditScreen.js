@@ -17,6 +17,8 @@ import Modal from 'react-modal';
 import Dialog from "../Dialog";
 import {getHistory} from "../../utils/HistoryUtils";
 
+
+const profilpic = getProfilePicturePath(getUsername());
 const styles = theme => ({
     root: {
         width: '100%',
@@ -56,6 +58,7 @@ const styles = theme => ({
         height: '200px',
         borderRadius: '50%',
         backgroundColor: 'rgba(0,0,0,0.3)',
+        backgroundImage: 'url(' + profilpic + ')',
         transition: 'background-color 0.5s',
         "&:hover": {
             backgroundColor: 'rgba(0,0,0,0.5)',

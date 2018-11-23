@@ -10,7 +10,7 @@ import { Divider, ListItem} from "@material-ui/core";
 import {FastfoodRounded} from "@material-ui/icons";
 import {getHistory} from "../../utils/HistoryUtils";
 import SpeedSelectGrid from "./SpeedSelectGrid";
-import {createEvent} from "./EventFunctions";
+import {createEvent, getEvents} from "./EventFunctions";
 import {eventListNeedReload} from "./EventContainer";
 import moment from "moment/moment";
 
@@ -62,7 +62,9 @@ class LocationList extends React.Component {
             events: props.events,
             search:props.search,
             locations:[],
+
         }
+        console.log('Props locatiobList', props)
     }
 
     componentWillReceiveProps(newProps) {
@@ -77,13 +79,19 @@ class LocationList extends React.Component {
             });
         }
     };
-    speedSelect = (event) => {
+    speedSelect = (event, lat, lng, placeId) => {
+            this.setState({
+                locationText: event,
+                lat: lat,
+                lng: lng,
+                placeId: placeId,
+            });
+
         console.log('Event: ', event);
 
         let defaultDate = moment().add(30, 'm').toDate();
 
-
-        createEvent(event,"", defaultDate, [], true, "",
+        createEvent(event,"", defaultDate, [], true, placeId, lat, lng,
             (response) => {
                 console.log('all states of new event', this.state);
                 if(response.status === 201) {
@@ -103,6 +111,13 @@ class LocationList extends React.Component {
 
         // getHistory().push("/app/event");
     };
+
+    onDelete = (event) => {
+        console.log("DADAAAAAAAAAAA")
+    };
+    updateSite(){
+        this.forceUpdate();
+    }
 
     render() {
         const { classes } = this.props;
@@ -128,6 +143,14 @@ class LocationList extends React.Component {
                     return 0;
             }
         });
+
+        // let oldCount = 0;
+        // getEvents("", response => {
+        //     oldCount = response.data.length;
+        // });
+        // if(oldCount !== events.length){
+        //     this.updateSite();
+        // }
 
         for(let i = 0; i < events.length; i++){
             locations.push(events[i].location);
@@ -218,6 +241,9 @@ class LocationList extends React.Component {
                                                                        id={listValue.eventId}
                                                                        description={listValue.eventDescription}
                                                                        location={listValue.location}
+                                                                       locationId = {listValue.locationId}
+                                                                       lat={listValue.lat}
+                                                                       lng = {listValue.lng}
                                                                        date={listValue.startDate}
                                                                        accepted={accepted}
                                                                        invited={invited}

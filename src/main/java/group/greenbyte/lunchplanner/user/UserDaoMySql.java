@@ -10,6 +10,7 @@ import group.greenbyte.lunchplanner.user.database.notifications.NotificationData
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptions;
 import group.greenbyte.lunchplanner.user.database.notifications.NotificationOptionsDatabase;
 import group.greenbyte.lunchplanner.user.database.notifications.Notifications;
+import org.hibernate.dialect.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -464,29 +465,46 @@ public class UserDaoMySql implements UserDao {
     }
 
     @Override
-    public void createUser(String userName, String password, String mail) throws DatabaseException {
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        simpleJdbcInsert.withTableName(USER_TABLE);
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put(USER_NAME, userName);
-        parameters.put(USER_MAIL, mail);
-        parameters.put(USER_PASSWORD, password);
-        parameters.put(USER_PICTURE, "upload.location");
-        try {
-            simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
-        } catch (Exception e) {
-            throw new DatabaseException(e);
-        }
+    public boolean isUserAlreadyThere(String userName) throws DatabaseException{
+        String SQL = " SELECT * FROM " + USER_TABLE + " WHERE " + USER_NAME + " = ? ";
+        List<UserDatabase> user = jdbcTemplate.query(SQL, new Object[] {userName}, new BeanPropertyRowMapper<>(UserDatabase.class));
 
-        // set default notificationOptions for each user
-        try {
-            saveNotificationOptions(userName,false, false,
-                    null, false, null, null,
-                    false,false,false);
-        } catch (Exception e) {
-            throw new DatabaseException(e);
+        if(user.size() > 0){
+            return false;
+        }else {
+            return true;
         }
     }
+
+    @Override
+    public void createUser(String userName, String password, String mail) throws DatabaseException {
+
+        System.out.println("DAO drinneuser: " + password);
+        boolean isUserThere = isUserAlreadyThere(userName);
+
+            SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+            simpleJdbcInsert.withTableName(USER_TABLE);
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put(USER_NAME, userName);
+            parameters.put(USER_MAIL, mail);
+            parameters.put(USER_PASSWORD, password);
+            parameters.put(USER_PICTURE, "upload.location");
+            try {
+                simpleJdbcInsert.execute(new MapSqlParameterSource(parameters));
+            } catch (Exception e) {
+                throw new DatabaseException(e);
+            }
+
+            // set default notificationOptions for each user
+            try {
+                saveNotificationOptions(userName, false, false,
+                        null, false, null, null,
+                        false, false, false);
+            } catch (Exception e) {
+                throw new DatabaseException(e);
+            }
+
+        }
 
     @Override
     public User setTokenForUser(String username, String token) throws DatabaseException {

@@ -12,6 +12,8 @@ import {getHistory} from "../../utils/HistoryUtils";
 import {Link} from "react-router-dom";
 import Modal from 'react-modal';
 import TextField from '@material-ui/core/TextField';
+import Tooltip from '@material-ui/core/Tooltip';
+import moment from "moment/moment";
 
 
 
@@ -125,6 +127,9 @@ const styles = theme => ({
     textSize: {
         fontSize: '18px',
     },
+    boxAdd: {
+        fontSize: '16px',
+    },
 });
 
 
@@ -138,6 +143,16 @@ const customStyles = {
         transform             : 'translate(-50%, -50%)'
     }
 };
+
+const addTextPassword = "please only use letters, numbers and punctuation. " +
+    "Special characters like {[§ $% & + * # '<> |]} should not be used.";
+
+const addTextUsername = "please choose a username. " +
+    "This username will be necessary to sign in";
+
+const addTextEmail = "please type in a valid email address. " +
+    "Notifications will be sent to this email account";
+
 
 class Registration extends React.Component {
 
@@ -192,6 +207,12 @@ class Registration extends React.Component {
         if(e.keyCode === 13){
             this.handleSubmit();
         }
+    };
+
+    infoPassword = () => {
+        this.setState({
+            passwordShow: true,
+        })
     };
 
     handleSubmit(event) {
@@ -258,6 +279,7 @@ class Registration extends React.Component {
                         className={classes.margin}
                         aria-describedby="weight-helper-text"
                     >
+                        <Tooltip title={addTextEmail} classes={{ tooltip: classes.boxAdd }}  placement="left">
                         <TextField
                             id="email"
                             label={<p style={{fontSize: '18px'}}>Email</p>}
@@ -273,33 +295,38 @@ class Registration extends React.Component {
                             }}
 
                         />
+                        </Tooltip>
                     </FormControl>
                     <FormControl
                         fullWidth
                         className={classes.margin}
                         aria-describedby="weight-helper-text"
                     >
-                        <TextField
-                            id="username"
-                            label={<p style={{fontSize: '18px'}}>Name</p>}
-                            value={this.state.username}
-                            onChange={this.handleInputChange}
-                            variant="filled"
-                            InputProps={{
-                                classes: {
-                                    input: classes.textSize,
-                                },
-                            }}
-
-                        />
+                        <Tooltip title={addTextUsername} classes={{ tooltip: classes.boxAdd }}  placement="right">
+                            <TextField
+                                id="username"
+                                label={<p style={{fontSize: '18px'}}>Username</p>}
+                                value={this.state.username}
+                                onChange={this.handleInputChange}
+                                variant="filled"
+                                InputProps={{
+                                    classes: {
+                                        input: classes.textSize,
+                                    },
+                                }}
+                            />
+                        </Tooltip>
                     </FormControl>
                     <FormControl
                         fullWidth
                         className={classes.margin}
                     >
                     <InputLabel htmlFor="adornment-password">{<p style={{fontSize: '18px'}}>Password</p>}</InputLabel>
-                    <Input
+                    <Tooltip title={addTextPassword} classes={{ tooltip: classes.boxAdd }} placement="bottom-end">
+                        <Input
                         id="password"
+                        onClick={this.infoPassword}
+                        className={classes.inputHover}
                         style={{fontSize: '18px'}}
                         type={this.state.showPassword ? 'text' : 'password'}
                         value={this.state.password}
@@ -316,6 +343,7 @@ class Registration extends React.Component {
                             </InputAdornment>
                         }
                     />
+                    </Tooltip>
                     </FormControl>
                     <FormControlLabel
                         control={

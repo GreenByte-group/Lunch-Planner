@@ -16,6 +16,12 @@ public class EventDatabase {
 
     private String location;
 
+    private String locationId;
+
+    private String lat;
+
+    private String lng;
+
     private String shareToken;
 
     /**
@@ -31,6 +37,9 @@ public class EventDatabase {
         event.setEventId(eventId);
         event.setLocation(location);
         event.setShareToken(shareToken);
+        event.setLocationId(locationId);
+        event.setLat(lat);
+        event.setLng(lng);
 
         return event;
     }
@@ -59,7 +68,19 @@ public class EventDatabase {
         this.location = location;
     }
 
+    public void setLocationId(String locationId) {
+        this.locationId = locationId;
+    }
+
     public void setShareToken(String shareToken) {
         this.shareToken = shareToken;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
     }
 }

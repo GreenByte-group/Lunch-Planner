@@ -2,6 +2,7 @@ package group.greenbyte.lunchplanner.event;
 
 import group.greenbyte.lunchplanner.event.database.*;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
+import group.greenbyte.lunchplanner.user.database.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -46,6 +47,8 @@ public class EventDaoMySql implements EventDao {
     private static final String EVENT_LOCATION = "location";
     private static final String EVENT_SHARETOKEN = "share_token";
     private static final String EVENT_LOCATION_ID = "location_id";
+    private static final String EVENT_LAT = "lat";
+    private static final String EVENT_LNG = "lng";
 
     private static final String EVENT_TEAM_TABLE = "event_team_visible";
     private static final String EVENT_TEAM_TEAM = "team_id";
@@ -59,7 +62,7 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
-    public Event insertEvent(String userName, String eventName, String description, String location, Date timeStart, boolean isPublic, String locationId) throws DatabaseException {
+    public Event insertEvent(String userName, String eventName, String description, String location, Date timeStart, boolean isPublic, String locationId, String lat, String lng) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(EVENT_TABLE).usingGeneratedKeyColumns(EVENT_ID);
         Map<String, Object> parameters = new HashMap<>();
@@ -69,6 +72,8 @@ public class EventDaoMySql implements EventDao {
         parameters.put(EVENT_IS_PUBLIC, isPublic);
         parameters.put(EVENT_LOCATION, location);
         parameters.put(EVENT_LOCATION_ID, locationId);
+        parameters.put(EVENT_LAT, lat);
+        parameters.put(EVENT_LNG, lng);
 
         try {
             Number key = simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
@@ -83,7 +88,7 @@ public class EventDaoMySql implements EventDao {
 
     @Override
     public Event insertEvent(String userName, String eventName, String description, String location, Date timeStart, boolean isPublic) throws DatabaseException {
-        return insertEvent(userName, eventName, description, location, timeStart, isPublic, null);
+        return insertEvent(userName, eventName, description, location, timeStart, isPublic, null, null, null);
     }
 
     @Override
@@ -167,6 +172,8 @@ public class EventDaoMySql implements EventDao {
 
     @Override
     public void deleteEvent(int eventId) throws DatabaseException {
+        System.out.println("DELETENOW DAO");
+
         deleteInvitationsForEvent(eventId);
         deleteBringServiceForEvent(eventId);
         deleteCommentsForEvent(eventId);
@@ -251,6 +258,24 @@ public class EventDaoMySql implements EventDao {
 
         try {
             jdbcTemplate.update(SQL, location, eventId);
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+
+        return getEvent(eventId);
+    }
+
+    @Override
+    public Event updateEventLocationCoordinates(int eventId, String lat, String lng, String placeId) throws DatabaseException {
+
+        String SQL1 = "UPDATE " + EVENT_TABLE + " SET " + EVENT_LAT + " = ? WHERE " + EVENT_ID + " = ?";
+        String SQL2 = "UPDATE " + EVENT_TABLE + " SET " + EVENT_LNG + " = ? WHERE " + EVENT_ID + " = ?";
+        String SQL3 = "UPDATE " + EVENT_TABLE + " SET " + EVENT_LOCATION_ID + " = ? WHERE " + EVENT_ID + " = ?";
+
+        try {
+            jdbcTemplate.update(SQL1, lat, eventId);
+            jdbcTemplate.update(SQL2, lng, eventId);
+            jdbcTemplate.update(SQL3, placeId, eventId);
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
@@ -433,6 +458,8 @@ public class EventDaoMySql implements EventDao {
 
     @Override
     public boolean userHasPrivileges(String userName, int eventId) throws DatabaseException {
+        System.out.println("ADMIN DAO");
+
         if(isEventPublic(eventId))
             return true;
 
@@ -595,6 +622,10 @@ public class EventDaoMySql implements EventDao {
         } catch(Exception e) {
             throw new DatabaseException(e);
         }
+    }
+
+    public List<User> getReply(int eventId) throws DatabaseException{
+        return null;
     }
 
     public void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException {

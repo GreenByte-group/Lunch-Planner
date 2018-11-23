@@ -5,7 +5,7 @@ import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
 import group.greenbyte.lunchplanner.event.database.EventInvitationDataForReturn;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
-import org.hibernate.dialect.Database;
+import group.greenbyte.lunchplanner.user.database.User;
 
 import java.util.Date;
 import java.util.List;
@@ -30,7 +30,9 @@ public interface EventDao {
                       String location,
                       Date timeStart,
                       boolean isPublic,
-                      String locationId) throws DatabaseException;
+                      String locationId,
+                      String lat,
+                      String lng) throws DatabaseException;
 
     Event insertEvent(String userName,
                       String eventName,
@@ -42,6 +44,8 @@ public interface EventDao {
     void deleteInvitationsForEvent(int eventId) throws DatabaseException;
 
     void deleteBringServiceForEvent(int eventId) throws DatabaseException;
+
+    List<User> getReply(int eventId) throws DatabaseException;
 
     void deleteCommentsForEvent(int eventId) throws DatabaseException;
 
@@ -110,6 +114,9 @@ public interface EventDao {
      */
     Event updateEventLocation(int eventId,
                               String location) throws DatabaseException;
+
+    Event updateEventLocationCoordinates(int eventId, String lat, String lng,
+                              String placeId) throws DatabaseException;
 
     /**
      *
@@ -250,7 +257,7 @@ public interface EventDao {
 
     void deleteUserComments(String username) throws DatabaseException;
 
-    //TODO test
+
     List<EventInvitationDataForReturn> getInvitations(int eventId) throws DatabaseException;
 
     void replyInvitation(String userName, int eventId, InvitationAnswer answer) throws DatabaseException;

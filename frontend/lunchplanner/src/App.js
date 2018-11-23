@@ -26,6 +26,7 @@ import MyTetris from "./components/EasterEgg/Tetris";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import DebtsScreen from "./components/Debts/DebtsScreen";
 import TeamPicsGrid from "./components/Team/TeamPicsGrid";
+import ShowMap from "./components/Map/ShowMap";
 
 
 const oldTheme = getMuiTheme({
@@ -111,6 +112,7 @@ class App extends React.Component {
                             <PrivateRoute path="/app/team/:teamId(\d+)/invite" component={SelectUserScreen} />
                             <PrivateRoute path="/app/event/create" component={CreateEventScreen} />
                             <PrivateRoute path="/app/event/create/map" component={NewMap} />
+                            <PrivateRoute path="/app/event/showMap" component={ShowMap} />
                             <PrivateRoute path="/app/event/create/invite" component={SelectUserScreen} />
                             <PrivateRoute path="/app/event/:eventId(\d+)/invite" component={SelectUserScreen} />
                             <PrivateRoute path="/app/event/:eventId(\d+)" component={EventScreen} />

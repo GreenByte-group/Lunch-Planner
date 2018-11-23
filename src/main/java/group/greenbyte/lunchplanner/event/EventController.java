@@ -4,6 +4,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import group.greenbyte.lunchplanner.event.database.BringService;
 import group.greenbyte.lunchplanner.event.database.Comment;
 import group.greenbyte.lunchplanner.event.database.Event;
+import group.greenbyte.lunchplanner.event.database.EventInvitationDataForReturn;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ public class EventController {
     public ResponseEntity getEvent(@PathVariable("eventId") int eventId) {
         try {
             Event event = eventLogic.getEvent(SessionManager.getUserName(), eventId);
+            System.out.println("EVENT in Controller" + event.getLocationId());
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(event);
@@ -62,13 +64,28 @@ public class EventController {
 
             System.out.println("event: "+event.getLocationId());
             int eventId = eventLogic.createEvent(SessionManager.getUserName(), event.getName(), event.getDescription(),
-                    event.getLocation(), event.getTimeStart(), event.isVisible(), event.getLocationId());
+                    event.getLocation(), event.getTimeStart(), event.isVisible(), event.getLocationId(), event.getLat(), event.getLng());
 
             response.setStatus(HttpServletResponse.SC_CREATED);
             return String.valueOf(eventId);
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());
             e.printStackTrace();
+            return e.getErrorMessage();
+        }
+    }
+
+    @RequestMapping(value = "/{eventId}/delete", method = RequestMethod.PUT,
+             produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String deleteEvent(@PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
+        System.out.println("DELETE CONTROLLER");
+        try {
+            eventLogic.deleteEventNow(SessionManager.getUserName(),eventId);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            return "";
+        }catch(HttpRequestException e){
+            response.setStatus(e.getStatusCode());
             return e.getErrorMessage();
         }
     }
@@ -107,6 +124,20 @@ public class EventController {
     public String updateEventLocation(@RequestBody String location, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
         try {
             eventLogic.updateEventLocation(SessionManager.getUserName(),eventId,location);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            return "";
+        }catch(HttpRequestException e){
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+    }
+
+    @RequestMapping(value = "{eventId}/coordinates", method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String updateEventLocationCoordinates(@RequestBody EventJson event, @PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
+        try {
+            eventLogic.updateEventLocationCoordinates(SessionManager.getUserName(),eventId, event.getLat(), event.getLng(), event.getLocationId());
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
             return "";
         }catch(HttpRequestException e){
@@ -277,6 +308,25 @@ public class EventController {
         return "";
     }
 
+
+    @RequestMapping(value = "/{eventId}/getReply", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity getReply(@PathVariable("eventId") int eventId) {
+        System.out.println("controller Reply");
+        try{
+            List<EventInvitationDataForReturn> invitationList = eventLogic.getReply(eventId);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(invitationList);
+        }catch(HttpRequestException e){
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getErrorMessage());
+        }
+    }
+
     /**
      * create a comment for an event
      *
@@ -393,6 +443,7 @@ public class EventController {
                     .body(e.getErrorMessage());
         }
     }
+
 
     @RequestMapping(value = "/{eventId}/token", method = RequestMethod.GET,
             produces = MediaType.TEXT_PLAIN_VALUE)

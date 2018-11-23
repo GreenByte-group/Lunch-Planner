@@ -4,6 +4,8 @@ import { withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow} from "react
 import Dialog from '../Dialog';
 import {getHistory} from "../../utils/HistoryUtils";
 import FloatingActionButton from "../FloatingActionButton";
+import {geocodeByAddress, geocodeByPlaceId} from "react-places-autocomplete";
+import {getEvent} from "../Event/EventFunctions";
 
 let MyMapComponent = compose(
     withProps({
@@ -38,28 +40,75 @@ export class NewMap extends React.Component {
 
     constructor(props) {
         super();
+        console.log('NewMap PROPS',props.location.query);
 
+        if(props.location.query.change){
+            console.log('change = true');
 
-        if(props.location.query && props.location.query.lat && props.location.query.lng) {
-            this.state = {
-                isMarkerShown: true,
-                open: true,
-                placeId: props.location.query.locationChange,
-                lat: props.location.query.lat,
-                lng: props.location.query.lng,
-                onLocationChange: props.location.query.locationChange,
+            if(props.location.query.lat && props.location.query.lng) {
+                this.state = {
+                    isMarkerShown: true,
+                    open: true,
+                    change:true,
+                    eventId: props.location.query.eventId,
+                    placeId: props.location.query.locationId,
+                    lat: props.location.query.lat,
+                    lng: props.location.query.lng,
+                    onMapChange: props.location.query.onMapChange,
+                };
+            }else{
+                getEvent(props.location.query.eventId, response => {
+                    console.log('zweiter Weg', response);
+                    this.state = {
+                        eventId: props.location.query.eventId,
+                        placeId: response.data.locationId,
+                        lat: response.data.lat,
+                        lng: response.data.lng,
+                    }
+                })
             };
-        } else {
-            this.state = {
-                isMarkerShown: false,
-                open: true,
-                placeId: null,
-                lat: null,
-                lng: null,
-                onLocationChange: props.location.query.locationChange,
-            }
-        }
+        }else{
+            if(props.location.query && props.location.query.lat && props.location.query.lng) {
+                this.state = {
+                    isMarkerShown: true,
+                    open: true,
+                    change:false,
+                    eventId: props.location.query.eventId,
+                    placeId: props.location.query.locationChange,
+                    lat: props.location.query.lat,
+                    lng: props.location.query.lng,
+                    onLocationChange: props.location.query.locationChange,
+                };
+            }else{
+                if(props.location.query.locationId){
+                    console.log('LETZTE VERZWEIGUNG');
+                    this.state = {
+                        isMarkerShown: true,
+                        open: true,
+                        change:false,
+                        eventId: props.location.query.eventId,
+                        placeId: props.location.query.locationId,
+                        onLocationChange: props.location.query.locationChange,
+                    };
+                }else {
+                    this.state = {
+                        isMarkerShown: false,
+                        open: true,
+                        change:false,
+                        eventId: props.location.query.eventId,
+                        placeId: null,
+                        lat: null,
+                        lng: null,
+                        onLocationChange: props.location.query.locationChange,
+                    };
+                }
+            };
+        };
+
+
     }
+
+
 
     handleMarkerClick = () => {
         console.log('Marker click');
@@ -67,6 +116,7 @@ export class NewMap extends React.Component {
 
     onMapClick = (event) => {
 
+        console.log(event)
         this.setState({
             isMarkerShown: true,
             lat: event.latLng.lat(),
@@ -95,35 +145,65 @@ export class NewMap extends React.Component {
     }
 
     setLocation = () => {
+        console.log("NOPE");
         if(this.state.isMarkerShown){
             this.state.onLocationChange(this.state.lat, this.state.lng, this.state.placeId);
             getHistory().push(this.props.location.query.source);
-
-
-
         }else{
 
         }
     };
 
+    setLocationChange = () => {
+        console.log("new",this.props.location.query.source + "/" + this.state.eventId);
+        if(this.props.location.query.change === true){
+            if(this.state.isMarkerShown){
+                this.state.onMapChange(this.state.lat, this.state.lng, this.state.placeId);
+                getHistory().push(this.props.location.query.source + "/" + this.state.eventId);
+            };
+        }else{
+            if(this.state.isMarkerShown){
+                this.state.onMapChange(this.state.lat, this.state.lng, this.state.placeId);
+                getHistory().push(this.props.location.query.source);
+            };
+        }
+
+    };
+
     render() {
         let lat = this.state.lat || this.state.defaultLat || 49.474210558898626;
         let lng = this.state.lng || this.state.defaultLng || 8.46496045589447;
-        let showMarker = !!(this.state.isMarkerShown && this.state.lat && this.state.lng);
+        let showMarker = (this.state.isMarkerShown);
+        let change = this.state.change;
 
+        console.log("MAP STATE", this.state)
 
-        return (
-            <Dialog>
-                <MyMapComponent
-                    isMarkerShown={showMarker}
-                    onMarkerClick={this.handleMarkerClick}
-                    onMapClick={this.onMapClick}
-                    lat={lat}
-                    lng={lng}
-                />
-                <FloatingActionButton onClick={this.setLocation} icon="done" styleRoot={{marginLeft: 'calc(100% - 56px - 15px - 50px)'}}/>
-            </Dialog>
-        )
+        if(change === true){
+            return (
+                <Dialog>
+                    <MyMapComponent
+                        isMarkerShown={showMarker}
+                        onMarkerClick={this.handleMarkerClick}
+                        onMapClick={this.onMapClick}
+                        lat={lat}
+                        lng={lng}/>
+                    <FloatingActionButton onClick={this.setLocationChange} icon="done" styleRoot={{marginLeft: 'calc(100% - 56px - 15px - 50px)'}}/>
+                </Dialog>
+            )
+        }else{
+            return (
+                <Dialog>
+                    <MyMapComponent
+                        isMarkerShown={showMarker}
+                        onMarkerClick={this.handleMarkerClick}
+                        onMapClick={this.onMapClick}
+                        lat={lat}
+                        lng={lng}/>
+                    <FloatingActionButton onClick={this.setLocation} icon="done" styleRoot={{marginLeft: 'calc(100% - 56px - 15px - 50px)'}}/>
+                </Dialog>
+            )
+        }
+
     }
 }
 export default NewMap;

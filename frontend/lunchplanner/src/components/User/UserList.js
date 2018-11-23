@@ -2,6 +2,7 @@ import React from 'react';
 import {withStyles} from '@material-ui/core/styles';
 import {List} from "@material-ui/core";
 import User from "./User";
+import {getReplyToEvent} from "../Event/EventFunctions";
 
 const styles = {
     list: {
@@ -22,7 +23,9 @@ class UserList extends React.Component {
             onSelectionChanged: props.onSelectionChanged,
             othersInvited: props.othersInvited || false,
             clickRemove: props.clickRemove,
+            acceptedUser: props.acceptedUser,
         };
+        console.log(props)
     }
 
     componentWillReceiveProps(newProps) {
@@ -65,6 +68,17 @@ class UserList extends React.Component {
 
             this.state.onSelectionChanged(selectedUsers);
         }
+    };
+
+    getReplyToEvents(eventId){
+        getReplyToEvent(eventId, (response) => {
+            console.log('response data', response.data);
+            if(response.status === 200){
+                this.setState({
+                    replyList: response.data,
+                })
+            }
+        });
     };
 
     render() {

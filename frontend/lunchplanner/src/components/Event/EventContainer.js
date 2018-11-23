@@ -167,6 +167,8 @@ class EventContainer extends React.Component {
     };
 
     render() {
+        console.log("ICH ZEIg MICH JETZT");
+        console.log("neeReload", needReload);
         const { classes, theme } = this.props;
         let loading = this.state.loading;
         if(needReload) {

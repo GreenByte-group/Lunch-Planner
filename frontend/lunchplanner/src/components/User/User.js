@@ -1,6 +1,6 @@
 import React from "react"
 import {withStyles, ListItem, IconButton} from "@material-ui/core";
-import {Close} from "@material-ui/icons"
+import {Close, DoneOutlineOutlined as AcceptIcon} from "@material-ui/icons"
 import AcceptedButton from "../Event/AcceptedButton";
 import {getProfilePicturePath} from "./UserFunctions";
 import {HOST} from "../../Config";
@@ -63,6 +63,10 @@ const styles = {
     iconRemove: {
 
     },
+    acceptIcon: {
+        float: 'right',
+        marginRight: '5%',
+    }
 };
 
 class Event extends React.Component {
@@ -79,6 +83,7 @@ class Event extends React.Component {
             profilePicturePath: '',
         };
 
+        console.log('pros User', props)
         this.getUserImage(props.username);
     }
 
@@ -142,22 +147,29 @@ class Event extends React.Component {
 
         return (
             <ListItem button className={listClasses} onClick={this.clickHandler}>
-                <div className={classes.content}>
-                    <div className={classes.profilePicture}>
-                        <img className={classes.profilePictureImg} src={this.state.profilePicturePath} />
-                    </div>
-                    <div className={classes.text}>
-                        <span className={classes.username}>{username}</span>
-                    </div>
-                </div>
-                {(selected
-                        ? ""
-                        : ""
-                )}
-                {(!selected && invited
-                        ? ""
-                        : ""
-                )}
+                {(selected)
+                    ?    <div className={classes.content} style={{background: 'rgba(30, 161, 133, 0.2)'}}>
+                            <div className={classes.profilePicture}>
+                                <img className={classes.profilePictureImg} src={this.state.profilePicturePath} />
+                            </div>
+                            <div className={classes.text}>
+                                <span className={classes.username}>{username}</span>
+                            </div>
+                            <div>
+                                <AcceptIcon className={classes.acceptIcon}/>
+                            </div>
+                        </div>
+
+                    :    <div className={classes.content}>
+                            <div className={classes.profilePicture}>
+                                <img className={classes.profilePictureImg} src={this.state.profilePicturePath} />
+                            </div>
+                            <div className={classes.text}>
+                                <span className={classes.username}>{username}</span>
+                            </div>
+                        </div>
+
+                }
                 {(this.state.clickRemove)
                         ? <IconButton className={classes.iconButtonRemove} onClick={this.clickRemove}><Close className={classes.iconRemove} /></IconButton>
                         : ""

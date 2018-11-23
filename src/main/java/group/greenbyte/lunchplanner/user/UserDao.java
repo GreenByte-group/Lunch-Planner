@@ -30,6 +30,8 @@ public interface UserDao {
      */
     void createUser(String userName, String password, String mail) throws DatabaseException;
 
+    boolean isUserAlreadyThere(String userName) throws DatabaseException;
+
     /**
      * Sets the jwt token for the user
      *

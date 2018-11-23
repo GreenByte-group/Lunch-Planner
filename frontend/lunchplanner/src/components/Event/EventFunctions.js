@@ -30,6 +30,12 @@ export function replyToEvent(eventId, answer, responseFunc) {
         .then(responseFunc)
 }
 
+export function getReplyToEvent(eventId, responseFunc) {
+    let url = HOST + "/event/" + eventId + "/getReply";
+
+    axios.get(url)
+        .then(responseFunc);
+}
 export function changeEventTitle(eventId, title, responseFunc, errorFunc) {
     let config = {
         headers: {
@@ -56,6 +62,16 @@ export function changeEventLocation(eventId, location, responseFunc, errorFunc) 
         .catch(errorFunc)
 }
 
+export function changeEventLocationCoordinates(eventId, lat, lng , placeId, responseFunc, errorFunc){
+
+    let data = {lat: lat, lng: lng, placeId: placeId};
+
+    let url = HOST + '/event/' + eventId + "/coordinates";
+    axios.put(url, data)
+        .then(responseFunc)
+        .catch(errorFunc)
+}
+
 export function changeEventTime(eventId, time, responseFunc, errorFunc) {
     let config = {
         headers: {
@@ -69,7 +85,18 @@ export function changeEventTime(eventId, time, responseFunc, errorFunc) {
         .catch(errorFunc)
 }
 
-export function createEvent(location, description, date, member, visible, locationId, responseFunc, errorFunc) {
+export function deleteEvent(eventId, responseFunc, errorFunc){
+    let url = HOST + '/event/' + eventId + '/delete';
+    axios.put(url)
+        .then(responseFunc)
+        .catch(errorFunc)
+
+};
+
+export function createEvent(location, description, date, member, visible, locationId, lat, lng, responseFunc, errorFunc) {
+    console.log('lat', lat);
+    console.log('lng', lng);
+    console.log('locationID', locationId);
     let momentDate = moment(date);
 
     let timeEnd = date.getTime();
@@ -78,7 +105,7 @@ export function createEvent(location, description, date, member, visible, locati
 
     let data = {name: location, description: description, location : location, timeStart: date, visible: visible};
     if(locationId)
-        data = {name: location, description: description, location : location, timeStart: date, visible: visible, locationId: locationId};
+        data = {name: location, description: description, location : location, timeStart: date, visible: visible, locationId: locationId, lat: lat, lng: lng};
 
     axios.post(url, data)
         .then((response) => {

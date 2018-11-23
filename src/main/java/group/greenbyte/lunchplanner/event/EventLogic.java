@@ -1,10 +1,7 @@
 package group.greenbyte.lunchplanner.event;
 
 import group.greenbyte.lunchplanner.Config;
-import group.greenbyte.lunchplanner.event.database.BringService;
-import group.greenbyte.lunchplanner.event.database.Comment;
-import group.greenbyte.lunchplanner.event.database.Event;
-import group.greenbyte.lunchplanner.event.database.EventInvitationDataForReturn;
+import group.greenbyte.lunchplanner.event.database.*;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
 import group.greenbyte.lunchplanner.exceptions.HttpRequestException;
 import group.greenbyte.lunchplanner.security.SessionManager;
@@ -92,11 +89,35 @@ public class EventLogic {
     }
 
     /**
-     * Will update all subscribtions for an event when it changes
+     * Will update all subscribtions for an event when it changes and send notification to all other participants
      * @param event event that has changed
      */
-    private void eventChanged(Event event) {
-        //TODO eventChanged
+    private void eventChanged(Event event) throws HttpRequestException{
+
+
+        try{
+           List<EventInvitationDataForReturn> invitationList = this.eventDao.getInvitations(event.getEventId());
+           for(EventInvitationDataForReturn username : invitationList){
+               User sendTo = this.userLogic.getUser(username.getUserName());
+
+               String body = "<p style=\"font-size: large\" ><br><br><br>Hey "+sendTo.getUserName()+",<br><br>check the Lunchplanner.<br> You wanted to be notified if something is changing " +
+                       "at the event: <b>"+event.getEventName()+"<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>";
+
+               emailservice.send(sendTo.geteMail(),"Event Changed @Lunchplanner", body);
+           }
+        }catch(Exception e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
+
+
+
+//        System.out.println("NAME: "+userLogic.getUser(subscriber.getUserName()).geteMail());
+//
+//        try{
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
     }
 
 
@@ -106,7 +127,7 @@ public class EventLogic {
     }
 
     int createEvent(String userName, String eventName, String eventDescription,
-                    String location, Date timeStart, boolean visible, String locationId) throws HttpRequestException{
+                    String location, Date timeStart, boolean visible, String locationId, String lat, String lng) throws HttpRequestException{
 
         System.out.println("Alle wichtigen Daten:" +userName+" ,"+eventName+userName+" ,"+eventDescription+userName+" ,"+location+userName+" ,"+timeStart+userName+" ,"+visible+userName+" ,"+locationId);
         if(userName == null || userName.length()==0)
@@ -149,7 +170,7 @@ public class EventLogic {
                 }
             }
 
-            Integer eventId = eventDao.insertEvent(userName, eventName, eventDescription, location, timeStart, visible, locationId)
+            Integer eventId = eventDao.insertEvent(userName, eventName, eventDescription, location, timeStart, visible, locationId, lat, lng)
                     .getEventId();
 
             scheduleDeleteEvent(eventId);
@@ -229,7 +250,7 @@ public class EventLogic {
     int createEvent(String userName, String eventName, String eventDescription,
                     String location, Date timeStart, boolean visible) throws HttpRequestException{
 
-        return createEvent(userName, eventName, eventDescription, location, timeStart, visible, null);
+        return createEvent(userName, eventName, eventDescription, location, timeStart, visible, null, null, null);
     }
 
     /**
@@ -315,6 +336,22 @@ public class EventLogic {
 
             Event updatedEvent = eventDao.updateEventLocation(eventId, location);
 
+            eventChanged(updatedEvent);
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    };
+
+    void updateEventLocationCoordinates(String username, int eventId, String lat, String lng, String placeId)  throws HttpRequestException {
+        try {
+            Event event = eventDao.getEvent(eventId);
+            if(event == null)
+                throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with eventId does not exist: " + eventId);
+
+            if(!hasAdminPrivileges(eventId, username))
+                throw new HttpRequestException(HttpStatus.FORBIDDEN.value(), "You don't have write access to this event");
+
+            Event updatedEvent = eventDao.updateEventLocationCoordinates(eventId, lat, lng, placeId);
             eventChanged(updatedEvent);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
@@ -515,6 +552,14 @@ public class EventLogic {
             //TODO privilege check
 
             eventDao.replyInvitation(userName, eventId, answer);
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    }
+
+    public List<EventInvitationDataForReturn> getReply(int eventId) throws HttpRequestException {
+        try{
+             return eventDao.getInvitations(eventId);
         }catch(DatabaseException e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
@@ -828,6 +873,21 @@ public class EventLogic {
             }
         } catch(DatabaseException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void deleteEventNow(String username, int eventId) throws HttpRequestException{
+        System.out.println("DELETENOW Logic");
+        try{
+            System.out.println("Frage Logic: "+this.eventDao.userHasAdminPrivileges(username, eventId));
+            if(this.eventDao.userHasAdminPrivileges(username, eventId)){
+                this.eventDao.deleteEvent(eventId);
+            }else{
+                throw new HttpRequestException(HttpStatus.UNAUTHORIZED.value(), "You're not the admin of this event");
+            }
+
+        }catch(DatabaseException e){
+            throw new HttpRequestException(HttpStatus.NOT_FOUND.value(),e.getMessage());
         }
     }
 

@@ -38,6 +38,12 @@ public class Event {
     @Column
     private String locationId;
 
+    @Column
+    private String lat;
+
+    @Column
+    private String lng;
+
     @OneToMany(mappedBy = "userInvited")
     private Set<EventInvitation> usersInvited = new HashSet<>();
 
@@ -156,5 +162,21 @@ public class Event {
 
     public void setLocationId(String locationId) {
         this.locationId = locationId;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLng() {
+        return lng;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
     }
 }

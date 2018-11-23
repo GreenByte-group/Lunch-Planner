@@ -41,11 +41,13 @@ public class UserController {
     public String createUser(@RequestBody UserJson user,
                              HttpServletResponse response) {
 
+        System.out.println("controller drinne user: " + user.getPassword());
         try {
             userLogic.createUser(user.getUserName(), user.getPassword(), user.getMail());
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (HttpRequestException e) {
             response.setStatus(e.getStatusCode());
+
             return e.getErrorMessage();
         }
 

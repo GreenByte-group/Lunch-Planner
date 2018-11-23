@@ -6,6 +6,7 @@ import {ThumbUp, AddCircleOutlined} from "@material-ui/icons";
 import Snackbar from '@material-ui/core/Snackbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import moment from "moment";
+import {TimePicker} from "material-ui";
 
 const styles = {
             gridList: {
@@ -55,6 +56,17 @@ const styles = {
             boxAdd: {
                 fontSize: '20px',
             },
+            pickerTextField: {
+                fontSize: '14px !important',
+                height: '35px !important',
+                widht: 'auto',
+                lineHeight: '34px',
+            },
+            timePicker: {
+                width: '60% !important',
+                overflow: 'hidden',
+                float: 'left',
+            },
 
 
 };
@@ -62,6 +74,9 @@ const styles = {
 const speedSelectArray = [
             {
                 name: "die Metzgerei",
+                lng: "8.465319871902466",
+                lat: "49.474336045612944" ,
+                placeId: "ChIJxSNkQRvMl0cRCvG20Dr5rTE",
                 picUrl: "/pics/metzgerei.jpg",
                 cols: 1,
                 style: {
@@ -70,6 +85,9 @@ const speedSelectArray = [
             },
             {
                 name: "Dean and David",
+                lng: "8.469822",
+                lat: "49.479687",
+                placeId: "ChIJuRRijB7Ml0cRQd0KrByCvKI",
                 picUrl: "/pics/D&D.jpg",
                 cols: 2,
                 style: {
@@ -78,7 +96,10 @@ const speedSelectArray = [
             },
             {
                 name: "Döner",
-                picUrl: "/pics/doener.jpg",
+                lng: "49.474299445354475",
+                lat:  "8.469026684761047",
+                placeId: "ChIJG6uq3RzMl0cR8hlRB4g8Fxg",
+                picUrl: "/pics/doener",
                 cols: 1,
                 style: {
                     color: 'white',
@@ -86,6 +107,9 @@ const speedSelectArray = [
             },
             {
                 name: "Pizza Paradiso",
+                lng: "8.469594499999971",
+                lat: "49.4715839",
+                placeId: "ChIJTcVE5gLMl0cRveR5yF2fI8k",
                 picUrl: "/pics/pizza.jpg",
                 cols: 2,
                 style: {
@@ -94,6 +118,9 @@ const speedSelectArray = [
             },
             {
                 name: "Asiahung",
+                lng: "8.470450937747955",
+                lat: "49.47940056048268",
+                placeId: "ChIJw_TM8h7Ml0cRGK9SI254Zco",
                 picUrl: "/pics/asiahung.jpg",
                 cols: 1,
                 style: {
@@ -103,6 +130,7 @@ const speedSelectArray = [
             ];
 
 const addText = 'Event starts at: ';
+
 
 
 class SpeedSelectGrid extends React.Component {
@@ -138,19 +166,25 @@ class SpeedSelectGrid extends React.Component {
 
     selectPhoto = (event, buttonStyle) => {
         let url = "";
+        let lngR = "";
+        let latR = "";
+        let placeIdR = "";
         let button = buttonStyle;
         let currentName = event.name;
         let color = event.style.color;
-        let picData2 = {};
+        let picData2 = [];
 
         if (this.state.clicked === false) {
             picData2 = speedSelectArray.map(tile => {
                 if (tile.name === currentName) {
-                    if(!button) {
+                    // if(!button) {
                         tile.style = {color: 'orange'};
-                    }
+                    // }
                     url = tile.name;
-                    this.props.onChange(url);
+                    latR = tile.lat;
+                    lngR = tile.lng;
+                    placeIdR = tile.placeId;
+                    this.props.onChange(url, latR, lngR, placeIdR);
                 }
             });
             this.setState({
@@ -161,29 +195,32 @@ class SpeedSelectGrid extends React.Component {
             picData2 = speedSelectArray.map(tile => {
                 if (tile.name === currentName) {
                     if (tile.style.color === 'white') {
-                        if(!button) {
+                        // if(!button) {
                             tile.style = {color: 'orange'};
-                        };
+                        // };
                         url = tile.name;
+                        latR = tile.lat;
+                        lngR = tile.lng;
+                        placeIdR = tile.placeId;
                         this.setState({
                             clicked: true,
                             picUrl: url,
                         });
-                        this.props.onChange(url);
+                        this.props.onChange(url, latR, lngR, placeIdR);
 
                     } else {
-                        if(!button) {
+                        // if(!button) {
                             tile.style = {color: 'white'};
-                        }
+                        // }
                         this.setState({
                             clicked: false,
                         });
                         this.props.onChange("");
                     }
                 } else {
-                    if(!button) {
+                    // if(!button) {
                         tile.style = {color: 'white'};
-                    }
+                    // }
                 }
             });
         }
@@ -227,10 +264,13 @@ offHover = () => {
 
                 <GridList cellHeight={100} className={classes.gridListCreate} cols={2}>
                     {picData.map(tile => (
-                         <Tooltip title={addText + moment().add(30, 'm').format('HH:mm') +' h'} classes={{ tooltip: classes.boxAdd }}>
-                            <GridListTile onMouseEnter={this.onHover} onMouseLeave={this.offHover} className={classes.gridListTileCreate} key={tile.name} onClick={() => this.selectPhoto(tile, true)} cols={tile.cols || 1} >
 
-                                <img src={tile.picUrl} alt={tile.name} className={classes.image}/>
+                        <Tooltip title={addText + moment().add(30, 'm').format('HH:mm') +' h'} classes={{ tooltip: classes.boxAdd }}>
+                            <GridListTile onMouseEnter={this.onHover} onMouseLeave={this.offHover} className={classes.gridListTileCreate} key={tile.name} onClick={() => this.selectPhoto(tile, true)} cols={tile.cols || 1} >
+                                {(openSnackbar)
+                                    ?<img src={tile.picUrl + "Hover"} alt={tile.name} className={classes.image}/>
+                                    :<img src={tile.picUrl} alt={tile.name} className={classes.image}/>
+                                }
                                 <GridListTileBar
                                     title={'create Event'}
                                     classes={{
@@ -239,7 +279,7 @@ offHover = () => {
                                     }}
                                 />
                             </GridListTile>
-                         </Tooltip>
+                        </Tooltip>
                     ))}
                 </GridList>);
             }else{

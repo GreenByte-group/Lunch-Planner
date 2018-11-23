@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import {withStyles} from "@material-ui/core/styles/index";
 import React from 'react';
-import {Slide,CircularProgress} from '@material-ui/core';
+import {Slide,CircularProgress, IconButton} from '@material-ui/core';
 import {Link} from "react-router-dom";
 import {Today, Schedule, MyLocation, Add} from "@material-ui/icons/";
 import { Scrollbars } from 'react-custom-scrollbars';
@@ -20,14 +20,18 @@ import {getHistory} from "../../utils/HistoryUtils";
 import TextFieldEditing from "../editing/TextFieldEditing";
 import {DatePicker, TimePicker} from "material-ui";
 import {
+    changeEventLocationCoordinates,
     changeEventLocation,
     changeEventTime,
-    changeEventTitle, getEvent, getEventExtern,
+    changeEventTitle, getEvent, getEventExtern, getReplyToEvent,
     inviteMemberToEvent,
-    replyToEvent
+    replyToEvent,
+    deleteEvent
 } from "./EventFunctions";
 import ShareIcon from "@material-ui/icons/Share"
 import {loadComments} from "./Comments/CommentFunctions";
+import {geocodeByPlaceId} from "react-places-autocomplete";
+import NewMap from "../Map/NewMap";
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -131,15 +135,6 @@ function Transition(props) {
             fontSize: '16px',
             fontWeight: '500',
             lineHeight: '24px',
-        },
-        button:{
-            fontSize: '16px',
-            fontFamily: 'Work Sans',
-            color: "white",
-            bottom: 0,
-            width: "100%",
-            minHeight: '56px',
-            zIndex: '10000',
         },
         buttonInvitation: {
             zIndex: '10000',
@@ -269,7 +264,54 @@ function Transition(props) {
             marginTop: '6px',
             marginLeft: '57px',
         },
+        myMapContent: {
+            display: 'flex',
+            flexDirection: 'row',
+        },
+        buttonContainer: {
+            display: 'flex',
+            flexDirection: 'row',
+            bottom: 0,
+            overflowY: 'hidden',
+        },
+        link:{
+            bottom: 0,
+            width: "100%",
+            minHeight: '56px',
+            zIndex: '10000',
+            margin: '10px'
+        },
+        buttonDelete: {
+            fontSize: '16px',
+            fontFamily: 'Work Sans',
+            color: "white",
+            bottom: 0,
+            minHeight: '56px',
+            // maxHeight: '60px',
+            width: '100%',
+            zIndex: '10000',
+        },
+        buttonDeleteAccept: {
+            fontSize: '16px',
+            fontFamily: 'Work Sans',
+            color: "white",
+            bottom: 0,
+            width: "100%",
+            minHeight: '56px',
+            zIndex: '10000',
+            margin: '10px'
+        },
+        button:{
+            fontSize: '16px',
+            fontFamily: 'Work Sans',
+            color: "white",
+            bottom: 0,
+            width: "100%",
+            minHeight: '56px',
+            zIndex: '10000',
+        },
     };
+
 
 class EventScreen extends React.Component {
 
@@ -282,6 +324,9 @@ class EventScreen extends React.Component {
             isAdmin: false,
             name:"",
             location:"",
+            locationId: props.locationId || "",
+            lat: props.lat ,
+            lng: props.lng ,
             date: "",
             description: "",
             people:[],
@@ -290,13 +335,17 @@ class EventScreen extends React.Component {
             token: null,
             comments: [],
             loading: true,
+            acceptedUser: [],
         };
+
+        console.log('PROPS', props)
     }
 
     componentDidMount() {
-        let eventName, description, date, people, accepted, location, eventId, token;
+        let eventName, description, date, people, accepted, location, locationId, lat, lng, eventId, token;
 
         token = this.props.match.params.securityToken;
+
 
         if(token) {
             getEventExtern(token, (response) => {
@@ -304,6 +353,9 @@ class EventScreen extends React.Component {
                     eventId: response.data.eventId,
                     name: response.data.eventName,
                     location: response.data.location,
+                    locationId: response.data.locationId,
+                    lat: response.data.lat,
+                    lng: response.data.lng,
                     date: new Date(response.data.startDate),
                     description: response.data.eventDescription,
                     people: response.data.invitations,
@@ -337,6 +389,9 @@ class EventScreen extends React.Component {
                 if (this.props.location.query.token) {
                     token = String(this.props.location.query.token);
                 }
+                if (this.props.location.query.locationId) {
+                    locationId = String(this.props.location.query.locationId);
+                }
 
                 this.setState({
                     eventId: eventId,
@@ -346,6 +401,9 @@ class EventScreen extends React.Component {
                     people: people,
                     accepted: accepted,
                     location: location,
+                    locationId: locationId,
+                    lat: lat,
+                    lng: lng,
                     token: token,
                     loading: false,
                 });
@@ -365,7 +423,17 @@ class EventScreen extends React.Component {
                     comments: response.data,
                 })
             }
-        })
+        });
+
+        getReplyToEvent(eventId, (response) => {
+            console.log('response data', response.data);
+
+                this.setState({
+                    acceptedUser: response.data,
+                })
+        });
+
+        this.getLocationFromPlaceId(locationId);
     }
 
     parseUrl = () => {
@@ -421,6 +489,17 @@ class EventScreen extends React.Component {
         changeEventLocation(this.state.eventId, event.target.value, this.reloadEventsOnSuccess);
     };
 
+    onMapChanged = (lat, lng, placeId) => {
+        console.log('coordinates', lat, lng, placeId);
+        changeEventLocationCoordinates(this.state.eventId, lat, lng, placeId, (response) => {
+            console.log("klappt erstmal", response)});
+            this.setState({
+                lat: lat,
+                lng: lng,
+                placeId: placeId,
+            });
+    };
+
     handleDate = (event, date) => {
         let newDate = moment(date);
         let dateBefore = moment(this.state.date);
@@ -445,7 +524,9 @@ class EventScreen extends React.Component {
         if(!eventId)
             eventId = this.state.eventId;
 
+
         getEvent(eventId, (response) => {
+            console.log('LOAD EVENT', response.data);
             this.setState({
                 eventId: response.data.eventId,
                 name: response.data.eventName,
@@ -464,8 +545,19 @@ class EventScreen extends React.Component {
         }
     };
 
+    handleDelete = () => {
+        deleteEvent(this.state.eventId, response => {
+            console.log('gelöscht', response);
+            if(response.status === 204) {
+                eventListNeedReload();
+            }
+        });
+
+    };
+
     handleDecline = () => {
         this.sendAnswer('reject', () => {
+            this.forceUpdate();
             getHistory().push("/app/event/");
         });
     };
@@ -473,6 +565,7 @@ class EventScreen extends React.Component {
     handleAccept = () => {
         let username = getUsername();
         let invitationAccepted = false;
+
         this.state.people.forEach((value) => {
             if(value.userName === username) {
                 if(value.answer === 0) {
@@ -486,6 +579,7 @@ class EventScreen extends React.Component {
         } else {
             this.sendAnswer('accept');
         }
+
     };
 
     sendAnswer = (answer, then) => {
@@ -497,18 +591,61 @@ class EventScreen extends React.Component {
         });
     };
 
+    getLocationFromPlaceId = (placeId) => {
+        console.log("in funktion drinne");
+        let placeIdR = placeId;
+        geocodeByPlaceId(placeIdR)
+            .then(result => result[0].geometry.location.lat())
+            .then(result => this.setState({
+                lat: result,
+            }))
+            .catch(error => console.error('Error', error));
+
+
+        geocodeByPlaceId(placeIdR)
+            .then(result => result[0].geometry.location.lng())
+            .then(result => this.setState({
+                lng: result,
+            }))
+            .catch(error => console.error('Error', error));
+
+
+    };
+
+    getCredentialsFromEvent(){
+        let id = this.state.eventId;
+        getEvent(id,(response) => {
+            console.log("RES",response);
+            this.setState({
+                lat: parseFloat(response.data.lat),
+                lng: parseFloat(response.data.lng),
+                locationId: response.data.locationId,
+            })
+        });
+    };
+
 
     render() {
+        console.log('render in eventScreen', this.state)
         const { classes } = this.props;
         const error = this.state.error;
         let name = this.state.name;
         let description = this.state.description;
         let date = this.state.date;
         let location = this.state.location;
+        let locationId = this.state.locationId;
+        let lat = this.state.lat;
+        let lng = this.state.lng;
         let people = this.state.people;
         let eventId = this.state.eventId;
         let isShared = this.state.isShared;
         let loading =  this.state.loading;
+
+        console.log('TEST', lat, lng)
+
+        if(lat === undefined || lng === undefined){
+            this.getCredentialsFromEvent(this.state.eventId);
+        }
 
         if(people.length !== 0) {
             this.parseUrl();
@@ -536,7 +673,10 @@ class EventScreen extends React.Component {
         let invited = false;
         let accepted = false;
         let buttonText = "Join Event";
+        let deleteText = "Delete Event";
         let barTitle = name;
+
+
 
         let iAmAdmin = false;
 
@@ -579,10 +719,44 @@ class EventScreen extends React.Component {
                         <div className={classes.header}>
                             <div className={classes.headerText}>
                                 <p className={classes.fontSmall}>Created by {admin}</p>
-                                <TextFieldEditing onChange={this.onTitleChanged} value={name} editable={iAmAdmin} className={classes.fontBigHeader} />
+                                <div>
+                                    {(!iAmAdmin) ?
+                                        <Link className={classes.mapIcon}
+                                              float="right"
+                                              to={{pathname: "/app/event/showMap", query: {
+                                                      source: "/app/event",
+                                                      locationId: this.state.locationId,
+                                                      lat: lat,
+                                                      lng: lng,
+                                                      eventId: parseInt(eventId),
+                                                  }}}
+
+                                        >
+                                            <MyLocation  disabled={false} className={classes.locationIcon}/>
+                                        </Link>
+                                        :
+
+                                        <Link className={classes.mapIcon}
+                                              float="right"
+                                              to={{pathname: "/app/event/create/map", query: {
+                                                      source: "/app/event",
+                                                      change: true,
+                                                      locationId: this.state.locationId,
+                                                      lat: lat,
+                                                      lng: lng,
+                                                      eventId: parseInt(eventId),
+                                                      onMapChange: this.onMapChanged
+                                                  }}}
+                                        >
+                                            <MyLocation  disabled={false} className={classes.locationIcon}/>
+                                         </Link>
+                                    }
+
+                                    <TextFieldEditing onChange={this.onTitleChanged} value={name} editable={iAmAdmin} className={classes.fontBigHeader} />
+                                </div>
                                 {
                                     (iAmAdmin || name !== location)
-                                        ? <div><MyLocation className={classes.locationIcon} /> <TextFieldEditing onChange={this.onLocationChanged} value={location} editable={iAmAdmin} className={classes.fontBig} /></div>
+                                        ?   <TextFieldEditing onChange={this.onLocationChanged} value={location} editable={iAmAdmin} className={classes.fontBig} />
                                         : ''
                                 }
                                 {
@@ -649,7 +823,7 @@ class EventScreen extends React.Component {
                                     </Link>
                                     : ''
                             }
-                            <UserList selectedUsers={selectedUsers} othersInvited={true} users={people} selectable={false} />
+                            <UserList selectedUsers={selectedUsers}  othersInvited={true} users={people} selectable={false} />
                         </div>
 
                         <div className={classes.taskAndDescription}>
@@ -676,10 +850,23 @@ class EventScreen extends React.Component {
                     </div>
                     {
                         (invited)
-                            ? <InvitationButton decline={this.handleDecline} join={this.handleAccept} class={classes.buttonInvitation} />
-                            : <Button variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>
-                                {buttonText}
-                            </Button>
+                            ?   <InvitationButton decline={this.handleDecline} join={this.handleAccept} class={classes.buttonInvitation} />
+                            :   (iAmAdmin)
+                                    ?   <div className={classes.buttonContainer}>
+                                            <Link
+                                                className={classes.link}
+                                                to={{
+                                                    pathname: "/app/event", query: {
+                                                        source: "/app/event/",
+                                                        search: "search",
+                                                    }
+                                                }}
+                                            >
+                                                <Button variant="raised" color="secondary" onClick={this.handleDelete} className={classes.buttonDelete}>{deleteText}</Button>
+                                            </Link>
+                                            <Button variant="raised" color="secondary" onClick={this.handleAccept} className={classes.buttonDeleteAccept}>{buttonText}</Button>
+                                        </div>
+                                    : <Button variant="raised" color="secondary" onClick={this.handleAccept} className={classes.button}>{buttonText}</Button>
                     }
                 </Dialog>}
             </div>

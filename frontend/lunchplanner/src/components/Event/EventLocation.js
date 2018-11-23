@@ -129,9 +129,13 @@ class EventLocation extends React.Component {
             invitations: invitations,
             people: people,
             location: props.location,
+            locationId: props.locationId,
+            lat: props.lat,
+            lng: props.lng,
             token: props.token,
             weekday:props.weekDay,
         }
+        console.log('PROPS EVENTLOCATION',props)
     }
 
     componentWillReceiveProps(newProps) {
@@ -230,6 +234,11 @@ class EventLocation extends React.Component {
         }
     };
 
+    // onDelete = (event) => {
+    //     console.log("DADAAAAAAAAAAA 2")
+    //     this.props.onDelete(event);
+    // };
+
     render() {
         const {classes} = this.props;
 
@@ -244,6 +253,9 @@ class EventLocation extends React.Component {
         let people = this.state.people;
         let invitations = this.state.invitations;
         let location = this.state.location;
+        let locationId = this.state.locationId;
+        let lat = this.state.lat;
+        let lng= this.state.lng;
         let token = this.state.token;
         let classesText = classes.text;
         if(accepted)
@@ -275,6 +287,9 @@ class EventLocation extends React.Component {
                                 people: invitations,
                                 accepted: accepted,
                                 location:location,
+                                locationId: locationId,
+                                lat: lat,
+                                lng: lng,
                                 token: token,
                             }}}>
                             <CardContent className={classes.cardContent}>

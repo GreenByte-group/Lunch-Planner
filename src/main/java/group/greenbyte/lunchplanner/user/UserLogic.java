@@ -120,6 +120,9 @@ public class UserLogic {
      * @throws HttpRequestException when an parameter is not valid or user already exists or an DatabaseError happens
      */
     void createUser(String userName, String password, String mail) throws HttpRequestException {
+        System.out.println("logic drinne user: " + password);
+
+
         if(userName == null || userName.length() == 0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name is empty");
 
@@ -129,22 +132,30 @@ public class UserLogic {
         if(password == null || password.length() == 0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "password is empty");
 
+        if(password.matches(".*[{§$%&+*#'<>|}].*"))
+            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "password contains forbidden character");
+
         if(mail == null || mail.length() == 0)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "mail is empty");
 
         if(mail.length() > User.MAX_MAIL_LENGTH)
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "mail is too long");
 
-        if(!REGEX_MAIL.matcher(mail).matches())
+        if(!REGEX_MAIL.matcher(mail).matches()) {
+            System.out.println("MatchMAIL: " + userName);
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "mail is not valid");
-
+        }
 //        if(!mail.contains("@vsf-experts.com") || !mail.contains("@vsf-experts.de") || !mail.contains("@vsf-experts.pl"))
 //            throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "mail is not valid");
 
         try {
-            if(userDao.getUser(userName) != null)
+            if(userDao.getUser(userName) != null) {
+                System.out.println("MatchUSERNAME: " + userName);
                 throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "user name already exists");
-
+            }
+            if(!userDao.isUserAlreadyThere(userName)){
+               throw new HttpRequestException(HttpStatus.ALREADY_REPORTED.value(), "user name already exists");
+            }
             userDao.createUser(userName, SecurityHelper.hashPassword(password), mail);
         } catch (DatabaseException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
