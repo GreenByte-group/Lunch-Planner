@@ -1,5 +1,5 @@
 import React from "react";
-import {doLogin} from "./LoginFunctions";
+import {checkName, doLogin} from "./LoginFunctions";
 import {Redirect} from "react-router-dom";
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -11,6 +11,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Button from '@material-ui/core/Button';
 import LoginIcon from '@material-ui/icons/ExitToApp';
 import Modal from 'react-modal';
+import {getUser} from "../User/UserFunctions";
 
 
 let sushi = '/sushi.jpg';
@@ -167,23 +168,52 @@ class Login extends React.Component {
     }
 
     handleSubmit(event) {
-        doLogin(this.state.username, this.state.password, message => {
 
-            if(message.type === "LOGIN_EMPTY") {
-                this.setState({
-                    error: message.payload.message,
-                });
-            } else if(message.type === "LOGIN_SUCCESS") {
-                this.setState({
-                    error: "",
-                    redirectToReferrer: true,
-                });
-            } else if(message.type === "LOGIN_FAILED") {
-                this.setState({
-                    modalIsOpen:true,
-                    error: "wrong username or password",
-                });
-            }
+         getUser(this.state.username, (response) => {
+           console.log('getUser', response);
+           this.setState({
+               username: response.data.userName,
+           });
+           if(response.status === 200){
+               console.log('res',response.data.userName);
+               if(response.data.userName === undefined){
+                   this.setState({
+                       modalIsOpen: true,
+                       error: "wrong username or password",
+                       username: "",
+                       password: "",
+                   });
+               }else{
+                   doLogin(response.data.userName, this.state.password, message => {
+
+                       if (message.type === "LOGIN_EMPTY") {
+                           this.setState({
+                               error: message.payload.message,
+                               username: "",
+                               password: "",
+                           });
+                       } else if (message.type === "LOGIN_SUCCESS") {
+                           this.setState({
+                               error: "",
+                               redirectToReferrer: true,
+                           });
+                       } else if (message.type === "LOGIN_FAILED") {
+                           this.setState({
+                               modalIsOpen: true,
+                               error: "wrong username or password",
+                               username: "",
+                               password: "",
+                           });
+                       }
+                   })
+               }
+              ;
+           }else{
+               this.setState({
+                   modalIsOpen: true,
+                   error: "wrong username or password",
+               });
+           }
         });
 
         if(event)

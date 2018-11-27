@@ -2,6 +2,7 @@ import React from "react";
 import {doLogin} from "./LoginFunctions";
 import {Link, Redirect} from "react-router-dom";
 import Modal from 'react-modal';
+import {getUser} from "./User/UserFunctions";
 
 class Login extends React.Component {
 
@@ -38,20 +39,34 @@ class Login extends React.Component {
     }
 
     handleSubmit(event) {
-        doLogin(this.state.username, this.state.password, message => {
+        getUser(this.state.username, (response) => {
+            console.log('getUser', response);
+            this.setState({
+                username: response.data.userName,
+            });
+            if(response.status === 200){
+                doLogin(response.data.userName, this.state.password, message => {
 
-            if(message.type === "LOGIN_EMPTY") {
-                this.setState({
-                    error: message.payload.message,
+                    if (message.type === "LOGIN_EMPTY") {
+                        this.setState({
+                            error: message.payload.message,
+                        });
+                    } else if (message.type === "LOGIN_SUCCESS") {
+                        this.setState({
+                            error: "",
+                            redirectToReferrer: true,
+                        });
+                    } else if (message.type === "LOGIN_FAILED") {
+                        this.setState({
+                            modalIsOpen: true,
+                            error: "wrong username or password",
+                        });
+                    }
                 });
-            } else if(message.type === "LOGIN_SUCCESS") {
+            }else{
                 this.setState({
-                    error: "",
-                    redirectToReferrer: true,
-                });
-            } else if(message.type === "LOGIN_FAILED") {
-                this.setState({
-                    error: "Wrong username or password"
+                    modalIsOpen: true,
+                    error: "wrong username or password",
                 });
             }
         });

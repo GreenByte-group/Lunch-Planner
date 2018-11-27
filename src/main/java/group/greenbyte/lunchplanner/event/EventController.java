@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 
+
 //import org.springframework.session.
 
 @RestController
@@ -79,7 +80,6 @@ public class EventController {
              produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public String deleteEvent(@PathVariable(value = "eventId") int eventId, HttpServletResponse response) {
-        System.out.println("DELETE CONTROLLER");
         try {
             eventLogic.deleteEventNow(SessionManager.getUserName(),eventId);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
@@ -407,7 +407,7 @@ public class EventController {
     @ResponseBody
     public String acceptBringservice(@PathVariable("eventId") int eventId,
                                      @PathVariable("serviceId") int serviceId,
-                                     @PathVariable("price")int price, HttpServletResponse response){
+                                     @PathVariable("price")String price, HttpServletResponse response){
         try{
             System.out.println("DATA: "+eventId+ serviceId+ price);
             eventLogic.updateBringservice(eventId,SessionManager.getUserName(),serviceId, price);

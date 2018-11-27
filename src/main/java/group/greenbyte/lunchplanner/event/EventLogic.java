@@ -93,33 +93,36 @@ public class EventLogic {
      * @param event event that has changed
      */
     private void eventChanged(Event event) throws HttpRequestException{
-
-
         try{
            List<EventInvitationDataForReturn> invitationList = this.eventDao.getInvitations(event.getEventId());
            for(EventInvitationDataForReturn username : invitationList){
                User sendTo = this.userLogic.getUser(username.getUserName());
 
                String body = "<p style=\"font-size: large\" ><br><br><br>Hey "+sendTo.getUserName()+",<br><br>check the Lunchplanner.<br> You wanted to be notified if something is changing " +
-                       "at the event: <b>"+event.getEventName()+"<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>";
+                       "at the event: <b>"+event.getEventName()+"<br><br>Have fun & Bon appetit <br><br><br><p>This mail is generated automatically</p>";
 
                emailservice.send(sendTo.geteMail(),"Event Changed @Lunchplanner", body);
            }
         }catch(Exception e){
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
+    };
 
+    private void eventDeleteByAdmin(Event event) throws HttpRequestException{
+        try{
+            List<EventInvitationDataForReturn> invitationList = this.eventDao.getInvitations(event.getEventId());
+            for(EventInvitationDataForReturn username : invitationList){
+                User sendTo = this.userLogic.getUser(username.getUserName());
 
+                String body = "<p style=\"font-size: large\" ><br><br><br>Hey "+sendTo.getUserName()+",<br><br>check the Lunchplanner.<br> You wanted to be notified if the event is " +
+                        "canceled by the admin of this event: <b>"+event.getEventName()+"<br><br>Have fun & Bon appetit <br><br><br><p>This mail is generated automatically</p>";
 
-
-//        System.out.println("NAME: "+userLogic.getUser(subscriber.getUserName()).geteMail());
-//
-//        try{
-//        }catch(Exception e){
-//            e.printStackTrace();
-//        }
-    }
-
+                emailservice.send(sendTo.geteMail(),"Event canceled @Lunchplanner", body);
+            }
+        }catch(Exception e){
+            throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+    };
 
     int createEvent(String userName, String eventName, String eventDescription,
                     String location, Date timeStart) throws HttpRequestException {
@@ -204,7 +207,7 @@ public class EventLogic {
                     //send a notification & email to subscriber
 
                    String body = "<p style=\"font-size: large\" ><br><br><br>Hey "+nameOfUser+",<br><br>check the Lunchplanner.<br> You wanted to be notified if somebody is going to " +
-                            "the location: <b>"+eventName+"</b>.<br>Maybe you would like to join "+userName+"?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                            "the location: <b>"+eventName+"</b>.<br>Maybe you would like to join "+userName+"?<br><br>Have fun & Bon appetit <br><br><br><p>This mail is generated automatically</p>" +
                             "                    </p>";
 
                     System.out.println("NAME: "+userLogic.getUser(subscriber.getUserName()).geteMail());
@@ -220,7 +223,7 @@ public class EventLogic {
                     NotificationOptions notificationOptions = userLogic.getNotificationOptions(subscriber.getUserName());
                     if (notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isSubscriptionsBlocked())) {
                         try {
-//                            userLogic.sendNotification(subscriber.getFcmToken(), subscriber.getUserName(), title, description, linkToClick, picturePath);
+                            userLogic.sendNotification(subscriber.getFcmToken(), subscriber.getUserName(), title, description, linkToClick, picturePath);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -459,7 +462,7 @@ public class EventLogic {
         //send invited peoples a email
        String body = "<p style=\"font-size: large\" ><br><br><br>Hey "+userToInvite+",<br><br>check the Lunchplanner. <br>You wanted to be notified if somebody <b>invited</b> you to an event." +
                 "                <br>Maybe you would like to join "+SessionManager.getUserName()+"to "+this.eventDao.getEvent(eventId).getEventName()+"?" +
-                "<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                "<br><br>Have fun & Bon appetit <br><br><br><p>This mail is generated automatically</p>" +
                 "                    </p>";
 
         System.out.println("NAME2: "+this.userDao.getUser(userToInvite).geteMail());
@@ -467,23 +470,23 @@ public class EventLogic {
 
 
         User user = userLogic.getUser(userToInvite);
-        //set notification information
-//        String title = "Event invitation";
-//        String description = String.format("%s invited you to an event", username);
-//        String linkToClick = "/event/" + eventId;
-//
-//        //save notification
-//        userLogic.saveNotification(userToInvite,title,description,username,linkToClick, "");
-//
-//        //send a notification to userToInvite
-//        NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToInvite);
-//        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isEventsBlocked())) {
-//            try {
-//                userLogic.sendNotification(user.getFcmToken(), userToInvite, title, description,linkToClick, "");
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
+//        set notification information
+        String title = "Event invitation";
+        String description = String.format("%s invited you to an event", username);
+        String linkToClick = "/event/" + eventId;
+
+        //save notification
+        userLogic.saveNotification(userToInvite,title,description,username,linkToClick, "");
+
+        //send a notification to userToInvite
+        NotificationOptions notificationOptions = userLogic.getNotificationOptions(userToInvite);
+        if(notificationOptions == null || (notificationOptions.notificationsAllowed() && !notificationOptions.isEventsBlocked())) {
+            try {
+                userLogic.sendNotification(user.getFcmToken(), userToInvite, title, description,linkToClick, "");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -521,7 +524,7 @@ public class EventLogic {
                     //TODO check if user wants notifications
                     //TODO picture path
                     user = userLogic.getUser(member.getUserName());
-                   // userLogic.sendNotification(user.getFcmToken(),member.getUserName(),title, description,linkToClick, "");
+                    userLogic.sendNotification(user.getFcmToken(),member.getUserName(),title, description,linkToClick, "");
                     this.inviteFriend(userName,member.getUserName(),eventId);
                 }
             }
@@ -795,7 +798,7 @@ public class EventLogic {
         }
     }
 
-    public void updateBringservice(int eventId, String accepter, int serviceId, int price) throws HttpRequestException{
+    public void updateBringservice(int eventId, String accepter, int serviceId, String price) throws HttpRequestException{
         try{
             BringService bringService = eventDao.getOneService(serviceId);
 
@@ -877,10 +880,9 @@ public class EventLogic {
     }
 
     public void deleteEventNow(String username, int eventId) throws HttpRequestException{
-        System.out.println("DELETENOW Logic");
         try{
-            System.out.println("Frage Logic: "+this.eventDao.userHasAdminPrivileges(username, eventId));
             if(this.eventDao.userHasAdminPrivileges(username, eventId)){
+                this.eventDeleteByAdmin(getEvent(username,eventId));
                 this.eventDao.deleteEvent(eventId);
             }else{
                 throw new HttpRequestException(HttpStatus.UNAUTHORIZED.value(), "You're not the admin of this event");

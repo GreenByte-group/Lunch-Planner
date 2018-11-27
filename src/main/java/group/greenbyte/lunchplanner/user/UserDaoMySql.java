@@ -88,12 +88,17 @@ public class UserDaoMySql implements UserDao {
                     new BeanPropertyRowMapper<>(UserDatabase.class),
                     userName);
 
-            if (users.size() == 0)
+            if (users.size() == 0){
+                System.out.println("size0: "+userName);
                 return null;
+            }
             else {
+                System.out.println("user: "+users.get(0).getUser());
                 return users.get(0).getUser();
             }
         } catch (Exception e) {
+            System.out.println("Fehler: "+e.getMessage());
+
             throw new DatabaseException(e);
         }
     }

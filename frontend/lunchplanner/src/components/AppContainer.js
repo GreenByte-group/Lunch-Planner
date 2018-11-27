@@ -264,7 +264,7 @@ class AppContainer extends React.Component {
         this.setState({
             openSearch: false,
             search: "",
-        });
+    });
     };
 
     handleSearch = (search) => {

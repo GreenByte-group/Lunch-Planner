@@ -3,7 +3,9 @@ package group.greenbyte.lunchplanner.user;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
 import group.greenbyte.lunchplanner.event.EmailService;
 import group.greenbyte.lunchplanner.event.EventLogic;
 import group.greenbyte.lunchplanner.exceptions.DatabaseException;
@@ -160,6 +162,9 @@ public class UserLogic {
         }
     }
 
+//    public static void main(String[] args) throws Exception{
+//        System.out.println(SecurityHelper.hashPassword("1"));
+//    }
     /**
      *
      * @param searchword String for searching the Database
@@ -200,14 +205,12 @@ public class UserLogic {
         try {
             return userDao.getUser(userName);
         } catch (DatabaseException e) {
-            System.out.println("logic getUser error");
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
     }
 
     public void addFcmToken(String username, String fcmToken) throws HttpRequestException {
         try {
-            System.out.println("LOGIC ADD FCM");
             userDao.setFcmForUser(username, fcmToken);
         } catch(DatabaseException e) {
             throw new HttpRequestException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
@@ -234,13 +237,14 @@ public class UserLogic {
     }
 
     public void sendNotification(String fcmToken, String receiver, String title, String description, String linkToClick, String picturePath) throws FirebaseMessagingException,HttpRequestException {
-//        if(!fcmInitialized) {
-//            try {
-//                initNotifications();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
+       System.out.println("Send notification wird aufgerufen");
+        if(!fcmInitialized) {
+            try {
+                initNotifications();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         System.out.println("FCM token null");
         if(fcmToken == null)
@@ -251,49 +255,49 @@ public class UserLogic {
 
         if(title == "Team invitation") {
             body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. <br>You wanted to be notified if a somebody <b>invited your team</b> to an event." +
-                    "                <br>Maybe you would like to join "+SessionManager.getUserName() +"?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                    "                <br>Maybe you would like to join "+SessionManager.getUserName() +"?<br><br>Have fun & Bon appetit <br><br><br><p>This mail is generated automatically</p>" +
                     "                    </p>";
         }
 
         if(title == "You have been removed from a team"){
             body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. <br>You wanted to be notified if a team <b>removed you from a team</b>." +
-                    "                <br>Maybe you would like to start your own team?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                    "                <br>Maybe you would like to start your own team?<br><br>Have fun & Bon appetit <br><br><br><p>This mail is generated automatically</p>" +
                     "                    </p>";
         }
 
         if(title == "You got promoted"){
             body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. <br>You wanted to be notified if you get <b>promoted to an admin</b>." +
-                    "                <br>Maybe you would like to inform your team?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                    "                <br>Maybe you would like to inform your team?<br><br>Have fun & Bon appetit <br><br><br><p>This mail is generated automatically</p>" +
                     "                    </p>";
         }
 
         if(title == "Team member left"){
             body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner.<br> You wanted to be notified if a team member <b>left the team</b>." +
-                    "                <br>Maybe you would like to invite a new member to your team?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                    "                <br>Maybe you would like to invite a new member to your team?<br><br>Have fun & Bon appetit <br><br><br><p>This mail is generated automatically</p>" +
                     "                    </p>";
         }
 
         if(title == "New team member"){
             body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner.<br> You wanted to be notified if a <b>new team member</b> have joined the team." +
-                    "                <br>Maybe you would like to welcome the new member?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                    "                <br>Maybe you would like to welcome the new member?<br><br>Have fun & Bon appetit <br><br><br><p>This mail is generated automatically</p>" +
                     "                    </p>";
         }
 
         if(title.contains("New comment in")){
             body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner.<br> You wanted to be notified if somebody <b>edit a comment</b> ." +
-                    "                <br>Maybe you would like to know what the comment is about?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                    "                <br>Maybe you would like to know what the comment is about?<br><br>Have fun & Bon appetit <br><br><br><p>This mail is generated automatically</p>" +
                     "                    </p>";
         }
 
         if(title.contains("New task in")){
             body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner.<br> You wanted to be notified if somebody <b>edit a task</b> ." +
-                    "                <br>Maybe you would like to know if you can do them a favor?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                    "                <br>Maybe you would like to know if you can do them a favor?<br><br>Have fun & Bon appetit <br><br><br><p>This mail is generated automatically</p>" +
                     "                    </p>";
         }
 
         if(title == "Task accepted"){
             body = "<p style=\"font-size: large\" ><br><br><br>Hey "+receiver+",<br><br>check the Lunchplanner. <br>You wanted to be notified if somebody <b>accepted your task</b> ." +
-                    "                <br>Maybe you would like to know who brings you something?<br><br>Have fun & Bon appétit <br><br><br><p>This mail is generated automatically</p>" +
+                    "                <br>Maybe you would like to know who brings you something?<br><br>Have fun & Bon appetit <br><br><br><p>This mail is generated automatically</p>" +
                     "                    </p>";
         }
 
@@ -304,16 +308,16 @@ public class UserLogic {
         } catch(Exception e) {
             e.printStackTrace();
         }
-//        Message message = Message.builder()
-//                .putData("title", title)
-//                .putData("body", description)
-//                .putData("tag", linkToClick)
-//                .putData("icon", "https://greenbyte.group/assets/images/logo.png")
-//                .setToken(fcmToken)
-//                .build();
-//
-//        String response = FirebaseMessaging.getInstance().send(message);
-//        System.out.println("Successfully sent message: " + response);
+
+        Message message = Message.builder()
+                .putData("title", title)
+                .putData("body", description)
+                .putData("tag", linkToClick)
+                .setToken(fcmToken)
+                .build();
+
+        String response = FirebaseMessaging.getInstance().send(message);
+        System.out.println("Successfully sent message: " + response);
 
 
     }

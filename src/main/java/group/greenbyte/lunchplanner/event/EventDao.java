@@ -210,7 +210,7 @@ public interface EventDao {
      * @param accepter
      * @param serviceId
      */
-    void updateBringservice(int eventId, String accepter, int serviceId, int price) throws DatabaseException;
+    void updateBringservice(int eventId, String accepter, int serviceId, String price) throws DatabaseException;
 
     void putUserInviteToEventAsAdmin (String userToInviteName, int eventId) throws DatabaseException;
 

@@ -51,22 +51,29 @@ export function register(username, mail, password, responseFunc, errorFunc) {
         .catch(errorFunc)
 }
 
+
 export function doLogin(username, password, responseFunc) {
+
+    console.log('HIer AMK',username);
     if(username && password) {
-        let url =  HOST + '/login?username=' + username +  '&password=' + password;
-        axios.post(url)
-            .then((response) => {
-                localStorage.removeItem(TOKEN);
-                localStorage.setItem(TOKEN, response.data.token );
-                localStorage.setItem(USERNAME, username);
-                setAuthenticationHeader();
-                authentication.isAuthenticated = true;
-                responseFunc({type: "LOGIN_SUCCESS", payload: response.data})
-            })
-            .catch((err) => {
-                authentication.isAuthenticated = false;
-                responseFunc({type: "LOGIN_FAILED", payload: err})
-            })
+        if(username){
+            let url =  HOST + '/login?username=' + username +  '&password=' + password;
+            console.log('URL',url);
+            axios.post(url)
+                .then((response) => {
+                    localStorage.removeItem(TOKEN);
+                    localStorage.setItem(TOKEN, response.data.token );
+                    localStorage.setItem(USERNAME, username);
+                    setAuthenticationHeader();
+                    authentication.isAuthenticated = true;
+                    responseFunc({type: "LOGIN_SUCCESS", payload: response.data})
+                })
+                .catch((err) => {
+                    authentication.isAuthenticated = false;
+                    responseFunc({type: "LOGIN_FAILED", payload: err})
+                })
+        }
+
     } else {
         responseFunc({
             type: "LOGIN_EMPTY",

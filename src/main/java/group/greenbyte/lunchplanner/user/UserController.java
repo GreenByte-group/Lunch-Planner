@@ -137,6 +137,7 @@ public class UserController {
                     .status(HttpStatus.OK)
                     .body(user);
         } catch (HttpRequestException e) {
+            System.out.println("LAAAAEBRs");
             return ResponseEntity
                     .status(e.getStatusCode())
                     .body(e.getErrorMessage());

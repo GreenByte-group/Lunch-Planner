@@ -49,7 +49,11 @@ const styles = {
         marginRight: '16px',
         marginBottom: '16px',
         marginLeft: '16px',
-    }
+    },
+    textField: {
+        maxWidth: '100px',
+        width: '300px',
+    },
 };
 
 class ServiceListItem extends React.Component {
@@ -69,35 +73,45 @@ class ServiceListItem extends React.Component {
     }
 
     acceptedClicked = () => {
+        let change = true;
         if(!this.state.accepter) {
 
-            acceptService(this.state.eventId, this.state.serviceId, this.state.price, (response) => {
-                if(this.state.price !== 0 || null){
-                    if (response.status !== 204) {
-                        this.setState({
-                            error: response.response.data,
-                        })
-                    } else {
-                        this.setState({
-                            accepter: getUsername(),
-                        });
-                        this.sendDebts();
-                    }
-                }else {
-                    if (response.status !== 204) {
-                        this.setState({
-                            error: response.response.data,
-                        })
-                    } else {
-                        this.sendDebts();
-                        this.setState({
-                            accepter: getUsername(),
-                            price: 0,
-                        })
-                    }
+            if(String(this.state.price).includes(",")){
+                if(String(this.state.price).includes(".")) {
+                    change = false;
                 }
+            };
 
-            });
+            if(change === true) {
+                console.log('change', change);
+                acceptService(this.state.eventId, this.state.serviceId, this.state.price, (response) => {
+                    if (this.state.price !== 0 || null) {
+                        if (response.status !== 204) {
+                            this.setState({
+                                error: response.response.data,
+                            })
+                        } else {
+                            this.setState({
+                                accepter: getUsername(),
+                            });
+                            this.sendDebts();
+                        }
+                    } else {
+                        if (response.status !== 204) {
+                            this.setState({
+                                error: response.response.data,
+                            })
+                        } else {
+                            this.sendDebts();
+                            this.setState({
+                                accepter: getUsername(),
+                                price: 0,
+                            })
+                        }
+                    }
+
+                });
+            }
         }
     };
 
@@ -107,6 +121,7 @@ class ServiceListItem extends React.Component {
         }));
     }
     handleChangePrice = (event) => {
+        console.log('prise',event.target.value);
         this.setState({
            price: event.target.value,
         });
@@ -146,7 +161,8 @@ class ServiceListItem extends React.Component {
                         <div className={classes.text}>
                             <p>{food}</p>
                             <p>{description}</p>
-                            <TextField  id="outlined-number"
+                            <TextField  className={classes.textField}
+                                        id="outlined-number"
                                         label={"Price"}
                                         placholder={"Type in the price of this task"}
                                         keyboardType='numeric'

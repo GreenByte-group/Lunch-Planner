@@ -1,9 +1,10 @@
 import React from "react"
 import {compose, withProps} from "recompose"
-import {withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow} from "react-google-maps"
+import {withScriptjs, withGoogleMap, GoogleMap, Marker, DirectionsRenderer, DirectionsRendererProps} from "react-google-maps"
 import Dialog from "../Dialog";
 import {getEvent} from "../Event/EventFunctions";
 import CircularProgress from "@material-ui/core/CircularProgress";
+
 
 
 const style = {
@@ -24,35 +25,37 @@ let ShowMapComponent = compose(
     withScriptjs,
     withGoogleMap
 )((props) => {
+    console.log('props in map', props);
         return (
             <div>
                 <GoogleMap
                     defaultZoom={16}
                     defaultCenter={{lat: props.lat, lng: props.lng}}
-                    // onClick={props.onMapClick}
                     defaultClickableIcons={true}
                 >
-                    <Marker
-                        clickable={false}
-                        position={{lat: props.lat, lng: props.lng}}
-                    />
+                        <Marker
+                            clickable={false}
+                            position={{lat: props.lat, lng: props.lng}}
+                        />
+                        <Marker
+                            clickable={false}
+                            position={{lat: props.myLat, lng: props.myLng}}
+                        />
                 </GoogleMap>
             </div>
         )
     }
 );
 
+
 export class ShowMap extends React.Component {
 
     constructor(props) {
         super();
 
-        console.log("props in showmap", props.location.query)
+        console.log("props in showmap", props.location.query);
         this.state = {
             eventId: props.location.query.eventId,
-            // placeId: props.location.query.locationId || "",
-            // lat: props.location.query.lat,
-            // lng: props.location.query.lng,
             clicked: false,
             loading: true,
         };
@@ -70,13 +73,12 @@ export class ShowMap extends React.Component {
             },
             error => console.log(error)
         );
-
         this.getEventCredentials();
     };
 
     getEventCredentials(){
         let id = this.state.eventId;
-        console.log('id', id)
+        console.log('id', id);
         getEvent(id,(response) => {
             console.log("RES",response);
             this.setState({
@@ -86,6 +88,8 @@ export class ShowMap extends React.Component {
                 loading: false,
             })
         });
+    };
+    getDirections(){
     };
 
     render() {

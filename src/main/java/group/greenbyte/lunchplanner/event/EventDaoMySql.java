@@ -301,6 +301,7 @@ public class EventDaoMySql implements EventDao {
         String SQL = "UPDATE " + EVENT_TABLE + " SET " + EVENT_IS_PUBLIC + " = ? WHERE " + EVENT_ID + " = ?";
 
         try {
+
             jdbcTemplate.update(SQL, isPublic, eventId);
         } catch (Exception e) {
             throw new DatabaseException(e);
@@ -521,7 +522,7 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
-    public void updateBringservice(int eventId,String accepter, int serviceId, int price) throws DatabaseException{
+    public void updateBringservice(int eventId,String accepter, int serviceId, String price) throws DatabaseException{
             try {
                 String SQL1 = " UPDATE " + EVENT_BRINGSERVICE_TABLE +
                         " SET " + EVENT_BRINGSERVICE_ACCEPTER + " = ? WHERE " + EVENT_BRINGSERVICE_ID + " = ? " +
