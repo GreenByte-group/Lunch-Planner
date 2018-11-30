@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import javax.xml.crypto.Data;
 import java.util.*;
 
 @Repository
@@ -203,6 +204,21 @@ public class EventDaoMySql implements EventDao {
                 return event;
             }
         } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public int getNumberParticipant(int eventId) throws DatabaseException{
+        try{
+            String SQL = "SELECT count(*) FROM " + EVENT_INVITATION_TABLE + " WHERE " + EVENT_INVITATION_EVENT + " = ?";
+
+            Integer count = jdbcTemplate.queryForObject(SQL,
+                    Integer.class,
+                    eventId);
+            System.out.println("ANZAHL IST: " + count);
+            return count;
+        }catch(Exception e){
             throw new DatabaseException(e);
         }
     }
@@ -579,6 +595,19 @@ public class EventDaoMySql implements EventDao {
     }
 
     @Override
+    public void setNewAdmin(int eventId, String newAdmin) throws DatabaseException{
+        try{
+            System.out.println("AAAAAAAAAAAAMMMMMMMMMMMMMMMMKKKKKKKKKKKKKKK: "+eventId+newAdmin);
+            String SQL = "UPDATE " + EVENT_INVITATION_TABLE + " SET " + EVENT_INVITATION_ADMIN+ " = ? WHERE " + EVENT_ID + " = ?" +
+                    " AND " + EVENT_INVITATION_USER + " = ? ";
+
+            jdbcTemplate.update(SQL, 1, eventId, newAdmin);
+        }catch(Exception e){
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
     public void putCommentForEvent(String userName, int eventId, String comment) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName(EVENT_COMMENT_TABLE).usingGeneratedKeyColumns(EVENT_COMMENT_ID);
@@ -643,9 +672,16 @@ public class EventDaoMySql implements EventDao {
                 throw new DatabaseException(e);
             }
         } else {
-            String SQL = "DELETE FROM " + EVENT_INVITATION_TABLE + " WHERE " + EVENT_INVITATION_EVENT + " = ? AND "
-                    + EVENT_INVITATION_USER + " = ?";
 
+            String SQL ="";
+            if(userHasAdminPrivileges(userName, eventId)){
+                giveEventNewAdmin(userName,eventId);
+                SQL = "DELETE FROM " + EVENT_INVITATION_TABLE + " WHERE " + EVENT_INVITATION_EVENT + " = ? AND "
+                        + EVENT_INVITATION_USER + " = ?";
+            }else{
+                SQL = "DELETE FROM " + EVENT_INVITATION_TABLE + " WHERE " + EVENT_INVITATION_EVENT + " = ? AND "
+                        + EVENT_INVITATION_USER + " = ?";
+            }
             try {
                 jdbcTemplate.update(SQL, eventId, userName);
             } catch (Exception e) {
@@ -688,6 +724,25 @@ public class EventDaoMySql implements EventDao {
         }
     }
 
+    private void giveEventNewAdmin(String userName, int eventId) throws DatabaseException{
+        Event check = getEvent(eventId);
+        Set<EventInvitationDataForReturn> list = check.getInvitations();
+        System.out.println("NO NO NO "+list.toArray().length);
+       try{
+           if(list.toArray().length > 1){
+               for(EventInvitationDataForReturn tile : list){
+                   if(tile.getUserName() != userName){
+                       System.out.println("HIER ODER: " + tile.getUserName() + "Ad: "+tile.isAdmin());
+                       setNewAdmin(eventId,tile.getUserName());
+//                       putUserInviteToEventAsAdmin(tile.getUserName(), eventId);
+                   }
+               }
+           }
+       }catch (Exception e){
+           throw new DatabaseException(e);
+       }
+
+    }
 
     private Event putUserInvited(String userName, int eventId, boolean admin) throws DatabaseException {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);

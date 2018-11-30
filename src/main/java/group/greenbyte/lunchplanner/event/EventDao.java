@@ -187,7 +187,6 @@ public interface EventDao {
     void putService(String creater, int eventId, String food, String description) throws DatabaseException;
 
 
-
     /**
      *
      * @param eventId id of the event
@@ -245,6 +244,9 @@ public interface EventDao {
      */
     boolean userHasPrivileges(String userName, int eventId) throws DatabaseException;
 
+
+    void setNewAdmin(int eventId, String newAdmin) throws DatabaseException;
+
     /**
      *
      * @param eventId
@@ -279,4 +281,6 @@ public interface EventDao {
      * @return event
      */
     Event getEventByShareToken(String token) throws DatabaseException;
+
+    int getNumberParticipant(int eventId) throws DatabaseException;
 }

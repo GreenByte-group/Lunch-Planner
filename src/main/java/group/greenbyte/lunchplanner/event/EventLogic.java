@@ -124,6 +124,14 @@ public class EventLogic {
         }
     };
 
+    void setNewAdmin(int eventId, String newAdmin) throws HttpRequestException{
+        try{
+            this.eventDao.setNewAdmin(eventId,newAdmin);
+        }catch(Exception e){
+            throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), e.getMessage());
+        }
+    }
+
     int createEvent(String userName, String eventName, String eventDescription,
                     String location, Date timeStart) throws HttpRequestException {
         return createEvent(userName, eventName, eventDescription, location, timeStart, false);
@@ -543,6 +551,8 @@ public class EventLogic {
      * @param answer answer of the user
      */
     public void reply(String userName, int eventId, InvitationAnswer answer) throws HttpRequestException {
+
+System.out.println("BOAAAAA: "+answer.getValue());
         if(!isValidName(userName))
             throw new HttpRequestException(HttpStatus.BAD_REQUEST.value(), "Username is not valid, maximum length: " + Event.MAX_USERNAME_LENGHT + ", minimum length 1");
         if(answer == null)
@@ -552,7 +562,11 @@ public class EventLogic {
             if(eventDao.getEvent(eventId) == null)
                 throw new HttpRequestException(HttpStatus.NOT_FOUND.value(), "Event with event-id: " + eventId + ", was not found");
 
-            //TODO privilege check
+            if(eventDao.getNumberParticipant(eventId) == 0 && answer.getValue() == 0){
+                System.out.println("???????????????????????");
+                eventDao.putUserInviteToEventAsAdmin(userName,eventId);
+            }
+
 
             eventDao.replyInvitation(userName, eventId, answer);
         }catch(DatabaseException e){

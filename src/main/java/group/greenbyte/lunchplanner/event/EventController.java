@@ -372,6 +372,19 @@ public class EventController {
         }
     }
 
+    @RequestMapping(value="/{eventId}/admin/{newAdmin}", method = RequestMethod.PUT,
+                    produces = MediaType.TEXT_PLAIN_VALUE)
+    public String setNewAdmin(@PathVariable("eventId")int eventId, @PathVariable("newAdmin")String newAdmin, HttpServletResponse response){
+        try{
+            this.eventLogic.setNewAdmin(eventId, newAdmin);
+            response.setStatus(HttpServletResponse.SC_ACCEPTED);
+            return "";
+        }catch(HttpRequestException e){
+            response.setStatus(e.getStatusCode());
+            return e.getErrorMessage();
+        }
+    }
+
     /**
      * Get servicelist from event
      *

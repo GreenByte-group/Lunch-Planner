@@ -136,3 +136,8 @@ export function getEventExtern(token,responseFunc) {
     axios.get(url)
         .then(responseFunc)
 }
+export function setNewAdmin(eventId, admin, responseFunc){
+    let url = HOST + "/event/" + eventId + "/admin/" + admin;
+    axios.put(url)
+        .then(responseFunc)
+}

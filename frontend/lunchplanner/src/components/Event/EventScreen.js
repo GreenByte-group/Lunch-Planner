@@ -575,6 +575,10 @@ class EventScreen extends React.Component {
         });
 
         if(invitationAccepted) {
+            let isEmpty = false;
+            let id = this.state.eventId;
+            let participant = this.state.people;
+
             this.handleDecline();
         } else {
             this.sendAnswer('accept');
@@ -641,7 +645,7 @@ class EventScreen extends React.Component {
         let isShared = this.state.isShared;
         let loading =  this.state.loading;
 
-        console.log('TEST', lat, lng)
+        console.log('TEST', lat, lng);
 
         if(lat === undefined || lng === undefined){
             this.getCredentialsFromEvent(this.state.eventId);
