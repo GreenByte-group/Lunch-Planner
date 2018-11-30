@@ -616,15 +616,26 @@ class EventScreen extends React.Component {
 
     };
 
+    getLocationFromPlaceIdTemp (placeId){
+        geocodeByPlaceId(placeId)
+            .then(result => result[0].address_components)
+            .then(result => this.setState({
+                adresse: result,
+            }))
+            .catch(error => console.error('Error', error));
+    };
+
     getCredentialsFromEvent(){
         let id = this.state.eventId;
+        let adresse = "";
         getEvent(id,(response) => {
             console.log("RES",response);
             this.setState({
                 lat: parseFloat(response.data.lat),
                 lng: parseFloat(response.data.lng),
                 locationId: response.data.locationId,
-            })
+            });
+            adresse = this.getLocationFromPlaceIdTemp(response.data.locationId);
         });
     };
 
@@ -635,6 +646,7 @@ class EventScreen extends React.Component {
         const error = this.state.error;
         let name = this.state.name;
         let description = this.state.description;
+        let adresse = this.state.adresse;
         let date = this.state.date;
         let location = this.state.location;
         let locationId = this.state.locationId;
@@ -733,6 +745,7 @@ class EventScreen extends React.Component {
                                                       lat: lat,
                                                       lng: lng,
                                                       eventId: parseInt(eventId),
+                                                      adresse: adresse,
                                                   }}}
 
                                         >
