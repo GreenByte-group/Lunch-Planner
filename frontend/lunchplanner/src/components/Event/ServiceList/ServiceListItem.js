@@ -83,7 +83,6 @@ class ServiceListItem extends React.Component {
             };
 
             if(change === true) {
-                console.log('change', change);
                 acceptService(this.state.eventId, this.state.serviceId, this.state.price, (response) => {
                     if (this.state.price !== 0 || null) {
                         if (response.status !== 204) {
@@ -117,11 +116,9 @@ class ServiceListItem extends React.Component {
 
     sendDebts(){
         setDebts(this.state.creator, this.state.accepter, this.state.price, (response => {
-            console.log('response', response.data)
         }));
     }
     handleChangePrice = (event) => {
-        console.log('prise',event.target.value);
         this.setState({
            price: event.target.value,
         });

@@ -251,13 +251,6 @@ class TeamScreen extends React.Component {
         let teamId, teamName, description, people, isPublic, picture;
 
         teamId = this.props.match.params.teamId;
-        console.log('datas in frontend',teamId);
-        console.log('datas in frontend',teamName);
-        console.log('datas in frontend',description);
-        console.log('datas in frontend',isPublic);
-        console.log('datas in frontend',people);
-        console.log('datas in frontend',picture);
-
         if(this.props.location.query) {
 
             if (this.props.location.query.teamName) {
@@ -347,8 +340,6 @@ class TeamScreen extends React.Component {
             });
         })
         this.backgroundImage = this.state.picture;
-        console.log('pic', this.backgroundImage);
-
     };
 
     handleLeave = () => {
@@ -380,7 +371,6 @@ class TeamScreen extends React.Component {
                 teamListNeedReload();
             })
         }else if(answer === "join"){
-            console.log(answer)
             joinTeam(this.state.teamId, () => {
                 this.loadTeam(this.state.teamId);
                 teamListNeedReload();
@@ -423,16 +413,12 @@ class TeamScreen extends React.Component {
 
 
     openGrid = () => {
-        console.log('openGrid => teamScreen');
-
         this.setState({
             openModal: true,
         });
     };
 
     closeGrid = (event) => {
-        console.log('closeGrid => teamScreen', event);
-
         this.setState({
             openModal: false,
         });
@@ -446,7 +432,6 @@ class TeamScreen extends React.Component {
 
 
     handleTeamPicGrid = (event) => {
-        console.log('handleTeamPicGrid => teamScreen => event', event);
         this.setState({
             picture: event,
         });
@@ -508,7 +493,6 @@ class TeamScreen extends React.Component {
         if(iAmAdmin)
             clickRemove = this.clickRemove;
 
-        console.log('picChange', this.state.picChange);
         return (
             <div >
                 {loading ?

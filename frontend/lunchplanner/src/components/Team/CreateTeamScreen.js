@@ -140,7 +140,6 @@ class CreateTeamScreen extends React.Component {
         let withParent = params.get('withParent') == 'true';
 
         if(withParent === true && this.state.withParent !== true) {
-            console.log('set with parent true');
             this.setState({
                 withParent: true,
             })

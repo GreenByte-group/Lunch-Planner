@@ -151,7 +151,6 @@ const styles = {
 export let needReload = false;
 
 export function userNeedReload() {
-    console.log("in der function", );
     needReload = true;
 }
 
@@ -199,7 +198,6 @@ class AppContainer extends React.Component {
 
         let eventDays = [];
         getEvents(null, (response) => {
-            console.log("mal schauen", response);
 
             let date = new Date();
             let locationDay = response.data;
@@ -208,7 +206,6 @@ class AppContainer extends React.Component {
                let day = parseInt(tile.startDate.substring(8, 10));
                let month = parseInt(tile.startDate.substring(5, 7)) - 1;
                let year = parseInt(tile.startDate.substring(0, 4));
-               console.log('DATE', date);
                eventDays.push(new Date(year,month,day));
            });
         });
@@ -268,7 +265,6 @@ class AppContainer extends React.Component {
     };
 
     handleSearch = (search) => {
-        console.log('search: ', search);
         if(search === 'play tetris') {
             console.log('open tetris');
             getHistory().push("/app/tetris");
@@ -322,7 +318,7 @@ class AppContainer extends React.Component {
                         changeData: true,
                     })
                 } else {
-                    console.log('NOPE BIATCH')
+
                 }
             });
         getHistory().push("");
@@ -331,8 +327,6 @@ class AppContainer extends React.Component {
 
     render() {
         const { classes } = this.props;
-
-        console.log("zeig ich dich", this.state);
 
         if(needReload) {
             needReload = !needReload;

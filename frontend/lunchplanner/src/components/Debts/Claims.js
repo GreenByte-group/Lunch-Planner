@@ -204,7 +204,6 @@ class Claims extends React.Component {
         const {classes} = this.props;
         let picPathDebtor = this.state.picPathDebtor;
         let picPathCreditor = this.state.picPathCreditor;
-        console.log('Debts in Claims', this.state)
         let debtId = this.state.id;
 
         return (

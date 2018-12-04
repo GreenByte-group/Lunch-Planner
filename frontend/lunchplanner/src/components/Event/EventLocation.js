@@ -135,7 +135,6 @@ class EventLocation extends React.Component {
             token: props.token,
             weekday:props.weekDay,
         }
-        console.log('PROPS EVENTLOCATION',props)
     }
 
     componentWillReceiveProps(newProps) {

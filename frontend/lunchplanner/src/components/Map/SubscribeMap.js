@@ -116,7 +116,6 @@ export class SubscribeMap extends React.Component {
             error => console.log(error)
         );
         this.loadSubscriptions();
-        console.log('erster0', this.state.subscriptions)
     };
 
     loadSubscriptions = () => {
@@ -124,7 +123,6 @@ export class SubscribeMap extends React.Component {
             let array = response.data;
 
             array.forEach((location) => {
-                console.log('IN LOOP');
                 geocodeByPlaceId(location)
                     .then((result) => {
                         let lat = result[0].geometry.location.lat();
@@ -188,20 +186,14 @@ export class SubscribeMap extends React.Component {
     };
 
  removeDuplicates = (array) => {
-
-     console.log('vor duplicate', array)
      var uPrice = _.uniqBy(array, 'key');
-     console.log('nach duplicate', uPrice)
      return uPrice;
-
-
  };
 
     handleMarkerSubscribe = (marker) => {
         let subscriptions = this.state.subscriptions;
         console.log(subscriptions);
         let newSubscriptions = this.removeDuplicates(subscriptions);
-        console.log(newSubscriptions);
 
 
         newSubscriptions.forEach((value) => {
@@ -228,27 +220,11 @@ export class SubscribeMap extends React.Component {
     onMapClick = (event) => {
         if(!event.placeId)
             return ;
-
-        console.log('event',event.getLatLng);
-
-
         geocodeByPlaceId(event.placeId)
-            // .then(result => console.log('result', result))
             .then((result) => {
                this.state.subscriptions.locationName = result[0].formatted_address;
             });
-
-
-        // geocodeByPlaceId(event.placeId)
-        //     .then(result => result[0].formatted_address)
-        //     .then(result => this.state.subscription.location = result)
-        //     .then(result => console.log('result',result))
-        //     .catch(error => console.error('Error', error));
-
-        // setTimeout(150);
-
         let subscriptions = this.state.subscriptions;
-
         subscriptions.push({
             lat: event.latLng.lat(),
             lng: event.latLng.lng(),
@@ -256,11 +232,6 @@ export class SubscribeMap extends React.Component {
             subscribed: false,
             isOpen: true,
         });
-
-
-
-
-        console.log('schauen wir mal', this.state.subscriptions[0].locationName)
 
         setTimeout(() =>
         this.setState({
@@ -270,7 +241,6 @@ export class SubscribeMap extends React.Component {
     };
 
     subscribe = (location) => {
-        console.log('location',this.state.subscriptions);
            subscribe(getUsername(), location, this.state.subscriptions.locationName,  (response) => {
            });
 
@@ -291,12 +261,10 @@ export class SubscribeMap extends React.Component {
                     i++;
                 }
             });
-            console.log('index', i);
             list.splice(i, 1);
             this.setState({
                 subscriptions: list,
             });
-        console.log('nach unsubscribe', this.state.subscriptions);
 
     };
 

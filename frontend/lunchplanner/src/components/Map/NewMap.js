@@ -6,6 +6,9 @@ import {getHistory} from "../../utils/HistoryUtils";
 import FloatingActionButton from "../FloatingActionButton";
 import {geocodeByAddress, geocodeByPlaceId} from "react-places-autocomplete";
 import {getEvent} from "../Event/EventFunctions";
+import Geocode from 'react-geocode';
+
+
 
 let MyMapComponent = compose(
     withProps({
@@ -40,11 +43,7 @@ export class NewMap extends React.Component {
 
     constructor(props) {
         super();
-        console.log('NewMap PROPS',props.location.query);
-
         if(props.location.query.change){
-            console.log('change = true');
-
             if(props.location.query.lat && props.location.query.lng) {
                 this.state = {
                     isMarkerShown: true,
@@ -55,15 +54,16 @@ export class NewMap extends React.Component {
                     lat: props.location.query.lat,
                     lng: props.location.query.lng,
                     onMapChange: props.location.query.onMapChange,
+                    adresse: props.location.query.adresse,
                 };
             }else{
                 getEvent(props.location.query.eventId, response => {
-                    console.log('zweiter Weg', response);
                     this.state = {
                         eventId: props.location.query.eventId,
                         placeId: response.data.locationId,
                         lat: response.data.lat,
                         lng: response.data.lng,
+                        adresse: props.location.query.adresse,
                     }
                 })
             };
@@ -78,10 +78,11 @@ export class NewMap extends React.Component {
                     lat: props.location.query.lat,
                     lng: props.location.query.lng,
                     onLocationChange: props.location.query.locationChange,
+                    adresse: props.location.query.adresse,
+
                 };
             }else{
                 if(props.location.query.locationId){
-                    console.log('LETZTE VERZWEIGUNG');
                     this.state = {
                         isMarkerShown: true,
                         open: true,
@@ -89,6 +90,8 @@ export class NewMap extends React.Component {
                         eventId: props.location.query.eventId,
                         placeId: props.location.query.locationId,
                         onLocationChange: props.location.query.locationChange,
+                        adresse: props.location.query.adresse,
+
                     };
                 }else {
                     this.state = {
@@ -100,31 +103,27 @@ export class NewMap extends React.Component {
                         lat: null,
                         lng: null,
                         onLocationChange: props.location.query.locationChange,
+                        adresse: null,
+
                     };
                 }
             };
         };
-
-
     }
 
 
 
     handleMarkerClick = () => {
-        console.log('Marker click');
     };
 
     onMapClick = (event) => {
-
-        console.log(event)
         this.setState({
             isMarkerShown: true,
             lat: event.latLng.lat(),
             lng: event.latLng.lng(),
             placeId: event.placeId,
-        })
-
-        this.render();
+            adresse: null,
+        });
     };
 
 
@@ -145,28 +144,53 @@ export class NewMap extends React.Component {
     }
 
     setLocation = () => {
-        console.log("NOPE");
         if(this.state.isMarkerShown){
             this.state.onLocationChange(this.state.lat, this.state.lng, this.state.placeId);
             getHistory().push(this.props.location.query.source);
-        }else{
-
         }
     };
 
     setLocationChange = () => {
-        console.log("new",this.props.location.query.source + "/" + this.state.eventId);
         if(this.props.location.query.change === true){
             if(this.state.isMarkerShown){
                 this.state.onMapChange(this.state.lat, this.state.lng, this.state.placeId);
                 getHistory().push(this.props.location.query.source + "/" + this.state.eventId);
-            };
+            }
         }else{
             if(this.state.isMarkerShown){
                 this.state.onMapChange(this.state.lat, this.state.lng, this.state.placeId);
                 getHistory().push(this.props.location.query.source);
-            };
+            }
         }
+    };
+
+    getAdresseAndPlaceIdFromLatLng = () => {
+        Geocode.setApiKey("AIzaSyA9g1HmDqPm-H4jF-SUMPAWAEkJRbwnsSw");
+        Geocode.fromLatLng(this.state.lat, this.state.lng)
+            .then((result) => {
+                this.setState({
+                    adresse: result.results[0].address_components,
+                    placeId: result.results[0].place_id,
+                }) ;
+            })
+            .then(() => {
+                let placeId = this.state.placeId;
+                window.open("https://www.google.com/maps/dir/?api=1&destination=" + this.state.adresse[1].long_name + "+" + this.state.adresse[0].long_name + "&travelmode=walking", '_blank');
+            });
+
+    };
+
+    redirectToGoogleMaps = () => {
+        if(this.state.adresse !== null && this.state.adresse !== undefined){
+            window.open("https://www.google.com/maps/dir/?api=1&destination=" + this.state.adresse[1].long_name + "+" + this.state.adresse[0].long_name + "&travelmode=walking", '_blank');
+        }
+        else if(this.state.placeId !== null && this.state.placeId !== undefined){
+            window.open("https://www.google.com/maps/dir/?api=1&&destination_place_id=" + this.state.placeId + "&travelmode=walking", '_blank');
+        }
+        if((this.state.placeId === null || this.state.placeId === undefined) && (this.state.adresse === null || this.state.adresse === undefined)){
+            this.getAdresseAndPlaceIdFromLatLng();
+        }
+
 
     };
 
@@ -175,12 +199,10 @@ export class NewMap extends React.Component {
         let lng = this.state.lng || this.state.defaultLng || 8.46496045589447;
         let showMarker = (this.state.isMarkerShown);
         let change = this.state.change;
-
-        console.log("MAP STATE", this.state)
-
         if(change === true){
             return (
                 <Dialog>
+                    <FloatingActionButton onClick={this.redirectToGoogleMaps}  styleRoot={{zIndex: '10000', top: '20px'}}/>
                     <MyMapComponent
                         isMarkerShown={showMarker}
                         onMarkerClick={this.handleMarkerClick}

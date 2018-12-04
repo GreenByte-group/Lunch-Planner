@@ -131,7 +131,6 @@ class Event extends React.Component {
             weekDay: weekday,
 
         }
-        console.log("prop in event", props);
     }
 
     componentWillReceiveProps(newProps) {

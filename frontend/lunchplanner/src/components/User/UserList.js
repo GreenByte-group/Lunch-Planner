@@ -25,7 +25,6 @@ class UserList extends React.Component {
             clickRemove: props.clickRemove,
             acceptedUser: props.acceptedUser,
         };
-        console.log(props)
     }
 
     componentWillReceiveProps(newProps) {

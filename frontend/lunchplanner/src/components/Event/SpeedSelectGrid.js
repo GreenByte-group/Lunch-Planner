@@ -255,7 +255,6 @@ offHover = () => {
         let verticalSnackbar = this.state.verticalSnackbar;
         let horizontalSnackbar = this.state.horizontalSnackbar;
         let openSnackbar = this.state.openSnackbar;
-        console.log('render', openSnackbar);
 
             if(this.state.create){
                return(

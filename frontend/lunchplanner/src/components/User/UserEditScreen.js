@@ -167,7 +167,6 @@ class UserEditScreen extends React.Component {
     constructor(props) {
         super();
 
-        console.log('PROPS', props);
         this.state = {
             username: "",
             email: '',
@@ -216,7 +215,6 @@ class UserEditScreen extends React.Component {
             sure: true,
             disabledSubmit: true,
         });
-        console.log('choice yes');
     };
 
     onDeleteNo = () => {
@@ -224,7 +222,6 @@ class UserEditScreen extends React.Component {
             sure: false,
             disabledSubmit: true,
         });
-        console.log('choice no');
     };
 
     onDeleteClick = () => {

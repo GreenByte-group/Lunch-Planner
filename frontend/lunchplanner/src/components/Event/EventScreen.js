@@ -338,7 +338,6 @@ class EventScreen extends React.Component {
             acceptedUser: [],
         };
 
-        console.log('PROPS', props)
     }
 
     componentDidMount() {
@@ -426,8 +425,6 @@ class EventScreen extends React.Component {
         });
 
         getReplyToEvent(eventId, (response) => {
-            console.log('response data', response.data);
-
                 this.setState({
                     acceptedUser: response.data,
                 })
@@ -490,15 +487,14 @@ class EventScreen extends React.Component {
     };
 
     onMapChanged = (lat, lng, placeId) => {
-        console.log('coordinates', lat, lng, placeId);
-        changeEventLocationCoordinates(this.state.eventId, lat, lng, placeId, (response) => {
-            console.log("klappt erstmal", response)});
+        console.log('new Dataset for Googlemaps', lat, lng, placeId);
+        changeEventLocationCoordinates(this.state.eventId, lat, lng, placeId, ((response) => {
             this.setState({
                 lat: lat,
                 lng: lng,
                 placeId: placeId,
             });
-    };
+    }))};
 
     handleDate = (event, date) => {
         let newDate = moment(date);
@@ -526,7 +522,6 @@ class EventScreen extends React.Component {
 
 
         getEvent(eventId, (response) => {
-            console.log('LOAD EVENT', response.data);
             this.setState({
                 eventId: response.data.eventId,
                 name: response.data.eventName,
@@ -547,7 +542,6 @@ class EventScreen extends React.Component {
 
     handleDelete = () => {
         deleteEvent(this.state.eventId, response => {
-            console.log('gelöscht', response);
             if(response.status === 204) {
                 eventListNeedReload();
             }
@@ -596,7 +590,6 @@ class EventScreen extends React.Component {
     };
 
     getLocationFromPlaceId = (placeId) => {
-        console.log("in funktion drinne");
         let placeIdR = placeId;
         geocodeByPlaceId(placeIdR)
             .then(result => result[0].geometry.location.lat())
@@ -629,7 +622,6 @@ class EventScreen extends React.Component {
         let id = this.state.eventId;
         let adresse = "";
         getEvent(id,(response) => {
-            console.log("RES",response);
             this.setState({
                 lat: parseFloat(response.data.lat),
                 lng: parseFloat(response.data.lng),
@@ -641,7 +633,6 @@ class EventScreen extends React.Component {
 
 
     render() {
-        console.log('render in eventScreen', this.state)
         const { classes } = this.props;
         const error = this.state.error;
         let name = this.state.name;
@@ -657,7 +648,6 @@ class EventScreen extends React.Component {
         let isShared = this.state.isShared;
         let loading =  this.state.loading;
 
-        console.log('TEST', lat, lng);
 
         if(lat === undefined || lng === undefined){
             this.getCredentialsFromEvent(this.state.eventId);

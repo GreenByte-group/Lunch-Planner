@@ -83,7 +83,6 @@ class Event extends React.Component {
             profilePicturePath: '',
         };
 
-        console.log('pros User', props)
         this.getUserImage(props.username);
     }
 

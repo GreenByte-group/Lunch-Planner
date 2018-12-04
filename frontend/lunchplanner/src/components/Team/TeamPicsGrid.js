@@ -201,7 +201,6 @@ class TeamPicsGrid extends React.Component {
 
     constructor(props) {
         super();
-        console.log('props', props);
 
         this.state = {
             title: "",

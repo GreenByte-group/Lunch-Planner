@@ -232,7 +232,6 @@ class CreateEventScreen extends React.Component {
 
         createEvent(this.state.locationText,this.state.description, this.state.date, invitedUsersArray, !this.state.visible, this.state.placeId, this.state.lat, this.state.lng,
             (response) => {
-                console.log('all states of new event', this.state);
                 if(response.status === 201) {
                     eventListNeedReload();
                     getHistory().push('/app/event');
@@ -286,7 +285,6 @@ class CreateEventScreen extends React.Component {
 
     handleDescription = (event) => {
         let target = event.target();
-        // console.log('description', evet.get());
         this.setState({
             description: target.value,
         });
@@ -301,8 +299,6 @@ class CreateEventScreen extends React.Component {
         this.setState({
             locationText: location,
         });
-
-        console.log('handleLocationChange')
         geocodeByAddress(location)
             .then(result => this.setState({
                     lat: result[0].geometry.location.lat()
@@ -332,10 +328,6 @@ class CreateEventScreen extends React.Component {
     };
 
     handleTeamPicGrid = (name, lat, lng, placeId) => {
-        console.log('handleTeampicGrid', name);
-        console.log('handleTeampicGrid', lat);
-        console.log('handleTeampicGrid', lng);
-        console.log('handleTeampicGrid', placeId);
         this.setState({
             locationText: name,
             lat: lat,
@@ -347,7 +339,6 @@ class CreateEventScreen extends React.Component {
     };
 
     getLocationFromPlaceId = (a) => {
-        console.log("in funktion drinne");
         let placeIdR = a;
         geocodeByPlaceId(placeIdR)
             .then(result => result[0].geometry.location.lat)
@@ -430,7 +421,6 @@ class CreateEventScreen extends React.Component {
                                 value={this.state.description}
                                 onChange={this.handleChange}
                                 multiline
-                                rows="6"
                             />
                         </FormGroup>
                         <p className={classes.dateHeader}>Date</p><p className={classes.timeHeader}>TIME</p>

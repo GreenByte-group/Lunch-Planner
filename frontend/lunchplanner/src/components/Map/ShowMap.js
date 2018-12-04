@@ -45,7 +45,6 @@ let ShowMapComponent = compose(
     withScriptjs,
     withGoogleMap
 )((props) => {
-    console.log('props in map', props);
         return (
             <div>
                 <GoogleMap
@@ -109,9 +108,7 @@ export class ShowMap extends React.Component {
 
     getEventCredentials(){
         let id = this.state.eventId;
-        console.log('id', id);
         getEvent(id,(response) => {
-            console.log("RES",response);
             this.setState({
                 lat: parseFloat(response.data.lat),
                 lng: parseFloat(response.data.lng),
@@ -126,7 +123,6 @@ export class ShowMap extends React.Component {
 
 
     redirectToGoogleMaps = () => {
-        console.log('states für direction', this.state);
         if(this.state.adresse !== null && this.state.adresse !== undefined){
             window.open("https://www.google.com/maps/dir/?api=1&destination=" + this.state.adresse[1].long_name + "+" + this.state.adresse[0].long_name + "&travelmode=walking", '_blank');
         }else{
@@ -136,9 +132,6 @@ export class ShowMap extends React.Component {
 
     render() {
         const { classes } = this.props;
-
-
-        console.log("show states in showmap", this.state);
         let loading = this.state.loading;
         let lat = this.state.lat;
         let lng = this.state.lng;
@@ -180,9 +173,6 @@ export class ShowMap extends React.Component {
                             redirectToGoogleMaps={this.redirectToGoogleMaps}
                             adresse={adresse}
                         />
-
-
-
                 }
             </Dialog>
         )

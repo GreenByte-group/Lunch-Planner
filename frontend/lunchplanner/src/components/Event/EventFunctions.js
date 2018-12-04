@@ -94,9 +94,6 @@ export function deleteEvent(eventId, responseFunc, errorFunc){
 };
 
 export function createEvent(location, description, date, member, visible, locationId, lat, lng, responseFunc, errorFunc) {
-    console.log('lat', lat);
-    console.log('lng', lng);
-    console.log('locationID', locationId);
     let momentDate = moment(date);
 
     let timeEnd = date.getTime();

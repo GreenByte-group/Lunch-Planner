@@ -61,7 +61,7 @@ export class GoogleSuggest extends React.Component {
                     this.setState({
                         address: results[0].formatted_address
                     })
-                    console.log(this.state.address)})
+                   })
                 .then(this.state.onChange(String(this.state.address)))
         }
     };

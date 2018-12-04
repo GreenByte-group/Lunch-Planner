@@ -40,7 +40,6 @@ class Login extends React.Component {
 
     handleSubmit(event) {
         getUser(this.state.username, (response) => {
-            console.log('getUser', response);
             this.setState({
                 username: response.data.userName,
             });

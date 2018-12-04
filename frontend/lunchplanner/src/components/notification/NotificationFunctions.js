@@ -64,7 +64,6 @@ export function sendOptions({blockAll, events, teams,
 
 export function sendTokenToServer(tokenToSend) {
     let url = HOST + "/user" + "/fcm";
-    console.log("URL:"+url+ "   /USER/FCM = FRONTEND");
     axios.post(url, {fcmToken: tokenToSend})
         .then((response) => {
         }).catch((error) => {

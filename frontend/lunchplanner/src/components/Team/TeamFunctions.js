@@ -32,7 +32,6 @@ export function createTeam(name, description, member, picture, visible, response
 export function createTeamWithParent(name, description, parent, picture, member, visible, responseFunc, errorFunc) {
     let url =  HOST + '/team';
     let data;
-    console.log('function', picture);
     if(parent !== null) {
         data = {teamName: name, description: description, visible: visible, parent: parent, picture: picture};
     } else {

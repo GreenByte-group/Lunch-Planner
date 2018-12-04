@@ -121,7 +121,6 @@ class TeamList extends React.Component {
                         <div >
                             <List className={classes.list}>
                                 {teams.map((listValue)=>{
-                                    console.log('listValue', listValue);
                                     if(listValue.picture === "" || listValue.picture === null){
                                         listValue.picture = "/pics/conference.jpg";
                                     }

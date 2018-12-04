@@ -117,7 +117,6 @@ class LocationList extends React.Component {
     }
 
     render() {
-        console.log("RENDER");
         const { classes } = this.props;
         let events = this.state.events || [];
         let locations = [];
