@@ -1,6 +1,8 @@
-export const HOST = "https://lunchplanner.vsf-experts.de/backend";
+
 export const TOKEN = "token_lunch_planner";
 export const USERNAME = "user_name_lunch_planner";
+
+export const HOST = "https://lunchplanner.vsf-experts.de/backend";
 export const FRONTEND_HOST = "https://lunchplanner.vsf-experts.de";
 
 // export const FRONTEND_HOST = "http://localhost:3000";

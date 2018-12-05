@@ -203,7 +203,10 @@ function Transition(props) {
         locationIcon: {
             float: 'left',
             marginRight: '5px',
-            width: '17px',
+            width: '30px',
+            "&:hover": {
+                cursor: 'pointer',
+            },
         },
         image: {
             minHeight: '152px',
@@ -739,7 +742,7 @@ class EventScreen extends React.Component {
                                                   }}}
 
                                         >
-                                            <MyLocation  disabled={false} className={classes.locationIcon}/>
+                                            <MyLocation  disabled={true} className={classes.locationIcon}/>
                                         </Link>
                                         :
 

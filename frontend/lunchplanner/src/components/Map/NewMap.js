@@ -7,6 +7,7 @@ import FloatingActionButton from "../FloatingActionButton";
 import {geocodeByAddress, geocodeByPlaceId} from "react-places-autocomplete";
 import {getEvent} from "../Event/EventFunctions";
 import Geocode from 'react-geocode';
+import {Button} from "@material-ui/core";
 
 
 
@@ -43,72 +44,89 @@ export class NewMap extends React.Component {
 
     constructor(props) {
         super();
-        if(props.location.query.change){
-            if(props.location.query.lat && props.location.query.lng) {
-                this.state = {
-                    isMarkerShown: true,
-                    open: true,
-                    change:true,
-                    eventId: props.location.query.eventId,
-                    placeId: props.location.query.locationId,
-                    lat: props.location.query.lat,
-                    lng: props.location.query.lng,
-                    onMapChange: props.location.query.onMapChange,
-                    adresse: props.location.query.adresse,
-                };
-            }else{
-                getEvent(props.location.query.eventId, response => {
-                    this.state = {
-                        eventId: props.location.query.eventId,
-                        placeId: response.data.locationId,
-                        lat: response.data.lat,
-                        lng: response.data.lng,
-                        adresse: props.location.query.adresse,
-                    }
-                })
-            };
-        }else{
-            if(props.location.query && props.location.query.lat && props.location.query.lng) {
-                this.state = {
-                    isMarkerShown: true,
-                    open: true,
-                    change:false,
-                    eventId: props.location.query.eventId,
-                    placeId: props.location.query.locationChange,
-                    lat: props.location.query.lat,
-                    lng: props.location.query.lng,
-                    onLocationChange: props.location.query.locationChange,
-                    adresse: props.location.query.adresse,
+        if(!props.history.location.query){
 
-                };
-            }else{
-                if(props.location.query.locationId){
+            this.state = {
+                cancel: true,
+            }
+        }else {
+
+            if (props.location.query.change) {
+                if (props.location.query.lat && props.location.query.lng) {
                     this.state = {
                         isMarkerShown: true,
                         open: true,
-                        change:false,
+                        change: true,
                         eventId: props.location.query.eventId,
                         placeId: props.location.query.locationId,
+                        lat: props.location.query.lat,
+                        lng: props.location.query.lng,
+                        onMapChange: props.location.query.onMapChange,
+                        adresse: props.location.query.adresse,
+                        cancel: false,
+                    };
+                } else {
+                    getEvent(props.location.query.eventId, response => {
+                        this.state = {
+                            eventId: props.location.query.eventId,
+                            placeId: response.data.locationId,
+                            lat: response.data.lat,
+                            lng: response.data.lng,
+                            adresse: props.location.query.adresse,
+                            cancel: false,
+
+                        }
+                    })
+                }
+                ;
+            } else {
+                if (props.location.query && props.location.query.lat && props.location.query.lng) {
+                    this.state = {
+                        isMarkerShown: true,
+                        open: true,
+                        change: false,
+                        eventId: props.location.query.eventId,
+                        placeId: props.location.query.locationChange,
+                        lat: props.location.query.lat,
+                        lng: props.location.query.lng,
                         onLocationChange: props.location.query.locationChange,
                         adresse: props.location.query.adresse,
+                        cancel: false,
 
                     };
-                }else {
-                    this.state = {
-                        isMarkerShown: false,
-                        open: true,
-                        change:false,
-                        eventId: props.location.query.eventId,
-                        placeId: null,
-                        lat: null,
-                        lng: null,
-                        onLocationChange: props.location.query.locationChange,
-                        adresse: null,
+                } else {
+                    if (props.location.query.locationId) {
+                        this.state = {
+                            isMarkerShown: true,
+                            open: true,
+                            change: false,
+                            eventId: props.location.query.eventId,
+                            placeId: props.location.query.locationId,
+                            onLocationChange: props.location.query.locationChange,
+                            adresse: props.location.query.adresse,
+                            cancel: false,
 
-                    };
+                        };
+                    } else {
+                        this.state = {
+                            isMarkerShown: false,
+                            open: true,
+                            change: false,
+                            eventId: props.location.query.eventId,
+                            placeId: null,
+                            lat: null,
+                            lng: null,
+                            onLocationChange: props.location.query.locationChange,
+                            adresse: null,
+                            cancel: false,
+
+                        };
+                    }
                 }
-            };
-        };
+                ;
+            }
+            ;
+        }
     }
 
 
@@ -193,35 +211,71 @@ export class NewMap extends React.Component {
 
 
     };
+    showAllEvents = () => {
+        getHistory().push("/app/event");
+    };
 
     render() {
-        let lat = this.state.lat || this.state.defaultLat || 49.474210558898626;
-        let lng = this.state.lng || this.state.defaultLng || 8.46496045589447;
-        let showMarker = (this.state.isMarkerShown);
-        let change = this.state.change;
-        if(change === true){
-            return (
-                <Dialog>
-                    <FloatingActionButton onClick={this.redirectToGoogleMaps}  styleRoot={{zIndex: '10000', top: '20px'}}/>
-                    <MyMapComponent
-                        isMarkerShown={showMarker}
-                        onMarkerClick={this.handleMarkerClick}
-                        onMapClick={this.onMapClick}
-                        lat={lat}
-                        lng={lng}/>
-                    <FloatingActionButton onClick={this.setLocationChange} icon="done" styleRoot={{marginLeft: 'calc(100% - 56px - 15px - 50px)'}}/>
-                </Dialog>
-            )
+        const { classes } = this.props;
+        if(this.state.cancel === false) {
+
+            let lat = this.state.lat || this.state.defaultLat || 49.474210558898626;
+            let lng = this.state.lng || this.state.defaultLng || 8.46496045589447;
+            let showMarker = (this.state.isMarkerShown);
+            let change = this.state.change;
+            if (change === true) {
+                return (
+                    <Dialog>
+                        <Button onClick={this.redirectToGoogleMaps}
+                                style={{
+                                    zIndex: '10000',
+                                    color: 'white',
+                                    backgroundColor: '#ff7700',
+                                    fontSize: 'initial',
+                                }}>direct me to event...</Button>
+                        <MyMapComponent
+                            isMarkerShown={showMarker}
+                            onMarkerClick={this.handleMarkerClick}
+                            onMapClick={this.onMapClick}
+                            lat={lat}
+                            lng={lng}/>
+                        <FloatingActionButton onClick={this.setLocationChange} icon="done"
+                                              styleRoot={{marginLeft: 'calc(100% - 56px - 15px - 50px)'}}/>
+                    </Dialog>
+                )
+            } else {
+                return (
+                    <Dialog>
+                        <MyMapComponent
+                            isMarkerShown={showMarker}
+                            onMarkerClick={this.handleMarkerClick}
+                            onMapClick={this.onMapClick}
+                            lat={lat}
+                            lng={lng}/>
+                        <FloatingActionButton onClick={this.setLocation} icon="done"
+                                              styleRoot={{marginLeft: 'calc(100% - 56px - 15px - 50px)'}}/>
+                    </Dialog>
+                )
+            }
         }else{
-            return (
+
+            let myLat = this.state.defaultLat;
+            let myLng = this.state.defaultLng;
+
+            return(
                 <Dialog>
+                    <Button onClick={this.showAllEvents}
+                            style={{
+                                zIndex: '10000',
+                                color: 'white',
+                                backgroundColor: '#ff7700',
+                                fontSize: 'initial',
+                            }}>show me all events</Button>
                     <MyMapComponent
-                        isMarkerShown={showMarker}
-                        onMarkerClick={this.handleMarkerClick}
-                        onMapClick={this.onMapClick}
-                        lat={lat}
-                        lng={lng}/>
-                    <FloatingActionButton onClick={this.setLocation} icon="done" styleRoot={{marginLeft: 'calc(100% - 56px - 15px - 50px)'}}/>
+                        isMarkerShown={true}
+                        lat={myLat}
+                        lng={myLng}
+                    />
                 </Dialog>
             )
         }
